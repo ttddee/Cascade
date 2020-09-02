@@ -21,14 +21,18 @@ NodeGraph::NodeGraph(QWidget* parent)
     contextMenu = new NodeGraphContextMenu(this);
 }
 
-void NodeGraph::createNode(const NodeType type, const QPoint &pos)
+void NodeGraph::createNode(const NodeType type)
 {
     NodeBase* n = new NodeBase(type, this);
     scene->addWidget(n);
     n->move(mapToScene(lastMousePos).x(),
             mapToScene(lastMousePos).y());
-
     nodes.push_back(n);
+
+    connect(n, &NodeBase::nodeWasLeftClicked,
+                this, &NodeGraph::handleNodeWasLeftClicked);
+    connect(n, &NodeBase::nodeWasDoubleClicked,
+            this, &NodeGraph::handleNodeWasDoubleClicked);
 }
 
 float NodeGraph::getViewScale() const
@@ -39,6 +43,31 @@ float NodeGraph::getViewScale() const
 void NodeGraph::showContextMenu(const QPoint &pos)
 {
     contextMenu->exec(mapToGlobal(pos));
+}
+
+void NodeGraph::handleNodeWasLeftClicked(NodeBase* node)
+{
+    selectedNode = node;
+    foreach(NodeBase* n, nodes)
+    {
+        n->setIsSelected(false);
+    }
+    node->setIsSelected(true);
+}
+
+void NodeGraph::handleNodeWasDoubleClicked(NodeBase* node)
+{
+    if (node)
+    {
+        activeNode = node;
+        node->setIsActive(true);
+        //m_properties->loadNodeProperties(node); // USE A SIGNAL
+    }
+    else
+    {
+        activeNode = nullptr;
+        //m_properties->clear(); // USE A SIGNAL
+    }
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
@@ -78,8 +107,8 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
 
 void NodeGraph::wheelEvent(QWheelEvent* event)
 {
-//    QPoint scrollAmount = event->angleDelta();
-//    double factor = (scrollAmount.y() > 0) ? 1.2 : 1 / 1.2;
-//    this->scale(factor, factor);
-//    viewScale *= factor;
+    QPoint scrollAmount = event->angleDelta();
+    double factor = (scrollAmount.y() > 0) ? 1.2 : 1 / 1.2;
+    this->scale(factor, factor);
+    viewScale *= factor;
 }

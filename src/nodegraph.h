@@ -16,7 +16,7 @@ class NodeGraph : public QGraphicsView
 
 public:
     NodeGraph(QWidget* parent);
-    void createNode(const NodeType type, const QPoint& pos);
+    void createNode(const NodeType type);
     float getViewScale() const;
 
 protected:
@@ -36,6 +36,14 @@ private:
     bool isDragging = false;
     QPoint lastMousePos;
     float viewScale = 1.0f;
+
+    NodeBase* selectedNode;
+    NodeBase* activeNode;
+    NodeBase* viewedNode;
+
+public slots:
+    void handleNodeWasLeftClicked(NodeBase* node);
+    void handleNodeWasDoubleClicked(NodeBase* node);
 };
 
 #endif // NODEGRAPH_H

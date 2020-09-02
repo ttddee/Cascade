@@ -24,6 +24,9 @@ public:
     explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
     ~NodeBase();
 
+    void setIsSelected(const bool b);
+    void setIsActive(const bool b);
+
 private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
@@ -46,6 +49,7 @@ private:
     NodeOutput* rgbOut;
 
     bool isSelected = false;
+    bool isActive = false;
     bool isViewed = false;
     bool isDragging = false;
     QPoint oldPos;
@@ -54,6 +58,10 @@ private:
     const QBrush defaultColorBrush = QBrush("#282d31");
     const QBrush selectedColorBrush = QBrush("#626971");
     const QPen viewedColorPen = QPen(QColor("#dc4c46"), 3);
+
+signals:
+    void nodeWasLeftClicked(NodeBase*);
+    void nodeWasDoubleClicked(NodeBase*);
 };
 
 #endif // NODEBASE_H

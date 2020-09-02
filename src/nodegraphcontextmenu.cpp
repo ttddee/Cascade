@@ -18,12 +18,11 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         actions.push_back(a);
         a->setText(i.value());
         this->addAction(a);
-        auto nodePos = parent->mapFromGlobal(QCursor::pos());
         auto t = i.key();
         QObject::connect(
                     a,
                     &QAction::triggered,
                     parent,
-                    [parent, t, nodePos]{ parent->createNode(t, nodePos); });
+                    [parent, t]{ parent->createNode(t); });
     }
 }

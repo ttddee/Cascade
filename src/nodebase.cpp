@@ -76,6 +76,17 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     }
 }
 
+void NodeBase::setIsSelected(const bool b)
+{
+    isSelected = b;
+    this->update();
+}
+
+void NodeBase::setIsActive(const bool b)
+{
+    isActive = b;
+}
+
 void NodeBase::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
@@ -111,7 +122,7 @@ void NodeBase::mousePressEvent(QMouseEvent *event)
             isDragging = true;
             oldPos = event->globalPos();
         }
-        //emit nodeWasLeftClicked(this);
+        emit nodeWasLeftClicked(this);
     }
 }
 
@@ -138,7 +149,7 @@ void NodeBase::mouseReleaseEvent(QMouseEvent *event)
 
 void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
 {
-    //emit nodeWasDoubleClicked(this);
+    emit nodeWasDoubleClicked(this);
     Q_UNUSED(event);
 }
 
