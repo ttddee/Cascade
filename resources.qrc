@@ -1,0 +1,11 @@
+<RCC>
+    <qresource prefix="/">
+        <file>fonts/SourceCodePro-Medium.ttf</file>
+        <file>fonts/SourceCodePro-Bold.ttf</file>
+        <file>style/stylesheet.qss</file>
+        <file>shaders/noop_comp.spv</file>
+        <file>shaders/texture_frag.spv</file>
+        <file>shaders/texture_vert.spv</file>
+        <file>images/empty.jpg</file>
+    </qresource>
+</RCC>

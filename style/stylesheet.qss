@@ -1,0 +1,145 @@
+/*
+BGDark: #181b1e
+BGMid: #1d2024
+BGLight: #282d31
+BGHover: #626971
+Red: #dc4c46
+RedHover: #e8514b
+Green: #9bcf43
+GreenHover: #a4da47
+Blue: #00b6dd
+BlueHover: #01c0e9
+FGDark: #9299a1
+FGLight: #f1f1f1
+*/
+
+QWidget {
+    background-color: #1d2024;
+    color: #f1f1f1;
+    font: 14px "Source Code Pro";
+}
+QWidget#NodeBase {
+    background-color: #181b1e;
+}
+
+QPlainTextEdit {
+    background-color: #282d31;
+    color: #f1f1f1;
+}
+
+ControlsWidget {
+    background-color: #282d31;
+    color: #f1f1f1;
+}
+
+/* Horizontal and Vertical Lines */
+QFrame[frameShape="4"],
+QFrame[frameShape="5"] {
+    background-color: #9299a1;
+}
+
+QPushButton {
+    background-color: #282d31;
+    color: #f1f1f1;
+    border: none;
+    border-radius: 3px;
+    font-weight: bold;
+}
+QPushButton:hover {
+    background-color: #626971;
+}
+QPushButton:disabled {
+    color: #9299a1;
+    background-color: #1d2024;
+}
+
+QScrollBar:vertical {
+    border: 0px;
+    background: #1d2024;
+}
+QScrollBar::handle:vertical {
+    background: #626971;
+}
+QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
+     border: 0px;
+     background: none;
+     color: none;
+ }
+ QScrollBar::add-line:vertical {
+       border: none;
+       background: none;
+ }
+ QScrollBar::sub-line:vertical {
+       border: none;
+       background: none;
+ }
+
+LineNumberArea {
+    font-weight: bold;
+}
+
+QCheckBox {
+    background-color: #181b1e;
+    color: #f1f1f1;
+}
+QCheckBox::indicator:checked {
+    background-color: #00b6dd;
+    color: #f1f1f1;
+    border-radius: 3px;
+}
+QCheckBox::indicator:unchecked {
+    background-color: #282d31;
+    color: #f1f1f1;
+    border-radius: 3px;
+}
+QCheckBox::indicator:unchecked:hover {
+    background-color: #626971;
+    color: #f1f1f1;
+}
+
+/* NodeInput */
+QPushButton#RGBBackIn {
+    background-color: #dc4c46;
+    border: 0px;
+}
+QPushButton#RGBBackIn:hover {
+    background-color: #e8514b;
+}
+QPushButton#RGBFrontIn {
+    background-color: #9bcf43;
+    border: 0px;
+}
+QPushButton#RGBFrontIn:hover {
+    background-color: #a4da47;
+}
+
+/* NodeOutput */
+QPushButton#RGBOut {
+    background-color: #9bcf43;
+    border: 0px;
+}
+QPushButton#RGBOut:hover {
+    background-color: #a4da47;
+}
+
+QLabel {
+    color: #f1f1f1;
+    font: 14px "Source Code Pro";
+}
+QLabel#PropertiesHeading {
+    color: #f1f1f1;
+    font: 14px "Source Code Pro";
+    font-weight: bold;
+}
+QLabel#NodeTitleLabel {
+    color: #f1f1f1;
+    background-color: none;
+    font: 14px "Source Code Pro";
+    font-weight: bold;
+}
+QLabel#folderLabel {
+    color: #00b6dd;
+}
+QLabel#fileNameLabel {
+    color: #00b6dd;
+}
