@@ -14,7 +14,6 @@ public:
     explicit Connection(NodeOutput* source);
     QPainterPath shape() const override;
     QPoint getStartPosition();
-    QPoint getEndPosition();
 
     void updatePosition();
     void updatePosition(const QPoint end);
@@ -23,8 +22,10 @@ public:
     NodeOutput* sourceOutput = nullptr;
 
 private:
+    void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
-
+    const QPen normalPen = QPen(QColor("#9299a1"), 3);
+    const QPen connectedPen = QPen(QColor("#9bcf43"), 3);
 
 };
 

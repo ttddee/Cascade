@@ -29,7 +29,7 @@
          <item>
           <widget class="VulkanView" name="vulkanView" native="true">
            <property name="sizePolicy">
-            <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+            <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
              <horstretch>0</horstretch>
              <verstretch>0</verstretch>
             </sizepolicy>
@@ -69,7 +69,14 @@
         </property>
        </widget>
       </widget>
-      <widget class="QWidget" name="propertiesWidget" native="true"/>
+      <widget class="PropertiesView" name="propertiesWidget" native="true">
+       <property name="minimumSize">
+        <size>
+         <width>400</width>
+         <height>0</height>
+        </size>
+       </property>
+      </widget>
      </widget>
     </item>
    </layout>
@@ -97,6 +104,12 @@
    <class>NodeGraph</class>
    <extends>QGraphicsView</extends>
    <header>src/nodegraph.h</header>
+  </customwidget>
+  <customwidget>
+   <class>PropertiesView</class>
+   <extends>QWidget</extends>
+   <header>src/propertiesview.h</header>
+   <container>1</container>
   </customwidget>
  </customwidgets>
  <resources/>

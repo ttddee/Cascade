@@ -23,10 +23,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
 {
     NodeInitProperties props;
 
-    if (nodeType == NODE_TYPE_READ)
-    {
-        props = readNodeInitProperties;
-    }
+    props = Cascade::getPropertiesForType(nodeType);
 
     ui->NodeTitleLabel->setText(props.title);
 

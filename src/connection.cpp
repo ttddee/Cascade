@@ -24,12 +24,18 @@ Connection::Connection(NodeOutput* source)
     this->setZValue(-1);
 }
 
-//void Connection::attachToTarget(NodeIn *target)
-//{
-//    targetIn = target;
-//    target->addInConnection(this);
-//    this->setPen(QPen(QColor("#9bcf43"), 3));
-//}
+void Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt)
+{
+    if(targetInput)
+    {
+        this->setPen(connectedPen);
+    }
+    else
+    {
+        this->setPen(normalPen);
+    }
+    QGraphicsLineItem::paint(painter, opt, wdgt);
+}
 
 QPainterPath Connection::shape() const
 {
@@ -53,11 +59,6 @@ QPainterPath Connection::shape() const
 QPoint Connection::getStartPosition()
 {
     return sourceOutput->mapToParent(line().p1().toPoint());
-}
-
-QPoint Connection::getEndPosition()
-{
-
 }
 
 void Connection::updatePosition()

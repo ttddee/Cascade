@@ -33,9 +33,6 @@ void NodeGraph::createNode(const NodeType type)
             mapToScene(lastMousePos).y());
     nodes.push_back(n);
 
-    std::cout << " NODE X: " << mapToScene(lastMousePos).x() << std::endl;
-    std::cout << " NODE Y: " << mapToScene(lastMousePos).y() << std::endl;
-
     connect(n, &NodeBase::nodeWasLeftClicked,
                 this, &NodeGraph::handleNodeLeftMouseClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
@@ -176,12 +173,10 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
         NodeBase* node = qobject_cast<NodeBase*>(getWidgetFromGraphicsitem(item));
         if(node)
         {
-            std::cout << "Have a node" << std::endl;
             auto nodeIn = node->getNodeInputAtPosition(event->screenPos().toPoint());
             if(nodeIn)
             // Open connection was released on a NodeInput
             {
-                std::cout << "Have input" << std::endl;
                 if(!nodeIn->hasConnection())
                 {
                     establishConnection(nodeIn);

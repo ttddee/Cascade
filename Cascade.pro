@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/connection.cpp \
+    src/fileboxentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -29,12 +30,15 @@ SOURCES += \
     src/nodegraphcontextmenu.cpp \
     src/nodeinput.cpp \
     src/nodeoutput.cpp \
+    src/nodeproperties.cpp \
+    src/propertiesview.cpp \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp
 
 HEADERS += \
     src/connection.h \
+    src/fileboxentity.h \
     src/globals.h \
     src/mainwindow.h \
     src/nodebase.h \
@@ -43,11 +47,14 @@ HEADERS += \
     src/nodegraphcontextmenu.h \
     src/nodeinput.h \
     src/nodeoutput.h \
+    src/nodeproperties.h \
+    src/propertiesview.h \
     src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h
 
 FORMS += \
+    src/fileboxentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui
 

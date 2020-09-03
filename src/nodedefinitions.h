@@ -13,7 +13,7 @@ namespace Cascade
         NODE_TYPE_MAX
     };
 
-    static const QMap<NodeType, QString> nodeStrings =
+    const QMap<NodeType, QString> nodeStrings =
     {
         { NODE_TYPE_READ, "Read" },
         { NODE_TYPE_TEST, "Test" }
@@ -51,7 +51,7 @@ namespace Cascade
         QString title;
         std::vector<NodeInputType> nodeInputs;
         std::vector<NodeOutputType> nodeOutputs;
-        QMap<UIElementType, std::string> uiElements;
+        QMap<UIElementType, QString> uiElements;
     };
 
     /////////////////////////////////////
@@ -67,6 +67,15 @@ namespace Cascade
             { UI_ELEMENT_TYPE_FILEBOX, ""}
         }
     };
+
+    static NodeInitProperties getPropertiesForType(const NodeType t)
+    {
+        if(t == NODE_TYPE_READ)
+        {
+            return readNodeInitProperties;
+        }
+        throw std::runtime_error("Node type not found.");
+    }
 }
 
 #endif // NODEDEFINITIONS_H
