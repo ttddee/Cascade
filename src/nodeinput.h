@@ -22,6 +22,9 @@ public:
     //Connection* inConnection = nullptr;
     NodeBase* parentNode = nullptr;
 
+private:
+    void mouseReleaseEvent(QMouseEvent* event) override;
+
 signals:
     //void mouseRealeasedOnNodeIn(NodeInput*);
     //void nodeInReceivedInConnection();

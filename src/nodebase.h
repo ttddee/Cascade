@@ -27,6 +27,8 @@ public:
     void setIsSelected(const bool b);
     void setIsActive(const bool b);
 
+    NodeInput* getNodeInputAtPosition(const QPoint pos);
+
 private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);

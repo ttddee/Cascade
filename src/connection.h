@@ -21,7 +21,7 @@ public:
 //    NodeInput* targetIn = nullptr;
 
 protected:
-    //void mousePressEvent(QGraphicsSceneMouseEvent*) override;
+    void mouseReleaseEvent(QGraphicsSceneMouseEvent*) override;
 
 private:
     NodeOutput* sourceOutput = nullptr;

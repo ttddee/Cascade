@@ -1,5 +1,7 @@
 #include "nodeinput.h"
 
+#include <iostream>
+
 #include <QMouseEvent>
 
 NodeInput::NodeInput(QWidget *parent)
@@ -9,6 +11,15 @@ NodeInput::NodeInput(QWidget *parent)
     parentNode = static_cast<NodeBase*>(parent);
     this->resize(12, 30);
 
+}
+
+void NodeInput::mouseReleaseEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        std::cout << "Release" << std::endl;
+        //this->isDragging = true;
+    }
 }
 
 //void NodeInput::addInConnection(Connection *c)

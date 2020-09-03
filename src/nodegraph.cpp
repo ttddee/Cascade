@@ -4,6 +4,7 @@
 
 #include <QMouseEvent>
 #include <QScrollBar>
+#include <QGraphicsProxyWidget>
 
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
@@ -48,6 +49,24 @@ void NodeGraph::showContextMenu(const QPoint &pos)
     contextMenu->exec(mapToGlobal(pos));
 }
 
+QGraphicsItem* NodeGraph::getObjectUnderCursor()
+{
+    auto item = scene->itemAt(mapToScene(mapFromGlobal(QCursor::pos())), QTransform());
+
+    return item;
+}
+
+QWidget* NodeGraph::getWidgetFromGraphicsitem(QGraphicsItem *item)
+{
+    QGraphicsProxyWidget* pWidget = qgraphicsitem_cast<QGraphicsProxyWidget*>(item);
+
+    if(pWidget)
+    {
+        return pWidget->widget();
+    }
+    return nullptr;
+}
+
 void NodeGraph::handleNodeLeftMouseClicked(NodeBase* node)
 {
     selectedNode = node;
@@ -77,11 +96,21 @@ void NodeGraph::handleNodeOutputLeftMouseClicked(NodeOutput* nodeOut)
 {
     leftMouseIsDragging = true;
 
+    createOpenConnection(nodeOut);
+}
+
+void NodeGraph::createOpenConnection(NodeOutput* nodeOut)
+{
     Connection* c = new Connection(nodeOut);
     openConnection = c;
     scene->addItem(openConnection);
+}
 
-    std::cout << "Creating connection" << std::endl;
+void NodeGraph::destroyOpenConnection()
+{
+    scene->removeItem(openConnection);
+    delete openConnection;
+    openConnection = nullptr;
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
@@ -92,7 +121,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
     }
     else if (event->button() == Qt::MiddleButton)
     {
-        middleMouseisDragging = true;
+        middleMouseIsDragging = true;
     }
     lastMousePos = event->pos();
     QGraphicsView::mousePressEvent(event);
@@ -100,7 +129,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
 
 void NodeGraph::mouseMoveEvent(QMouseEvent* event)
 {
-    if (middleMouseisDragging)
+    if (middleMouseIsDragging)
     {
         auto t = event->pos() - lastMousePos;
         this->horizontalScrollBar()->setValue(this->horizontalScrollBar()->value() - t.x());
@@ -114,10 +143,10 @@ void NodeGraph::mouseMoveEvent(QMouseEvent* event)
                                            mapToScene(mapFromGlobal(QCursor::pos())).x(),
                                            mapToScene(mapFromGlobal(QCursor::pos())).y()));
 
-            scene->update();
         }
     }
     lastMousePos = event->pos();
+
     QGraphicsView::mouseMoveEvent(event);
 }
 
@@ -126,9 +155,28 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
     if (event->button() == Qt::LeftButton)
     {
         leftMouseIsDragging = false;
+
+        auto item = getObjectUnderCursor();
+
+        NodeBase* node = qobject_cast<NodeBase*>(getWidgetFromGraphicsitem(item));
+        if(node)
+        {
+            std::cout << "Have a node" << std::endl;
+            auto nodeIn = node->getNodeInputAtPosition(event->screenPos().toPoint());
+            if(nodeIn)
+            {
+                std::cout << "Have input" << std::endl;
+
+                return;
+            }
+        }
+        destroyOpenConnection();
     }
     if (event->button() == Qt::MiddleButton)
-        middleMouseisDragging = false;
+    {
+        middleMouseIsDragging = false;
+    }
+
     QGraphicsView::mouseReleaseEvent(event);
 }
 

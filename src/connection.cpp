@@ -51,7 +51,6 @@ QPainterPath Connection::shape() const
 
 QPoint Connection::getStartPosition()
 {
-    auto p = mapToScene(mapToParent(line().p1()));
     return sourceOutput->mapToParent(line().p1().toPoint());
 }
 
@@ -62,7 +61,6 @@ QPoint Connection::getEndPosition()
 
 void Connection::updatePosition(const QPoint end)
 {
-    std::cout << "if" << std::endl;
     if (!targetInput)
     // Connection is open
     {
@@ -75,12 +73,12 @@ void Connection::updatePosition(const QPoint end)
     }
 }
 
-//void Connection::mousePressEvent(QGraphicsSceneMouseEvent *event)
-//{
+void Connection::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
+{
+    event->ignore();
 //    if (event->button() == Qt::LeftButton)
 //    {
-//        emit requestConnectionDetachment(this);
 //    }
-//}
+}
 
 

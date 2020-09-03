@@ -115,6 +115,20 @@ void NodeBase::paintEvent(QPaintEvent *event)
     Q_UNUSED(event);
 }
 
+NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
+{
+    for (NodeInput* in : nodeInputs)
+    {
+        auto bbox = QRect(mapToGlobal(in->geometry().topLeft()),
+                          mapToGlobal(in->geometry().bottomRight()));
+        if (bbox.contains(position))
+        {
+            return in;
+        }
+    }
+    return nullptr;
+}
+
 void NodeBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -146,7 +160,6 @@ void NodeBase::mouseReleaseEvent(QMouseEvent *event)
     {
         isDragging = false;
     }
-
 }
 
 void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)

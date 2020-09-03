@@ -28,6 +28,10 @@ protected:
 
 private:
     void showContextMenu(const QPoint& pos);
+    QGraphicsItem* getObjectUnderCursor();
+    QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
+    void createOpenConnection(NodeOutput* nodeOut);
+    void destroyOpenConnection();
 
     QGraphicsScene* scene;
     const int viewWidth = 60000;
@@ -36,7 +40,7 @@ private:
     std::vector<Connection*> connections;
     NodeGraphContextMenu* contextMenu;
     bool leftMouseIsDragging = false;
-    bool middleMouseisDragging = false;
+    bool middleMouseIsDragging = false;
     QPoint lastMousePos;
     float viewScale = 1.0f;
 
