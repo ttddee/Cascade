@@ -33,6 +33,7 @@ private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
+    void updateConnectionPositions();
 
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;

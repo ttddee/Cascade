@@ -6,6 +6,9 @@
 #include <QScrollBar>
 #include <QGraphicsProxyWidget>
 
+#include "nodeinput.h"
+#include "nodeoutput.h"
+
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
 {
@@ -108,8 +111,20 @@ void NodeGraph::createOpenConnection(NodeOutput* nodeOut)
 
 void NodeGraph::destroyOpenConnection()
 {
-    scene->removeItem(openConnection);
-    delete openConnection;
+    if(openConnection)
+    {
+        scene->removeItem(openConnection);
+        delete openConnection;
+        openConnection = nullptr;
+    }
+}
+
+void NodeGraph::establishConnection(NodeInput *nodeIn)
+{
+    nodeIn->addInConnection(openConnection);
+    openConnection->targetInput = nodeIn;
+    openConnection->sourceOutput->addConnection(openConnection);
+    connections.push_back(openConnection);
     openConnection = nullptr;
 }
 
@@ -130,6 +145,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
 void NodeGraph::mouseMoveEvent(QMouseEvent* event)
 {
     if (middleMouseIsDragging)
+    // Scroll the whole scene
     {
         auto t = event->pos() - lastMousePos;
         this->horizontalScrollBar()->setValue(this->horizontalScrollBar()->value() - t.x());
@@ -142,7 +158,6 @@ void NodeGraph::mouseMoveEvent(QMouseEvent* event)
             openConnection->updatePosition(QPoint(
                                            mapToScene(mapFromGlobal(QCursor::pos())).x(),
                                            mapToScene(mapFromGlobal(QCursor::pos())).y()));
-
         }
     }
     lastMousePos = event->pos();
@@ -164,10 +179,14 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
             std::cout << "Have a node" << std::endl;
             auto nodeIn = node->getNodeInputAtPosition(event->screenPos().toPoint());
             if(nodeIn)
+            // Open connection was released on a NodeInput
             {
                 std::cout << "Have input" << std::endl;
-
-                return;
+                if(!nodeIn->hasConnection())
+                {
+                    establishConnection(nodeIn);
+                    return;
+                }
             }
         }
         destroyOpenConnection();

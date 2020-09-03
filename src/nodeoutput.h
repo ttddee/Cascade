@@ -4,7 +4,9 @@
 #include <QObject>
 #include <QPushButton>
 #include <QGraphicsItem>
+
 #include "nodebase.h"
+#include "connection.h"
 
 class NodeOutput : public QPushButton
 {
@@ -12,6 +14,9 @@ class NodeOutput : public QPushButton
 
 public:
     explicit NodeOutput(QWidget *parent = nullptr);
+
+    void addConnection(Connection* c);
+    void updateConnections();
 
     NodeBase* parentNode = nullptr;
     const int visualWidth = 12;
@@ -23,7 +28,7 @@ protected:
 //    void mouseReleaseEvent(QMouseEvent* event) override;
 
 private:
-
+    std::vector<Connection*> outConnections;
     //bool isDragging = false;
 
 signals:

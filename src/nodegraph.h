@@ -32,6 +32,7 @@ private:
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
     void createOpenConnection(NodeOutput* nodeOut);
     void destroyOpenConnection();
+    void establishConnection(NodeInput* nodeIn);
 
     QGraphicsScene* scene;
     const int viewWidth = 60000;

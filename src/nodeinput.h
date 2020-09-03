@@ -5,6 +5,7 @@
 #include <QPushButton>
 
 #include "nodebase.h"
+#include "connection.h"
 
 class NodeInput : public QPushButton
 {
@@ -12,18 +13,19 @@ class NodeInput : public QPushButton
 
 public:
     explicit NodeInput(QWidget *parent = nullptr);
-    //void addInConnection(Connection*);
+    void addInConnection(Connection*);
     void removeInConnection();
     void triggerMouseRelease();
     NodeBase* getUpstreamNode();
+    bool hasConnection();
+    void updateConnection();
     //std::set<NodeBase*> getAllUpstreamNodes();
     //shared_ptr<ImageBuf> getInputImage();
 
-    //Connection* inConnection = nullptr;
     NodeBase* parentNode = nullptr;
 
 private:
-    void mouseReleaseEvent(QMouseEvent* event) override;
+    Connection* inConnection = nullptr;
 
 signals:
     //void mouseRealeasedOnNodeIn(NodeInput*);

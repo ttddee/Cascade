@@ -41,8 +41,6 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     {
         auto nodeIn = new NodeInput(this);
         nodeIn->move(-2, 15);
-        //inAnchorPos = QPoint(nodeIn->pos().x() + nodeIn->width() / 2,
-        //                     nodeIn->pos().y() + nodeIn->height() / 2);
         nodeInputs.push_back(nodeIn);
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
@@ -50,13 +48,6 @@ void NodeBase::createInputs(const NodeInitProperties &props)
             nodeIn->setObjectName("RGBBackIn");
             this->rgbBackIn = nodeIn;
         }
-
-//        connect(nodeIn, &NodeIn::mouseRealeasedOnNodeIn,
-//                        controller, &Controller::handleMouseReleasedOnNodeIn);
-//        connect(nodeIn, &NodeIn::nodeInReceivedInConnection,
-//                    this, &NodeBase::handleNodeInReceivedInConnection);
-//        connect(nodeIn, &NodeIn::nodeInLostInConnection,
-//                    this, &NodeBase::handleNodeInLostInConnection);
     }
 }
 
@@ -67,7 +58,8 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     {
         auto nodeOut = new NodeOutput(this);
         nodeOut->move(110, 15);
-        //outAnchorPos
+        nodeOutputs.push_back(nodeOut);
+
         if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
         {
             nodeOut->setObjectName("RGBOut");
@@ -129,6 +121,18 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
     return nullptr;
 }
 
+void NodeBase::updateConnectionPositions()
+{
+    foreach(NodeInput* nodeIn, nodeInputs)
+    {
+        nodeIn->updateConnection();
+    }
+    foreach(NodeOutput* nodeOut, nodeOutputs)
+    {
+        nodeOut->updateConnections();
+    }
+}
+
 void NodeBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -150,7 +154,7 @@ void NodeBase::mouseMoveEvent(QMouseEvent *event)
         QPoint newPos = this->pos() + (offset / nodeGraph->getViewScale());
         this->move(newPos);
         oldPos = event->globalPos();
-        //this->updateConnectionPositions();
+        this->updateConnectionPositions();
     }
 }
 

@@ -12,23 +12,20 @@ class Connection : public QObject, public QGraphicsLineItem
 
 public:
     explicit Connection(NodeOutput* source);
-//    void attachToTarget(NodeInput* target);
     QPainterPath shape() const override;
     QPoint getStartPosition();
     QPoint getEndPosition();
-    void updatePosition(const QPoint end);
-//    NodeBase* sourceNode = nullptr;
-//    NodeInput* targetIn = nullptr;
 
-protected:
-    void mouseReleaseEvent(QGraphicsSceneMouseEvent*) override;
+    void updatePosition();
+    void updatePosition(const QPoint end);
+
+    NodeInput* targetInput = nullptr;
+    NodeOutput* sourceOutput = nullptr;
 
 private:
-    NodeOutput* sourceOutput = nullptr;
-    NodeInput* targetInput = nullptr;
 
-signals:
-    //void requestConnectionDetachment(Connection*);
+
+
 };
 
 #endif // CONNECTION_H

@@ -11,14 +11,20 @@ NodeOutput::NodeOutput(QWidget *parent)
     // Keep reference to parent node
     parentNode = static_cast<NodeBase*>(parent);
 
-    // Register connections to Controller
-    //Controller* controller;
-    //controller = &Controller::getInstance();
-//    connect(this, &NodeOut::requestConnection, controller, &Controller::handleConnectionRequest);
-//    connect(this, &NodeOut::requestConnectionUpdate, controller, &Controller::handleConnectionUpdateRequest);
-//    //connect(this, &NodeOut::requestConnectionAttachment, controller, &Controller::handleConnectionAttachmentRequest);
-
     this->resize(visualWidth, visualHeight);
+}
+
+void NodeOutput::addConnection(Connection *c)
+{
+    outConnections.push_back(c);
+}
+
+void NodeOutput::updateConnections()
+{
+    foreach(Connection* c, outConnections)
+    {
+        c->updatePosition();
+    }
 }
 
 void NodeOutput::mousePressEvent(QMouseEvent *event)

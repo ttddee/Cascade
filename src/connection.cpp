@@ -8,6 +8,7 @@
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
 
+#include "nodeinput.h"
 #include "nodeoutput.h"
 
 Connection::Connection(NodeOutput* source)
@@ -59,26 +60,29 @@ QPoint Connection::getEndPosition()
 
 }
 
+void Connection::updatePosition()
+{
+    auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
+
+    this->setLine(start.x() + sourceOutput->visualWidth / 2,
+                  start.y() + sourceOutput->visualHeight / 2,
+                  targetInput->parentNode->mapToParent(targetInput->pos()).x()
+                  + sourceOutput->visualWidth / 2,
+                  targetInput->parentNode->mapToParent(targetInput->pos()).y()
+                  + sourceOutput->visualHeight / 2);
+}
+
 void Connection::updatePosition(const QPoint end)
 {
+    auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
+
     if (!targetInput)
     // Connection is open
     {
-        auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
-
         this->setLine(start.x() + sourceOutput->visualWidth / 2,
                       start.y() + sourceOutput->visualHeight / 2,
                       end.x() - 5,
                       end.y() - 3);
     }
+
 }
-
-void Connection::mouseReleaseEvent(QGraphicsSceneMouseEvent *event)
-{
-    event->ignore();
-//    if (event->button() == Qt::LeftButton)
-//    {
-//    }
-}
-
-

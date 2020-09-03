@@ -7,26 +7,32 @@
 NodeInput::NodeInput(QWidget *parent)
     : QPushButton (parent)
 {
-    // Keep reference to parent node
     parentNode = static_cast<NodeBase*>(parent);
     this->resize(12, 30);
-
 }
 
-void NodeInput::mouseReleaseEvent(QMouseEvent *event)
+bool NodeInput::hasConnection()
 {
-    if (event->button() == Qt::LeftButton)
+    if(inConnection)
     {
-        std::cout << "Release" << std::endl;
-        //this->isDragging = true;
+        return true;
+    }
+    return false;
+}
+
+void NodeInput::updateConnection()
+{
+    if(inConnection)
+    {
+        inConnection->updatePosition();
     }
 }
 
-//void NodeInput::addInConnection(Connection *c)
-//{
-//    inConnection = c;
-//    emit nodeInReceivedInConnection();
-//}
+void NodeInput::addInConnection(Connection* c)
+{
+    inConnection = c;
+    //emit nodeInReceivedInConnection();
+}
 
 //void NodeInput::removeInConnection()
 //{
