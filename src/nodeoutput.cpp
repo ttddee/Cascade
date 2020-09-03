@@ -4,6 +4,7 @@
 #include <QGraphicsLineItem>
 #include <QPen>
 #include <QColor>
+//#include "../controller.h"
 
 NodeOutput::NodeOutput(QWidget *parent)
     : QPushButton (parent)
@@ -18,17 +19,17 @@ NodeOutput::NodeOutput(QWidget *parent)
 //    connect(this, &NodeOut::requestConnectionUpdate, controller, &Controller::handleConnectionUpdateRequest);
 //    //connect(this, &NodeOut::requestConnectionAttachment, controller, &Controller::handleConnectionAttachmentRequest);
 
-    this->resize(visualWidth, visualHeight);
+    this->resize(12, 30);
 }
 
-void NodeOutput::mousePressEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        emit nodeOutputLeftMouseClicked(this);
-        //this->isDragging = true;
-    }
-}
+//void NodeOutput::mousePressEvent(QMouseEvent *event)
+//{
+//    if (event->button() == Qt::LeftButton)
+//    {
+//        emit requestConnection(parentNode);
+//        this->isDragging = true;
+//    }
+//}
 
 //void NodeOutput::mouseMoveEvent(QMouseEvent *event)
 //{
