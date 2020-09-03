@@ -7,6 +7,7 @@
 #include "nodedefinitions.h"
 #include "nodebase.h"
 #include "nodegraphcontextmenu.h"
+#include "connection.h"
 
 using namespace Cascade;
 
@@ -32,18 +33,22 @@ private:
     const int viewWidth = 60000;
     const int viewHeight = 60000;
     std::vector<NodeBase*> nodes;
+    std::vector<Connection*> connections;
     NodeGraphContextMenu* contextMenu;
-    bool isDragging = false;
+    bool leftMouseIsDragging = false;
+    bool middleMouseisDragging = false;
     QPoint lastMousePos;
     float viewScale = 1.0f;
 
-    NodeBase* selectedNode;
-    NodeBase* activeNode;
-    NodeBase* viewedNode;
+    NodeBase* selectedNode = nullptr;
+    NodeBase* activeNode = nullptr;
+    NodeBase* viewedNode = nullptr;
+    Connection* openConnection = nullptr;
 
 public slots:
-    void handleNodeWasLeftClicked(NodeBase* node);
-    void handleNodeWasDoubleClicked(NodeBase* node);
+    void handleNodeLeftMouseClicked(NodeBase* node);
+    void handleNodeMouseDoubleClicked(NodeBase* node);
+    void handleNodeOutputLeftMouseClicked(NodeOutput* nodeOut);
 };
 
 #endif // NODEGRAPH_H

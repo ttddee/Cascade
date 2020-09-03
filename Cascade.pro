@@ -21,6 +21,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    src/connection.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -33,6 +34,7 @@ SOURCES += \
     src/vulkanwindow.cpp
 
 HEADERS += \
+    src/connection.h \
     src/globals.h \
     src/mainwindow.h \
     src/nodebase.h \
