@@ -5,6 +5,7 @@
 #include <QPen>
 
 #include "nodedefinitions.h"
+#include "nodeproperties.h"
 
 using namespace Cascade;
 
@@ -28,6 +29,7 @@ public:
     void setIsActive(const bool b);
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
+    NodeProperties* getPropertiesView();
 
 private:
     void setUpNode(const NodeType nodeType);
@@ -50,6 +52,7 @@ private:
     std::vector<NodeOutput*> nodeOutputs;
     NodeInput* rgbBackIn;
     NodeOutput* rgbOut;
+    NodeProperties* propertiesView;
 
     bool isSelected = false;
     bool isActive = false;

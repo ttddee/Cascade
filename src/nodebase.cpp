@@ -29,6 +29,8 @@ void NodeBase::setUpNode(const NodeType nodeType)
 
     this->createInputs(props);
     this->createOutputs(props);
+
+    propertiesView = new NodeProperties(nodeType);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -116,6 +118,11 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
         }
     }
     return nullptr;
+}
+
+NodeProperties* NodeBase::getPropertiesView()
+{
+    return propertiesView;
 }
 
 void NodeBase::updateConnectionPositions()

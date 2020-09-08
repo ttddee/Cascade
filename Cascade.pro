@@ -34,7 +34,8 @@ SOURCES += \
     src/propertiesview.cpp \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
-    src/vulkanwindow.cpp
+    src/vulkanwindow.cpp \
+    src/windowmanager.cpp
 
 HEADERS += \
     src/connection.h \
@@ -51,7 +52,8 @@ HEADERS += \
     src/propertiesview.h \
     src/vulkanrenderer.h \
     src/vulkanview.h \
-    src/vulkanwindow.h
+    src/vulkanwindow.h \
+    src/windowmanager.h
 
 FORMS += \
     src/fileboxentity.ui \
