@@ -709,8 +709,6 @@ void VulkanRenderer::createComputePipeline()
         };
 
     VkComputePipelineCreateInfo pipelineInfo = {};
-    //pipelineInfo.pNext = nullptr;
-    //pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
     pipelineInfo.layout = computePipelineLayout;

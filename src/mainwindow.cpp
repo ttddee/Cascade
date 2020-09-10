@@ -12,6 +12,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
+    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
+            windowManager, &WindowManager::handleRendererHasBeenCreated);
 }
 
 void MainWindow::handleRendererHasBeenCreated()
