@@ -11,6 +11,9 @@ MainWindow::MainWindow(QWidget *parent)
 
     windowManager = &WindowManager::getInstance();
     windowManager->setUp(ui->vulkanView->getVulkanWindow(), ui->nodeGraph, ui->propertiesView);
+
+    renderManager = &RenderManager::getInstance();
+    renderManager->setUp(ui->vulkanView->getVulkanWindow()->getRenderer());
 }
 
 MainWindow::~MainWindow()

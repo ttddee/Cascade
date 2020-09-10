@@ -80,6 +80,11 @@ void NodeBase::setIsActive(const bool b)
     isActive = b;
 }
 
+void NodeBase::setIsViewed(const bool b)
+{
+    isViewed = b;
+}
+
 void NodeBase::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);

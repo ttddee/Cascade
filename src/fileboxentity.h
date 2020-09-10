@@ -20,7 +20,7 @@ private:
     void setCurrentState(const QString&);
 
     Ui::FileBoxEntity *ui;
-    QStringListModel* m_fileListModel;
+    QStringListModel* fileListModel;
 
 signals:
     void valueChanged();

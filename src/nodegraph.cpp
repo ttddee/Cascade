@@ -26,6 +26,9 @@ NodeGraph::NodeGraph(QWidget* parent)
     wManager = &WindowManager::getInstance();
 
     contextMenu = new NodeGraphContextMenu(this);
+
+    connect(this, &NodeGraph::viewedNodeHasChanged,
+            wManager, &WindowManager::handleViewedNodeHasChanged);
 }
 
 void NodeGraph::createNode(const NodeType type)
@@ -72,7 +75,7 @@ QWidget* NodeGraph::getWidgetFromGraphicsitem(QGraphicsItem *item)
     return nullptr;
 }
 
-void NodeGraph::handleNodeLeftClicked(NodeBase* node)
+void NodeGraph::selectNode(NodeBase *node)
 {
     selectedNode = node;
     foreach(NodeBase* n, nodes)
@@ -82,12 +85,36 @@ void NodeGraph::handleNodeLeftClicked(NodeBase* node)
     node->setIsSelected(true);
 }
 
+void NodeGraph::activateNode(NodeBase *node)
+{
+    activeNode = node;
+    node->setIsActive(true);
+}
+
+void NodeGraph::viewNode(NodeBase *node)
+{
+    viewedNode = node;
+    foreach(NodeBase* n, nodes)
+    {
+        n->setIsViewed(false);
+        n->repaint();
+    }
+    node->setIsViewed(true);
+    node->repaint();
+
+    emit viewedNodeHasChanged(node);
+}
+
+void NodeGraph::handleNodeLeftClicked(NodeBase* node)
+{
+    selectNode(node);
+}
+
 void NodeGraph::handleNodeDoubleClicked(NodeBase* node)
 {
     if (node)
     {
-        activeNode = node;
-        node->setIsActive(true);
+        activateNode(node);
     }
     else
     {
@@ -130,6 +157,13 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
 {
+    if (event->button() == Qt::LeftButton)
+    {
+        foreach(NodeBase* n, nodes)
+        {
+            n->setIsSelected(false);
+        }
+    }
     if (event->button() == Qt::RightButton)
     {
         showContextMenu(event->pos());
@@ -195,6 +229,17 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
     }
 
     QGraphicsView::mouseReleaseEvent(event);
+}
+
+void NodeGraph::keyPressEvent(QKeyEvent *event)
+{
+    if(event->key() == Qt::Key_F4)
+    {
+        if(selectedNode)
+        {
+            viewNode(selectedNode);
+        }
+    }
 }
 
 void NodeGraph::wheelEvent(QWheelEvent* event)

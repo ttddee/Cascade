@@ -27,6 +27,7 @@ public:
 
     void setIsSelected(const bool b);
     void setIsActive(const bool b);
+    void setIsViewed(const bool b);
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
     NodeProperties* getPropertiesView();

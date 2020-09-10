@@ -32,6 +32,7 @@ signals:
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);
+    void handleViewedNodeHasChanged(NodeBase* node);
 
 };
 

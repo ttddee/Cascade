@@ -4,6 +4,7 @@
 #include <QMainWindow>
 
 #include "windowmanager.h"
+#include "rendermanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -20,5 +21,7 @@ public:
 private:
     Ui::MainWindow *ui;
     WindowManager* windowManager;
+    RenderManager* renderManager;
+
 };
 #endif // MAINWINDOW_H

@@ -24,3 +24,8 @@ void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 {
     propertiesView->loadProperties(node->getPropertiesView());
 }
+
+void WindowManager::handleViewedNodeHasChanged(NodeBase* node)
+{
+    std::cout << "viewedChanged" << std::endl;
+}

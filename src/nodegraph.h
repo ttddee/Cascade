@@ -25,6 +25,7 @@ protected:
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
+    void keyPressEvent(QKeyEvent* event) override;
     void wheelEvent(QWheelEvent*) override;
 
 private:
@@ -34,6 +35,10 @@ private:
     void createOpenConnection(NodeOutput* nodeOut);
     void destroyOpenConnection();
     void establishConnection(NodeInput* nodeIn);
+
+    void selectNode(NodeBase* node);
+    void activateNode(NodeBase* node);
+    void viewNode(NodeBase* node);
 
     QGraphicsScene* scene;
     WindowManager* wManager;
@@ -51,6 +56,9 @@ private:
     NodeBase* activeNode = nullptr;
     NodeBase* viewedNode = nullptr;
     Connection* openConnection = nullptr;
+
+signals:
+    void viewedNodeHasChanged(NodeBase* node);
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);
