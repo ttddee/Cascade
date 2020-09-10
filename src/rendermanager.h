@@ -4,6 +4,7 @@
 #include <QObject>
 
 #include "nodebase.h"
+#include "nodedefinitions.h"
 
 class VulkanRenderer;
 class NodeGraph;

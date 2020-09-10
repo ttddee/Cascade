@@ -2,6 +2,8 @@
 
 #include <iostream>
 
+#include <QFile>
+
 #include "uientity.h"
 #include "fileboxentity.h"
 #include "vulkanrenderer.h"

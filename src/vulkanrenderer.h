@@ -7,6 +7,8 @@
 #include <QImage>
 
 #include "globals.h"
+#include "nodedefinitions.h"
+#include "csimage.h"
 
 using namespace Cascade;
 
@@ -50,8 +52,12 @@ private:
     void createGraphicsPipelineLayout();
     void createGraphicsPipeline();
 
+    void loadShadersFromDisk();
+    void createComputePipelines();
+    VkPipeline createComputePipeline(const VkShaderModule& shaderModule);
+
     // Load image
-    bool createTexture(const QString &name);
+    bool createTextureFromFile(const QString &path);
     bool createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
                                 VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex);
     bool writeLinearImage(const QImage &img, VkImage image, VkDeviceMemory memory);
@@ -65,7 +71,7 @@ private:
 
     // RECURRING
     // Load shader
-    VkShaderModule createShaderFromFile(const QString &name); // TODO: Take this out
+    VkShaderModule createShaderFromFile(const QString &name);
     VkShaderModule createShaderFromCode(const ShaderCode& code);
 
     bool createComputeRenderTarget( uint32_t width, uint32_t height);
@@ -75,6 +81,9 @@ private:
     void createComputeCommandBuffer();
     void createComputePipeline();
     void recordComputeCommandBuffer();
+
+    //////////////////////
+    void processNode(NodeType* nodeType, const VkImage& inputImage, VkImage& renderTarget);
 
     // Called in startNextFrame()
     void submitComputeCommands();
@@ -98,14 +107,19 @@ private:
     VkQueryPool queryPool = VK_NULL_HANDLE;
 
     VkSampler sampler = VK_NULL_HANDLE;
+
     VkFormat texFormat;
     VkImage texImage = VK_NULL_HANDLE;
     VkDeviceMemory texMem = VK_NULL_HANDLE;
+
     bool texLayoutPending = false;
+
     VkImageView texView = VK_NULL_HANDLE;
     VkImage texStaging = VK_NULL_HANDLE;
     VkDeviceMemory texStagingMem = VK_NULL_HANDLE;
+
     bool texStagingPending = false;
+
     QSize texSize;
 
     QImage cpuImage;
@@ -138,8 +152,11 @@ private:
     VkDescriptorSet         computeDescriptorSet;
 
     VkDeviceMemory          computeRenderTargetMemory  = VK_NULL_HANDLE;
-    VkImage                 computeRenderTarget        = VK_NULL_HANDLE;
-    VkImageView             computeRenderTargetView    = VK_NULL_HANDLE;
+    std::unique_ptr<CsImage> computeRenderTarget       = nullptr;
+    //VkImageView             computeRenderTargetView    = VK_NULL_HANDLE;
+
+    QMap<NodeType, VkShaderModule> shaders;
+    QMap<NodeType, VkPipeline> pipelines;
 
 };
 

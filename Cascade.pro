@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/connection.cpp \
+    src/csimage.cpp \
     src/fileboxentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -41,6 +42,7 @@ SOURCES += \
 
 HEADERS += \
     src/connection.h \
+    src/csimage.h \
     src/fileboxentity.h \
     src/globals.h \
     src/mainwindow.h \

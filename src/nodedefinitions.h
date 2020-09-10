@@ -52,6 +52,7 @@ namespace Cascade
         std::vector<NodeInputType> nodeInputs;
         std::vector<NodeOutputType> nodeOutputs;
         QMap<UIElementType, QString> uiElements;
+        QString shaderPath;
     };
 
     /////////////////////////////////////
@@ -65,7 +66,8 @@ namespace Cascade
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Read"},
             { UI_ELEMENT_TYPE_FILEBOX, ""}
-        }
+        },
+        ":/shaders/noop_comp.spv"
     };
 
     const NodeInitProperties blurNodeInitProperties =
@@ -77,7 +79,8 @@ namespace Cascade
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Blur"},
             { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, ""}
-        }
+        },
+        ":/shaders/blur_comp.spv"
     };
 
     static NodeInitProperties getPropertiesForType(const NodeType t)
