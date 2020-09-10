@@ -9,14 +9,14 @@ namespace Cascade
     enum NodeType
     {
         NODE_TYPE_READ,
-        NODE_TYPE_TEST,
+        NODE_TYPE_BLUR,
         NODE_TYPE_MAX
     };
 
     const QMap<NodeType, QString> nodeStrings =
     {
         { NODE_TYPE_READ, "Read" },
-        { NODE_TYPE_TEST, "Test" }
+        { NODE_TYPE_BLUR, "Blur" }
     };
 
     // Global input types
@@ -60,11 +60,23 @@ namespace Cascade
     {
         NODE_TYPE_READ,
         "Read",
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Read"},
             { UI_ELEMENT_TYPE_FILEBOX, ""}
+        }
+    };
+
+    const NodeInitProperties blurNodeInitProperties =
+    {
+        NODE_TYPE_BLUR,
+        "Blur",
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Blur"},
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, ""}
         }
     };
 
@@ -73,6 +85,10 @@ namespace Cascade
         if(t == NODE_TYPE_READ)
         {
             return readNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_BLUR)
+        {
+            return blurNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

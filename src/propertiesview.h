@@ -5,6 +5,8 @@
 #include <QWidget>
 #include <QLayout>
 
+#include "nodeproperties.h"
+
 class PropertiesView : public QWidget
 {
     Q_OBJECT
@@ -12,8 +14,11 @@ class PropertiesView : public QWidget
 public:
     explicit PropertiesView(QWidget *parent = nullptr);
 
+    void loadProperties(NodeProperties* prop);
+
 private:
     QVBoxLayout* layout;
+    NodeProperties* currentProperties = nullptr;
 
 };
 

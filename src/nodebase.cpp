@@ -65,7 +65,7 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
             this->rgbOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
-                nodeGraph, &NodeGraph::handleNodeOutputLeftMouseClicked);
+                nodeGraph, &NodeGraph::handleNodeOutputLeftClicked);
     }
 }
 

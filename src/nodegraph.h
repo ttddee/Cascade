@@ -8,6 +8,7 @@
 #include "nodebase.h"
 #include "nodegraphcontextmenu.h"
 #include "connection.h"
+#include "windowmanager.h"
 
 using namespace Cascade;
 
@@ -35,6 +36,7 @@ private:
     void establishConnection(NodeInput* nodeIn);
 
     QGraphicsScene* scene;
+    WindowManager* wManager;
     const int viewWidth = 60000;
     const int viewHeight = 60000;
     std::vector<NodeBase*> nodes;
@@ -51,9 +53,9 @@ private:
     Connection* openConnection = nullptr;
 
 public slots:
-    void handleNodeLeftMouseClicked(NodeBase* node);
-    void handleNodeMouseDoubleClicked(NodeBase* node);
-    void handleNodeOutputLeftMouseClicked(NodeOutput* nodeOut);
+    void handleNodeLeftClicked(NodeBase* node);
+    void handleNodeDoubleClicked(NodeBase* node);
+    void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
 };
 
 #endif // NODEGRAPH_H

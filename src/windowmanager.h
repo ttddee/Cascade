@@ -3,6 +3,8 @@
 
 #include <QObject>
 
+#include "nodebase.h"
+
 class VulkanWindow;
 class NodeGraph;
 class PropertiesView;
@@ -27,6 +29,9 @@ private:
     PropertiesView* propertiesView;
 
 signals:
+
+public slots:
+    void handleNodeDoubleClicked(NodeBase* node);
 
 };
 

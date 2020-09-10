@@ -11,6 +11,7 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
     NodeInitProperties props = Cascade::getPropertiesForType(t);
 
     layout = new QVBoxLayout();
+    layout->setAlignment(Qt::AlignTop);
     this->setLayout(layout);
 
     QMapIterator<UIElementType, QString> i(props.uiElements);
@@ -36,4 +37,6 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
             layout->addWidget(f);
         }
     }
+
+
 }

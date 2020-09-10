@@ -9,6 +9,7 @@
 #include "nodeinput.h"
 #include "nodeoutput.h"
 
+
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
 {
@@ -22,6 +23,8 @@ NodeGraph::NodeGraph(QWidget* parent)
     this->setSceneRect(0, 0, viewWidth, viewHeight);
     this->centerOn(viewWidth / 2, viewHeight / 2);
 
+    wManager = &WindowManager::getInstance();
+
     contextMenu = new NodeGraphContextMenu(this);
 }
 
@@ -34,9 +37,11 @@ void NodeGraph::createNode(const NodeType type)
     nodes.push_back(n);
 
     connect(n, &NodeBase::nodeWasLeftClicked,
-                this, &NodeGraph::handleNodeLeftMouseClicked);
+                this, &NodeGraph::handleNodeLeftClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
-            this, &NodeGraph::handleNodeMouseDoubleClicked);
+            this, &NodeGraph::handleNodeDoubleClicked);
+    connect(n, &NodeBase::nodeWasDoubleClicked,
+            wManager, &WindowManager::handleNodeDoubleClicked);
 }
 
 float NodeGraph::getViewScale() const
@@ -67,7 +72,7 @@ QWidget* NodeGraph::getWidgetFromGraphicsitem(QGraphicsItem *item)
     return nullptr;
 }
 
-void NodeGraph::handleNodeLeftMouseClicked(NodeBase* node)
+void NodeGraph::handleNodeLeftClicked(NodeBase* node)
 {
     selectedNode = node;
     foreach(NodeBase* n, nodes)
@@ -77,22 +82,20 @@ void NodeGraph::handleNodeLeftMouseClicked(NodeBase* node)
     node->setIsSelected(true);
 }
 
-void NodeGraph::handleNodeMouseDoubleClicked(NodeBase* node)
+void NodeGraph::handleNodeDoubleClicked(NodeBase* node)
 {
     if (node)
     {
         activeNode = node;
         node->setIsActive(true);
-        //m_properties->loadNodeProperties(node); // USE A SIGNAL
     }
     else
     {
         activeNode = nullptr;
-        //m_properties->clear(); // USE A SIGNAL
     }
 }
 
-void NodeGraph::handleNodeOutputLeftMouseClicked(NodeOutput* nodeOut)
+void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 {
     leftMouseIsDragging = true;
 
