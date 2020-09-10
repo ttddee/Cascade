@@ -6,6 +6,7 @@
 #include <QLayout>
 
 #include "nodedefinitions.h"
+#include "uientity.h"
 
 using namespace Cascade;
 
@@ -15,6 +16,8 @@ class NodeProperties : public QWidget
 
 public:
     explicit NodeProperties(const NodeType t, QWidget *parent = nullptr);
+
+    std::vector<UiEntity*> widgets;
 
 private:
     const NodeType nodeType;

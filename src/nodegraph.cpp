@@ -24,11 +24,12 @@ NodeGraph::NodeGraph(QWidget* parent)
     this->centerOn(viewWidth / 2, viewHeight / 2);
 
     wManager = &WindowManager::getInstance();
+    rManager = &RenderManager::getInstance();
 
     contextMenu = new NodeGraphContextMenu(this);
 
     connect(this, &NodeGraph::viewedNodeHasChanged,
-            wManager, &WindowManager::handleViewedNodeHasChanged);
+            rManager, &RenderManager::handleViewedNodeHasChanged);
 }
 
 void NodeGraph::createNode(const NodeType type)

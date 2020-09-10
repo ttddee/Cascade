@@ -22,10 +22,12 @@ void WindowManager::setUp(VulkanWindow *vw, NodeGraph *ng, PropertiesView *pv)
 
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 {
-    propertiesView->loadProperties(node->getPropertiesView());
+    propertiesView->loadProperties(node->getProperties());
 }
 
-void WindowManager::handleViewedNodeHasChanged(NodeBase* node)
+void WindowManager::handleRendererHasBeenCreated()
 {
-    std::cout << "viewedChanged" << std::endl;
+    std::cout << "Renderer has been created." << std::endl;
 }
+
+

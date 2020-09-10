@@ -4,17 +4,23 @@
 #include <QWidget>
 #include <QStringListModel>
 
+#include "nodedefinitions.h"
+#include "uientity.h"
+
+using namespace Cascade;
+
 namespace Ui {
 class FileBoxEntity;
 }
 
-class FileBoxEntity : public QWidget
+class FileBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit FileBoxEntity(QWidget *parent = nullptr);
+    explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
     ~FileBoxEntity();
+    QString getCurrentPath();
 
 private:
     void setCurrentState(const QString&);

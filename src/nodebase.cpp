@@ -125,7 +125,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
     return nullptr;
 }
 
-NodeProperties* NodeBase::getPropertiesView()
+NodeProperties* NodeBase::getProperties()
 {
     return propertiesView;
 }

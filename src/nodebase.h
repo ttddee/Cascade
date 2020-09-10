@@ -30,7 +30,9 @@ public:
     void setIsViewed(const bool b);
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
-    NodeProperties* getPropertiesView();
+    NodeProperties* getProperties();
+
+    const NodeType nodeType;
 
 private:
     void setUpNode(const NodeType nodeType);
@@ -45,7 +47,6 @@ private:
     void paintEvent(QPaintEvent*) override;
 
     Ui::NodeBase *ui;
-    const NodeType nodeType;
     const NodeGraph* nodeGraph;
     QPoint inAnchorPos;
     QPoint outAnchorPos;

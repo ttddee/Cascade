@@ -9,6 +9,7 @@
 #include "nodegraphcontextmenu.h"
 #include "connection.h"
 #include "windowmanager.h"
+#include "rendermanager.h"
 
 using namespace Cascade;
 
@@ -42,6 +43,7 @@ private:
 
     QGraphicsScene* scene;
     WindowManager* wManager;
+    RenderManager* rManager;
     const int viewWidth = 60000;
     const int viewHeight = 60000;
     std::vector<NodeBase*> nodes;

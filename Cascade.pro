@@ -33,6 +33,7 @@ SOURCES += \
     src/nodeproperties.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
+    src/uientity.cpp \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp \
@@ -52,6 +53,7 @@ HEADERS += \
     src/nodeproperties.h \
     src/propertiesview.h \
     src/rendermanager.h \
+    src/uientity.h \
     src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h \

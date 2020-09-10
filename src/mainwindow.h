@@ -23,5 +23,8 @@ private:
     WindowManager* windowManager;
     RenderManager* renderManager;
 
+public slots:
+    void handleRendererHasBeenCreated();
+
 };
 #endif // MAINWINDOW_H

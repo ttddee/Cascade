@@ -1,10 +1,12 @@
 #include "fileboxentity.h"
 #include "ui_fileboxentity.h"
 
+#include <iostream>
+
 #include <QFileDialog>
 
-FileBoxEntity::FileBoxEntity(QWidget *parent)
-    : QWidget(parent),
+FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
+    : UiEntity(et, parent),
     ui(new Ui::FileBoxEntity)
 {
     ui->setupUi(this);
@@ -18,6 +20,16 @@ FileBoxEntity::FileBoxEntity(QWidget *parent)
     //slist.append(QString("TEST"));
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
+    ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+}
+
+QString FileBoxEntity::getCurrentPath()
+{
+    auto index = ui->fileListView->currentIndex();
+
+    QString itemText = index.data().toString();
+
+    return itemText;
 }
 
 void FileBoxEntity::handleLoadButtonClicked()
