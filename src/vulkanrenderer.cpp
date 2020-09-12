@@ -591,7 +591,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
         return false;
     }
 
-    texSize = cpuImage.size();
+    loadImageSize = cpuImage.size();
 
     return true;
 }
@@ -868,7 +868,7 @@ void VulkanRenderer::createComputeCommandBuffer()
 
     VkCommandBuffer cb = compute.commandBufferImageLoad;
 
-    // Make the barriers for the resources
+    // Create barriers for the resources
     VkImageMemoryBarrier barrier = {};
     memset(&barrier, 0, sizeof(barrier));
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -905,8 +905,8 @@ void VulkanRenderer::createComputeCommandBuffer()
     copyInfo.srcSubresource.layerCount  = 1;
     copyInfo.dstSubresource.aspectMask  = VK_IMAGE_ASPECT_COLOR_BIT;
     copyInfo.dstSubresource.layerCount  = 1;
-    copyInfo.extent.width               = texSize.width();
-    copyInfo.extent.height              = texSize.height();
+    copyInfo.extent.width               = loadImageSize.width();
+    copyInfo.extent.height              = loadImageSize.height();
     copyInfo.extent.depth               = 1;
     devFuncs->vkCmdCopyImage(cb, loadImageStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                       imageFromDisk->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
@@ -1327,8 +1327,6 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 
             window->requestUpdate();
         }
-
-
     }
     else
     {
@@ -1367,10 +1365,25 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 
         window->requestUpdate();
     }
-
-
     node->cachedImage = std::move(computeRenderTarget);
 }
+
+//void VulkanRenderer::displayNode(NodeBase* node)
+//{
+//    std::cout << "swapchain image index: " << window->currentSwapChainImageIndex() << std::endl;
+
+//    int idx = abs(window->currentSwapChainImageIndex() - 1);
+
+//    devFuncs->vkCmdBlitImage(
+//                window->currentCommandBuffer(),
+//                node->cachedImage->getImage(),
+//                VK_IMAGE_LAYOUT_GENERAL,
+//                window->swapChainImage(idx),
+//                VK_IMAGE_LAYOUT_GENERAL,
+//                0,
+//                nullptr,
+//                VK_FILTER_LINEAR);
+//}
 
 std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
 {

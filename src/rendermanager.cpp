@@ -25,6 +25,7 @@ void RenderManager::handleViewedNodeHasChanged(NodeBase* node)
 {
     std::cout << "viewedChanged" << std::endl;
     renderNodes(node);
+
 }
 
 void RenderManager::renderNodes(NodeBase *node)
@@ -49,5 +50,7 @@ void RenderManager::renderNode(NodeBase *node)
             inputImage = node->getUpstreamNode()->cachedImage;
         }
         renderer->processNode(node, *inputImage);
+
+        node->needsUpdate = false;
     }
 }

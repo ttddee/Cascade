@@ -34,6 +34,7 @@ public:
     QString getGpuName();
 
     void processNode(NodeBase* node, CsImage& inputImage);
+    //void displayNode(NodeBase* node);
 
 private:
     // Setup
@@ -116,7 +117,7 @@ private:
 
     bool texStagingPending = false;
 
-    QSize texSize;
+    QSize loadImageSize;
 
     QSize currentRenderSize;
 
@@ -147,7 +148,7 @@ private:
     VkPipelineLayout                computePipelineLayout      = VK_NULL_HANDLE;
     VkPipeline                      computePipeline            = VK_NULL_HANDLE;
     VkDescriptorSetLayout           computeDescriptorSetLayout = VK_NULL_HANDLE;
-    VkDescriptorSet                 computeDescriptorSet;
+    VkDescriptorSet                 computeDescriptorSet       = VK_NULL_HANDLE;
 
     VkDeviceMemory                  computeRenderTargetMemory  = VK_NULL_HANDLE;
     std::unique_ptr<CsImage>        computeRenderTarget        = nullptr;
