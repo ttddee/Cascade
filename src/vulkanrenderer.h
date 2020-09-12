@@ -81,9 +81,10 @@ private:
 
     void createComputeDescriptors();
     void updateComputeDescriptors();
+    void updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage);
     void createComputeCommandBuffer();
     void createComputePipeline();
-    void recordComputeCommandBuffer();
+    //void recordComputeCommandBuffer();
     void recordComputeCommandBuffer(
             CsImage& inputImage,
             CsImage& outputImage,
@@ -116,12 +117,12 @@ private:
     VkSampler sampler = VK_NULL_HANDLE;
 
     VkFormat texFormat;
-    VkImage texImage = VK_NULL_HANDLE;
+    //VkImage texImage = VK_NULL_HANDLE;
     VkDeviceMemory texMem = VK_NULL_HANDLE;
 
     bool texLayoutPending = false;
 
-    VkImageView texView = VK_NULL_HANDLE;
+    //VkImageView texView = VK_NULL_HANDLE;
     VkImage texStaging = VK_NULL_HANDLE;
     VkDeviceMemory texStagingMem = VK_NULL_HANDLE;
 
@@ -146,26 +147,27 @@ private:
     // Compute resources
     struct Compute
     {
-        VkQueue             queue;                // Separate queue for compute commands (queue family may differ from the one used for graphics)
-        VkCommandPool       commandPool;          // Use a separate command pool (queue family may differ from the one used for graphics)
-        VkCommandBuffer     commandBuffer;        // Command buffer storing the dispatch commands and barriers
-        VkCommandBuffer     commandBufferInit;    // Command buffer used only for initial initialization and transfering data accross the pci bus
-        VkFence             fence;                // Synchronization fence to avoid rewriting compute CB if still in use
-        uint32_t            queueFamilyIndex;     // Family index of the graphics queue, used for barriers
+        VkQueue                     queue;                // Separate queue for compute commands (queue family may differ from the one used for graphics)
+        VkCommandPool               commandPool;          // Use a separate command pool (queue family may differ from the one used for graphics)
+        VkCommandBuffer             commandBuffer;        // Command buffer storing the dispatch commands and barriers
+        VkCommandBuffer             commandBufferInit;    // Command buffer used only for initial initialization and transfering data accross the pci bus
+        VkFence                     fence;                // Synchronization fence to avoid rewriting compute CB if still in use
+        uint32_t                    queueFamilyIndex;     // Family index of the graphics queue, used for barriers
     };
 
-    Compute                 compute;
-    VkPipelineLayout        computePipelineLayout      = VK_NULL_HANDLE;
-    VkPipeline              computePipeline            = VK_NULL_HANDLE;
-    VkDescriptorSetLayout   computeDescriptorSetLayout = VK_NULL_HANDLE;
-    VkDescriptorSet         computeDescriptorSet;
+    Compute                         compute;
+    VkPipelineLayout                computePipelineLayout      = VK_NULL_HANDLE;
+    VkPipeline                      computePipeline            = VK_NULL_HANDLE;
+    VkDescriptorSetLayout           computeDescriptorSetLayout = VK_NULL_HANDLE;
+    VkDescriptorSet                 computeDescriptorSet;
 
-    VkDeviceMemory          computeRenderTargetMemory  = VK_NULL_HANDLE;
-    std::unique_ptr<CsImage> computeRenderTarget       = nullptr;
+    VkDeviceMemory                  computeRenderTargetMemory  = VK_NULL_HANDLE;
+    std::unique_ptr<CsImage>        computeRenderTarget        = nullptr;
+    std::unique_ptr<CsImage>        imageFromDisk              = nullptr;
     //VkImageView             computeRenderTargetView    = VK_NULL_HANDLE;
 
-    QMap<NodeType, VkShaderModule> shaders;
-    QMap<NodeType, VkPipeline> pipelines;
+    QMap<NodeType, VkShaderModule>  shaders;
+    QMap<NodeType, VkPipeline>      pipelines;
 
 };
 

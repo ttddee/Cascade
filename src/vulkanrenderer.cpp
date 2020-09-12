@@ -62,17 +62,18 @@ void VulkanRenderer::initResources()
     //createQueryPool();
     createComputeDescriptors();
     createComputePipelineLayout();
-    createComputePipeline();
-    createComputeQueue();
-    createComputeCommandPool();
-    createComputeCommandBuffer();
+    //createComputePipeline(); // TODO: This should be replaced
 
     // Load all the shaders we need
     loadShadersFromDisk();
     // Create a pipeline for each shader
     createComputePipelines();
 
-    recordComputeCommandBuffer();
+    createComputeQueue();
+    createComputeCommandPool();
+    createComputeCommandBuffer();
+
+    recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
 
     emit window->rendererHasBeenCreated();
 }
@@ -415,6 +416,8 @@ void VulkanRenderer::createComputePipelines()
 {
     for (int i = 0; i != NODE_TYPE_MAX; i++)
     {
+        std::cout << "Create pipeline" << std::endl;
+
         NodeType nodeType = static_cast<NodeType>(i);
 
         pipelines[nodeType] = createComputePipeline(shaders[nodeType]);
@@ -517,6 +520,10 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
 
     updateVertexData(cpuImage.width(), cpuImage.height());
 
+    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
+                                                 cpuImage.width(),
+                                                 cpuImage.height()));
+
     // Convert to byte ordered RGBA8. Use premultiplied alpha, see pColorBlendState in the pipeline.
     cpuImage = cpuImage.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
 
@@ -554,7 +561,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
                                 window->hostVisibleMemoryIndex()))
             return false;
 
-        if (!createTextureImage(cpuImage.size(), &texImage, &texMem,
+        if (!createTextureImage(cpuImage.size(), &imageFromDisk->getImage(), &texMem,
                                 VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
                                 window->deviceLocalMemoryIndex()))
             return false;
@@ -568,7 +575,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     VkImageViewCreateInfo viewInfo;
     memset(&viewInfo, 0, sizeof(viewInfo));
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = texImage;
+    viewInfo.image = imageFromDisk->getImage();
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
     viewInfo.format = texFormat;
     viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
@@ -578,7 +585,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
     viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
 
-    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &texView);
+    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
     if (err != VK_SUCCESS) {
         qWarning("Failed to create image view for texture: %d", err);
         return false;
@@ -685,7 +692,65 @@ void VulkanRenderer::updateComputeDescriptors()
         destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
 
         VkDescriptorImageInfo sourceInfo      = { };
-        sourceInfo.imageView                  = texView;
+        sourceInfo.imageView                  = imageFromDisk->getImageView();
+        sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkWriteDescriptorSet descWrite[2]= {};
+
+        descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[0].dstSet                    = computeDescriptorSet;
+        descWrite[0].dstBinding                = 0;
+        descWrite[0].descriptorCount           = 1;
+        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[0].pImageInfo                = &sourceInfo;
+
+        descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[1].dstSet                    = computeDescriptorSet;
+        descWrite[1].dstBinding                = 1;
+        descWrite[1].descriptorCount           = 1;
+        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[1].pImageInfo                = &destinationInfo;
+        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+    }
+}
+
+void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage)
+{
+    for (int i = 0; i < concurrentFrameCount; ++i)
+    {
+        VkWriteDescriptorSet descWrite[2];
+        memset(descWrite, 0, sizeof(descWrite));
+        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[0].dstSet = descSet[i];
+        descWrite[0].dstBinding = 0;
+        descWrite[0].descriptorCount = 1;
+        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descWrite[0].pBufferInfo = &uniformBufInfo[i];
+
+        VkDescriptorImageInfo descImageInfo = {
+            sampler,
+            outputImage.getImageView(),
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+        };
+
+        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[1].dstSet = descSet[i];
+        descWrite[1].dstBinding = 1;
+        descWrite[1].descriptorCount = 1;
+        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descWrite[1].pImageInfo = &descImageInfo;
+
+        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+    }
+
+    {
+
+        VkDescriptorImageInfo destinationInfo = { };
+        destinationInfo.imageView             = computeRenderTarget->getImageView();
+        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkDescriptorImageInfo sourceInfo      = { };
+        sourceInfo.imageView                  = inputImage.getImageView();
         sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
 
         VkWriteDescriptorSet descWrite[2]= {};
@@ -772,13 +837,13 @@ VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderMod
     pipelineInfo.stage  = computeStage;
     pipelineInfo.layout = computePipelineLayout;
 
-    VkPipeline pl;
+    VkPipeline pl = VK_NULL_HANDLE;
 
     VkResult err = devFuncs->vkCreateComputePipelines(device, pipelineCache, 1, &pipelineInfo, nullptr, &pl);
     if (err != VK_SUCCESS)
         qFatal("Failed to create compute pipeline: %d", err);
 
-    return pipeline;
+    return pl;
 }
 
 void VulkanRenderer::createComputeQueue()
@@ -917,7 +982,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     barrier.newLayout       = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
     barrier.srcAccessMask   = 0;
     barrier.dstAccessMask   = VK_ACCESS_TRANSFER_WRITE_BIT;
-    barrier.image           = texImage;
+    barrier.image           = imageFromDisk->getImage();
 
     devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -935,14 +1000,14 @@ void VulkanRenderer::createComputeCommandBuffer()
     copyInfo.extent.height              = texSize.height();
     copyInfo.extent.depth               = 1;
     devFuncs->vkCmdCopyImage(cb, texStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                      texImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
+                      imageFromDisk->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
 
     {
         barrier.oldLayout     = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
         barrier.newLayout     = VK_IMAGE_LAYOUT_GENERAL;
         barrier.srcAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
         barrier.dstAccessMask = VK_ACCESS_SHADER_READ_BIT;
-        barrier.image         = texImage;
+        barrier.image         = imageFromDisk->getImage();
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -963,7 +1028,7 @@ void VulkanRenderer::createComputeCommandBuffer()
                                 1, &barrier);
     }
 
-    devFuncs->vkCmdBindPipeline(compute.commandBufferInit, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+    devFuncs->vkCmdBindPipeline(compute.commandBufferInit, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[NODE_TYPE_READ]);
     devFuncs->vkCmdBindDescriptorSets(compute.commandBufferInit, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
     devFuncs->vkCmdDispatch(compute.commandBufferInit, cpuImage.width() / 16, cpuImage.height() / 16, 1);
 
@@ -979,7 +1044,7 @@ void VulkanRenderer::createComputeCommandBuffer()
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = texImage;
+        barrier[0].image           = imageFromDisk->getImage();
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1113,98 +1178,99 @@ void VulkanRenderer::initSwapChainResources()
     projection.translate(0, 0, -4);
 }
 
-void VulkanRenderer::recordComputeCommandBuffer()
-{
-    // Records the compute command buffer for using the texture image
-    // Needs the right render target
+//void VulkanRenderer::recordComputeCommandBuffer()
+//{
+//    // Records the compute command buffer for using the texture image
+//    // Needs the right render target
 
-    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
-    devFuncs->vkQueueWaitIdle(compute.queue);
+//    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
+//    devFuncs->vkQueueWaitIdle(compute.queue);
 
-    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
-    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+//    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    VkResult err = devFuncs->vkBeginCommandBuffer(compute.commandBuffer, &cmdBufferBeginInfo);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to begin command buffer: %d", err);
+//    VkResult err = devFuncs->vkBeginCommandBuffer(compute.commandBuffer, &cmdBufferBeginInfo);
+//    if (err != VK_SUCCESS)
+//        qFatal("Failed to begin command buffer: %d", err);
 
-     VkCommandBuffer cb = compute.commandBuffer;
+//     VkCommandBuffer cb = compute.commandBuffer;
 
-     {
-         //Make the barriers for the resources
-        VkImageMemoryBarrier barrier[2] = {};
+//     {
+//         //Make the barriers for the resources
+//        VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = texImage;
+//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = imageFromDisk->getImage();
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = computeRenderTarget->getImage();
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = computeRenderTarget->getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0, 0, nullptr, 0, nullptr,
-                                2, &barrier[0]);
-     }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                                0, 0, nullptr, 0, nullptr,
+//                                2, &barrier[0]);
+//     }
 
-    devFuncs->vkCmdBindPipeline(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-    devFuncs->vkCmdBindDescriptorSets(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
-    devFuncs->vkCmdDispatch(compute.commandBuffer, cpuImage.width() / 16, cpuImage.height() / 16, 1);
+//    devFuncs->vkCmdBindPipeline(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
+//    devFuncs->vkCmdBindDescriptorSets(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
+//    devFuncs->vkCmdDispatch(compute.commandBuffer, cpuImage.width() / 16, cpuImage.height() / 16, 1);
 
-    {
-       //Make the barriers for the resources
-       VkImageMemoryBarrier barrier[2] = {};
+//    {
+//       //Make the barriers for the resources
+//       VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = texImage;
+//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = imageFromDisk->getImage();
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = computeRenderTarget->getImage();
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = computeRenderTarget->getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                            0, 0, nullptr, 0, nullptr,
-                            2, &barrier[0]);
-    }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                            0, 0, nullptr, 0, nullptr,
+//                            2, &barrier[0]);
+//    }
 
-    devFuncs->vkEndCommandBuffer(compute.commandBuffer);
-}
+//    devFuncs->vkEndCommandBuffer(compute.commandBuffer);
+//}
 
 void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
 {
     // Records the compute command buffer for using the texture image
     // Needs the right render target
 
-    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
+    // Flush the queue if we're rebuilding the command buffer
+    // after a pipeline change to ensure it's not currently in use
     devFuncs->vkQueueWaitIdle(compute.queue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1399,35 +1465,35 @@ void VulkanRenderer::submitComputeCommands()
 
 void VulkanRenderer::updateImage(const QString& path)
 {
-    imagePath = path;
+//    imagePath = path;
 
-    // Create texture
-    if (!createTextureFromFile(imagePath))
-        qFatal("Failed to create texture");
+//    // Create texture
+//    if (!createTextureFromFile(imagePath))
+//        qFatal("Failed to create texture");
 
-    // Updates the projection size
-    createVertexBuffer();
+//    // Updates the projection size
+//    createVertexBuffer();
 
-    // Create render target
-    if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
-        qFatal("Failed to create compute render target.");
+//    // Create render target
+//    if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
+//        qFatal("Failed to create compute render target.");
 
-    updateComputeDescriptors();
+//    updateComputeDescriptors();
 
-    createComputeCommandBuffer();
-    recordComputeCommandBuffer();
+//    createComputeCommandBuffer();
+//    recordComputeCommandBuffer();
 
-    window->requestUpdate();
+//    window->requestUpdate();
 }
 
 void VulkanRenderer::updateShader(const ShaderCode& code)
 {
-    shaderCode = code;
+//    shaderCode = code;
 
-    createComputePipeline();
-    recordComputeCommandBuffer();
+//    createComputePipeline();
+//    recordComputeCommandBuffer();
 
-    window->requestUpdate();
+//    window->requestUpdate();
 }
 
 void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
@@ -1470,7 +1536,7 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
             updateComputeDescriptors();
 
             createComputeCommandBuffer();
-            recordComputeCommandBuffer();
+            recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
 
             window->requestUpdate();
         }
@@ -1509,6 +1575,8 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
         std::cout << pipelines[node->nodeType] << std::endl;
 
         createComputeRenderTarget(inputImage.getWidth(), inputImage.getHeight());
+
+        updateComputeDescriptors(inputImage, *computeRenderTarget);
 
         // always:
         recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
@@ -1649,15 +1717,16 @@ void VulkanRenderer::releaseResources()
         texStagingMem = VK_NULL_HANDLE;
     }
 
-    if (texView) {
-        devFuncs->vkDestroyImageView(device, texView, nullptr);
-        texView = VK_NULL_HANDLE;
-    }
+    // TODO: Destroy these
+//    if (texView) {
+//        devFuncs->vkDestroyImageView(device, texView, nullptr);
+//        texView = VK_NULL_HANDLE;
+//    }
 
-    if (texImage) {
-        devFuncs->vkDestroyImage(device, texImage, nullptr);
-        texImage = VK_NULL_HANDLE;
-    }
+//    if (texImage) {
+//        devFuncs->vkDestroyImage(device, texImage, nullptr);
+//        texImage = VK_NULL_HANDLE;
+//    }
 
     if (texMem) {
         devFuncs->vkFreeMemory(device, texMem, nullptr);
