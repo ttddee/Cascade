@@ -1,6 +1,8 @@
 #ifndef NODEDEFINITIONS_H
 #define NODEDEFINITIONS_H
 
+#include <stdexcept>
+
 #include <QMap>
 
 namespace Cascade

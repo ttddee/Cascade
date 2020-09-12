@@ -17,7 +17,7 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
             this, &FileBoxEntity::handleDeleteButtonClicked);
 
     QStringList slist;
-    slist.append(QString("/home/till/Electric/images/bay.jpg")); // TODO: Temporary
+    slist.append(QString("../../images/bay.jpg")); // TODO: Temporary
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
