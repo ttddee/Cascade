@@ -493,7 +493,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = computeRenderTarget->getImage();
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = texFormat;
+    viewInfo.format = loadImageFormat;
     viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
     viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
     viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
@@ -528,13 +528,13 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     cpuImage = cpuImage.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
 
     // Set to sRGB
-    texFormat = VK_FORMAT_R8G8B8A8_SRGB;
+    loadImageFormat = VK_FORMAT_R8G8B8A8_SRGB;
 
     // Now we can either map and copy the image data directly, or have to go
     // through a staging buffer to copy and convert into the internal optimal
     // tiling format.
     VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), texFormat, &props);
+    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), loadImageFormat, &props);
     const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     if (!canSampleLinear && !canSampleOptimal) {
@@ -556,17 +556,17 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
 
 //        texLayoutPending = true;
     } else {
-        if (!createTextureImage(cpuImage.size(), &texStaging, &texStagingMem,
+        if (!createTextureImage(cpuImage.size(), &loadImageStaging, &loadImageStagingMem,
                                 VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
                                 window->hostVisibleMemoryIndex()))
             return false;
 
-        if (!createTextureImage(cpuImage.size(), &imageFromDisk->getImage(), &texMem,
+        if (!createTextureImage(cpuImage.size(), &imageFromDisk->getImage(), &loadImageMem,
                                 VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
                                 window->deviceLocalMemoryIndex()))
             return false;
 
-        if (!writeLinearImage(cpuImage, texStaging, texStagingMem))
+        if (!writeLinearImage(cpuImage, loadImageStaging, loadImageStagingMem))
             return false;
 
         texStagingPending = true;
@@ -577,7 +577,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = imageFromDisk->getImage();
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = texFormat;
+    viewInfo.format = loadImageFormat;
     viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
     viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
     viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
@@ -653,65 +653,7 @@ void VulkanRenderer::createComputeDescriptors()
         }
     }
 
-    updateComputeDescriptors();
-}
-
-void VulkanRenderer::updateComputeDescriptors()
-{
-    for (int i = 0; i < concurrentFrameCount; ++i)
-    {
-        VkWriteDescriptorSet descWrite[2];
-        memset(descWrite, 0, sizeof(descWrite));
-        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet = descSet[i];
-        descWrite[0].dstBinding = 0;
-        descWrite[0].descriptorCount = 1;
-        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descWrite[0].pBufferInfo = &uniformBufInfo[i];
-
-        VkDescriptorImageInfo descImageInfo = {
-            sampler,
-            computeRenderTarget->getImageView(),
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-        };
-
-        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet = descSet[i];
-        descWrite[1].dstBinding = 1;
-        descWrite[1].descriptorCount = 1;
-        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descWrite[1].pImageInfo = &descImageInfo;
-
-        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
-    }
-
-    {
-
-        VkDescriptorImageInfo destinationInfo = { };
-        destinationInfo.imageView             = computeRenderTarget->getImageView();
-        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
-
-        VkDescriptorImageInfo sourceInfo      = { };
-        sourceInfo.imageView                  = imageFromDisk->getImageView();
-        sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
-
-        VkWriteDescriptorSet descWrite[2]= {};
-
-        descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet                    = computeDescriptorSet;
-        descWrite[0].dstBinding                = 0;
-        descWrite[0].descriptorCount           = 1;
-        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
-        descWrite[0].pImageInfo                = &sourceInfo;
-
-        descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet                    = computeDescriptorSet;
-        descWrite[1].dstBinding                = 1;
-        descWrite[1].descriptorCount           = 1;
-        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
-        descWrite[1].pImageInfo                = &destinationInfo;
-        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
-    }
+    updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
 }
 
 void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage)
@@ -784,39 +726,6 @@ void VulkanRenderer::createComputePipelineLayout()
     VkResult err = devFuncs->vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &computePipelineLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create compute pipeline layout: %d", err);
-}
-
-void VulkanRenderer::createComputePipeline()
-{
-    // TODO: Not using this anymore
-
-
-    // Loads shader and creates a pipeline
-    // Shaders
-    VkShaderModule computeShaderModule = createShaderFromCode(shaderCode);
-
-    VkPipelineShaderStageCreateInfo computeStage = {
-
-            VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
-            nullptr,
-            0,
-            VK_SHADER_STAGE_COMPUTE_BIT,
-            computeShaderModule,
-            "main",
-            nullptr
-        };
-
-    VkComputePipelineCreateInfo pipelineInfo = {};
-    pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
-    pipelineInfo.stage  = computeStage;
-    pipelineInfo.layout = computePipelineLayout;
-
-    VkResult err = devFuncs->vkCreateComputePipelines(device, pipelineCache, 1, &pipelineInfo, nullptr, &computePipeline);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create compute pipeline: %d", err);
-
-    if (computeShaderModule)
-        devFuncs->vkDestroyShaderModule(device, computeShaderModule, nullptr);
 }
 
 VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderModule)
@@ -934,7 +843,7 @@ void VulkanRenderer::createComputeCommandBuffer()
         qFatal("Failed to allocate descriptor set: %d", err);
 
     compute.commandBuffer = buffers[0];
-    compute.commandBufferInit= buffers[1];
+    compute.commandBufferImageLoad= buffers[1];
 
     // Fence for compute CB sync
     VkFenceCreateInfo fenceCreateInfo = {};
@@ -952,12 +861,12 @@ void VulkanRenderer::createComputeCommandBuffer()
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    err = devFuncs->vkBeginCommandBuffer(compute.commandBufferInit, &cmdBufferBeginInfo);
+    err = devFuncs->vkBeginCommandBuffer(compute.commandBufferImageLoad, &cmdBufferBeginInfo);
 
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
 
-    VkCommandBuffer cb = compute.commandBufferInit;
+    VkCommandBuffer cb = compute.commandBufferImageLoad;
 
     // Make the barriers for the resources
     VkImageMemoryBarrier barrier = {};
@@ -970,7 +879,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     barrier.newLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
     barrier.srcAccessMask   = VK_ACCESS_HOST_WRITE_BIT;
     barrier.dstAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
-    barrier.image           = texStaging;
+    barrier.image           = loadImageStaging;
 
     devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_HOST_BIT,
@@ -999,7 +908,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     copyInfo.extent.width               = texSize.width();
     copyInfo.extent.height              = texSize.height();
     copyInfo.extent.depth               = 1;
-    devFuncs->vkCmdCopyImage(cb, texStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+    devFuncs->vkCmdCopyImage(cb, loadImageStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                       imageFromDisk->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
 
     {
@@ -1028,9 +937,9 @@ void VulkanRenderer::createComputeCommandBuffer()
                                 1, &barrier);
     }
 
-    devFuncs->vkCmdBindPipeline(compute.commandBufferInit, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[NODE_TYPE_READ]);
-    devFuncs->vkCmdBindDescriptorSets(compute.commandBufferInit, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
-    devFuncs->vkCmdDispatch(compute.commandBufferInit, cpuImage.width() / 16, cpuImage.height() / 16, 1);
+    devFuncs->vkCmdBindPipeline(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[NODE_TYPE_READ]);
+    devFuncs->vkCmdBindDescriptorSets(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
+    devFuncs->vkCmdDispatch(compute.commandBufferImageLoad, cpuImage.width() / 16, cpuImage.height() / 16, 1);
 
     {
        //Make the barriers for the resources
@@ -1063,7 +972,7 @@ void VulkanRenderer::createComputeCommandBuffer()
                             2, &barrier[0]);
     }
 
-    devFuncs->vkEndCommandBuffer(compute.commandBufferInit);
+    devFuncs->vkEndCommandBuffer(compute.commandBufferImageLoad);
 }
 
 
@@ -1074,7 +983,7 @@ bool VulkanRenderer::createTextureImage(const QSize &size, VkImage *image, VkDev
     memset(&imageInfo, 0, sizeof(imageInfo));
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.format = texFormat;
+    imageInfo.format = loadImageFormat;
     imageInfo.extent.width = size.width();
     imageInfo.extent.height = size.height();
     imageInfo.extent.depth = 1;
@@ -1177,92 +1086,6 @@ void VulkanRenderer::initSwapChainResources()
     projection.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
     projection.translate(0, 0, -4);
 }
-
-//void VulkanRenderer::recordComputeCommandBuffer()
-//{
-//    // Records the compute command buffer for using the texture image
-//    // Needs the right render target
-
-//    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
-//    devFuncs->vkQueueWaitIdle(compute.queue);
-
-//    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
-//    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-//    VkResult err = devFuncs->vkBeginCommandBuffer(compute.commandBuffer, &cmdBufferBeginInfo);
-//    if (err != VK_SUCCESS)
-//        qFatal("Failed to begin command buffer: %d", err);
-
-//     VkCommandBuffer cb = compute.commandBuffer;
-
-//     {
-//         //Make the barriers for the resources
-//        VkImageMemoryBarrier barrier[2] = {};
-
-//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
-
-//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-//        barrier[0].srcAccessMask   = 0;
-//        barrier[0].dstAccessMask   = 0;
-//        barrier[0].image           = imageFromDisk->getImage();
-
-//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-//        barrier[1].srcAccessMask   = 0;
-//        barrier[1].dstAccessMask   = 0;
-//        barrier[1].image           = computeRenderTarget->getImage();
-
-//        devFuncs->vkCmdPipelineBarrier(cb,
-//                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-//                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-//                                0, 0, nullptr, 0, nullptr,
-//                                2, &barrier[0]);
-//     }
-
-//    devFuncs->vkCmdBindPipeline(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipeline);
-//    devFuncs->vkCmdBindDescriptorSets(compute.commandBuffer, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
-//    devFuncs->vkCmdDispatch(compute.commandBuffer, cpuImage.width() / 16, cpuImage.height() / 16, 1);
-
-//    {
-//       //Make the barriers for the resources
-//       VkImageMemoryBarrier barrier[2] = {};
-
-//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
-
-//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//        barrier[0].srcAccessMask   = 0;
-//        barrier[0].dstAccessMask   = 0;
-//        barrier[0].image           = imageFromDisk->getImage();
-
-//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-//        barrier[1].srcAccessMask   = 0;
-//        barrier[1].dstAccessMask   = 0;
-//        barrier[1].image           = computeRenderTarget->getImage();
-
-//        devFuncs->vkCmdPipelineBarrier(cb,
-//                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-//                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-//                            0, 0, nullptr, 0, nullptr,
-//                            2, &barrier[0]);
-//    }
-
-//    devFuncs->vkEndCommandBuffer(compute.commandBuffer);
-//}
 
 void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
 {
@@ -1450,7 +1273,7 @@ void VulkanRenderer::submitComputeCommands()
         VkSubmitInfo computeSubmitInfo {};
         computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         computeSubmitInfo.commandBufferCount = 1;
-        computeSubmitInfo.pCommandBuffers = &compute.commandBufferInit;
+        computeSubmitInfo.pCommandBuffers = &compute.commandBufferImageLoad;
         devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
     }
     else
@@ -1461,39 +1284,6 @@ void VulkanRenderer::submitComputeCommands()
         computeSubmitInfo.pCommandBuffers = &compute.commandBuffer;
         devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
     }
-}
-
-void VulkanRenderer::updateImage(const QString& path)
-{
-//    imagePath = path;
-
-//    // Create texture
-//    if (!createTextureFromFile(imagePath))
-//        qFatal("Failed to create texture");
-
-//    // Updates the projection size
-//    createVertexBuffer();
-
-//    // Create render target
-//    if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
-//        qFatal("Failed to create compute render target.");
-
-//    updateComputeDescriptors();
-
-//    createComputeCommandBuffer();
-//    recordComputeCommandBuffer();
-
-//    window->requestUpdate();
-}
-
-void VulkanRenderer::updateShader(const ShaderCode& code)
-{
-//    shaderCode = code;
-
-//    createComputePipeline();
-//    recordComputeCommandBuffer();
-
-//    window->requestUpdate();
 }
 
 void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
@@ -1533,7 +1323,7 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
             if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
                 qFatal("Failed to create compute render target.");
 
-            updateComputeDescriptors();
+            updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
 
             createComputeCommandBuffer();
             recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
@@ -1603,58 +1393,6 @@ std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
     return out;
 }
 
-VkShaderModule VulkanRenderer::createShaderFromCode(const ShaderCode& code)
-{
-    // TODO: Refactor this!
-    // If this receives empty shader code we go ahead and read the NOOP shader from disk and continue rendering.
-    // Pretty bad, needs to be changed.
-
-    if (shaderCode.size() == 0 || window->getShowOriginal())
-    {
-        QFile file(":/shaders/noop_comp.spv");
-        if (!file.open(QIODevice::ReadOnly)) {
-            qWarning("Failed to read shader.");
-            return VK_NULL_HANDLE;
-        }
-        QByteArray blob = file.readAll();
-        file.close();
-
-        VkShaderModuleCreateInfo shaderInfo;
-        memset(&shaderInfo, 0, sizeof(shaderInfo));
-        shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-        shaderInfo.codeSize = blob.size();
-        shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
-        VkShaderModule shaderModule;
-        VkResult err = devFuncs->vkCreateShaderModule(window->device(), &shaderInfo, nullptr, &shaderModule);
-        if (err != VK_SUCCESS) {
-            qWarning("Failed to create shader module: %d", err);
-            return VK_NULL_HANDLE;
-        }
-
-        return shaderModule;
-    }
-    else
-    {
-        auto codeChar = uintVecToCharVec(code); // TODO: Is this necessary?
-
-        QByteArray codeArray = QByteArray(reinterpret_cast<const char*>(codeChar.data()), codeChar.size());
-
-        VkShaderModuleCreateInfo shaderInfo;
-        memset(&shaderInfo, 0, sizeof(shaderInfo));
-        shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-        shaderInfo.codeSize = codeArray.size();
-        shaderInfo.pCode = reinterpret_cast<const uint32_t *>(codeArray.constData()); //reinterpret_cast<const uint32_t *>(code.data());
-        VkShaderModule shaderModule;
-        VkResult err = devFuncs->vkCreateShaderModule(window->device(), &shaderInfo, nullptr, &shaderModule);
-        if (err != VK_SUCCESS) {
-            qWarning("Failed to create shader module: %d", err);
-            return VK_NULL_HANDLE;
-        }
-
-        return shaderModule;
-    }
-}
-
 void VulkanRenderer::startNextFrame()
 {
     qDebug("startNextFrame");
@@ -1707,14 +1445,14 @@ void VulkanRenderer::releaseResources()
         sampler = VK_NULL_HANDLE;
     }
 
-    if (texStaging) {
-        devFuncs->vkDestroyImage(device, texStaging, nullptr);
-        texStaging = VK_NULL_HANDLE;
+    if (loadImageStaging) {
+        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
+        loadImageStaging = VK_NULL_HANDLE;
     }
 
-    if (texStagingMem) {
-        devFuncs->vkFreeMemory(device, texStagingMem, nullptr);
-        texStagingMem = VK_NULL_HANDLE;
+    if (loadImageStagingMem) {
+        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
+        loadImageStagingMem = VK_NULL_HANDLE;
     }
 
     // TODO: Destroy these
@@ -1728,9 +1466,9 @@ void VulkanRenderer::releaseResources()
 //        texImage = VK_NULL_HANDLE;
 //    }
 
-    if (texMem) {
-        devFuncs->vkFreeMemory(device, texMem, nullptr);
-        texMem = VK_NULL_HANDLE;
+    if (loadImageMem) {
+        devFuncs->vkFreeMemory(device, loadImageMem, nullptr);
+        loadImageMem = VK_NULL_HANDLE;
     }
 
     if (pipeline) {
@@ -1808,7 +1546,7 @@ void VulkanRenderer::releaseResources()
         VkCommandBuffer buffers[2]=
         {
             compute.commandBuffer,
-            compute.commandBufferInit,
+            compute.commandBufferImageLoad,
         };
 
         devFuncs->vkFreeCommandBuffers(device, compute.commandPool, 2, &buffers[0]);

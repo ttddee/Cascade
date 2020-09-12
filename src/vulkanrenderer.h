@@ -6,7 +6,6 @@
 #include <QVulkanWindow>
 #include <QImage>
 
-#include "globals.h"
 #include "nodedefinitions.h"
 #include "csimage.h"
 #include "nodebase.h"
@@ -28,9 +27,6 @@ public:
     void releaseResources() override;
 
     void startNextFrame() override;
-
-    void updateImage(const QString& path);
-    void updateShader(const ShaderCode& code);
 
     void translate(float dx, float dy);
     void scale(float s);
@@ -75,16 +71,12 @@ private:
     // RECURRING
     // Load shader
     VkShaderModule createShaderFromFile(const QString &name);
-    VkShaderModule createShaderFromCode(const ShaderCode& code);
 
     bool createComputeRenderTarget( uint32_t width, uint32_t height);
 
     void createComputeDescriptors();
-    void updateComputeDescriptors();
     void updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage);
     void createComputeCommandBuffer();
-    void createComputePipeline();
-    //void recordComputeCommandBuffer();
     void recordComputeCommandBuffer(
             CsImage& inputImage,
             CsImage& outputImage,
@@ -98,8 +90,6 @@ private:
     void createRenderPass();
 
     void updateVertexData(int, int);
-
-    ShaderCode shaderCode;
 
     VkDeviceMemory bufMem = VK_NULL_HANDLE;
     VkBuffer buf = VK_NULL_HANDLE;
@@ -116,15 +106,13 @@ private:
 
     VkSampler sampler = VK_NULL_HANDLE;
 
-    VkFormat texFormat;
-    //VkImage texImage = VK_NULL_HANDLE;
-    VkDeviceMemory texMem = VK_NULL_HANDLE;
+    VkFormat loadImageFormat;
+    VkDeviceMemory loadImageMem = VK_NULL_HANDLE;
 
     bool texLayoutPending = false;
 
-    //VkImageView texView = VK_NULL_HANDLE;
-    VkImage texStaging = VK_NULL_HANDLE;
-    VkDeviceMemory texStagingMem = VK_NULL_HANDLE;
+    VkImage loadImageStaging = VK_NULL_HANDLE;
+    VkDeviceMemory loadImageStagingMem = VK_NULL_HANDLE;
 
     bool texStagingPending = false;
 
@@ -150,7 +138,7 @@ private:
         VkQueue                     queue;                // Separate queue for compute commands (queue family may differ from the one used for graphics)
         VkCommandPool               commandPool;          // Use a separate command pool (queue family may differ from the one used for graphics)
         VkCommandBuffer             commandBuffer;        // Command buffer storing the dispatch commands and barriers
-        VkCommandBuffer             commandBufferInit;    // Command buffer used only for initial initialization and transfering data accross the pci bus
+        VkCommandBuffer             commandBufferImageLoad;    // Command buffer used only for initial initialization and transfering data accross the pci bus
         VkFence                     fence;                // Synchronization fence to avoid rewriting compute CB if still in use
         uint32_t                    queueFamilyIndex;     // Family index of the graphics queue, used for barriers
     };
@@ -164,7 +152,6 @@ private:
     VkDeviceMemory                  computeRenderTargetMemory  = VK_NULL_HANDLE;
     std::unique_ptr<CsImage>        computeRenderTarget        = nullptr;
     std::unique_ptr<CsImage>        imageFromDisk              = nullptr;
-    //VkImageView             computeRenderTargetView    = VK_NULL_HANDLE;
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;

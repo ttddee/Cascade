@@ -44,7 +44,6 @@ HEADERS += \
     src/connection.h \
     src/csimage.h \
     src/fileboxentity.h \
-    src/globals.h \
     src/mainwindow.h \
     src/nodebase.h \
     src/nodedefinitions.h \
