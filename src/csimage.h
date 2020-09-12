@@ -11,6 +11,9 @@ public:
     VkImage& getImage();
     VkImageView& getImageView();
 
+    int getWidth() const;
+    int getHeight() const;
+
     ~CsImage();
 
 private:

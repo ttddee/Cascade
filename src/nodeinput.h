@@ -19,13 +19,13 @@ public:
     NodeBase* getUpstreamNode();
     bool hasConnection();
     void updateConnection();
-    //std::set<NodeBase*> getAllUpstreamNodes();
-    //shared_ptr<ImageBuf> getInputImage();
 
     NodeBase* parentNode = nullptr;
 
-private:
     Connection* inConnection = nullptr;
+
+private:
+
 
 signals:
     //void mouseRealeasedOnNodeIn(NodeInput*);

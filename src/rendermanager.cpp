@@ -24,34 +24,62 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 void RenderManager::handleViewedNodeHasChanged(NodeBase* node)
 {
     std::cout << "viewedChanged" << std::endl;
+    renderNodes(node);
+}
+
+void RenderManager::renderNodes(NodeBase *node)
+{
+    auto nodes = node->getAllUpstreamNodes();
+    foreach(NodeBase* n, nodes)
+    {
+        renderNode(n);
+        std::cout << "rendering node" << std::endl;
+    }
     renderNode(node);
 }
 
 void RenderManager::renderNode(NodeBase *node)
 {
-    auto props = node->getProperties();
+    //TODO: if needsupdate
 
-    if(node->nodeType == NODE_TYPE_READ)
+    //auto props = node->getProperties();
+
+//    if(node->nodeType == NODE_TYPE_READ)
+//    {
+//        std::cout << "This is a ReadNode" << std::endl;
+
+//        QString path;
+
+//        foreach(UiEntity* e, props->widgets)
+//        {
+//            if(e->elementType == UI_ELEMENT_TYPE_FILEBOX)
+//            {
+//                // TODO: This should be generalized
+//                auto box = static_cast<FileBoxEntity*>(e);
+//                path = box->getCurrentPath();
+
+//            }
+//        }
+//        if(path != "")
+//        {
+//            renderer->updateImage(path);
+//        }
+
+//    }
+//    else
+//    {
+
+    std::shared_ptr<CsImage> inputImage = nullptr;
+
+    if (node->getUpstreamNode())
     {
-        QString path;
+        std::cout << "This node has an upstream node." << std::endl;
+        inputImage = node->getUpstreamNode()->cachedImage;
 
-        foreach(UiEntity* e, props->widgets)
-        {
-            if(e->elementType == UI_ELEMENT_TYPE_FILEBOX)
-            {
-                auto box = static_cast<FileBoxEntity*>(e);
-                path = box->getCurrentPath();
-
-            }
-        }
-        std::cout << path.toStdString() << std::endl;
-        if(path != "")
-        {
-            renderer->updateImage(path);
-        }
-
+        std::cout << node->getUpstreamNode()->cachedImage << std::endl;
     }
 
 
-
+    renderer->processNode(node, *inputImage);
+   // }
 }

@@ -17,6 +17,16 @@ VkImageView& CsImage::getImageView()
     return view;
 }
 
+int CsImage::getWidth() const
+{
+    return width;
+}
+
+int CsImage::getHeight() const
+{
+    return height;
+}
+
 CsImage::~CsImage()
 {
     // TODO: destroy view and image here

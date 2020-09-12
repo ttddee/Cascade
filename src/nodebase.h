@@ -1,11 +1,14 @@
 #ifndef NODEBASE_H
 #define NODEBASE_H
 
+#include <set>
+
 #include <QWidget>
 #include <QPen>
 
 #include "nodedefinitions.h"
 #include "nodeproperties.h"
+#include "csimage.h"
 
 using namespace Cascade;
 
@@ -25,14 +28,18 @@ public:
     explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
     ~NodeBase();
 
+    const NodeType nodeType;
+
+    std::shared_ptr<CsImage> cachedImage = nullptr;;
+
     void setIsSelected(const bool b);
     void setIsActive(const bool b);
     void setIsViewed(const bool b);
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
     NodeProperties* getProperties();
-
-    const NodeType nodeType;
+    NodeBase* getUpstreamNode();
+    std::set<NodeBase*> getAllUpstreamNodes();
 
 private:
     void setUpNode(const NodeType nodeType);

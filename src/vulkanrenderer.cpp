@@ -10,6 +10,7 @@
 #include <QVulkanWindowRenderer>
 
 #include "vulkanwindow.h"
+#include "fileboxentity.h"
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -447,7 +448,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
         return false;
     }
 
-    //Get how much memory do we need and how it should aligned
+    //Get how much memory we need and how it should aligned
     VkMemoryRequirements memReq;
     devFuncs->vkGetImageMemoryRequirements(device, computeRenderTarget->getImage(), &memReq);
 
@@ -722,6 +723,9 @@ void VulkanRenderer::createComputePipelineLayout()
 
 void VulkanRenderer::createComputePipeline()
 {
+    // TODO: Not using this anymore
+
+
     // Loads shader and creates a pipeline
     // Shaders
     VkShaderModule computeShaderModule = createShaderFromCode(shaderCode);
@@ -851,7 +855,7 @@ void VulkanRenderer::createQueryPool()
 
 void VulkanRenderer::createComputeCommandBuffer()
 {
-    // Create a command buffer for compute operations
+    // Create the command buffer for loading an image from disk
     VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = compute.commandPool;
@@ -1195,6 +1199,102 @@ void VulkanRenderer::recordComputeCommandBuffer()
     devFuncs->vkEndCommandBuffer(compute.commandBuffer);
 }
 
+void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
+{
+    // Records the compute command buffer for using the texture image
+    // Needs the right render target
+
+    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
+    devFuncs->vkQueueWaitIdle(compute.queue);
+
+    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkResult err = devFuncs->vkBeginCommandBuffer(compute.commandBuffer, &cmdBufferBeginInfo);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to begin command buffer: %d", err);
+
+     VkCommandBuffer cb = compute.commandBuffer;
+
+     {
+         //Make the barriers for the resources
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED; // ???????
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                                0, 0, nullptr, 0, nullptr,
+                                2, &barrier[0]);
+     }
+
+    devFuncs->vkCmdBindPipeline(
+                compute.commandBuffer,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                pl);
+    devFuncs->vkCmdBindDescriptorSets(
+                compute.commandBuffer,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                computePipelineLayout, 0, 1,
+                &computeDescriptorSet, 0, 0);
+    devFuncs->vkCmdDispatch(
+                compute.commandBuffer,
+                inputImage.getWidth() / 16,
+                inputImage.getHeight() / 16, 1);
+
+    {
+       //Make the barriers for the resources
+       VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                            0, 0, nullptr, 0, nullptr,
+                            2, &barrier[0]);
+    }
+
+    devFuncs->vkEndCommandBuffer(compute.commandBuffer);
+}
+
 void VulkanRenderer::createRenderPass()
 {
     VkCommandBuffer cb = window->currentCommandBuffer();
@@ -1330,18 +1430,94 @@ void VulkanRenderer::updateShader(const ShaderCode& code)
     window->requestUpdate();
 }
 
-void VulkanRenderer::processNode(NodeType *nodeType, const VkImage &inputImage, VkImage &renderTarget)
+void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 {
-    // TODO: only if image size has changed:
-    // updateVertexData() //????????????????
-    // instead of ---> createVertexBuffer();
-    // createrendertarget
-    // updatecomputedescriptors
-    // createcomputecommandbuffer
-    ////////////////////////////////////////
 
-    // always:
-    // recordcomputecommandbuffer
+
+    if (node->nodeType == NODE_TYPE_READ)
+    {
+        auto props = node->getProperties();
+
+        std::cout << "This is a ReadNode" << std::endl;
+
+        QString path;
+
+        foreach(UiEntity* e, props->widgets)
+        {
+            if(e->elementType == UI_ELEMENT_TYPE_FILEBOX)
+            {
+                // TODO: This should be generalized and moved into NodeBase?
+                auto box = static_cast<FileBoxEntity*>(e);
+                path = box->getCurrentPath();
+
+            }
+        }
+        if(path != "")
+        {
+            imagePath = path;
+
+            // Create texture
+            if (!createTextureFromFile(imagePath))
+                qFatal("Failed to create texture");
+
+            // Updates the projection size
+            createVertexBuffer();
+
+            // Create render target
+            if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
+                qFatal("Failed to create compute render target.");
+
+            updateComputeDescriptors();
+
+            createComputeCommandBuffer();
+            recordComputeCommandBuffer();
+
+            window->requestUpdate();
+        }
+
+
+    }
+    else
+    {
+//        QSize imageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
+
+//        if (currentRenderSize != imageSize)
+//        {
+//            currentRenderSize = imageSize;
+//            // TODO: only if image size has changed:
+//            // updateVertexData() //????????????????
+//            // instead of ---> createVertexBuffer();
+//            updateVertexData(inputImage.getWidth(), inputImage.getHeight());
+
+//            createComputeRenderTarget(imageSize.width(), imageSize.height());
+
+//            updateComputeDescriptors();
+
+//            createComputeCommandBuffer();
+//        }
+
+        ////////////////////
+//        updateVertexData(inputImage.getWidth(), inputImage.getHeight());
+
+//        createComputeRenderTarget(imageSize.width(), imageSize.height());
+
+//        updateComputeDescriptors();
+
+//        createComputeCommandBuffer();
+        ///////////////////
+
+        std::cout << pipelines[node->nodeType] << std::endl;
+
+        createComputeRenderTarget(inputImage.getWidth(), inputImage.getHeight());
+
+        // always:
+        recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
+
+        window->requestUpdate();
+    }
+
+
+    node->cachedImage = std::move(computeRenderTarget);
 }
 
 std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)

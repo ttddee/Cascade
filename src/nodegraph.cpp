@@ -48,6 +48,11 @@ void NodeGraph::createNode(const NodeType type)
             wManager, &WindowManager::handleNodeDoubleClicked);
 }
 
+std::set<NodeBase*> NodeGraph::getAllUpstreamNodes(NodeBase *node)
+{
+    return node->getAllUpstreamNodes();
+}
+
 float NodeGraph::getViewScale() const
 {
     return viewScale;

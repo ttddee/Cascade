@@ -5,10 +5,15 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QFile>
+#include <QLoggingCategory>
+
+Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
+
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
     // Load font
     int fontId = QFontDatabase::addApplicationFont(":/fonts/SourceCodePro-Medium.ttf");

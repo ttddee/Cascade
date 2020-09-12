@@ -1,6 +1,8 @@
 #ifndef NODEGRAPH_H
 #define NODEGRAPH_H
 
+#include <set>
+
 #include <QObject>
 #include <QGraphicsView>
 
@@ -21,6 +23,7 @@ public:
     NodeGraph(QWidget* parent);
     void createNode(const NodeType type);
     float getViewScale() const;
+    std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;

@@ -9,6 +9,7 @@
 #include "globals.h"
 #include "nodedefinitions.h"
 #include "csimage.h"
+#include "nodebase.h"
 
 using namespace Cascade;
 
@@ -35,6 +36,8 @@ public:
     void scale(float s);
 
     QString getGpuName();
+
+    void processNode(NodeBase* node, CsImage& inputImage);
 
 private:
     // Setup
@@ -81,9 +84,13 @@ private:
     void createComputeCommandBuffer();
     void createComputePipeline();
     void recordComputeCommandBuffer();
+    void recordComputeCommandBuffer(
+            CsImage& inputImage,
+            CsImage& outputImage,
+            VkPipeline& pl);
 
     //////////////////////
-    void processNode(NodeType* nodeType, const VkImage& inputImage, VkImage& renderTarget);
+
 
     // Called in startNextFrame()
     void submitComputeCommands();
@@ -121,6 +128,8 @@ private:
     bool texStagingPending = false;
 
     QSize texSize;
+
+    QSize currentRenderSize;
 
     QImage cpuImage;
     QString imagePath = ":/images/empty.jpg";

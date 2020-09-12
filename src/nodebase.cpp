@@ -85,6 +85,28 @@ void NodeBase::setIsViewed(const bool b)
     isViewed = b;
 }
 
+NodeBase* NodeBase::getUpstreamNode()
+{
+    if(nodeInputs.size() > 0 && nodeInputs[0]->hasConnection())
+    {
+        return nodeInputs[0]->inConnection->sourceOutput->parentNode;
+    }
+    return nullptr;
+}
+
+std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
+{
+    std::set<NodeBase*> nodes;
+    if(auto n = getUpstreamNode())
+    {
+        auto add = n->getAllUpstreamNodes();
+        std::merge(nodes.begin(), nodes.end(),
+                   add.begin(), add.end(),
+                   std::inserter(nodes, nodes.end()));
+    }
+    return nodes;
+}
+
 void NodeBase::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);

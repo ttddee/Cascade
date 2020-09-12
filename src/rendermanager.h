@@ -21,6 +21,7 @@ public:
 
 private:
     RenderManager() {}
+    void renderNodes(NodeBase* node);
     void renderNode(NodeBase* node);
 
     VulkanRenderer* renderer;

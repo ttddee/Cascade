@@ -17,7 +17,7 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
             this, &FileBoxEntity::handleDeleteButtonClicked);
 
     QStringList slist;
-    //slist.append(QString("TEST"));
+    slist.append(QString("/home/till/Electric/images/bay.jpg")); // TODO: Temporary
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
@@ -48,6 +48,8 @@ void FileBoxEntity::handleLoadButtonClicked()
             fileListModel->insertRow(fileListModel->rowCount());
             QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
             fileListModel->setData(index, name);
+
+            ui->fileListView->setCurrentIndex(index);
         }
     }
 }
