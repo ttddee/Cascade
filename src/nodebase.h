@@ -41,6 +41,8 @@ public:
     NodeBase* getUpstreamNode();
     std::set<NodeBase*> getAllUpstreamNodes();
 
+    bool needsUpdate = true;
+
 private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);

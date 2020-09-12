@@ -9,7 +9,6 @@
 #include "nodeinput.h"
 #include "nodeoutput.h"
 
-
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
 {
@@ -154,10 +153,10 @@ void NodeGraph::destroyOpenConnection()
 
 void NodeGraph::establishConnection(NodeInput *nodeIn)
 {
-    nodeIn->addInConnection(openConnection);
     openConnection->targetInput = nodeIn;
     openConnection->sourceOutput->addConnection(openConnection);
     connections.push_back(openConnection);
+    nodeIn->addInConnection(openConnection);
     openConnection = nullptr;
 }
 

@@ -1,6 +1,8 @@
 #include "nodebase.h"
 #include "ui_nodebase.h"
 
+#include <iostream>
+
 #include <QPainter>
 #include <QMouseEvent>
 
@@ -10,8 +12,8 @@
 
 NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
     : QWidget(parent),
-      ui(new Ui::NodeBase),
       nodeType(type),
+      ui(new Ui::NodeBase),
       nodeGraph(graph)
 {
     ui->setupUi(this);
@@ -104,6 +106,8 @@ std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
                    add.begin(), add.end(),
                    std::inserter(nodes, nodes.end()));
     }
+    nodes.insert(this);
+    std::cout << "Found " << nodes.size() << " node(s)." << std::endl;
     return nodes;
 }
 

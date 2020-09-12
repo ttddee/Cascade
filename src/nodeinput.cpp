@@ -31,6 +31,7 @@ void NodeInput::updateConnection()
 void NodeInput::addInConnection(Connection* c)
 {
     inConnection = c;
+    updateConnection();
     //emit nodeInReceivedInConnection();
 }
 

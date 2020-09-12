@@ -13,12 +13,14 @@ class NodeInput : public QPushButton
 
 public:
     explicit NodeInput(QWidget *parent = nullptr);
+
     void addInConnection(Connection*);
     void removeInConnection();
-    void triggerMouseRelease();
-    NodeBase* getUpstreamNode();
-    bool hasConnection();
     void updateConnection();
+    bool hasConnection();
+
+    //void triggerMouseRelease();
+    NodeBase* getUpstreamNode();
 
     NodeBase* parentNode = nullptr;
 

@@ -32,54 +32,22 @@ void RenderManager::renderNodes(NodeBase *node)
     auto nodes = node->getAllUpstreamNodes();
     foreach(NodeBase* n, nodes)
     {
-        renderNode(n);
         std::cout << "rendering node" << std::endl;
+        renderNode(n);
     }
     renderNode(node);
 }
 
 void RenderManager::renderNode(NodeBase *node)
 {
-    //TODO: if needsupdate
-
-    //auto props = node->getProperties();
-
-//    if(node->nodeType == NODE_TYPE_READ)
-//    {
-//        std::cout << "This is a ReadNode" << std::endl;
-
-//        QString path;
-
-//        foreach(UiEntity* e, props->widgets)
-//        {
-//            if(e->elementType == UI_ELEMENT_TYPE_FILEBOX)
-//            {
-//                // TODO: This should be generalized
-//                auto box = static_cast<FileBoxEntity*>(e);
-//                path = box->getCurrentPath();
-
-//            }
-//        }
-//        if(path != "")
-//        {
-//            renderer->updateImage(path);
-//        }
-
-//    }
-//    else
-//    {
-
-    std::shared_ptr<CsImage> inputImage = nullptr;
-
-    if (node->getUpstreamNode())
+    if(node->needsUpdate)
     {
-        std::cout << "This node has an upstream node." << std::endl;
-        inputImage = node->getUpstreamNode()->cachedImage;
+        std::shared_ptr<CsImage> inputImage = nullptr;
 
-        std::cout << node->getUpstreamNode()->cachedImage << std::endl;
+        if (node->getUpstreamNode())
+        {
+            inputImage = node->getUpstreamNode()->cachedImage;
+        }
+        renderer->processNode(node, *inputImage);
     }
-
-
-    renderer->processNode(node, *inputImage);
-   // }
 }

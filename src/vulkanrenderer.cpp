@@ -1294,8 +1294,6 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
     {
         auto props = node->getProperties();
 
-        std::cout << "This is a ReadNode" << std::endl;
-
         QString path;
 
         foreach(UiEntity* e, props->widgets)
@@ -1305,7 +1303,6 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
                 // TODO: This should be generalized and moved into NodeBase?
                 auto box = static_cast<FileBoxEntity*>(e);
                 path = box->getCurrentPath();
-
             }
         }
         if(path != "")
@@ -1362,13 +1359,10 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 //        createComputeCommandBuffer();
         ///////////////////
 
-        std::cout << pipelines[node->nodeType] << std::endl;
-
         createComputeRenderTarget(inputImage.getWidth(), inputImage.getHeight());
 
         updateComputeDescriptors(inputImage, *computeRenderTarget);
 
-        // always:
         recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
 
         window->requestUpdate();
