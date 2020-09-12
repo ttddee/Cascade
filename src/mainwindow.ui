@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>800</width>
-    <height>630</height>
+    <height>678</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -15,6 +15,21 @@
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
     <item row="0" column="0">
      <widget class="QSplitter" name="splitter_2">
       <property name="orientation">
@@ -26,6 +41,9 @@
        </property>
        <widget class="QWidget" name="layoutWidget">
         <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>0</number>
+         </property>
          <item>
           <widget class="VulkanView" name="vulkanView" native="true">
            <property name="sizePolicy">
@@ -43,7 +61,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QWidget" name="viewStatusBar" native="true">
+          <widget class="ViewerStatusBar" name="viewerStatusBar" native="true">
            <property name="maximumSize">
             <size>
              <width>16777215</width>
@@ -87,7 +105,7 @@
      <x>0</x>
      <y>0</y>
      <width>800</width>
-     <height>18</height>
+     <height>25</height>
     </rect>
    </property>
   </widget>
@@ -109,6 +127,12 @@
    <class>PropertiesView</class>
    <extends>QWidget</extends>
    <header>src/propertiesview.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>ViewerStatusBar</class>
+   <extends>QWidget</extends>
+   <header>src/viewerstatusbar.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

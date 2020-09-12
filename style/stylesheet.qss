@@ -14,12 +14,22 @@ FGLight: #f1f1f1
 */
 
 QWidget {
-    background-color: #1d2024;
+    background-color: #181b1e;
     color: #f1f1f1;
     font: 14px "Source Code Pro";
+    border: 0px;
+    margin: 0px;
+    padding: 0px;
 }
 QWidget#NodeBase {
     background-color: #181b1e;
+}
+QWidget#ViewerStatusBar {
+
+}
+QWidget#VulkanView {
+    margin: 0px;
+    border: 0px;
 }
 
 QPlainTextEdit {
@@ -142,4 +152,21 @@ QLabel#folderLabel {
 }
 QLabel#fileNameLabel {
     color: #00b6dd;
+}
+
+QSplitter:handle {
+    background-color: #282d31;
+}
+
+QStatusBar {
+    background-color: #282d31;
+}
+
+QMenu {
+    background-color: #282d31;
+    font: 14px "Source Code Pro";
+    color: #f1f1f1;
+}
+QMenu::item:selected {
+    background-color: #626971;
 }

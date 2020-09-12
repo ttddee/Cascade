@@ -35,6 +35,7 @@ SOURCES += \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
     src/uientity.cpp \
+    src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     src/propertiesview.h \
     src/rendermanager.h \
     src/uientity.h \
+    src/viewerstatusbar.h \
     src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h \
@@ -63,7 +65,8 @@ HEADERS += \
 FORMS += \
     src/fileboxentity.ui \
     src/mainwindow.ui \
-    src/nodebase.ui
+    src/nodebase.ui \
+    src/viewerstatusbar.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin
