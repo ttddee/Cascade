@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/connection.cpp \
     src/csimage.cpp \
+    src/csslider.cpp \
     src/fileboxentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -32,8 +33,10 @@ SOURCES += \
     src/nodeinput.cpp \
     src/nodeoutput.cpp \
     src/nodeproperties.cpp \
+    src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
+    src/spinboxsliderentity.cpp \
     src/uientity.cpp \
     src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
@@ -44,6 +47,7 @@ SOURCES += \
 HEADERS += \
     src/connection.h \
     src/csimage.h \
+    src/csslider.h \
     src/fileboxentity.h \
     src/mainwindow.h \
     src/nodebase.h \
@@ -53,8 +57,10 @@ HEADERS += \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \
+    src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
+    src/spinboxsliderentity.h \
     src/uientity.h \
     src/viewerstatusbar.h \
     src/vulkanrenderer.h \
@@ -66,6 +72,8 @@ FORMS += \
     src/fileboxentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \
+    src/propertiesheading.ui \
+    src/spinboxsliderentity.ui \
     src/viewerstatusbar.ui
 
 # Default rules for deployment.

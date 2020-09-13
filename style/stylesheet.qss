@@ -32,6 +32,16 @@ VulkanView {
     border: 0px;
 }
 
+QListView {
+    background-color: #1d2024;
+    font: 14px "Open Sans";
+    color: #f1f1f1;
+    border: none;
+}
+QListView::item:selected {
+    background-color: #626971;
+}
+
 QPlainTextEdit {
     background-color: #282d31;
     color: #f1f1f1;
@@ -45,7 +55,7 @@ ControlsWidget {
 /* Horizontal and Vertical Lines */
 QFrame[frameShape="4"],
 QFrame[frameShape="5"] {
-    background-color: #9299a1;
+    background-color: #282d31;
 }
 
 QPushButton {
@@ -135,7 +145,7 @@ QLabel {
     color: #f1f1f1;
     font: 14px "Open Sans";
 }
-QLabel#PropertiesHeading {
+QLabel#propHeading {
     color: #f1f1f1;
     font: 14px "Open Sans";
     font-weight: bold;

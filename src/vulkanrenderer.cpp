@@ -1386,23 +1386,6 @@ void VulkanRenderer::displayProcessedNode(NodeBase *node)
     window->requestUpdate();
 }
 
-//void VulkanRenderer::displayNode(NodeBase* node)
-//{
-//    std::cout << "swapchain image index: " << window->currentSwapChainImageIndex() << std::endl;
-
-//    int idx = abs(window->currentSwapChainImageIndex() - 1);
-
-//    devFuncs->vkCmdBlitImage(
-//                window->currentCommandBuffer(),
-//                node->cachedImage->getImage(),
-//                VK_IMAGE_LAYOUT_GENERAL,
-//                window->swapChainImage(idx),
-//                VK_IMAGE_LAYOUT_GENERAL,
-//                0,
-//                nullptr,
-//                VK_FILTER_LINEAR);
-//}
-
 std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
 {
     std::vector<char> out;

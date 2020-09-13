@@ -3,6 +3,7 @@
 #include <QLabel>
 
 #include "fileboxentity.h"
+#include "propertiesheading.h"
 
 NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
     : QWidget(parent),
@@ -20,8 +21,8 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
         i.next();
         if (i.key() == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
         {
-            QLabel* l = new QLabel(i.value(), this);
-            layout->addWidget(l);
+            PropertiesHeading* heading = new PropertiesHeading(i.value(), this);
+            layout->addWidget(heading);
         }
         else if (i.key() == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
         {
