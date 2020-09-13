@@ -16,7 +16,7 @@ FGLight: #f1f1f1
 QWidget {
     background-color: #181b1e;
     color: #f1f1f1;
-    font: 14px "Source Code Pro";
+    font: 14px "Open Sans";
     border: 0px;
     margin: 0px;
     padding: 0px;
@@ -27,7 +27,7 @@ QWidget#NodeBase {
 QWidget#ViewerStatusBar {
 
 }
-QWidget#VulkanView {
+VulkanView {
     margin: 0px;
     border: 0px;
 }
@@ -53,7 +53,6 @@ QPushButton {
     color: #f1f1f1;
     border: none;
     border-radius: 3px;
-    font-weight: bold;
 }
 QPushButton:hover {
     background-color: #626971;
@@ -134,17 +133,17 @@ QPushButton#RGBOut:hover {
 
 QLabel {
     color: #f1f1f1;
-    font: 14px "Source Code Pro";
+    font: 14px "Open Sans";
 }
 QLabel#PropertiesHeading {
     color: #f1f1f1;
-    font: 14px "Source Code Pro";
+    font: 14px "Open Sans";
     font-weight: bold;
 }
 QLabel#NodeTitleLabel {
     color: #f1f1f1;
     background-color: none;
-    font: 14px "Source Code Pro";
+    font: 14px "Open Sans";
     font-weight: bold;
 }
 QLabel#folderLabel {
@@ -164,7 +163,7 @@ QStatusBar {
 
 QMenu {
     background-color: #282d31;
-    font: 14px "Source Code Pro";
+    font: 14px "Open Sans";
     color: #f1f1f1;
 }
 QMenu::item:selected {

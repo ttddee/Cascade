@@ -13,14 +13,20 @@
   <property name="minimumSize">
    <size>
     <width>1000</width>
-    <height>0</height>
+    <height>25</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>50</height>
+    <height>25</height>
    </size>
+  </property>
+  <property name="font">
+   <font>
+    <weight>50</weight>
+    <bold>false</bold>
+   </font>
   </property>
   <property name="windowTitle">
    <string>Form</string>
@@ -38,33 +44,46 @@
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="horizontalSpacing">
+   <property name="spacing">
     <number>0</number>
    </property>
-   <item row="0" column="6">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="0" column="3">
+    <widget class="QLabel" name="widthLabel">
+     <property name="text">
+      <string>1200</string>
      </property>
-     <property name="sizeHint" stdset="0">
+    </widget>
+   </item>
+   <item row="0" column="1">
+    <widget class="QPushButton" name="zoomResetButton">
+     <property name="minimumSize">
       <size>
-       <width>40</width>
+       <width>20</width>
        <height>20</height>
       </size>
      </property>
-    </spacer>
+     <property name="maximumSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>R</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="5">
+    <widget class="QLabel" name="heightLabel">
+     <property name="text">
+      <string>800</string>
+     </property>
+    </widget>
    </item>
    <item row="0" column="4">
     <widget class="QLabel" name="label_3">
      <property name="text">
       <string>   h: </string>
-     </property>
-    </widget>
-   </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string> | w: </string>
      </property>
     </widget>
    </item>
@@ -78,6 +97,12 @@
          <height>0</height>
         </size>
        </property>
+       <property name="font">
+        <font>
+         <weight>50</weight>
+         <bold>false</bold>
+        </font>
+       </property>
        <property name="text">
         <string>100</string>
        </property>
@@ -89,32 +114,31 @@
      <item>
       <widget class="QLabel" name="percentLabel">
        <property name="text">
-        <string> %</string>
+        <string> %  </string>
        </property>
       </widget>
      </item>
     </layout>
    </item>
-   <item row="0" column="3">
-    <widget class="QLabel" name="widthLabel">
+   <item row="0" column="2">
+    <widget class="QLabel" name="label_2">
      <property name="text">
-      <string>1200</string>
+      <string> | w: </string>
      </property>
     </widget>
    </item>
-   <item row="0" column="1">
-    <widget class="QLabel" name="label">
-     <property name="text">
-      <string> R </string>
+   <item row="0" column="6">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
-    </widget>
-   </item>
-   <item row="0" column="5">
-    <widget class="QLabel" name="heightLabel">
-     <property name="text">
-      <string>800</string>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
      </property>
-    </widget>
+    </spacer>
    </item>
   </layout>
  </widget>

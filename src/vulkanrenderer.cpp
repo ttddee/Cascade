@@ -62,10 +62,13 @@ void VulkanRenderer::initResources()
     //createQueryPool();
     createComputeDescriptors();
     createComputePipelineLayout();
-    //createComputePipeline(); // TODO: This should be replaced
 
     // Load all the shaders we need
     loadShadersFromDisk();
+    // Load Noop shader
+    noopShader = createShaderFromFile(":/shaders/noop_comp.spv");
+    // Create Noop pipeline
+    noopPipeline = createComputePipeline(noopShader);
     // Create a pipeline for each shader
     createComputePipelines();
 
@@ -1288,8 +1291,6 @@ void VulkanRenderer::submitComputeCommands()
 
 void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 {
-
-
     if (node->nodeType == NODE_TYPE_READ)
     {
         auto props = node->getProperties();
@@ -1366,6 +1367,23 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
         window->requestUpdate();
     }
     node->cachedImage = std::move(computeRenderTarget);
+}
+
+void VulkanRenderer::displayProcessedNode(NodeBase *node)
+{
+    // Should probably use something like cmdBlitImage
+    // instead of the hacky noop shader workaround
+    // for displaying a node that has already been rendered
+
+    CsImage& image = *node->cachedImage;
+
+    createComputeRenderTarget(image.getWidth(), image.getHeight());
+
+    updateComputeDescriptors(image, *computeRenderTarget);
+
+    recordComputeCommandBuffer(image, *computeRenderTarget, noopPipeline);
+
+    window->requestUpdate();
 }
 
 //void VulkanRenderer::displayNode(NodeBase* node)

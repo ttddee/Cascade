@@ -71,6 +71,11 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     }
 }
 
+bool NodeBase::getIsViewed() const
+{
+    return isViewed;
+}
+
 void NodeBase::setIsSelected(const bool b)
 {
     isSelected = b;

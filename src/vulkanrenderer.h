@@ -34,7 +34,7 @@ public:
     QString getGpuName();
 
     void processNode(NodeBase* node, CsImage& inputImage);
-    //void displayNode(NodeBase* node);
+    void displayProcessedNode(NodeBase* node);
 
 private:
     // Setup
@@ -123,6 +123,9 @@ private:
 
     QImage cpuImage;
     QString imagePath = ":/images/empty.jpg";
+
+    VkShaderModule noopShader;
+    VkPipeline noopPipeline;
 
     int concurrentFrameCount;
 

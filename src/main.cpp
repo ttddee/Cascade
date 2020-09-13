@@ -16,11 +16,11 @@ int main(int argc, char *argv[])
     QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
     // Load font
-    int fontId = QFontDatabase::addApplicationFont(":/fonts/SourceCodePro-Medium.ttf");
-    QFontDatabase::addApplicationFont(":/fonts/SourceCodePro-Bold.ttf");
+    int fontId = QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Regular.ttf");
+    QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Bold.ttf");
     if (fontId != -1)
     {
-        a.setFont(QFont("Source Code Pro"));
+        a.setFont(QFont("Open Sans"));
     }
     else
     {

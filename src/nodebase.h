@@ -36,6 +36,8 @@ public:
     void setIsActive(const bool b);
     void setIsViewed(const bool b);
 
+    bool getIsViewed() const;
+
     NodeInput* getNodeInputAtPosition(const QPoint pos);
     NodeProperties* getProperties();
     NodeBase* getUpstreamNode();
