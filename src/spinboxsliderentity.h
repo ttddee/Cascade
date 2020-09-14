@@ -19,7 +19,7 @@ public:
     void setMinMaxStepValue(int, int, int, int);
     void setMinMaxStepValue(double, double, double, double);
 
-    //void selfConnectToValueChanged(NodePropertiesBase*); // needs template
+    //void selfConnectToValueChanged(NodePropertiesBase*);
     QString returnValueAsString();
 
     auto value()

@@ -16,5 +16,6 @@
         <file>fonts/opensans/OpenSans-Regular.ttf</file>
         <file>fonts/opensans/OpenSans-SemiBold.ttf</file>
         <file>fonts/opensans/OpenSans-SemiBoldItalic.ttf</file>
+        <file>shaders/blur_test_comp.spv</file>
     </qresource>
 </RCC>

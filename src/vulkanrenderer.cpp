@@ -719,11 +719,18 @@ void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outp
 
 void VulkanRenderer::createComputePipelineLayout()
 {
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags                    = VK_SHADER_STAGE_COMPUTE_BIT;
+    pushConstantRange.offset                        = 0;
+    pushConstantRange.size                          = sizeof(pushConstants);
+
     //Now create the layout info
-    VkPipelineLayoutCreateInfo pipelineLayoutInfo = {};
-    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &computeDescriptorSetLayout;
+    VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
+    pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount               = 1;
+    pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayout;
+    pipelineLayoutInfo.pushConstantRangeCount       = 1;
+    pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
 
     //Create the layout, store it to share between shaders
     VkResult err = devFuncs->vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &computePipelineLayout);
@@ -1137,8 +1144,14 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
                                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
                                 0, 0, nullptr, 0, nullptr,
                                 2, &barrier[0]);
-     }
+    }
 
+    devFuncs->vkCmdPushConstants(
+                compute.commandBuffer,
+                computePipelineLayout,
+                VK_SHADER_STAGE_COMPUTE_BIT, 0,
+                sizeof(pushConstants),
+                pushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBuffer,
                 VK_PIPELINE_BIND_POINT_COMPUTE,

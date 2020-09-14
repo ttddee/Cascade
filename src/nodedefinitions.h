@@ -82,7 +82,7 @@ namespace Cascade
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Blur"},
             { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, ""}
         },
-        ":/shaders/blur_comp.spv"
+        ":/shaders/blur_test_comp.spv"
     };
 
     static NodeInitProperties getPropertiesForType(const NodeType t)

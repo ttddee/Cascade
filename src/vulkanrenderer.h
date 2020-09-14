@@ -134,7 +134,7 @@ private:
     float position_x  = 0.0f;
     float position_y  = 0.0f;
     float position_z  = 0.0f;
-    float scaleXY       = 1.0f;
+    float scaleXY     = 1.0f;
 
     // Compute resources
     struct Compute
@@ -159,6 +159,8 @@ private:
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;
+
+    std::array<float, 1> pushConstants = { 1.0f };
 
 };
 

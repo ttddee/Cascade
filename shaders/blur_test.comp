@@ -1,0 +1,40 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+	layout(offset = 0) float strength;
+} u_pushConstants;
+
+void main()
+{
+    float weight[5];
+        weight[0] = 0.227027;
+        weight[1] = 0.1945946;
+        weight[2] = 0.1216216;
+        weight[3] = 0.054054;
+        weight[4] = 0.016216;
+
+    float blurScale = 9.0;
+    float blurStrength = u_pushConstants.strength;
+
+    ivec2 inSize = imageSize(inputImage);
+
+    vec3 result = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y)).rgb;
+
+    for(int i = 1; i < 5; ++i)
+        {
+                // H
+                result += imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy) + ivec2(blurScale + i, 0.0)).rgb * weight[i] * blurStrength;
+                result += imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy) - ivec2(blurScale - i, 0.0)).rgb * weight[i] * blurStrength;
+                // V
+                result += imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy) + ivec2(0.0, blurScale + i)).rgb * weight[i] * blurStrength;
+                result += imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy) - ivec2(0.0, blurScale - i)).rgb * weight[i] * blurStrength;
+        }
+
+    vec4 res = vec4(result / (blurStrength * 2), 1.0);
+
+    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);
+}

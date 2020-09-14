@@ -25,7 +25,6 @@ void RenderManager::handleViewedNodeHasChanged(NodeBase* node)
 {
     std::cout << "viewedChanged" << std::endl;
     renderNodes(node);
-
 }
 
 void RenderManager::renderNodes(NodeBase *node)
@@ -35,7 +34,6 @@ void RenderManager::renderNodes(NodeBase *node)
     {
         renderNode(n);
     }
-    //renderNode(node);
 }
 
 void RenderManager::renderNode(NodeBase *node)

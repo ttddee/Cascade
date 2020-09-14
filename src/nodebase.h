@@ -43,7 +43,7 @@ public:
     NodeBase* getUpstreamNode();
     std::set<NodeBase*> getAllUpstreamNodes();
 
-    bool needsUpdate = true;
+    bool needsUpdate = true; // TODO: Should be false at the start
 
 private:
     void setUpNode(const NodeType nodeType);
