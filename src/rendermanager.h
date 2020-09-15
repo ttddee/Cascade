@@ -30,7 +30,7 @@ private:
 signals:
 
 public slots:
-    void handleViewedNodeHasChanged(NodeBase* node);
+    void handleNodeDisplayRequest(NodeBase* node);
 };
 
 #endif // RENDERMANAGER_H

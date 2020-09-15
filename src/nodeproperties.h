@@ -22,6 +22,9 @@ public:
 private:
     const NodeType nodeType;
     QVBoxLayout* layout;
+
+public slots:
+    void handleSomeValueChanged();
 };
 
 #endif // NODEPROPERTIES_H

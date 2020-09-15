@@ -64,6 +64,7 @@ private:
 
 signals:
     void viewedNodeHasChanged(NodeBase* node);
+    void requestNodeDisplay(NodeBase* node);
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);

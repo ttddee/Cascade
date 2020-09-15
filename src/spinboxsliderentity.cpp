@@ -40,9 +40,9 @@ void SpinBoxSliderEntity::makeDouble()
     isDouble = true;
 }
 
-void SpinBoxSliderEntity::setName(const std::string &s)
+void SpinBoxSliderEntity::setName(const QString &s)
 {
-    ui->label->setText(QString::fromStdString(s));
+    ui->label->setText(s);
 }
 
 void SpinBoxSliderEntity::setMinMaxStepValue(int min, int max, int step, int value)
@@ -126,19 +126,19 @@ void SpinBoxSliderEntity::reset()
     emit valueChangedDouble((double)currentValue / 100);
 }
 
-//void SpinBoxSliderEntity::selfConnectToValueChanged(NodePropertiesBase* p)
-//{
-//    if (!isDouble)
-//    {
-////        connect(this, &SpinBoxSliderEntity::valueChangedInt,
-////                p, [p]{p->handleSomeValueChanged();});
-//    }
-//    else
-//    {
-////        connect(this, &SpinBoxSliderEntity::valueChangedDouble,
-////                p, [p]{p->handleSomeValueChanged();});
-//    }
-//}
+void SpinBoxSliderEntity::selfConnectToValueChanged(NodeProperties* p)
+{
+    if (!isDouble)
+    {
+        connect(this, &SpinBoxSliderEntity::valueChangedInt,
+                p, [p]{p->handleSomeValueChanged();});
+    }
+    else
+    {
+        connect(this, &SpinBoxSliderEntity::valueChangedDouble,
+                p, [p]{p->handleSomeValueChanged();});
+    }
+}
 
 QString SpinBoxSliderEntity::returnValueAsString()
 {

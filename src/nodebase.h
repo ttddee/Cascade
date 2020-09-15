@@ -57,6 +57,9 @@ private:
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
+    void requestUpdate();
+    std::vector<NodeBase*> getDownStreamNodes();
+
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
     QPoint inAnchorPos;

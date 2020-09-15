@@ -28,7 +28,7 @@ NodeGraph::NodeGraph(QWidget* parent)
     contextMenu = new NodeGraphContextMenu(this);
 
     connect(this, &NodeGraph::viewedNodeHasChanged,
-            rManager, &RenderManager::handleViewedNodeHasChanged);
+            rManager, &RenderManager::handleNodeDisplayRequest);
 }
 
 void NodeGraph::createNode(const NodeType type)
@@ -107,7 +107,7 @@ void NodeGraph::viewNode(NodeBase *node)
     node->setIsViewed(true);
     node->repaint();
 
-    emit viewedNodeHasChanged(node);
+    emit requestNodeDisplay(node);
 }
 
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)

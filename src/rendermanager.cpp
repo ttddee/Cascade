@@ -21,9 +21,8 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
     nodeGraph = ng;
 }
 
-void RenderManager::handleViewedNodeHasChanged(NodeBase* node)
+void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
-    std::cout << "viewedChanged" << std::endl;
     renderNodes(node);
 }
 

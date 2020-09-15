@@ -3,6 +3,8 @@
 
 #include <QWidget>
 
+#include "nodeproperties.h"
+
 namespace Ui {
 class SpinBoxSliderEntity;
 }
@@ -15,11 +17,11 @@ public:
     explicit SpinBoxSliderEntity(QWidget *parent = nullptr);
     ~SpinBoxSliderEntity();
     void makeDouble();
-    void setName(const std::string&);
+    void setName(const QString& name);
     void setMinMaxStepValue(int, int, int, int);
     void setMinMaxStepValue(double, double, double, double);
 
-    //void selfConnectToValueChanged(NodePropertiesBase*);
+    void selfConnectToValueChanged(NodeProperties* p);
     QString returnValueAsString();
 
     auto value()

@@ -97,6 +97,108 @@ LineNumberArea {
     font-weight: bold;
 }
 
+/*Slider*/
+QSlider::groove:horizontal {
+    height: 2px;
+    background: #626971;
+    margin: 2px 0;
+}
+QSlider::handle:horizontal {
+    background-image: url(:/design/ui/png/slider_handle.png);
+    width: 16px;
+    margin: -5px -6px;
+}
+QSlider::sub-page:horizontal {
+    background: #00b6dd;
+    height: 2px;
+    margin: 2px 0;
+}
+
+QSpinBox {
+background-color: #282d31;
+font: 14px "Open Sans";
+color: #f1f1f1;
+border: 0px;
+border-radius: 3px;
+padding: 0 0 0 2;
+selection-background-color: #00b6dd;
+}
+QSpinBox::up-button {
+    background-image: url(:/design/ui/png/spinbox_up_button.png);
+    height: 10px;
+    margin: 1 0 0 0;
+    background-repeat: no-repeat;
+}
+QSpinBox::up-button:hover {
+    background-image: url(:/design/ui/png/spinbox_up_button_hover.png);
+}
+QSpinBox::down-button {
+    background-image: url(:/design/ui/png/spinbox_down_button.png);
+    height: 10px;
+    /*margin: 1 0 -3 0;*/
+    background-repeat: no-repeat;
+}
+QSpinBox::down-button:hover {
+    background-image: url(:/design/ui/png/spinbox_down_button_hover.png);
+}
+
+QDoubleSpinBox {
+    background-color: #282d31;
+    font: 14px "Open Sans";
+    color: #f1f1f1;
+    border: 0px;
+    border-radius: 3px;
+    padding: 0 0 0 2;
+    selection-background-color: #00b6dd;
+}
+QDoubleSpinBox::up-button {
+    background-image: url(:/design/ui/png/spinbox_up_button.png);
+    height: 10px;
+    margin: 1 0 0 0;
+    background-repeat: no-repeat;
+}
+QDoubleSpinBox::up-button:hover {
+    background-image: url(:/design/ui/png/spinbox_up_button_hover.png);
+}
+QDoubleSpinBox::down-button {
+    background-image: url(:/design/ui/png/spinbox_down_button.png);
+    height: 10px;
+    /*margin: 1 0 -3 0;*/
+    background-repeat: no-repeat;
+}
+QDoubleSpinBox::down-button:hover {
+    background-image: url(:/design/ui/png/spinbox_down_button_hover.png);
+}
+
+QComboBox {
+    background-color: #282d31;
+    font: 14px "Open Sans";
+    color: #f1f1f1;
+    border: 0px;
+    border-radius: 3px;
+    selection-background-color: #626971;
+}
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: top right;
+    width: 15px;
+    border-top-right-radius: 3px; /* same radius as the QComboBox */
+    border-bottom-right-radius: 3px;
+}
+QComboBox::down-arrow {
+    image: url(:/design/ui/png/combobox_button.png);
+}
+QComboBox::down-arrow:hover {
+    image: url(:/design/ui/png/combobox_button_hover.png);
+}
+
+/*For the dropdown menu*/
+QComboBox QAbstractItemView {
+    background-color: #282d31;
+    selection-background-color: #626971;
+    border-radius: 3px;
+}
+
 QCheckBox {
     background-color: #181b1e;
     color: #f1f1f1;

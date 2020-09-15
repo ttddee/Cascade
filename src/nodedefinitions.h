@@ -80,7 +80,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Blur"},
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, ""}
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,0,100,1,3"}
         },
         ":/shaders/blur_test_comp.spv"
     };
