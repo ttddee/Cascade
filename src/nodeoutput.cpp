@@ -36,6 +36,11 @@ void NodeOutput::mousePressEvent(QMouseEvent *event)
     }
 }
 
+std::vector<Connection*> NodeOutput::getConnections()
+{
+    return outConnections;
+}
+
 //void NodeOutput::mouseMoveEvent(QMouseEvent *event)
 //{
 //    if (isDragging)

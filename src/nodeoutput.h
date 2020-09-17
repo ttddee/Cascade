@@ -17,6 +17,7 @@ public:
 
     void addConnection(Connection* c);
     void updateConnections();
+    std::vector<Connection*> getConnections();
 
     NodeBase* parentNode = nullptr;
     const int visualWidth = 12;

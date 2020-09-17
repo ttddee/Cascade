@@ -58,7 +58,8 @@ private:
     void paintEvent(QPaintEvent*) override;
 
     void requestUpdate();
-    std::vector<NodeBase*> getDownStreamNodes();
+    void getDownstreamNodes(std::vector<NodeBase*>& nodes);
+    std::vector<NodeBase*> getAllDownstreamNodes();
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;

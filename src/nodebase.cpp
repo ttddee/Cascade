@@ -121,16 +121,22 @@ void NodeBase::requestUpdate()
     needsUpdate = true;
 }
 
-std::vector<NodeBase*> NodeBase::getDownStreamNodes()
+void NodeBase::getDownstreamNodes(std::vector<NodeBase*>& nodes)
+{    
+    if(rgbOut)
+    {
+        foreach(Connection* c, rgbOut->getConnections())
+        {
+            nodes.push_back(c->targetInput->parentNode);
+            c->targetInput->parentNode->getDownstreamNodes(nodes);
+        }
+    }
+}
+
+std::vector<NodeBase*> NodeBase::getAllDownstreamNodes()
 {
     std::vector<NodeBase*> nodes;
-    // TODO: Make this work
-
-//    if(rgbOut->has)
-//    if (outConnections.size() > 0)
-//        foreach(Connection* c, outConnections)
-//            nodes.push_back(c->targetIn->parentNode);
-    return nodes;
+    getDownstreamNodes(nodes);
 }
 
 void NodeBase::paintEvent(QPaintEvent *event)
