@@ -1443,6 +1443,7 @@ void VulkanRenderer::scale(float s)
 {
     scaleXY = s;
     window->requestUpdate();
+    window->requestZoomTextUpdate(s);
 }
 
 void VulkanRenderer::releaseSwapChainResources()

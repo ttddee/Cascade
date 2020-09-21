@@ -10,12 +10,14 @@ MainWindow::MainWindow(QWidget *parent)
     ui->setupUi(this);
 
     windowManager = &WindowManager::getInstance();
-    windowManager->setUp(ui->vulkanView->getVulkanWindow(), ui->nodeGraph, ui->propertiesView);
+    windowManager->setUp(
+                ui->vulkanView->getVulkanWindow(),
+                ui->nodeGraph,
+                ui->propertiesView,
+                ui->viewerStatusBar);
 
     connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
-    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
-            windowManager, &WindowManager::handleRendererHasBeenCreated);
 }
 
 void MainWindow::handleRendererHasBeenCreated()

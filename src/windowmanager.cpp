@@ -5,6 +5,7 @@
 #include "vulkanwindow.h"
 #include "nodegraph.h"
 #include "propertiesview.h"
+#include "viewerstatusbar.h"
 
 WindowManager& WindowManager::getInstance()
 {
@@ -13,11 +14,21 @@ WindowManager& WindowManager::getInstance()
     return instance;
 }
 
-void WindowManager::setUp(VulkanWindow *vw, NodeGraph *ng, PropertiesView *pv)
+void WindowManager::setUp(
+        VulkanWindow *vw,
+        NodeGraph *ng,
+        PropertiesView *pv,
+        ViewerStatusBar* vb)
 {
     vulkanWindow = vw;
     nodeGraph = ng;
     propertiesView = pv;
+    viewerStatusBar = vb;
+
+    connect(vulkanWindow, &VulkanWindow::requestZoomTextUpdate,
+            this, &WindowManager::handleZoomTextUpdateRequest);
+    connect(viewerStatusBar, &ViewerStatusBar::requestZoomReset,
+            vulkanWindow, &VulkanWindow::handleZoomResetRequest);
 }
 
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
@@ -25,9 +36,8 @@ void WindowManager::handleNodeDoubleClicked(NodeBase* node)
     propertiesView->loadProperties(node->getProperties());
 }
 
-void WindowManager::handleRendererHasBeenCreated()
+void WindowManager::handleZoomTextUpdateRequest(float f)
 {
-    std::cout << "Renderer has been created." << std::endl;
+    viewerStatusBar->setZoomText(QString::number(static_cast<int>(f * 100)));
 }
-
 

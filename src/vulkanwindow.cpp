@@ -30,6 +30,11 @@ void VulkanWindow::setShowOriginal(bool b)
     showOriginal = b;
 }
 
+void VulkanWindow::handleZoomResetRequest()
+{
+    renderer->scale(1.0);
+}
+
 void VulkanWindow::mousePressEvent(QMouseEvent *e)
 {
     pressed = true;

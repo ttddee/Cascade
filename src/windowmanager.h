@@ -8,6 +8,7 @@
 class VulkanWindow;
 class NodeGraph;
 class PropertiesView;
+class ViewerStatusBar;
 
 class WindowManager : public QObject
 {
@@ -19,7 +20,8 @@ public:
     void operator=(WindowManager const&) = delete;
     void setUp(VulkanWindow* vw,
                NodeGraph* ng,
-               PropertiesView* pv);
+               PropertiesView* pv,
+               ViewerStatusBar* vb);
 
 private:
     WindowManager() {}
@@ -27,13 +29,13 @@ private:
     VulkanWindow* vulkanWindow;
     NodeGraph* nodeGraph;
     PropertiesView* propertiesView;
+    ViewerStatusBar* viewerStatusBar;
 
 signals:
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);
-    void handleRendererHasBeenCreated();
-
+    void handleZoomTextUpdateRequest(float f);
 };
 
 #endif // WINDOWMANAGER_H

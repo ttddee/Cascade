@@ -13,10 +13,18 @@ class ViewerStatusBar : public QWidget
 
 public:
     explicit ViewerStatusBar(QWidget *parent = nullptr);
+
+    void setZoomText(const QString& s);
+    void setWidthText(const QString& s);
+    void setHeightText(const QString& s);
+
     ~ViewerStatusBar();
 
 private:
     Ui::ViewerStatusBar *ui;
+
+signals:
+    void requestZoomReset();
 };
 
 #endif // VIEWERSTATUSBAR_H

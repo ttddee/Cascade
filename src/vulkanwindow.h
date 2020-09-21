@@ -32,6 +32,10 @@ private:
 
 signals:
     void rendererHasBeenCreated();
+    void requestZoomTextUpdate(float f);
+
+public slots:
+    void handleZoomResetRequest();
 
 };
 
