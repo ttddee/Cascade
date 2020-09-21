@@ -51,13 +51,11 @@ void RenderManager::renderNode(NodeBase *node)
 
         node->needsUpdate = false;
     }
-    else
+    else if (node->getIsViewed())
     {
-        if (node->getIsViewed())
-        {
-            std::cout << "displaying node without rendering" << std::endl;
+        std::cout << "displaying node without rendering" << std::endl;
 
-            renderer->displayProcessedNode(node);
-        }
+        renderer->displayProcessedNode(node);
     }
+
 }

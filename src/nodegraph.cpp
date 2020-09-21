@@ -27,7 +27,9 @@ NodeGraph::NodeGraph(QWidget* parent)
 
     contextMenu = new NodeGraphContextMenu(this);
 
-    connect(this, &NodeGraph::viewedNodeHasChanged,
+    //connect(this, &NodeGraph::viewedNodeHasChanged,
+    //        rManager, &RenderManager::handleNodeDisplayRequest);
+    connect(this, &NodeGraph::requestNodeDisplay,
             rManager, &RenderManager::handleNodeDisplayRequest);
 }
 
@@ -132,6 +134,14 @@ void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
     leftMouseIsDragging = true;
 
     createOpenConnection(nodeOut);
+}
+
+void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
+{
+    if (node->getIsViewed())
+    {
+        emit requestNodeDisplay(node);
+    }
 }
 
 void NodeGraph::createOpenConnection(NodeOutput* nodeOut)

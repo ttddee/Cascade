@@ -60,6 +60,7 @@ private:
     void requestUpdate();
     void getDownstreamNodes(std::vector<NodeBase*>& nodes);
     std::vector<NodeBase*> getAllDownstreamNodes();
+    void invalidateAllDownstreamNodes();
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
@@ -85,6 +86,7 @@ private:
 signals:
     void nodeWasLeftClicked(NodeBase*);
     void nodeWasDoubleClicked(NodeBase*);
+    void nodeRequestUpdate(NodeBase*);
 };
 
 #endif // NODEBASE_H

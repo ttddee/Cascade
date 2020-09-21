@@ -70,6 +70,7 @@ public slots:
     void handleNodeLeftClicked(NodeBase* node);
     void handleNodeDoubleClicked(NodeBase* node);
     void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
+    void handleNodeUpdateRequest(NodeBase* node);
 };
 
 #endif // NODEGRAPH_H

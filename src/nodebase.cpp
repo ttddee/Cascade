@@ -119,6 +119,8 @@ std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
 void NodeBase::requestUpdate()
 {
     needsUpdate = true;
+    invalidateAllDownstreamNodes();
+    emit nodeRequestUpdate(this);
 }
 
 void NodeBase::getDownstreamNodes(std::vector<NodeBase*>& nodes)
@@ -137,6 +139,16 @@ std::vector<NodeBase*> NodeBase::getAllDownstreamNodes()
 {
     std::vector<NodeBase*> nodes;
     getDownstreamNodes(nodes);
+
+    return nodes;
+}
+
+void NodeBase::invalidateAllDownstreamNodes()
+{
+    foreach(auto& n, getAllDownstreamNodes())
+    {
+        n->needsUpdate = true;
+    }
 }
 
 void NodeBase::paintEvent(QPaintEvent *event)
