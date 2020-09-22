@@ -6,6 +6,7 @@
 
 #include "nodedefinitions.h"
 #include "uientity.h"
+#include "nodeproperties.h"
 
 using namespace Cascade;
 
@@ -19,8 +20,12 @@ class FileBoxEntity : public UiEntity
 
 public:
     explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
-    ~FileBoxEntity();
+
     QString getCurrentPath();
+
+    void selfConnectToValueChanged(NodeProperties* p);
+
+    ~FileBoxEntity();
 
 private:
     void setCurrentState(const QString&);

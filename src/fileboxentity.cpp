@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include <QFileDialog>
+#include <QItemSelectionModel>
 
 FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
@@ -15,6 +16,8 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
             this, &FileBoxEntity::handleLoadButtonClicked);
     connect(ui->deleteButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleDeleteButtonClicked);
+//    connect(ui->fileListView->selectionModel(), &QItemSelectionModel::currentChanged,
+//            this, [this] {emit valueChanged();});
 
     QStringList slist;
     slist.append(QString("../../images/bay.jpg")); // TODO: Temporary
@@ -51,7 +54,14 @@ void FileBoxEntity::handleLoadButtonClicked()
 
             ui->fileListView->setCurrentIndex(index);
         }
+        emit valueChanged();
     }
+}
+
+void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+{
+    connect(this, &FileBoxEntity::valueChanged,
+            p, [p]{p->handleSomeValueChanged();});
 }
 
 void FileBoxEntity::handleDeleteButtonClicked()

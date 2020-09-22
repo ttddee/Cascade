@@ -57,8 +57,9 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
         else if (i.key() == UI_ELEMENT_TYPE_FILEBOX)
         {
             FileBoxEntity* f = new FileBoxEntity(UI_ELEMENT_TYPE_FILEBOX, this);
+            f->selfConnectToValueChanged(this);
             layout->addWidget(f);
-            widgets.push_back(f);
+            widgets.push_back(f); // TODO: needed?
         }
     }
 }

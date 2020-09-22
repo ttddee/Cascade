@@ -36,6 +36,7 @@ signals:
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);
     void handleZoomTextUpdateRequest(float f);
+    void handleRenderTargetCreated(int w, int h);
 };
 
 #endif // WINDOWMANAGER_H

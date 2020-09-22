@@ -29,6 +29,8 @@ void WindowManager::setUp(
             this, &WindowManager::handleZoomTextUpdateRequest);
     connect(viewerStatusBar, &ViewerStatusBar::requestZoomReset,
             vulkanWindow, &VulkanWindow::handleZoomResetRequest);
+    connect(vulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
+            this, &WindowManager::handleRenderTargetCreated);
 }
 
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
@@ -39,5 +41,11 @@ void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 void WindowManager::handleZoomTextUpdateRequest(float f)
 {
     viewerStatusBar->setZoomText(QString::number(static_cast<int>(f * 100)));
+}
+
+void WindowManager::handleRenderTargetCreated(int w, int h)
+{
+    viewerStatusBar->setWidthText(QString::number(w));
+    viewerStatusBar->setHeightText(QString::number(h));
 }
 

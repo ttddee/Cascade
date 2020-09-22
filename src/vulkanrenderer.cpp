@@ -510,6 +510,8 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
         return false;
     }
 
+    emit window->renderTargetHasBeenCreated(width, height);
+
     return true;
 }
 
