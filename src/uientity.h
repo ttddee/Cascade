@@ -15,6 +15,8 @@ class UiEntity : public QWidget
 public:
     explicit UiEntity(UIElementType et, QWidget *parent = nullptr);
 
+    virtual QString getValuesAsString() = 0;
+
     const UIElementType elementType;
 };
 

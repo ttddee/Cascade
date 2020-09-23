@@ -4,8 +4,8 @@
 #include <QMouseEvent>
 #include <QSlider>
 
-SpinBoxSliderEntity::SpinBoxSliderEntity(QWidget *parent) :
-    QWidget(parent),
+SpinBoxSliderEntity::SpinBoxSliderEntity(UIElementType et, QWidget *parent)
+    : UiEntity(et, parent),
     ui(new Ui::SpinBoxSliderEntity)
 {
     ui->setupUi(this);
@@ -140,7 +140,7 @@ void SpinBoxSliderEntity::selfConnectToValueChanged(NodeProperties* p)
     }
 }
 
-QString SpinBoxSliderEntity::returnValueAsString()
+QString SpinBoxSliderEntity::getValuesAsString()
 {
     if (isDouble)
         return QString::number(currentValue / 100.0);

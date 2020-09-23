@@ -10,18 +10,24 @@
 
 using namespace Cascade;
 
+class NodeBase;
+
 class NodeProperties : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit NodeProperties(const NodeType t, QWidget *parent = nullptr);
+    explicit NodeProperties(
+            const NodeType t,
+            NodeBase* parentNode,
+            QWidget *parent = nullptr);
 
     std::vector<UiEntity*> widgets;
 
 private:
     const NodeType nodeType;
     QVBoxLayout* layout;
+    NodeBase* parentNode;
 
 public slots:
     void handleSomeValueChanged();

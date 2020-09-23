@@ -1304,6 +1304,17 @@ void VulkanRenderer::submitComputeCommands()
     }
 }
 
+std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
+{
+    std::vector<float> values;
+    auto parts = s.split(",");
+    foreach(const QString& part, parts)
+    {
+        values.push_back(part.toFloat());
+    }
+    return values;
+}
+
 void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 {
     if (node->nodeType == NODE_TYPE_READ)
@@ -1372,6 +1383,8 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 
 //        createComputeCommandBuffer();
         ///////////////////
+
+        pushConstants = unpackPushConstants(node->getAllValues());
 
         createComputeRenderTarget(inputImage.getWidth(), inputImage.getHeight());
 

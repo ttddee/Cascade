@@ -7,10 +7,15 @@
 #include "fileboxentity.h"
 #include "propertiesheading.h"
 #include "spinboxsliderentity.h"
+#include "nodebase.h"
 
-NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
-    : QWidget(parent),
-      nodeType(t)
+NodeProperties::NodeProperties(
+        const NodeType t,
+        NodeBase* parentNode,
+        QWidget *parent)
+        : QWidget(parent),
+          nodeType(t),
+          parentNode(parentNode)
 {
     NodeInitProperties props = Cascade::getPropertiesForType(t);
 
@@ -29,7 +34,8 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
         }
         else if (i.key() == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
         {
-            SpinBoxSliderEntity* box = new SpinBoxSliderEntity(this);
+            SpinBoxSliderEntity* box =
+                    new SpinBoxSliderEntity(UI_ELEMENT_TYPE_SLIDERSPIN_INT, this);
             auto parts = i.value().split(",");
             box->setName(parts.at(0));
             box->setMinMaxStepValue(
@@ -39,10 +45,12 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
                         parts.at(4).toInt());
             box->selfConnectToValueChanged(this);
             layout->addWidget(box);
+            widgets.push_back(box);
         }
         else if (i.key() == UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE)
         {
-            SpinBoxSliderEntity* box = new SpinBoxSliderEntity(this);
+            SpinBoxSliderEntity* box =
+                    new SpinBoxSliderEntity(UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, this);
             box->makeDouble();
             auto parts = i.value().split(",");
             box->setName(parts.at(0));
@@ -53,18 +61,20 @@ NodeProperties::NodeProperties(const NodeType t, QWidget *parent)
                         parts.at(4).toDouble());
             box->selfConnectToValueChanged(this);
             layout->addWidget(box);
+            widgets.push_back(box);
         }
         else if (i.key() == UI_ELEMENT_TYPE_FILEBOX)
         {
             FileBoxEntity* f = new FileBoxEntity(UI_ELEMENT_TYPE_FILEBOX, this);
             f->selfConnectToValueChanged(this);
             layout->addWidget(f);
-            widgets.push_back(f); // TODO: needed?
+            widgets.push_back(f);
         }
     }
 }
 
 void NodeProperties::handleSomeValueChanged()
 {
-    std::cout << "beep" << std::endl;
+    std::cout << "Node value changed, requesting update." << std::endl;
+    parentNode->requestUpdate();
 }

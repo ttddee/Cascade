@@ -92,6 +92,8 @@ private:
 
     void updateVertexData(int, int);
 
+    std::vector<float> unpackPushConstants(const QString s);
+
     VkDeviceMemory bufMem = VK_NULL_HANDLE;
     VkBuffer buf = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
@@ -160,7 +162,7 @@ private:
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;
 
-    std::array<float, 1> pushConstants = { 1.0f };
+    std::vector<float> pushConstants = { 1.0f };
 
 };
 

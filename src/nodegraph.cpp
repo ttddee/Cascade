@@ -47,6 +47,8 @@ void NodeGraph::createNode(const NodeType type)
             this, &NodeGraph::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
             wManager, &WindowManager::handleNodeDoubleClicked);
+    connect(n, &NodeBase::nodeRequestUpdate,
+            this, &NodeGraph::handleNodeUpdateRequest);
 }
 
 std::set<NodeBase*> NodeGraph::getAllUpstreamNodes(NodeBase *node)

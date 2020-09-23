@@ -42,8 +42,10 @@ public:
     NodeProperties* getProperties();
     NodeBase* getUpstreamNode();
     std::set<NodeBase*> getAllUpstreamNodes();
+    void requestUpdate();
+    QString getAllValues();
 
-    bool needsUpdate = true; // TODO: Should be false at the start
+    bool needsUpdate = true;
 
 private:
     void setUpNode(const NodeType nodeType);
@@ -57,7 +59,6 @@ private:
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
 
-    void requestUpdate();
     void getDownstreamNodes(std::vector<NodeBase*>& nodes);
     std::vector<NodeBase*> getAllDownstreamNodes();
     void invalidateAllDownstreamNodes();

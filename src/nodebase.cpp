@@ -32,7 +32,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
     this->createInputs(props);
     this->createOutputs(props);
 
-    propertiesView = new NodeProperties(nodeType);
+    propertiesView = new NodeProperties(nodeType, this);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -121,6 +121,17 @@ void NodeBase::requestUpdate()
     needsUpdate = true;
     invalidateAllDownstreamNodes();
     emit nodeRequestUpdate(this);
+}
+
+QString NodeBase::getAllValues()
+{
+    QString vals;
+    foreach(auto& e, getProperties()->widgets)
+    {
+        vals.append(e->getValuesAsString());
+    }
+    std::cout << vals.toStdString() << std::endl;
+    return vals;
 }
 
 void NodeBase::getDownstreamNodes(std::vector<NodeBase*>& nodes)

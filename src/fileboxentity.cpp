@@ -64,6 +64,11 @@ void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
             p, [p]{p->handleSomeValueChanged();});
 }
 
+QString FileBoxEntity::getValuesAsString()
+{
+    return QString(); // TODO: <--- this
+}
+
 void FileBoxEntity::handleDeleteButtonClicked()
 {
 

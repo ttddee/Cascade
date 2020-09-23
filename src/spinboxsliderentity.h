@@ -9,12 +9,12 @@ namespace Ui {
 class SpinBoxSliderEntity;
 }
 
-class SpinBoxSliderEntity : public QWidget
+class SpinBoxSliderEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit SpinBoxSliderEntity(QWidget *parent = nullptr);
+    explicit SpinBoxSliderEntity(UIElementType et, QWidget *parent = nullptr);
     ~SpinBoxSliderEntity();
     void makeDouble();
     void setName(const QString& name);
@@ -22,7 +22,7 @@ public:
     void setMinMaxStepValue(double, double, double, double);
 
     void selfConnectToValueChanged(NodeProperties* p);
-    QString returnValueAsString();
+    QString getValuesAsString() override;
 
     auto value()
     {
