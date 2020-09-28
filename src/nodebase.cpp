@@ -120,7 +120,28 @@ void NodeBase::requestUpdate()
 {
     needsUpdate = true;
     invalidateAllDownstreamNodes();
-    emit nodeRequestUpdate(this);
+    if (getUpstreamNode())
+    {
+        emit nodeRequestUpdate(this);
+    }
+}
+
+QSize NodeBase::getTargetSize()
+{
+    auto upstreamNode = getUpstreamNode();
+
+    if (upstreamNode)
+    {
+        auto upstreamImage = upstreamNode->cachedImage;
+
+        if (upstreamImage)
+        {
+            QSize s(upstreamImage->getWidth() - leftCrop - rightCrop,
+                    upstreamImage->getHeight() - topCrop - bottomCrop);
+            return s;
+        }
+    }
+    return QSize(0, 0);
 }
 
 QString NodeBase::getAllValues()

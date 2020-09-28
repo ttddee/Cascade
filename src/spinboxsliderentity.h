@@ -15,13 +15,13 @@ class SpinBoxSliderEntity : public UiEntity
 
 public:
     explicit SpinBoxSliderEntity(UIElementType et, QWidget *parent = nullptr);
-    ~SpinBoxSliderEntity();
+
     void makeDouble();
     void setName(const QString& name);
     void setMinMaxStepValue(int, int, int, int);
     void setMinMaxStepValue(double, double, double, double);
-
     void selfConnectToValueChanged(NodeProperties* p);
+
     QString getValuesAsString() override;
 
     auto value()
@@ -29,14 +29,17 @@ public:
         return isDouble ? currentValue / 100.0 : currentValue;
     }
 
+    ~SpinBoxSliderEntity();
+
 private:
-    Ui::SpinBoxSliderEntity *ui;
     void setSpinBoxNoSignal(int);
     void setSliderNoSignal(int);
     void setSliderNoSignal(double);
     void setCurrentValue(int);
     void setCurrentValue(double);
     void reset();
+
+    Ui::SpinBoxSliderEntity *ui;
 
     bool isDouble = false;
     int baseValue = 0;

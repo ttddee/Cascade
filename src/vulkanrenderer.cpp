@@ -1165,8 +1165,8 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
                 &computeDescriptorSet, 0, 0);
     devFuncs->vkCmdDispatch(
                 compute.commandBuffer,
-                inputImage.getWidth() / 16,
-                inputImage.getHeight() / 16, 1);
+                outputImage.getWidth() / 16,
+                outputImage.getHeight() / 16, 1);
 
     {
        //Make the barriers for the resources
@@ -1315,7 +1315,7 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
     return values;
 }
 
-void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
+void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSize targetSize)
 {
     if (node->nodeType == NODE_TYPE_READ)
     {
@@ -1386,7 +1386,7 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage)
 
         pushConstants = unpackPushConstants(node->getAllValues());
 
-        createComputeRenderTarget(inputImage.getWidth(), inputImage.getHeight());
+        createComputeRenderTarget(targetSize.width(), targetSize.height());
 
         updateComputeDescriptors(inputImage, *computeRenderTarget);
 

@@ -33,7 +33,7 @@ public:
 
     QString getGpuName();
 
-    void processNode(NodeBase* node, CsImage& inputImage);
+    void processNode(NodeBase* node, CsImage& inputImage, const QSize targetSize);
     void displayProcessedNode(NodeBase* node);
 
 private:

@@ -23,7 +23,10 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
-    renderNodes(node);
+    if (node->getUpstreamNode() || node->nodeType == NODE_TYPE_READ)
+    {
+        renderNodes(node);
+    }
 }
 
 void RenderManager::renderNodes(NodeBase *node)
@@ -47,7 +50,8 @@ void RenderManager::renderNode(NodeBase *node)
         {
             inputImage = node->getUpstreamNode()->cachedImage;
         }
-        renderer->processNode(node, *inputImage);
+
+        renderer->processNode(node, *inputImage, node->getTargetSize());
 
         node->needsUpdate = false;
     }

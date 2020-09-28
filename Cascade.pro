@@ -36,6 +36,7 @@ SOURCES += \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
+    src/spinboxentity.cpp \
     src/spinboxsliderentity.cpp \
     src/uientity.cpp \
     src/viewerstatusbar.cpp \
@@ -60,6 +61,7 @@ HEADERS += \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
+    src/spinboxentity.h \
     src/spinboxsliderentity.h \
     src/uientity.h \
     src/viewerstatusbar.h \
@@ -73,6 +75,7 @@ FORMS += \
     src/mainwindow.ui \
     src/nodebase.ui \
     src/propertiesheading.ui \
+    src/spinboxentity.ui \
     src/spinboxsliderentity.ui \
     src/viewerstatusbar.ui
 

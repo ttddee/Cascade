@@ -44,6 +44,7 @@ public:
     std::set<NodeBase*> getAllUpstreamNodes();
     void requestUpdate();
     QString getAllValues();
+    QSize getTargetSize();
 
     bool needsUpdate = true;
 
@@ -78,6 +79,11 @@ private:
     bool isViewed = false;
     bool isDragging = false;
     QPoint oldPos;
+
+    int leftCrop = 0;
+    int topCrop = 0;
+    int rightCrop = 0;
+    int bottomCrop = 0;
 
     const int cornerRadius = 7;
     const QBrush defaultColorBrush = QBrush("#282d31");

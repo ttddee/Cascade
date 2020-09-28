@@ -4,6 +4,7 @@
 
 #include <QLabel>
 
+#include "spinboxentity.h"
 #include "fileboxentity.h"
 #include "propertiesheading.h"
 #include "spinboxsliderentity.h"
@@ -23,20 +24,18 @@ NodeProperties::NodeProperties(
     layout->setAlignment(Qt::AlignTop);
     this->setLayout(layout);
 
-    QMapIterator<UIElementType, QString> i(props.uiElements);
-    while(i.hasNext())
+    foreach (auto& elem, props.uiElements)
     {
-        i.next();
-        if (i.key() == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
+        if(elem.first == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
         {
-            PropertiesHeading* heading = new PropertiesHeading(i.value(), this);
+            PropertiesHeading* heading = new PropertiesHeading(elem.second, this);
             layout->addWidget(heading);
         }
-        else if (i.key() == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
+        else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
         {
             SpinBoxSliderEntity* box =
                     new SpinBoxSliderEntity(UI_ELEMENT_TYPE_SLIDERSPIN_INT, this);
-            auto parts = i.value().split(",");
+            auto parts = elem.second.split(",");
             box->setName(parts.at(0));
             box->setMinMaxStepValue(
                         parts.at(1).toInt(),
@@ -47,12 +46,12 @@ NodeProperties::NodeProperties(
             layout->addWidget(box);
             widgets.push_back(box);
         }
-        else if (i.key() == UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE)
+        else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE)
         {
             SpinBoxSliderEntity* box =
                     new SpinBoxSliderEntity(UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, this);
             box->makeDouble();
-            auto parts = i.value().split(",");
+            auto parts = elem.second.split(",");
             box->setName(parts.at(0));
             box->setMinMaxStepValue(
                         parts.at(1).toDouble(),
@@ -63,7 +62,23 @@ NodeProperties::NodeProperties(
             layout->addWidget(box);
             widgets.push_back(box);
         }
-        else if (i.key() == UI_ELEMENT_TYPE_FILEBOX)
+        else if (elem.first == UI_ELEMENT_TYPE_SPINBOX)
+        {
+            SpinBoxEntity* box =
+                    new SpinBoxEntity(UI_ELEMENT_TYPE_SPINBOX, this);
+            auto parts = elem.second.split(",");
+            box->setName(parts.at(0));
+            box->setMinMaxStepValue(
+                        parts.at(1).toInt(),
+                        parts.at(2).toInt(),
+                        parts.at(3).toInt(),
+                        parts.at(4).toInt());
+            box->selfConnectToValueChanged(this);
+            layout->addWidget(box);
+            widgets.push_back(box);
+            std::cout << "creating spinbox" << std::endl;
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_FILEBOX)
         {
             FileBoxEntity* f = new FileBoxEntity(UI_ELEMENT_TYPE_FILEBOX, this);
             f->selfConnectToValueChanged(this);
