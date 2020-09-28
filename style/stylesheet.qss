@@ -276,6 +276,7 @@ QStatusBar {
 QMenu {
     background-color: #282d31;
     font: 14px "Open Sans";
+    font-weight: bold;
     color: #f1f1f1;
 }
 QMenu::item:selected {
