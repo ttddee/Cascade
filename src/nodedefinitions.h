@@ -83,12 +83,12 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, "Crop"},
-            { UI_ELEMENT_TYPE_SPINBOX, "Left,0,100,1,0"},
-            { UI_ELEMENT_TYPE_SPINBOX, "Top,0,100,1,0"},
-            { UI_ELEMENT_TYPE_SPINBOX, "Right,0,100,1,0"},
-            { UI_ELEMENT_TYPE_SPINBOX, "Bottom,0,100,1,0"}
+            { UI_ELEMENT_TYPE_SPINBOX, "Left,0,100000,1,0"},
+            { UI_ELEMENT_TYPE_SPINBOX, "Top,0,100000,1,0"},
+            { UI_ELEMENT_TYPE_SPINBOX, "Right,0,100000,1,0"},
+            { UI_ELEMENT_TYPE_SPINBOX, "Bottom,0,100000,1,0"}
         },
-        ":/shaders/noop_comp.spv"
+        ":/shaders/crop_comp.spv"
     };
 
     const NodeInitProperties readNodeInitProperties =

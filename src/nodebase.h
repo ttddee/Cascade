@@ -43,8 +43,9 @@ public:
     NodeBase* getUpstreamNode();
     std::set<NodeBase*> getAllUpstreamNodes();
     void requestUpdate();
-    QString getAllValues();
+    QString getAllPropertyValues();
     QSize getTargetSize();
+    void updateCropSizes();
 
     bool needsUpdate = true;
 

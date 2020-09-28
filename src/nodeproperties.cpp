@@ -76,7 +76,6 @@ NodeProperties::NodeProperties(
             box->selfConnectToValueChanged(this);
             layout->addWidget(box);
             widgets.push_back(box);
-            std::cout << "creating spinbox" << std::endl;
         }
         else if (elem.first == UI_ELEMENT_TYPE_FILEBOX)
         {

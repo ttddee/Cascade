@@ -1103,9 +1103,6 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
 {
     // Records the compute command buffer for using the texture image
     // Needs the right render target
-
-    // Flush the queue if we're rebuilding the command buffer
-    // after a pipeline change to ensure it's not currently in use
     devFuncs->vkQueueWaitIdle(compute.queue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1135,7 +1132,7 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED; // ???????
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
         barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
@@ -1384,9 +1381,16 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
 //        createComputeCommandBuffer();
         ///////////////////
 
-        pushConstants = unpackPushConstants(node->getAllValues());
+        pushConstants = unpackPushConstants(node->getAllPropertyValues());
+
+        // TODO: Only change vertex data if image size has changed!
+        updateVertexData(targetSize.width(), targetSize.height());
+        createVertexBuffer();
 
         createComputeRenderTarget(targetSize.width(), targetSize.height());
+
+        std::cout << "Created render target with width: " << targetSize.width() << std::endl;
+        std::cout << "Created render target with height: " << targetSize.height() << std::endl;
 
         updateComputeDescriptors(inputImage, *computeRenderTarget);
 

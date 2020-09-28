@@ -1,0 +1,29 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float leftCrop;
+    layout(offset = 4) float topCrop;
+    layout(offset = 8) float rightCrop;
+    layout(offset = 12) float bottomCrop;
+} u_pushConstants;
+
+void main()
+{   
+    ivec2 imgSize = imageSize(inputImage);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec3 rgb = imageLoad(inputImage, pixelCoords + ivec2(u_pushConstants.leftCrop, u_pushConstants.topCrop)).rgb;           
+                     
+    vec4 pixel = vec4(rgb, 1.0);
+
+    if(gl_GlobalInvocationID.x <= imgSize.x - u_pushConstants.leftCrop - u_pushConstants.rightCrop &&
+    gl_GlobalInvocationID.y <= imgSize.y - u_pushConstants.topCrop - u_pushConstants.bottomCrop)
+    {
+        imageStore(resultImage, pixelCoords, pixel);
+    }
+}

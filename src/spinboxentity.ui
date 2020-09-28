@@ -46,6 +46,9 @@
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout_2">
+     <property name="horizontalSpacing">
+      <number>10</number>
+     </property>
      <property name="verticalSpacing">
       <number>5</number>
      </property>

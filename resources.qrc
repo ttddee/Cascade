@@ -24,5 +24,6 @@
         <file>design/ui/png/spinbox_down_button.png</file>
         <file>design/ui/png/spinbox_up_button_hover.png</file>
         <file>design/ui/png/spinbox_up_button.png</file>
+        <file>shaders/crop_comp.spv</file>
     </qresource>
 </RCC>

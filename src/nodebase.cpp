@@ -118,6 +118,11 @@ std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
 
 void NodeBase::requestUpdate()
 {
+    if(nodeType == NODE_TYPE_CROP)
+    {
+        updateCropSizes();
+    }
+
     needsUpdate = true;
     invalidateAllDownstreamNodes();
     if (getUpstreamNode())
@@ -136,20 +141,29 @@ QSize NodeBase::getTargetSize()
 
         if (upstreamImage)
         {
-            QSize s(upstreamImage->getWidth() - leftCrop - rightCrop,
-                    upstreamImage->getHeight() - topCrop - bottomCrop);
-            return s;
+            int w = upstreamImage->getWidth() - leftCrop - rightCrop;
+            int h = upstreamImage->getHeight() - topCrop - bottomCrop;
+            if(w < 0)
+            {
+                w = 0;
+            }
+            if (h < 0)
+            {
+                h = 0;
+            }
+            return QSize(w, h);
         }
     }
     return QSize(0, 0);
 }
 
-QString NodeBase::getAllValues()
+QString NodeBase::getAllPropertyValues()
 {
     QString vals;
     foreach(auto& e, getProperties()->widgets)
     {
         vals.append(e->getValuesAsString());
+        vals.append(",");
     }
     std::cout << vals.toStdString() << std::endl;
     return vals;
@@ -238,6 +252,15 @@ void NodeBase::updateConnectionPositions()
     {
         nodeOut->updateConnections();
     }
+}
+
+void NodeBase::updateCropSizes()
+{
+    auto vals = getAllPropertyValues().split(",");
+    leftCrop = vals[0].toInt();
+    topCrop = vals[1].toInt();
+    rightCrop = vals[2].toInt();
+    bottomCrop = vals[3].toInt();
 }
 
 void NodeBase::mousePressEvent(QMouseEvent *event)
