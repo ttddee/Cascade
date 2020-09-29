@@ -1160,10 +1160,12 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
                 VK_PIPELINE_BIND_POINT_COMPUTE,
                 computePipelineLayout, 0, 1,
                 &computeDescriptorSet, 0, 0);
+    // Adding one extra local workgroup here to prevent
+    // flickering in crop shader
     devFuncs->vkCmdDispatch(
                 compute.commandBuffer,
-                outputImage.getWidth() / 16,
-                outputImage.getHeight() / 16, 1);
+                outputImage.getWidth() / 16 + 1,
+                outputImage.getHeight() / 16 + 1, 1);
 
     {
        //Make the barriers for the resources
@@ -1337,7 +1339,7 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
             if (!createTextureFromFile(imagePath))
                 qFatal("Failed to create texture");
 
-            // Updates the projection size
+            // Update the projection size
             createVertexBuffer();
 
             // Create render target
@@ -1354,38 +1356,14 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
     }
     else
     {
-//        QSize imageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
-
-//        if (currentRenderSize != imageSize)
-//        {
-//            currentRenderSize = imageSize;
-//            // TODO: only if image size has changed:
-//            // updateVertexData() //????????????????
-//            // instead of ---> createVertexBuffer();
-//            updateVertexData(inputImage.getWidth(), inputImage.getHeight());
-
-//            createComputeRenderTarget(imageSize.width(), imageSize.height());
-
-//            updateComputeDescriptors();
-
-//            createComputeCommandBuffer();
-//        }
-
-        ////////////////////
-//        updateVertexData(inputImage.getWidth(), inputImage.getHeight());
-
-//        createComputeRenderTarget(imageSize.width(), imageSize.height());
-
-//        updateComputeDescriptors();
-
-//        createComputeCommandBuffer();
-        ///////////////////
-
         pushConstants = unpackPushConstants(node->getAllPropertyValues());
 
-        // TODO: Only change vertex data if image size has changed!
-        updateVertexData(targetSize.width(), targetSize.height());
-        createVertexBuffer();
+        if (currentRenderSize != targetSize)
+        {
+            updateVertexData(targetSize.width(), targetSize.height()); // TODO: needed?
+            createVertexBuffer();
+        }
+        currentRenderSize = targetSize;
 
         createComputeRenderTarget(targetSize.width(), targetSize.height());
 
