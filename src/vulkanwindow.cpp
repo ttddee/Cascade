@@ -20,16 +20,6 @@ VulkanRenderer* VulkanWindow::getRenderer()
     return renderer;
 }
 
-bool VulkanWindow::getShowOriginal()
-{
-    return showOriginal;
-}
-
-void VulkanWindow::setShowOriginal(bool b)
-{
-    showOriginal = b;
-}
-
 void VulkanWindow::handleZoomResetRequest()
 {
     renderer->scale(1.0);

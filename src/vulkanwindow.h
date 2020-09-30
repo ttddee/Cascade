@@ -15,8 +15,6 @@ public:
     QVulkanWindowRenderer *createRenderer() override;
 
     VulkanRenderer* getRenderer();
-    bool getShowOriginal();
-    void setShowOriginal(bool b);
 
 private:
     void mousePressEvent(QMouseEvent *) override;
@@ -28,9 +26,9 @@ private:
     bool pressed = false;
     QPoint lastPos;
     float scale = 1.0f;
-    bool showOriginal = false;
 
 signals:
+    void noGPUFound();
     void rendererHasBeenCreated();
     void requestZoomTextUpdate(float f);
     void renderTargetHasBeenCreated(int w, int h);

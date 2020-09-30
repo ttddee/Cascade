@@ -1,6 +1,10 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <iostream>
+
+#include <QMessageBox>
+
 #include "vulkanrenderer.h"
 
 MainWindow::MainWindow(QWidget *parent)
@@ -18,6 +22,8 @@ MainWindow::MainWindow(QWidget *parent)
 
     connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
+    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
+            this, &MainWindow::handleNoGPUFound);
 }
 
 void MainWindow::handleRendererHasBeenCreated()
@@ -28,6 +34,15 @@ void MainWindow::handleRendererHasBeenCreated()
     renderManager->setUp(ui->vulkanView->getVulkanWindow()->getRenderer(), ui->nodeGraph);
 
     this->statusBar()->showMessage("GPU: " + ui->vulkanView->getVulkanWindow()->getRenderer()->getGpuName());
+}
+
+void MainWindow::handleNoGPUFound()
+{
+    QMessageBox messageBox;
+    messageBox.critical(0,"Error","No compatible GPU found. Shutting down!");
+    messageBox.setFixedSize(500, 200);
+
+    QApplication::quit();
 }
 
 MainWindow::~MainWindow()

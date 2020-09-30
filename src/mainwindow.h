@@ -25,6 +25,7 @@ private:
 
 public slots:
     void handleRendererHasBeenCreated();
+    void handleNoGPUFound();
 
 };
 #endif // MAINWINDOW_H
