@@ -9,8 +9,6 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 
     // Set up validation layers
 #ifdef QT_DEBUG
-
-
     instance.setLayers(QByteArrayList()
                        << "VK_LAYER_GOOGLE_threading"
                        << "VK_LAYER_LUNARG_parameter_validation"
@@ -33,7 +31,8 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 
     // Create Vulkan window container and put in layout
     vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);
-    QHBoxLayout* layout = new QHBoxLayout();
+    //QHBoxLayout* layout = new QHBoxLayout();
+    QGridLayout* layout = new QGridLayout();
     layout->addWidget(vulkanWrapper);
     this->setLayout(layout);
 

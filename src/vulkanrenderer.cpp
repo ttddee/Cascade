@@ -98,7 +98,6 @@ QString VulkanRenderer::getGpuName()
 
 void VulkanRenderer::createVertexBuffer()
 {
-    // Create vertex buffer
     const VkPhysicalDeviceLimits *pdevLimits = &window->physicalDeviceProperties()->limits;
     const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
     qDebug("uniform buffer offset alignment is %u", (uint) uniAlign);
@@ -425,8 +424,6 @@ void VulkanRenderer::createComputePipelines()
 {
     for (int i = 0; i != NODE_TYPE_MAX; i++)
     {
-        std::cout << "Create pipeline" << std::endl;
-
         NodeType nodeType = static_cast<NodeType>(i);
 
         pipelines[nodeType] = createComputePipeline(shaders[nodeType]);
@@ -453,7 +450,6 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     imageInfo.sharingMode       = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.initialLayout     = VK_IMAGE_LAYOUT_UNDEFINED;
 
-    //Create the opaque structure that will be referenced later
     VkResult err = devFuncs->vkCreateImage(device, &imageInfo, nullptr, &computeRenderTarget->getImage());
     if (err != VK_SUCCESS) {
         qWarning("Failed to create linear image for texture: %d", err);
@@ -517,6 +513,8 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     }
 
     emit window->renderTargetHasBeenCreated(width, height);
+
+    currentRenderSize = QSize(width, height);
 
     return true;
 }
@@ -1083,16 +1081,15 @@ bool VulkanRenderer::writeLinearImage(const QImage &img, VkImage image, VkDevice
 
 void VulkanRenderer::updateVertexData( int w, int h)
 {
-    vertexData[0] = -0.002 * w;
-    vertexData[5] = -0.002 * w;
+    vertexData[0]  = -0.002 * w;
+    vertexData[5]  = -0.002 * w;
     vertexData[10] = 0.002 * w;
     vertexData[15] = 0.002 * w;
-    vertexData[1] = -0.002 * h;
-    vertexData[6] = 0.002 * h;
+    vertexData[1]  = -0.002 * h;
+    vertexData[6]  = 0.002 * h;
     vertexData[11] = -0.002 * h;
     vertexData[16] = 0.002 * h;
 }
-
 
 void VulkanRenderer::initSwapChainResources()
 {
@@ -1237,6 +1234,7 @@ void VulkanRenderer::createRenderPass()
             UNIFORM_DATA_SIZE, 0, reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS)
         qFatal("Failed to map memory: %d", err);
+
     QMatrix4x4 m = projection;
 
     QMatrix4x4 rotation;
@@ -1324,6 +1322,8 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
 {
     if (node->nodeType == NODE_TYPE_READ)
     {
+        std::cout << "Processing Read Node." << std::endl;
+
         auto props = node->getProperties();
 
         QString path;
@@ -1366,10 +1366,9 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
 
         if (currentRenderSize != targetSize)
         {
-            updateVertexData(targetSize.width(), targetSize.height()); // TODO: needed?
+            // updateVertexData(targetSize.width(), targetSize.height()); // TODO: needed?
             createVertexBuffer();
         }
-        currentRenderSize = targetSize;
 
         createComputeRenderTarget(targetSize.width(), targetSize.height());
 

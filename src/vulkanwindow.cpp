@@ -49,18 +49,16 @@ void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
     {
         renderer->translate(dx, dy);
     }
-
     lastPos = e->pos();
 }
 
 void VulkanWindow::wheelEvent(QWheelEvent *e)
 {
-    e->delta() > 0 ? scale += scale*0.1f : scale -= scale*0.1f;
+    e->angleDelta().y() > 0 ? scale += scale * 0.1f : scale -= scale * 0.1f;
 
-
-    //Limit the scale,
-    scale = scale > 0.1f ? scale : 0.1f;
-    scale = scale < 5.0f ? scale : 5.0f;
+    //Limit the scale
+    scale = scale > minScale ? scale : minScale;
+    scale = scale < maxScale ? scale : maxScale;
     renderer->scale(scale);
 }
 

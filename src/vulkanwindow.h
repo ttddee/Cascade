@@ -26,6 +26,8 @@ private:
     bool pressed = false;
     QPoint lastPos;
     float scale = 1.0f;
+    const float minScale = 0.1f;
+    const float maxScale = 10.0f;
 
 signals:
     void noGPUFound();
