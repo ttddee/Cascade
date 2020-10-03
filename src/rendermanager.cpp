@@ -35,6 +35,8 @@ void RenderManager::renderNodes(NodeBase *node)
     foreach(NodeBase* n, nodes)
     {
         renderNode(n);
+
+        node->needsUpdate = false;
     }
 }
 

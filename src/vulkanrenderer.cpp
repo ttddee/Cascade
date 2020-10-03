@@ -1322,21 +1322,8 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
 {
     if (node->nodeType == NODE_TYPE_READ)
     {
-        std::cout << "Processing Read Node." << std::endl;
+        QString path = node->getAllPropertyValues();
 
-        auto props = node->getProperties();
-
-        QString path;
-
-        foreach(UiEntity* e, props->widgets)
-        {
-            if(e->elementType == UI_ELEMENT_TYPE_FILEBOX)
-            {
-                // TODO: This should be generalized and moved into NodeBase?
-                auto box = static_cast<FileBoxEntity*>(e);
-                path = box->getCurrentPath();
-            }
-        }
         if(path != "")
         {
             imagePath = path;
@@ -1366,7 +1353,6 @@ void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSiz
 
         if (currentRenderSize != targetSize)
         {
-            // updateVertexData(targetSize.width(), targetSize.height()); // TODO: needed?
             createVertexBuffer();
         }
 

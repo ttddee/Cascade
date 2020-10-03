@@ -125,7 +125,8 @@ void NodeBase::requestUpdate()
 
     needsUpdate = true;
     invalidateAllDownstreamNodes();
-    if (getUpstreamNode())
+
+    if (getUpstreamNode() || nodeType == NODE_TYPE_READ)
     {
         emit nodeRequestUpdate(this);
     }
@@ -160,10 +161,14 @@ QSize NodeBase::getTargetSize()
 QString NodeBase::getAllPropertyValues()
 {
     QString vals;
-    foreach(auto& e, getProperties()->widgets)
+    auto widgets = getProperties()->widgets;
+    for(size_t i = 0; i < widgets.size(); i++)
     {
-        vals.append(e->getValuesAsString());
-        vals.append(",");
+        vals.append(widgets[i]->getValuesAsString());
+        if(i != widgets.size() - 1)
+        {
+            vals.append(",");
+        }
     }
     std::cout << vals.toStdString() << std::endl;
     return vals;
