@@ -56,6 +56,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             currentViewerMode = VIEWER_MODE_FRONT;
             viewerStatusBar->setViewerModeText("Front");
+            vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
 
@@ -65,6 +66,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             currentViewerMode = VIEWER_MODE_BACK;
             viewerStatusBar->setViewerModeText("Back");
+            vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
 
@@ -74,6 +76,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             currentViewerMode = VIEWER_MODE_ALPHA;
             viewerStatusBar->setViewerModeText("Alpha");
+            vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
 
@@ -83,6 +86,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             currentViewerMode = VIEWER_MODE_OUTPUT;
             viewerStatusBar->setViewerModeText("Output");
+            vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
 

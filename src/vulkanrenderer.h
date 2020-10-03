@@ -54,7 +54,7 @@ private:
     void createGraphicsDescriptors();
     void createGraphicsPipelineCache();
     void createGraphicsPipelineLayout();
-    void createGraphicsPipeline();
+    void createGraphicsPipeline(VkPipeline& pl, const VkShaderModule& fragShaderModule);
 
     void loadShadersFromDisk();
     void createComputePipelines();
@@ -110,7 +110,8 @@ private:
 
     VkPipelineCache pipelineCache = VK_NULL_HANDLE;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
-    VkPipeline pipeline = VK_NULL_HANDLE;
+    VkPipeline graphicsPipelineRGB = VK_NULL_HANDLE;
+    VkPipeline graphicsPipelineAlpha = VK_NULL_HANDLE;
     VkQueryPool queryPool = VK_NULL_HANDLE;
 
     VkSampler sampler = VK_NULL_HANDLE;

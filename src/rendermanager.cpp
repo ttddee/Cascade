@@ -42,7 +42,7 @@ void RenderManager::renderNodes(NodeBase *node)
 
 void RenderManager::renderNode(NodeBase *node)
 {
-    auto viewerMode = wManager->getViewerMode();
+    //auto viewerMode = wManager->getViewerMode();
 
     if(node->needsUpdate)
     {

@@ -25,6 +25,17 @@ void VulkanWindow::handleZoomResetRequest()
     renderer->scale(1.0);
 }
 
+ViewerMode VulkanWindow::getViewerMode()
+{
+    return viewerMode;
+}
+
+void VulkanWindow::setViewerMode(const ViewerMode mode)
+{
+    viewerMode = mode;
+    std::cout << "updated viewer mode" << std::endl;
+}
+
 void VulkanWindow::mousePressEvent(QMouseEvent *e)
 {
     pressed = true;

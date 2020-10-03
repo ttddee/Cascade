@@ -58,7 +58,12 @@ void VulkanRenderer::initResources()
     createGraphicsDescriptors();
     createGraphicsPipelineCache();
     createGraphicsPipelineLayout();
-    createGraphicsPipeline();
+
+    // Graphics pipelines
+    VkShaderModule fragShader = createShaderFromFile(":/shaders/texture_frag.spv");
+    createGraphicsPipeline(graphicsPipelineRGB, fragShader);
+    fragShader = createShaderFromFile(":/shaders/texture_alpha_frag.spv");
+    createGraphicsPipeline(graphicsPipelineAlpha, fragShader);
 
     //Compute
     // Create render target
@@ -239,11 +244,11 @@ void VulkanRenderer::createGraphicsPipelineLayout()
         qFatal("Failed to create pipeline layout: %d", err);
 }
 
-void VulkanRenderer::createGraphicsPipeline()
+void VulkanRenderer::createGraphicsPipeline(
+        VkPipeline& pl, const VkShaderModule& fragShaderModule)
 {
-    // Vertex and Fragment shader
+    // Vertex shader never changes
     VkShaderModule vertShaderModule = createShaderFromFile(":/shaders/texture_vert.spv");
-    VkShaderModule fragShaderModule = createShaderFromFile(":/shaders/texture_frag.spv");
 
     // Graphics pipeline
     VkGraphicsPipelineCreateInfo pipelineInfo;
@@ -373,7 +378,8 @@ void VulkanRenderer::createGraphicsPipeline()
     pipelineInfo.layout = pipelineLayout;
     pipelineInfo.renderPass = window->defaultRenderPass();
 
-    VkResult err = devFuncs->vkCreateGraphicsPipelines(device, pipelineCache, 1, &pipelineInfo, nullptr, &pipeline);
+    VkResult err = devFuncs->vkCreateGraphicsPipelines(
+                device, pipelineCache, 1, &pipelineInfo, nullptr, &pl);
     if (err != VK_SUCCESS)
         qFatal("Failed to create graphics pipeline: %d", err);
 
@@ -698,7 +704,6 @@ void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outp
     }
 
     {
-
         VkDescriptorImageInfo destinationInfo = { };
         destinationInfo.imageView             = computeRenderTarget->getImageView();
         destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
@@ -1167,8 +1172,8 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
                 VK_PIPELINE_BIND_POINT_COMPUTE,
                 computePipelineLayout, 0, 1,
                 &computeDescriptorSet, 0, 0);
-    // Adding one extra local workgroup here to prevent
-    // flickering in crop shader
+    // Adding one extra local workgroup here to
+    // prevent flickering in crop shader
     devFuncs->vkCmdDispatch(
                 compute.commandBuffer,
                 outputImage.getWidth() / 16 + 1,
@@ -1234,8 +1239,13 @@ void VulkanRenderer::createRenderPass()
     devFuncs->vkCmdBeginRenderPass(cmdBuf, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     quint8 *p;
-    VkResult err = devFuncs->vkMapMemory(device, bufMem, uniformBufInfo[window->currentFrame()].offset,
-            UNIFORM_DATA_SIZE, 0, reinterpret_cast<void **>(&p));
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                bufMem,
+                uniformBufInfo[window->currentFrame()].offset,
+                UNIFORM_DATA_SIZE,
+                0,
+                reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS)
         qFatal("Failed to map memory: %d", err);
 
@@ -1257,9 +1267,26 @@ void VulkanRenderer::createRenderPass()
     memcpy(p, m.constData(), 16 * sizeof(float));
     devFuncs->vkUnmapMemory(device, bufMem);
 
-    devFuncs->vkCmdBindPipeline(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline);
-    devFuncs->vkCmdBindDescriptorSets(cb, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1,
-                               &descSet[window->currentFrame()], 0, nullptr);
+    // Choose to either display RGB or Alpha
+    VkPipeline pl;
+    if (window->getViewerMode() == VIEWER_MODE_ALPHA)
+        pl = graphicsPipelineAlpha;
+    else
+        pl = graphicsPipelineRGB;
+
+    devFuncs->vkCmdBindPipeline(
+                cb,
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                pl);
+    devFuncs->vkCmdBindDescriptorSets(
+                cb,
+                VK_PIPELINE_BIND_POINT_GRAPHICS,
+                pipelineLayout,
+                0,
+                1,
+                &descSet[window->currentFrame()],
+                0,
+                nullptr);
     VkDeviceSize vbOffset = 0;
     devFuncs->vkCmdBindVertexBuffers(cb, 0, 1, &buf, &vbOffset);
 
@@ -1488,9 +1515,9 @@ void VulkanRenderer::releaseResources()
         loadImageMem = VK_NULL_HANDLE;
     }
 
-    if (pipeline) {
-        devFuncs->vkDestroyPipeline(device, pipeline, nullptr);
-        pipeline = VK_NULL_HANDLE;
+    if (graphicsPipelineRGB) {
+        devFuncs->vkDestroyPipeline(device, graphicsPipelineRGB, nullptr);
+        graphicsPipelineRGB = VK_NULL_HANDLE;
     }
 
     if (pipelineLayout) {

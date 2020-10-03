@@ -5,6 +5,8 @@
 #include <QVulkanWindow>
 #include <QWindow>
 
+#include "windowmanager.h"
+
 class VulkanRenderer;
 
 class VulkanWindow : public QVulkanWindow
@@ -15,6 +17,9 @@ public:
     QVulkanWindowRenderer *createRenderer() override;
 
     VulkanRenderer* getRenderer();
+
+    ViewerMode getViewerMode();
+    void setViewerMode(const ViewerMode mode);
 
 private:
     void mousePressEvent(QMouseEvent *) override;
@@ -28,6 +33,7 @@ private:
     float scale = 1.0f;
     const float minScale = 0.1f;
     const float maxScale = 10.0f;
+    ViewerMode viewerMode;
 
 signals:
     void noGPUFound();
