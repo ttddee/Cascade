@@ -21,15 +21,19 @@ class NodeGraph : public QGraphicsView
 
 public:
     NodeGraph(QWidget* parent);
+
     void createNode(const NodeType type);
-    float getViewScale() const;
     std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
+    void viewNode(NodeBase* node);
+
+    float getViewScale() const;
+    NodeBase* getSelectedNode();
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
-    void keyPressEvent(QKeyEvent* event) override;
+    //void keyPressEvent(QKeyEvent* event) override;
     void wheelEvent(QWheelEvent*) override;
 
 private:
@@ -42,7 +46,6 @@ private:
 
     void selectNode(NodeBase* node);
     void activateNode(NodeBase* node);
-    void viewNode(NodeBase* node);
 
     QGraphicsScene* scene;
     WindowManager* wManager;

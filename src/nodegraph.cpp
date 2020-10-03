@@ -102,16 +102,19 @@ void NodeGraph::activateNode(NodeBase *node)
 
 void NodeGraph::viewNode(NodeBase *node)
 {
-    viewedNode = node;
-    foreach(NodeBase* n, nodes)
+    if(node)
     {
-        n->setIsViewed(false);
-        n->repaint();
-    }
-    node->setIsViewed(true);
-    node->repaint();
+        viewedNode = node;
+        foreach(NodeBase* n, nodes)
+        {
+            n->setIsViewed(false);
+            n->repaint();
+        }
+        node->setIsViewed(true);
+        node->repaint();
 
-    emit requestNodeDisplay(node);
+        emit requestNodeDisplay(node);
+    }
 }
 
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)
@@ -170,6 +173,11 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
     connections.push_back(openConnection);
     nodeIn->addInConnection(openConnection);
     openConnection = nullptr;
+}
+
+NodeBase* NodeGraph::getSelectedNode()
+{
+    return selectedNode;
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
@@ -248,16 +256,16 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
     QGraphicsView::mouseReleaseEvent(event);
 }
 
-void NodeGraph::keyPressEvent(QKeyEvent *event)
-{
-    if(event->key() == Qt::Key_F4)
-    {
-        if(selectedNode)
-        {
-            viewNode(selectedNode);
-        }
-    }
-}
+//void NodeGraph::keyPressEvent(QKeyEvent *event)
+//{
+////    if(event->key() == Qt::Key_F4)
+////    {
+////        if(selectedNode)
+////        {
+////            viewNode(selectedNode);
+////        }
+////    }
+//}
 
 void NodeGraph::wheelEvent(QWheelEvent* event)
 {

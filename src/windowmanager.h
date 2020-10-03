@@ -10,6 +10,14 @@ class NodeGraph;
 class PropertiesView;
 class ViewerStatusBar;
 
+enum ViewerMode
+{
+    VIEWER_MODE_FRONT,
+    VIEWER_MODE_BACK,
+    VIEWER_MODE_ALPHA,
+    VIEWER_MODE_OUTPUT
+};
+
 class WindowManager : public QObject
 {
     Q_OBJECT
@@ -26,12 +34,14 @@ public:
 private:
     WindowManager() {}
 
+    bool eventFilter(QObject* watched, QEvent* event);
+
     VulkanWindow* vulkanWindow;
     NodeGraph* nodeGraph;
     PropertiesView* propertiesView;
     ViewerStatusBar* viewerStatusBar;
 
-signals:
+    ViewerMode currentViewerMode;
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);
