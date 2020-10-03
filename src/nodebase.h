@@ -9,6 +9,8 @@
 #include "nodedefinitions.h"
 #include "nodeproperties.h"
 #include "csimage.h"
+#include "windowmanager.h"
+#include "uicolors.h"
 
 using namespace Cascade;
 
@@ -46,6 +48,7 @@ public:
     QString getAllPropertyValues();
     QSize getTargetSize();
     void updateCropSizes();
+    bool supportsViewerMode(const ViewerMode mode);
 
     bool needsUpdate = true;
 
@@ -74,6 +77,7 @@ private:
     NodeInput* rgbBackIn;
     NodeOutput* rgbOut;
     NodeProperties* propertiesView;
+    WindowManager* wManager;
 
     bool isSelected = false;
     bool isActive = false;
@@ -89,7 +93,10 @@ private:
     const int cornerRadius = 7;
     const QBrush defaultColorBrush = QBrush("#282d31");
     const QBrush selectedColorBrush = QBrush("#626971");
-    const QPen viewedColorPen = QPen(QColor("#dc4c46"), 3);
+    const QPen frontViewedColorPen = QPen(frontColor, 3);
+    const QPen backViewedColorPen = QPen(backColor, 3);
+    const QPen alphaViewedColorPen = QPen(alphaColor, 3);
+    const QPen outputViewedColorPen = QPen(outputColor, 3);
 
 signals:
     void nodeWasLeftClicked(NodeBase*);

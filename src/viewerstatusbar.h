@@ -17,6 +17,7 @@ public:
     void setZoomText(const QString& s);
     void setWidthText(const QString& s);
     void setHeightText(const QString& s);
+    void setViewerModeText(const QString& s);
 
     ~ViewerStatusBar();
 

@@ -4,11 +4,24 @@
 
 #include <QMouseEvent>
 
-NodeInput::NodeInput(QWidget *parent)
-    : QPushButton (parent)
+NodeInput::NodeInput(NodeInputType t, QWidget *parent)
+    : QPushButton (parent),
+      inputType(t)
 {
     parentNode = static_cast<NodeBase*>(parent);
     this->resize(12, 30);
+
+    if (t == NODE_INPUT_TYPE_RGB_FRONT)
+        setObjectName("Front");
+    if (t == NODE_INPUT_TYPE_RGB_BACK)
+        setObjectName("Back");
+    if (t == NODE_INPUT_TYPE_ALPHA)
+        setObjectName("Alpha");
+}
+
+NodeInputType NodeInput::getInputType()
+{
+    return inputType;
 }
 
 bool NodeInput::hasConnection()

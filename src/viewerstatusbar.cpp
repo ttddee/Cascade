@@ -26,6 +26,11 @@ void ViewerStatusBar::setHeightText(const QString &s)
     ui->heightLabel->setText(s);
 }
 
+void ViewerStatusBar::setViewerModeText(const QString &s)
+{
+    ui->viewerModeLabel->setText(s);
+}
+
 ViewerStatusBar::~ViewerStatusBar()
 {
     delete ui;

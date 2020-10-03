@@ -33,7 +33,13 @@ void Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, 
 {
     if(targetInput)
     {
-        this->setPen(connectedPen);
+        auto t = targetInput->getInputType();
+        if (t == NODE_INPUT_TYPE_RGB_FRONT)
+            this->setPen(frontConnectedPen);
+        else if (t == NODE_INPUT_TYPE_RGB_BACK)
+            this->setPen(backConnectedPen);
+        else if (t == NODE_INPUT_TYPE_ALPHA)
+            this->setPen(alphaConnectedPen);
     }
     else
     {

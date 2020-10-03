@@ -3,19 +3,19 @@
 
 #include <QObject>
 
-#include "nodebase.h"
-
 class VulkanWindow;
 class NodeGraph;
 class PropertiesView;
 class ViewerStatusBar;
+class NodeBase;
 
 enum ViewerMode
 {
     VIEWER_MODE_FRONT,
     VIEWER_MODE_BACK,
     VIEWER_MODE_ALPHA,
-    VIEWER_MODE_OUTPUT
+    VIEWER_MODE_OUTPUT,
+    VIEWER_MODE_NONE
 };
 
 class WindowManager : public QObject
@@ -31,6 +31,8 @@ public:
                PropertiesView* pv,
                ViewerStatusBar* vb);
 
+    ViewerMode getViewerMode();
+
 private:
     WindowManager() {}
 
@@ -41,7 +43,7 @@ private:
     PropertiesView* propertiesView;
     ViewerStatusBar* viewerStatusBar;
 
-    ViewerMode currentViewerMode;
+    ViewerMode currentViewerMode = VIEWER_MODE_NONE;
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);

@@ -8,6 +8,7 @@
 #include "nodegraph.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
+#include "nodebase.h"
 
 WindowManager& WindowManager::getInstance()
 {
@@ -40,6 +41,11 @@ void WindowManager::setUp(
             this, &WindowManager::handleRenderTargetCreated);
 }
 
+ViewerMode WindowManager::getViewerMode()
+{
+    return currentViewerMode;
+}
+
 bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 {
     if(event->type() == QEvent::KeyPress)
@@ -48,19 +54,36 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_F1)
         {
-            currentViewerMode = VIEWER_MODE_BACK;
+            currentViewerMode = VIEWER_MODE_FRONT;
+            viewerStatusBar->setViewerModeText("Front");
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            return true;
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
-            currentViewerMode = VIEWER_MODE_FRONT;
+            currentViewerMode = VIEWER_MODE_BACK;
+            viewerStatusBar->setViewerModeText("Back");
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            return true;
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
             currentViewerMode = VIEWER_MODE_ALPHA;
+            viewerStatusBar->setViewerModeText("Alpha");
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            return true;
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
             currentViewerMode = VIEWER_MODE_OUTPUT;
+            viewerStatusBar->setViewerModeText("Output");
+
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
 
             return true;
@@ -73,6 +96,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         if(mouseEvent->button() == Qt::LeftButton)
         {
             // std::cout << "left button" << std::endl;
+            return false;
         }
     }
     Q_UNUSED(watched);

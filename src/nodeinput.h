@@ -12,12 +12,14 @@ class NodeInput : public QPushButton
     Q_OBJECT
 
 public:
-    explicit NodeInput(QWidget *parent = nullptr);
+    explicit NodeInput(NodeInputType t, QWidget *parent = nullptr);
 
     void addInConnection(Connection*);
     void removeInConnection();
     void updateConnection();
     bool hasConnection();
+
+    NodeInputType getInputType();
 
     //void triggerMouseRelease();
     NodeBase* getUpstreamNode();
@@ -27,6 +29,7 @@ public:
     Connection* inConnection = nullptr;
 
 private:
+    const NodeInputType inputType;
 
 
 signals:

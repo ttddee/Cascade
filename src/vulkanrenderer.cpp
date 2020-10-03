@@ -494,22 +494,25 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
         return false;
     }
 
-    VkImageViewCreateInfo viewInfo = {};
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = computeRenderTarget->getImage();
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = loadImageFormat;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
+    {
+        // Create RGB view
+        VkImageViewCreateInfo viewInfo = {};
+        viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+        viewInfo.image = computeRenderTarget->getImage();
+        viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+        viewInfo.format = loadImageFormat;
+        viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+        viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+        viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+        viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+        viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
 
-    err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &computeRenderTarget->getImageView());
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
-        return false;
+        err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &computeRenderTarget->getImageView());
+        if (err != VK_SUCCESS) {
+            qWarning("Failed to create image view for texture: %d", err);
+            return false;
+        }
     }
 
     emit window->renderTargetHasBeenCreated(width, height);
@@ -871,7 +874,8 @@ void VulkanRenderer::createComputeCommandBuffer()
     if (err != VK_SUCCESS)
         qFatal("Failed to create fence: %d", err);
 
-    // Flush the queue if we're rebuilding the command buffer after a pipeline change to ensure it's not currently in use
+    // Flush the queue if we're rebuilding the command buffer
+    // after a pipeline change to ensure it's not currently in use
     devFuncs->vkQueueWaitIdle(compute.queue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1318,7 +1322,10 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
     return values;
 }
 
-void VulkanRenderer::processNode(NodeBase* node, CsImage &inputImage, const QSize targetSize)
+void VulkanRenderer::processNode(
+        NodeBase* node,
+        CsImage &inputImage,
+        const QSize targetSize)
 {
     if (node->nodeType == NODE_TYPE_READ)
     {

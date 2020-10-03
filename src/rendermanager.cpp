@@ -19,6 +19,8 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 {
     renderer = r;
     nodeGraph = ng;
+
+    wManager = &WindowManager::getInstance();
 }
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
@@ -35,13 +37,13 @@ void RenderManager::renderNodes(NodeBase *node)
     foreach(NodeBase* n, nodes)
     {
         renderNode(n);
-
-        node->needsUpdate = false;
     }
 }
 
 void RenderManager::renderNode(NodeBase *node)
 {
+    auto viewerMode = wManager->getViewerMode();
+
     if(node->needsUpdate)
     {
         std::cout << "rendering node" << std::endl;

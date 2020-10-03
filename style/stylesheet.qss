@@ -219,27 +219,35 @@ QCheckBox::indicator:unchecked:hover {
 }
 
 /* NodeInput */
-QPushButton#RGBBackIn {
+QPushButton#Front {
     background-color: #dc4c46;
     border: 0px;
 }
-QPushButton#RGBBackIn:hover {
+QPushButton#Front:hover {
     background-color: #e8514b;
 }
-QPushButton#RGBFrontIn {
-    background-color: #9bcf43;
+QPushButton#Back {
+    background-color: #dc4c46;
     border: 0px;
 }
-QPushButton#RGBFrontIn:hover {
-    background-color: #a4da47;
+QPushButton#Back:hover {
+    background-color: #e8514b;
+}
+QPushButton#Alpha {
+    background-color: #00b6dd;
+    border: 0px;
+}
+QPushButton#Alpha:hover {
+    background-color: #01c0e9;
 }
 
+
 /* NodeOutput */
-QPushButton#RGBOut {
+QPushButton#Output {
     background-color: #9bcf43;
     border: 0px;
 }
-QPushButton#RGBOut:hover {
+QPushButton#Output:hover {
     background-color: #a4da47;
 }
 
@@ -263,6 +271,9 @@ QLabel#folderLabel {
 }
 QLabel#fileNameLabel {
     color: #00b6dd;
+}
+QLabel#viewerModeLabel {
+    font-weight: bold;
 }
 
 QSplitter:handle {

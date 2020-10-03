@@ -19,6 +19,8 @@ NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
     ui->setupUi(this);
 
     this->setUpNode(type);
+
+    wManager = &WindowManager::getInstance();
 }
 
 void NodeBase::setUpNode(const NodeType nodeType)
@@ -40,13 +42,13 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     // Create inputs
     for (size_t i = 0; i < props.nodeInputs.size(); i++)
     {
-        auto nodeIn = new NodeInput(this);
+        auto nodeIn = new NodeInput(props.nodeInputs[i], this);
         nodeIn->move(-2, 15);
         nodeInputs.push_back(nodeIn);
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
         {
-            nodeIn->setObjectName("RGBBackIn");
+            //nodeIn->setObjectName("RGBBackIn"); // TODO: unused?
             this->rgbBackIn = nodeIn;
         }
     }
@@ -63,7 +65,7 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
 
         if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
         {
-            nodeOut->setObjectName("RGBOut");
+            //nodeOut->setObjectName("RGBOut");
             this->rgbOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
@@ -112,7 +114,7 @@ std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
                    std::inserter(nodes, nodes.end()));
     }
     nodes.insert(this);
-    std::cout << "Found " << nodes.size() << " node(s)." << std::endl;
+
     return nodes;
 }
 
@@ -212,6 +214,8 @@ void NodeBase::paintEvent(QPaintEvent *event)
     painter.setPen(pen);
     painter.drawRoundedRect(rect, cornerRadius, cornerRadius);
 
+    auto mode = wManager->getViewerMode();
+
     if (isSelected)
     {
         painter.setBrush(selectedColorBrush);
@@ -222,7 +226,24 @@ void NodeBase::paintEvent(QPaintEvent *event)
     {
         rect.setTopLeft(rect.topLeft() + QPoint(1, 1));
         rect.setBottomRight(rect.bottomRight() + QPoint(-1, -1));
-        painter.setPen(viewedColorPen);
+
+        if (mode == VIEWER_MODE_FRONT)
+        {
+            painter.setPen(frontViewedColorPen);
+        }
+        else if (mode == VIEWER_MODE_BACK)
+        {
+            painter.setPen(backViewedColorPen);
+        }
+        else if (mode == VIEWER_MODE_ALPHA)
+        {
+            painter.setPen(alphaViewedColorPen);
+        }
+        else if (mode == VIEWER_MODE_OUTPUT)
+        {
+            painter.setPen(outputViewedColorPen);
+        }
+
         painter.drawRoundedRect(rect, cornerRadius - 2, cornerRadius - 2);
     }
     Q_UNUSED(event);
@@ -240,6 +261,28 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
         }
     }
     return nullptr;
+}
+
+bool NodeBase::supportsViewerMode(const ViewerMode mode)
+{
+    if (mode == VIEWER_MODE_FRONT)
+    {
+        if (nodeInputs.size() > 1)
+            return true;
+        return false;
+    }
+    else if (mode == VIEWER_MODE_BACK)
+    {
+        if (nodeInputs.size() > 0)
+            return true;
+        return false;
+    }
+    else if (mode == VIEWER_MODE_ALPHA)
+        return true;
+    else if (mode == VIEWER_MODE_OUTPUT)
+        return true;
+
+    return false;
 }
 
 NodeProperties* NodeBase::getProperties()

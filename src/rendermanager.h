@@ -27,6 +27,8 @@ private:
     VulkanRenderer* renderer;
     NodeGraph* nodeGraph;
 
+    WindowManager* wManager;
+
 signals:
 
 public slots:

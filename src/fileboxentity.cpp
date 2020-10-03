@@ -12,19 +12,19 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
 {
     ui->setupUi(this);
 
-    connect(ui->loadButton, &QPushButton::clicked,
-            this, &FileBoxEntity::handleLoadButtonClicked);
-    connect(ui->deleteButton, &QPushButton::clicked,
-            this, &FileBoxEntity::handleDeleteButtonClicked);
-    connect(ui->fileListView->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, [this] { emit this->valueChanged(); });
-
     QStringList slist;
     slist.append(QString("../../images/bay.jpg")); // TODO: Temporary
 
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    connect(ui->loadButton, &QPushButton::clicked,
+            this, &FileBoxEntity::handleLoadButtonClicked);
+    connect(ui->deleteButton, &QPushButton::clicked,
+            this, &FileBoxEntity::handleDeleteButtonClicked);
+    connect(ui->fileListView->selectionModel(), &QItemSelectionModel::selectionChanged,
+            this, [this] { emit valueChanged(); });
 }
 
 QString FileBoxEntity::getCurrentPath()

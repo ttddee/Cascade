@@ -63,6 +63,7 @@ HEADERS += \
     src/rendermanager.h \
     src/spinboxentity.h \
     src/spinboxsliderentity.h \
+    src/uicolors.h \
     src/uientity.h \
     src/viewerstatusbar.h \
     src/vulkanrenderer.h \

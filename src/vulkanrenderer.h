@@ -9,6 +9,7 @@
 #include "nodedefinitions.h"
 #include "csimage.h"
 #include "nodebase.h"
+#include "windowmanager.h"
 
 using namespace Cascade;
 
@@ -33,7 +34,10 @@ public:
 
     QString getGpuName();
 
-    void processNode(NodeBase* node, CsImage& inputImage, const QSize targetSize);
+    void processNode(
+            NodeBase* node,
+            CsImage& inputImage,
+            const QSize targetSize);
     void displayProcessedNode(NodeBase* node);
 
 private:
@@ -76,7 +80,9 @@ private:
     bool createComputeRenderTarget( uint32_t width, uint32_t height);
 
     void createComputeDescriptors();
-    void updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage);
+    void updateComputeDescriptors(
+            CsImage& inputImage,
+            CsImage& outputImage);
     void createComputeCommandBuffer();
     void recordComputeCommandBuffer(
             CsImage& inputImage,

@@ -5,6 +5,7 @@
 #include <QGraphicsItem>
 
 #include "nodebase.h"
+#include "uicolors.h"
 
 class Connection : public QObject, public QGraphicsLineItem
 {
@@ -25,7 +26,10 @@ private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
     const QPen normalPen = QPen(QColor("#9299a1"), 3);
-    const QPen connectedPen = QPen(QColor("#9bcf43"), 3);
+    const QPen frontConnectedPen = QPen(frontColor, 3);
+    const QPen backConnectedPen = QPen(backColor, 3);
+    const QPen alphaConnectedPen = QPen(alphaColor, 3);
+
 
 };
 

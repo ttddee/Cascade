@@ -12,6 +12,8 @@ NodeOutput::NodeOutput(QWidget *parent)
     parentNode = static_cast<NodeBase*>(parent);
 
     this->resize(visualWidth, visualHeight);
+
+    setObjectName("Output");
 }
 
 void NodeOutput::addConnection(Connection *c)

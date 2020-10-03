@@ -92,6 +92,7 @@ void NodeGraph::selectNode(NodeBase *node)
         n->setIsSelected(false);
     }
     node->setIsSelected(true);
+    std::cout << "Selecting node." << std::endl;
 }
 
 void NodeGraph::activateNode(NodeBase *node)
