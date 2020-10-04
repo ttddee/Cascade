@@ -550,6 +550,10 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
 
     std::cout << "channels: " << cpuImage->nchannels() << std::endl;
 
+    // TODO: Create a color processor to speed this up
+    // Or better yet do this on the GPU
+    *cpuImage = ImageBufAlgo::colorconvert(*cpuImage, "sRGB", "linear", false);
+
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
     imageFromDisk = std::unique_ptr<CsImage>(new CsImage(

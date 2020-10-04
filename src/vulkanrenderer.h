@@ -8,6 +8,7 @@
 
 #include <OpenImageIO/imagebuf.h>
 #include <OpenImageIO/imagebufalgo.h>
+#include <OpenImageIO/color.h>
 
 #include "nodedefinitions.h"
 #include "csimage.h"
