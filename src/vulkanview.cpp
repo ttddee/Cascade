@@ -27,7 +27,7 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
     vulkanWindow = new VulkanWindow();
     vulkanWindow->setVulkanInstance(&instance);
 
-    vulkanWindow->setPreferredColorFormats(QVector<VkFormat>() << VK_FORMAT_B8G8R8A8_SRGB);
+    vulkanWindow->setPreferredColorFormats(QVector<VkFormat>() << VK_FORMAT_R32G32B32A32_SFLOAT);
 
     // Create Vulkan window container and put in layout
     vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);

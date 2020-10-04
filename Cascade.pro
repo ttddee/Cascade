@@ -86,7 +86,7 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 linux-g++ {
-
+    LIBS += -L /usr/lib -lOpenImageIO
 }
 
 win32-msvc* {

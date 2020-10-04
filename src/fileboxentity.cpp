@@ -15,9 +15,14 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     QStringList slist;
     slist.append(QString("../../images/bay.jpg")); // TODO: Temporary
 
+
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
+
+    // Temporary
+    QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
+    ui->fileListView->setCurrentIndex(index);
 
     connect(ui->loadButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleLoadButtonClicked);

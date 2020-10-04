@@ -6,12 +6,16 @@
 #include <QVulkanWindow>
 #include <QImage>
 
+#include <OpenImageIO/imagebuf.h>
+#include <OpenImageIO/imagebufalgo.h>
+
 #include "nodedefinitions.h"
 #include "csimage.h"
 #include "nodebase.h"
 #include "windowmanager.h"
 
 using namespace Cascade;
+using namespace OIIO;
 
 class VulkanWindow;
 
@@ -64,7 +68,7 @@ private:
     bool createTextureFromFile(const QString &path);
     bool createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
                                 VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex);
-    bool writeLinearImage(const QImage &img, VkImage image, VkDeviceMemory memory);
+    bool writeLinearImage(const ImageBuf &img, VkImage image, VkDeviceMemory memory);
 
     // Compute
     // ONCE
@@ -130,8 +134,8 @@ private:
 
     QSize currentRenderSize;
 
-    QImage cpuImage;
-    QString imagePath = ":/images/empty.jpg";
+    std::unique_ptr<ImageBuf> cpuImage;
+    QString imagePath = "../../images/empty.jpg";
 
     VkShaderModule noopShader;
     VkPipeline noopPipeline;

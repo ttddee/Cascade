@@ -67,7 +67,7 @@ void VulkanRenderer::initResources()
 
     //Compute
     // Create render target
-    if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
+    if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
         qFatal("Failed to create compute render target.");
 
     //createQueryPool();
@@ -444,7 +444,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 
     imageInfo.sType             = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType         = VK_IMAGE_TYPE_2D;
-    imageInfo.format            = VK_FORMAT_R8G8B8A8_UNORM;
+    imageInfo.format            = VK_FORMAT_R32G32B32A32_SFLOAT;
     imageInfo.extent.width      = width;
     imageInfo.extent.height     = height;
     imageInfo.extent.depth      = 1;
@@ -530,23 +530,35 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 
 bool VulkanRenderer::createTextureFromFile(const QString &path)
 {
-    cpuImage = QImage(path);
-    if (cpuImage.isNull()) {
-        qWarning("Failed to load image %s", qPrintable(path));
-        return false;
+    cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
+    bool ok = cpuImage->read(0, 0, 0, 3, true, TypeDesc::FLOAT);
+    if (!ok)
+    {
+        std::cout << "There was a problem reading the image." << std::endl;
+        std::cout << cpuImage->geterror() << std::endl;
     }
 
-    updateVertexData(cpuImage.width(), cpuImage.height());
+    // Add alpha channel if it doesn't exist
+    if (cpuImage->nchannels() == 3)
+    {
+        int channelorder[] = { 0, 1, 2, -1 /*use a float value*/ };
+        float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
+        std::string channelnames[] = { "R", "G", "B", "A" };
+
+        *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
+    }
+
+    std::cout << "channels: " << cpuImage->nchannels() << std::endl;
+
+    updateVertexData(cpuImage->xend(), cpuImage->yend());
 
     imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
-                                                 cpuImage.width(),
-                                                 cpuImage.height()));
+                                                 cpuImage->xend(),
+                                                 cpuImage->yend()));
 
-    // Convert to byte ordered RGBA8. Use premultiplied alpha, see pColorBlendState in the pipeline.
-    cpuImage = cpuImage.convertToFormat(QImage::Format_RGBA8888_Premultiplied);
+    loadImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
 
-    // Set to sRGB
-    loadImageFormat = VK_FORMAT_R8G8B8A8_SRGB;
+    auto imageSize = QSize(cpuImage->xend(), cpuImage->yend());
 
     // Now we can either map and copy the image data directly, or have to go
     // through a staging buffer to copy and convert into the internal optimal
@@ -560,35 +572,20 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
         return false;
     }
 
-    static bool alwaysStage = true; //Force usage accross the PCI bus
+    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
+                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                            window->hostVisibleMemoryIndex()))
+        return false;
 
-    if (canSampleLinear && !alwaysStage) {
-//        if (!createTextureImage(cpuImage.size(),
-//                                &texImage, &texMem,
-//                                VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_SAMPLED_BIT,
-//                                window->hostVisibleMemoryIndex()))
-//            return false;
+    if (!createTextureImage(imageSize, &imageFromDisk->getImage(), &loadImageMem,
+                            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
+                            window->deviceLocalMemoryIndex()))
+        return false;
 
-//        if (!writeLinearImage(cpuImage, texImage, texMem))
-//            return false;
+    if (!writeLinearImage(*cpuImage, loadImageStaging, loadImageStagingMem))
+        return false;
 
-//        texLayoutPending = true;
-    } else {
-        if (!createTextureImage(cpuImage.size(), &loadImageStaging, &loadImageStagingMem,
-                                VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-                                window->hostVisibleMemoryIndex()))
-            return false;
-
-        if (!createTextureImage(cpuImage.size(), &imageFromDisk->getImage(), &loadImageMem,
-                                VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
-                                window->deviceLocalMemoryIndex()))
-            return false;
-
-        if (!writeLinearImage(cpuImage, loadImageStaging, loadImageStagingMem))
-            return false;
-
-        texStagingPending = true;
-    }
+    texStagingPending = true;
 
     VkImageViewCreateInfo viewInfo;
     memset(&viewInfo, 0, sizeof(viewInfo));
@@ -609,7 +606,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
         return false;
     }
 
-    loadImageSize = cpuImage.size();
+    loadImageSize = imageSize;
 
     return true;
 }
@@ -964,7 +961,7 @@ void VulkanRenderer::createComputeCommandBuffer()
 
     devFuncs->vkCmdBindPipeline(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[NODE_TYPE_READ]);
     devFuncs->vkCmdBindDescriptorSets(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
-    devFuncs->vkCmdDispatch(compute.commandBufferImageLoad, cpuImage.width() / 16, cpuImage.height() / 16, 1);
+    devFuncs->vkCmdDispatch(compute.commandBufferImageLoad, cpuImage->xend() / 16, cpuImage->yend() / 16, 1);
 
     {
        //Make the barriers for the resources
@@ -1061,7 +1058,7 @@ bool VulkanRenderer::createTextureImage(const QSize &size, VkImage *image, VkDev
     return true;
 }
 
-bool VulkanRenderer::writeLinearImage(const QImage &img, VkImage image, VkDeviceMemory memory)
+bool VulkanRenderer::writeLinearImage(const ImageBuf &img, VkImage image, VkDeviceMemory memory)
 {
     VkImageSubresource subres = {
         VK_IMAGE_ASPECT_COLOR_BIT,
@@ -1071,17 +1068,26 @@ bool VulkanRenderer::writeLinearImage(const QImage &img, VkImage image, VkDevice
     VkSubresourceLayout layout;
     devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
 
-    uchar *p;
-    VkResult err = devFuncs->vkMapMemory(device, memory, layout.offset, layout.size, 0, reinterpret_cast<void **>(&p));
+    float *p;
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                memory,
+                layout.offset,
+                layout.size,
+                0,
+                reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS) {
         qWarning("Failed to map memory for linear image: %d", err);
         return false;
     }
 
-    for (int y = 0; y < img.height(); ++y) {
-        const uchar *line = img.constScanLine(y);
-        memcpy(p, line, img.width() * 4);
-        p += layout.rowPitch;
+    float* pixels = (float*)img.localpixels();
+    int lineWidth = img.xend() * 16; // 4 channels * 4 bytes
+    for (int y = 0; y < img.yend(); ++y)
+    {
+        memcpy(p, pixels, lineWidth);
+        pixels += img.xend() * 4;
+        p += img.xend() * 4;
     }
 
     devFuncs->vkUnmapMemory(device, memory);
@@ -1108,7 +1114,7 @@ void VulkanRenderer::initSwapChainResources()
     projection = window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
     const QSize sz = window->swapChainImageSize();
     projection.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
-    projection.translate(0, 0, -4);
+    projection.translate(0, 0, -3);
 }
 
 void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
@@ -1217,6 +1223,9 @@ void VulkanRenderer::createRenderPass()
 {
     VkCommandBuffer cb = window->currentCommandBuffer();
     const QSize sz = window->swapChainImageSize();
+
+    std::cout << "swapchain image width: " << sz.width() << std::endl;
+    std::cout << "swapchain image height: " << sz.height() << std::endl;
 
     // Clear background
     VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
@@ -1370,7 +1379,7 @@ void VulkanRenderer::processNode(
             createVertexBuffer();
 
             // Create render target
-            if (!createComputeRenderTarget(cpuImage.width(), cpuImage.height()))
+            if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
                 qFatal("Failed to create compute render target.");
 
             updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
