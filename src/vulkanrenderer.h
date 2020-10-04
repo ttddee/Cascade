@@ -65,6 +65,8 @@ private:
     void createComputePipelines();
     VkPipeline createComputePipeline(const VkShaderModule& shaderModule);
 
+    int getDeviceMemorySize();
+
     // Load image
     bool createTextureFromFile(const QString &path);
     bool createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
