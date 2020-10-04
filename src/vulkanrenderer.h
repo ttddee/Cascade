@@ -167,7 +167,6 @@ private:
     VkDescriptorSetLayout           computeDescriptorSetLayout = VK_NULL_HANDLE;
     VkDescriptorSet                 computeDescriptorSet       = VK_NULL_HANDLE;
 
-    VkDeviceMemory                  computeRenderTargetMemory  = VK_NULL_HANDLE;
     std::unique_ptr<CsImage>        computeRenderTarget        = nullptr;
     std::unique_ptr<CsImage>        imageFromDisk              = nullptr;
 
