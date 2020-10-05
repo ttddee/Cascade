@@ -36,8 +36,6 @@ VulkanRenderer::VulkanRenderer(VulkanWindow *w)
 
 void VulkanRenderer::initResources()
 {
-    qDebug("initResources");
-
     device = window->device();
     physicalDevice = window->physicalDevice();
 
@@ -48,10 +46,6 @@ void VulkanRenderer::initResources()
 
     devFuncs = window->vulkanInstance()->deviceFunctions(device);
     f = window->vulkanInstance()->functions();
-
-    // Create texture
-    if (!createTextureFromFile(imagePath))
-        qFatal("Failed to create texture");
 
     createVertexBuffer();
     createSampler();
@@ -65,12 +59,6 @@ void VulkanRenderer::initResources()
     fragShader = createShaderFromFile(":/shaders/texture_alpha_frag.spv");
     createGraphicsPipeline(graphicsPipelineAlpha, fragShader);
 
-    //Compute
-    // Create render target
-    if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
-        qFatal("Failed to create compute render target.");
-
-    //createQueryPool();
     createComputeDescriptors();
     createComputePipelineLayout();
 
@@ -85,9 +73,6 @@ void VulkanRenderer::initResources()
 
     createComputeQueue();
     createComputeCommandPool();
-    createComputeCommandBuffer();
-
-    recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
 
     emit window->rendererHasBeenCreated();
 }
@@ -605,8 +590,6 @@ void VulkanRenderer::createComputeDescriptors()
                 qFatal("Failed to allocate descriptor set: %d", err);
         }
     }
-
-    updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
 }
 
 void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage)
@@ -1388,6 +1371,14 @@ std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
 void VulkanRenderer::startNextFrame()
 {
     qDebug("startNextFrame");
+
+    if (isFirstStart)
+    {
+        isFirstStart = false;
+        window->frameReady();
+
+        return;
+    }
 
     submitComputeCommands();
 

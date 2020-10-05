@@ -82,8 +82,14 @@
    </item>
    <item row="0" column="3">
     <widget class="QLabel" name="widthLabel">
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
-      <string>1200</string>
+      <string/>
      </property>
     </widget>
    </item>
@@ -96,8 +102,14 @@
    </item>
    <item row="0" column="5">
     <widget class="QLabel" name="heightLabel">
+     <property name="minimumSize">
+      <size>
+       <width>30</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
-      <string>800</string>
+      <string/>
      </property>
     </widget>
    </item>

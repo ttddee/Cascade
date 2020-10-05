@@ -152,6 +152,8 @@ private:
     float position_z  = 0.0f;
     float scaleXY     = 1.0f;
 
+    bool isFirstStart = true;
+
     // Compute resources
     struct Compute
     {

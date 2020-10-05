@@ -4,7 +4,6 @@
         <file>shaders/noop_comp.spv</file>
         <file>shaders/texture_frag.spv</file>
         <file>shaders/texture_vert.spv</file>
-        <file>images/empty.jpg</file>
         <file>shaders/blur_comp.spv</file>
         <file>fonts/opensans/OpenSans-Bold.ttf</file>
         <file>fonts/opensans/OpenSans-BoldItalic.ttf</file>
