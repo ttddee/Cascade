@@ -39,11 +39,13 @@ public:
 
     QString getGpuName();
 
+    void processReadNode(
+            NodeBase* node);
     void processNode(
             NodeBase* node,
             CsImage& inputImage,
             const QSize targetSize);
-    void displayProcessedNode(NodeBase* node);
+    void displayNode(NodeBase* node);
     void doClearScreen();
 
 private:

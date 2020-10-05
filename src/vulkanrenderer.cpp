@@ -1280,69 +1280,71 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
     return values;
 }
 
+void VulkanRenderer::processReadNode(NodeBase *node)
+{
+    QString path = node->getAllPropertyValues();
+
+    if(path != "")
+    {
+        std::cout << "Processing read node." << std::endl;
+
+        imagePath = path;
+
+        // Create texture
+        if (!createTextureFromFile(imagePath))
+            qFatal("Failed to create texture");
+
+        // Update the projection size
+        createVertexBuffer();
+
+        // Create render target
+        if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
+            qFatal("Failed to create compute render target.");
+
+        updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
+
+        createComputeCommandBuffer();
+        recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
+
+        submitComputeCommands();
+
+        node->cachedImage = std::move(computeRenderTarget);
+    }
+}
+
 void VulkanRenderer::processNode(
         NodeBase* node,
         CsImage &inputImage,
         const QSize targetSize)
 {
-    clearScreen = false;
+    pushConstants = unpackPushConstants(node->getAllPropertyValues());
 
-    if (node->nodeType == NODE_TYPE_READ)
+    if (currentRenderSize != targetSize)
     {
-        QString path = node->getAllPropertyValues();
-
-        if(path != "")
-        {
-            imagePath = path;
-
-            // Create texture
-            if (!createTextureFromFile(imagePath))
-                qFatal("Failed to create texture");
-
-            // Update the projection size
-            createVertexBuffer();
-
-            // Create render target
-            if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
-                qFatal("Failed to create compute render target.");
-
-            updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
-
-            createComputeCommandBuffer();
-            recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
-
-            window->requestUpdate();
-        }
+        createVertexBuffer();
     }
-    else
-    {
-        pushConstants = unpackPushConstants(node->getAllPropertyValues());
 
-        if (currentRenderSize != targetSize)
-        {
-            createVertexBuffer();
-        }
+    createComputeRenderTarget(targetSize.width(), targetSize.height());
 
-        createComputeRenderTarget(targetSize.width(), targetSize.height());
+    std::cout << "Created render target with width: " << targetSize.width() << std::endl;
+    std::cout << "Created render target with height: " << targetSize.height() << std::endl;
 
-        std::cout << "Created render target with width: " << targetSize.width() << std::endl;
-        std::cout << "Created render target with height: " << targetSize.height() << std::endl;
+    updateComputeDescriptors(inputImage, *computeRenderTarget);
 
-        updateComputeDescriptors(inputImage, *computeRenderTarget);
+    recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
 
-        recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
-
-        window->requestUpdate();
-    }
+    submitComputeCommands();
 
     node->cachedImage = std::move(computeRenderTarget);
 }
 
-void VulkanRenderer::displayProcessedNode(NodeBase *node)
+void VulkanRenderer::displayNode(NodeBase *node)
 {
     // Should probably use something like cmdBlitImage
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
+
+    std::cout << "Display node" << std::endl;
 
     clearScreen = false;
 
@@ -1354,12 +1356,16 @@ void VulkanRenderer::displayProcessedNode(NodeBase *node)
 
     recordComputeCommandBuffer(image, *computeRenderTarget, noopPipeline);
 
+    submitComputeCommands();
+
     window->requestUpdate();
 }
 
 void VulkanRenderer::doClearScreen()
 {
     clearScreen = true;
+
+    std::cout << "Clearing screen" << std::endl;
 
     window->requestUpdate();
 }
@@ -1411,7 +1417,7 @@ void VulkanRenderer::startNextFrame()
     }
     else
     {
-        submitComputeCommands();
+        //submitComputeCommands();
 
         createRenderPass();
     }

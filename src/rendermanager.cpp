@@ -1,4 +1,4 @@
-#include "rendermanager.h"
+﻿#include "rendermanager.h"
 
 #include <iostream>
 
@@ -25,13 +25,26 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
-    if (node->getUpstreamNode() || node->nodeType == NODE_TYPE_READ)
+    if (node->nodeType != NODE_TYPE_READ && !node->getUpstreamNode())
     {
-        renderNodes(node);
+        renderer->doClearScreen();
     }
     else
     {
-        renderer->doClearScreen();
+        if (node->needsUpdate)
+        {
+            if (node->nodeType == NODE_TYPE_READ)
+            {
+                renderer->processReadNode(node);
+            }
+            else
+            {
+                renderNodes(node);
+            }
+        }
+        renderer->displayNode(node);
+
+        node->needsUpdate = false;
     }
 }
 
@@ -40,34 +53,31 @@ void RenderManager::renderNodes(NodeBase *node)
     auto nodes = node->getAllUpstreamNodes();
     foreach(NodeBase* n, nodes)
     {
-        renderNode(n);
+        if (node->nodeType == NODE_TYPE_READ)
+        {
+            renderer->processReadNode(node);
+        }
+        else if (n->needsUpdate && node->getUpstreamNode())
+        {
+            renderNode(n);
+        }
+        else if(!node->getUpstreamNode())
+        {
+            renderer->doClearScreen();
+
+            return;
+        }
     }
 }
 
 void RenderManager::renderNode(NodeBase *node)
 {
-    //auto viewerMode = wManager->getViewerMode();
+    std::cout << "rendering node" << std::endl;
 
-    if(node->needsUpdate)
-    {
-        std::cout << "rendering node" << std::endl;
+    std::shared_ptr<CsImage> inputImage = nullptr;
 
-        std::shared_ptr<CsImage> inputImage = nullptr;
+    inputImage = node->getUpstreamNode()->cachedImage;
 
-        if (node->getUpstreamNode())
-        {
-            inputImage = node->getUpstreamNode()->cachedImage;
-        }
-
-        renderer->processNode(node, *inputImage, node->getTargetSize());
-
-        node->needsUpdate = false;
-    }
-    else if (node->getIsViewed())
-    {
-        std::cout << "displaying node without rendering" << std::endl;
-
-        renderer->displayProcessedNode(node);
-    }
+    renderer->processNode(node, *inputImage, node->getTargetSize());
 
 }
