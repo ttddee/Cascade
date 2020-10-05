@@ -12,36 +12,33 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
 {
     this->setFixedWidth(150);
 
-    // Add Read Node at the top
-    auto a = new QAction();
-    actions.push_back(a);
-    a->setText("Read");
-    this->addAction(a);
-    auto t = NODE_TYPE_READ;
-    QObject::connect(
-                a,
-                &QAction::triggered,
-                parent,
-                [parent, t]{ parent->createNode(t); });
+    // Populate menu with submenus aka categories
+    QMap<NodeCategory, QMenu*> categories;
+    {
+        QMapIterator<NodeCategory, QString> i(categoryStrings);
+        while (i.hasNext())
+        {
+            i.next();
+            categories[i.key()] = this->addMenu(categoryStrings[i.key()]);
+        }
+    }
 
-    this->addSeparator();
-
+    // Add nodes to corresponding submenus
     QMapIterator<NodeType, QString> i(nodeStrings);
     while (i.hasNext())
     {
         i.next();
-        if (i.key() != NODE_TYPE_READ)
-        {
-            auto a = new QAction();
-            actions.push_back(a);
-            a->setText(i.value());
-            this->addAction(a);
-            auto t = i.key();
-            QObject::connect(
-                        a,
-                        &QAction::triggered,
-                        parent,
-                        [parent, t]{ parent->createNode(t); });
-        }
+        auto a = new QAction();
+        actions.push_back(a);
+        a->setText(i.value());
+        auto t = i.key();
+        categories[getPropertiesForType(t).category]->addAction(a);
+
+        QObject::connect(
+                    a,
+                    &QAction::triggered,
+                    parent,
+                    [parent, t]{ parent->createNode(t); });
+
     }
 }

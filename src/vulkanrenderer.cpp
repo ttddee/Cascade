@@ -1321,7 +1321,10 @@ void VulkanRenderer::processNode(
 
     if (currentRenderSize != targetSize)
     {
+        updateVertexData(targetSize.width(), targetSize.height());
         createVertexBuffer();
+
+        std::cout << "Render target size changed." << std::endl;
     }
 
     createComputeRenderTarget(targetSize.width(), targetSize.height());
