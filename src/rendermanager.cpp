@@ -29,6 +29,10 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     {
         renderNodes(node);
     }
+    else
+    {
+        renderer->doClearScreen();
+    }
 }
 
 void RenderManager::renderNodes(NodeBase *node)

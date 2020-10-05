@@ -44,6 +44,7 @@ public:
             CsImage& inputImage,
             const QSize targetSize);
     void displayProcessedNode(NodeBase* node);
+    void doClearScreen();
 
 private:
     // Setup
@@ -152,7 +153,7 @@ private:
     float position_z  = 0.0f;
     float scaleXY     = 1.0f;
 
-    bool isFirstStart = true;
+    bool clearScreen = true;
 
     // Compute resources
     struct Compute

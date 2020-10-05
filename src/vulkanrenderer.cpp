@@ -1285,6 +1285,8 @@ void VulkanRenderer::processNode(
         CsImage &inputImage,
         const QSize targetSize)
 {
+    clearScreen = false;
+
     if (node->nodeType == NODE_TYPE_READ)
     {
         QString path = node->getAllPropertyValues();
@@ -1342,6 +1344,8 @@ void VulkanRenderer::displayProcessedNode(NodeBase *node)
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
 
+    clearScreen = false;
+
     CsImage& image = *node->cachedImage;
 
     createComputeRenderTarget(image.getWidth(), image.getHeight());
@@ -1349,6 +1353,13 @@ void VulkanRenderer::displayProcessedNode(NodeBase *node)
     updateComputeDescriptors(image, *computeRenderTarget);
 
     recordComputeCommandBuffer(image, *computeRenderTarget, noopPipeline);
+
+    window->requestUpdate();
+}
+
+void VulkanRenderer::doClearScreen()
+{
+    clearScreen = true;
 
     window->requestUpdate();
 }
@@ -1372,17 +1383,38 @@ void VulkanRenderer::startNextFrame()
 {
     qDebug("startNextFrame");
 
-    if (isFirstStart)
+    if (clearScreen)
     {
-        isFirstStart = false;
-        window->frameReady();
+        const QSize sz = window->swapChainImageSize();
 
-        return;
+        // Clear background
+        VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
+        VkClearDepthStencilValue clearDS = { 1, 0 };
+        VkClearValue clearValues[2];
+        memset(clearValues, 0, sizeof(clearValues));
+        clearValues[0].color = clearColor;
+        clearValues[1].depthStencil = clearDS;
+
+        VkRenderPassBeginInfo rpBeginInfo;
+        memset(&rpBeginInfo, 0, sizeof(rpBeginInfo));
+        rpBeginInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        rpBeginInfo.renderPass = window->defaultRenderPass();
+        rpBeginInfo.framebuffer = window->currentFramebuffer();
+        rpBeginInfo.renderArea.extent.width = sz.width();
+        rpBeginInfo.renderArea.extent.height = sz.height();
+        rpBeginInfo.clearValueCount = 2;
+        rpBeginInfo.pClearValues = clearValues;
+        VkCommandBuffer cmdBuf = window->currentCommandBuffer();
+        devFuncs->vkCmdBeginRenderPass(cmdBuf, &rpBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        devFuncs->vkCmdEndRenderPass(cmdBuf);
     }
+    else
+    {
+        submitComputeCommands();
 
-    submitComputeCommands();
-
-    createRenderPass();
+        createRenderPass();
+    }
 
     window->frameReady();
 }

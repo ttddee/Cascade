@@ -144,8 +144,12 @@ void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 
 void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 {
+    std::cout << "handle node update request" << std::endl;
+
     if (node->getIsViewed())
     {
+        std::cout << "requesting node display" << std::endl;
+
         emit requestNodeDisplay(node);
     }
 }

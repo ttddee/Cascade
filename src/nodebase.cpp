@@ -347,6 +347,7 @@ void NodeBase::mouseReleaseEvent(QMouseEvent *event)
 void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
 {
     emit nodeWasDoubleClicked(this);
+
     Q_UNUSED(event);
 }
 
