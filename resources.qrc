@@ -25,5 +25,7 @@
         <file>design/ui/png/spinbox_up_button.png</file>
         <file>shaders/crop_comp.spv</file>
         <file>shaders/texture_alpha_frag.spv</file>
+        <file>shaders/pixelate_comp.spv</file>
+        <file>shaders/solarize_comp.spv</file>
     </qresource>
 </RCC>

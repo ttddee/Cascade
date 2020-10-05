@@ -262,9 +262,10 @@ namespace Cascade
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PIXELATE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PIXELATE] },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Filter Size,0,100,1,5" }
         },
-        ":/shaders/noop_comp.spv"
+        ":/shaders/pixelate_comp.spv"
     };
 
     const NodeInitProperties solarizeNodeInitProperties =
@@ -275,9 +276,12 @@ namespace Cascade
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SOLARIZE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SOLARIZE] },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Red Thresh,0.0,1.0,0.1,0.5" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Green Thresh,0.0,1.0,0.1,0.5" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Blue Thresh,0.0,1.0,0.1,0.5" }
         },
-        ":/shaders/noop_comp.spv"
+        ":/shaders/solarize_comp.spv"
     };
 
     const NodeInitProperties constantNodeInitProperties =

@@ -39,6 +39,5 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     &QAction::triggered,
                     parent,
                     [parent, t]{ parent->createNode(t); });
-
     }
 }
