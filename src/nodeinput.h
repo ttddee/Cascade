@@ -21,7 +21,6 @@ public:
 
     NodeInputType getInputType();
 
-    //void triggerMouseRelease();
     NodeBase* getUpstreamNode();
 
     NodeBase* parentNode = nullptr;
@@ -33,9 +32,7 @@ private:
 
 
 signals:
-    //void mouseRealeasedOnNodeIn(NodeInput*);
-    //void nodeInReceivedInConnection();
-    //void nodeInLostInConnection();
+
 };
 
 #endif // NODEIN_H

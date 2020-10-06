@@ -233,7 +233,8 @@ namespace Cascade
         NODE_TYPE_MERGE,
         nodeStrings[NODE_TYPE_MERGE],
         NODE_CAT_MERGE,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] }

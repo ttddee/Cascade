@@ -43,13 +43,16 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     for (size_t i = 0; i < props.nodeInputs.size(); i++)
     {
         auto nodeIn = new NodeInput(props.nodeInputs[i], this);
-        nodeIn->move(-2, 15);
+        nodeIn->move(-2, 15 + 35 * i);
         nodeInputs.push_back(nodeIn);
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
         {
-            //nodeIn->setObjectName("RGBBackIn"); // TODO: unused?
             this->rgbBackIn = nodeIn;
+        }
+        else if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_FRONT)
+        {
+            this->rgbFrontIn = nodeIn;
         }
     }
 }
@@ -94,11 +97,20 @@ void NodeBase::setIsViewed(const bool b)
     isViewed = b;
 }
 
-NodeBase* NodeBase::getUpstreamNode()
+NodeBase* NodeBase::getUpstreamNodeBack()
 {
-    if(nodeInputs.size() > 0 && nodeInputs[0]->hasConnection())
+    if(rgbBackIn && rgbBackIn->hasConnection())
     {
-        return nodeInputs[0]->inConnection->sourceOutput->parentNode;
+        return rgbBackIn->inConnection->sourceOutput->parentNode;
+    }
+    return nullptr;
+}
+
+NodeBase* NodeBase::getUpstreamNodeFront()
+{
+    if(rgbFrontIn && rgbFrontIn->hasConnection())
+    {
+        return rgbFrontIn->inConnection->sourceOutput->parentNode;
     }
     return nullptr;
 }
@@ -106,7 +118,14 @@ NodeBase* NodeBase::getUpstreamNode()
 std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
 {
     std::set<NodeBase*> nodes;
-    if(auto n = getUpstreamNode())
+    if(auto n = getUpstreamNodeBack())
+    {
+        auto add = n->getAllUpstreamNodes();
+        std::merge(nodes.begin(), nodes.end(),
+                   add.begin(), add.end(),
+                   std::inserter(nodes, nodes.end()));
+    }
+    if(auto n = getUpstreamNodeFront())
     {
         auto add = n->getAllUpstreamNodes();
         std::merge(nodes.begin(), nodes.end(),
@@ -128,7 +147,7 @@ void NodeBase::requestUpdate()
     needsUpdate = true;
     invalidateAllDownstreamNodes();
 
-    if (getUpstreamNode() || nodeType == NODE_TYPE_READ)
+    if (getUpstreamNodeBack() || nodeType == NODE_TYPE_READ)
     {
         emit nodeRequestUpdate(this);
     }
@@ -136,7 +155,7 @@ void NodeBase::requestUpdate()
 
 QSize NodeBase::getTargetSize()
 {
-    auto upstreamNode = getUpstreamNode();
+    auto upstreamNode = getUpstreamNodeBack();
 
     if (upstreamNode)
     {
@@ -263,17 +282,28 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
     return nullptr;
 }
 
+bool NodeBase::canBeRendered()
+{
+    if (rgbBackIn && !rgbBackIn->hasConnection())
+    {
+        return false;
+    }
+    return true;
+}
+
 bool NodeBase::supportsViewerMode(const ViewerMode mode)
 {
+    // TODO: Do we need this?
+
     if (mode == VIEWER_MODE_FRONT)
     {
-        if (nodeInputs.size() > 1)
+        if (rgbFrontIn)
             return true;
         return false;
     }
     else if (mode == VIEWER_MODE_BACK)
     {
-        if (nodeInputs.size() > 0)
+        if (rgbBackIn)
             return true;
         return false;
     }

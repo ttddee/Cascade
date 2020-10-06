@@ -42,13 +42,15 @@ public:
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
     NodeProperties* getProperties();
-    NodeBase* getUpstreamNode();
+    NodeBase* getUpstreamNodeBack();
+    NodeBase* getUpstreamNodeFront();
     std::set<NodeBase*> getAllUpstreamNodes();
     void requestUpdate();
     QString getAllPropertyValues();
     QSize getTargetSize();
     void updateCropSizes();
     bool supportsViewerMode(const ViewerMode mode);
+    bool canBeRendered();
 
     bool needsUpdate = true;
 
@@ -74,8 +76,9 @@ private:
     QPoint outAnchorPos;
     std::vector<NodeInput*> nodeInputs;
     std::vector<NodeOutput*> nodeOutputs;
-    NodeInput* rgbBackIn;
-    NodeOutput* rgbOut;
+    NodeInput* rgbBackIn = nullptr;
+    NodeInput* rgbFrontIn = nullptr;
+    NodeOutput* rgbOut = nullptr;
     NodeProperties* propertiesView;
     WindowManager* wManager;
 

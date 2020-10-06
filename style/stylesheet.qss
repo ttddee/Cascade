@@ -227,11 +227,11 @@ QPushButton#Front:hover {
     background-color: #e8514b;
 }
 QPushButton#Back {
-    background-color: #dc4c46;
+    background-color: #9bcf43;
     border: 0px;
 }
 QPushButton#Back:hover {
-    background-color: #e8514b;
+    background-color: #a4da47;
 }
 QPushButton#Alpha {
     background-color: #00b6dd;

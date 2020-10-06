@@ -25,26 +25,58 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
-    if (node->nodeType != NODE_TYPE_READ && !node->getUpstreamNode())
+    if (wManager->getViewerMode() == VIEWER_MODE_FRONT)
     {
-        renderer->doClearScreen();
-    }
-    else
-    {
-        if (node->needsUpdate)
+        if (auto upstream = node->getUpstreamNodeFront())
         {
-            if (node->nodeType == NODE_TYPE_READ)
+            if (upstream->canBeRendered())
             {
-                renderer->processReadNode(node);
-            }
-            else
-            {
-                renderNodes(node);
+                renderNodes(upstream);
+                renderer->displayNode(upstream);
+
+                return;
             }
         }
-        renderer->displayNode(node);
+        renderer->doClearScreen();
+    }
+    else if (wManager->getViewerMode() == VIEWER_MODE_BACK)
+    {
+        if (auto upstream = node->getUpstreamNodeBack())
+        {
+            if (upstream->canBeRendered())
+            {
+                renderNodes(upstream);
+                renderer->displayNode(upstream);
 
-        node->needsUpdate = false;
+                return;
+            }
+        }
+        renderer->doClearScreen();
+    }
+    // Viewer Modes Alpha and Output are handled in VulkanRenderer
+    else
+    {
+        if (!node->canBeRendered())
+        {
+            renderer->doClearScreen();
+        }
+        else
+        {
+            if (node->needsUpdate)
+            {
+                if (node->nodeType == NODE_TYPE_READ)
+                {
+                    renderer->processReadNode(node);
+                }
+                else
+                {
+                    renderNodes(node);
+                }
+            }
+            renderer->displayNode(node);
+
+            node->needsUpdate = false;
+        }
     }
 }
 
@@ -57,11 +89,11 @@ void RenderManager::renderNodes(NodeBase *node)
         {
             renderer->processReadNode(node);
         }
-        else if (n->needsUpdate && node->getUpstreamNode())
+        else if (n->needsUpdate && node->getUpstreamNodeBack())
         {
             renderNode(n);
         }
-        else if(!node->getUpstreamNode())
+        else if(!node->getUpstreamNodeBack())
         {
             renderer->doClearScreen();
 
@@ -76,7 +108,7 @@ void RenderManager::renderNode(NodeBase *node)
 
     std::shared_ptr<CsImage> inputImage = nullptr;
 
-    inputImage = node->getUpstreamNode()->cachedImage;
+    inputImage = node->getUpstreamNodeBack()->cachedImage;
 
     renderer->processNode(node, *inputImage, node->getTargetSize());
 

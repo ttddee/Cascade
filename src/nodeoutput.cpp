@@ -43,21 +43,3 @@ std::vector<Connection*> NodeOutput::getConnections()
     return outConnections;
 }
 
-//void NodeOutput::mouseMoveEvent(QMouseEvent *event)
-//{
-//    if (isDragging)
-//    {
-//        emit requestConnectionUpdate(parentNode);
-//    }
-//    Q_UNUSED(event);
-//}
-
-//void NodeOutput::mouseReleaseEvent(QMouseEvent *event)
-//{
-//    if (isDragging)
-//    {
-//        isDragging = false;
-//        emit leftMouseReleaseFromNodeOut(event);
-//        //emit requestConnectionAttachment(parentNode);
-//    }
-//}

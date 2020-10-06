@@ -464,8 +464,6 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    std::cout << "channels: " << cpuImage->nchannels() << std::endl;
-
     // TODO: Create a color processor to speed this up
     // Or better yet do this on the GPU
     *cpuImage = ImageBufAlgo::colorconvert(*cpuImage, "sRGB", "linear", false);
@@ -690,7 +688,13 @@ VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderMod
 
     VkPipeline pl = VK_NULL_HANDLE;
 
-    VkResult err = devFuncs->vkCreateComputePipelines(device, pipelineCache, 1, &pipelineInfo, nullptr, &pl);
+    VkResult err = devFuncs->vkCreateComputePipelines(
+                device,
+                pipelineCache,
+                1,
+                &pipelineInfo,
+                nullptr,
+                &pl);
     if (err != VK_SUCCESS)
         qFatal("Failed to create compute pipeline: %d", err);
 
@@ -880,9 +884,23 @@ void VulkanRenderer::createComputeCommandBuffer()
                                 1, &barrier);
     }
 
-    devFuncs->vkCmdBindPipeline(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, pipelines[NODE_TYPE_READ]);
-    devFuncs->vkCmdBindDescriptorSets(compute.commandBufferImageLoad, VK_PIPELINE_BIND_POINT_COMPUTE, computePipelineLayout, 0, 1, &computeDescriptorSet, 0, 0);
-    devFuncs->vkCmdDispatch(compute.commandBufferImageLoad, cpuImage->xend() / 16, cpuImage->yend() / 16, 1);
+    devFuncs->vkCmdBindPipeline(
+                compute.commandBufferImageLoad,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                pipelines[NODE_TYPE_READ]);
+    devFuncs->vkCmdBindDescriptorSets(
+                compute.commandBufferImageLoad,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                computePipelineLayout,
+                0,
+                1,
+                &computeDescriptorSet,
+                0,
+                0);
+    devFuncs->vkCmdDispatch(
+                compute.commandBufferImageLoad,
+                cpuImage->xend() / 16 + 1,
+                cpuImage->yend() / 16 + 1, 1);
 
     {
        //Make the barriers for the resources
@@ -1041,7 +1059,6 @@ void VulkanRenderer::initSwapChainResources()
 
 void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
 {
-    // Records the compute command buffer for using the texture image
     // Needs the right render target
     devFuncs->vkQueueWaitIdle(compute.queue);
 
@@ -1304,7 +1321,10 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
 
         createComputeCommandBuffer();
-        recordComputeCommandBuffer(*imageFromDisk, *computeRenderTarget, pipelines[NODE_TYPE_READ]);
+        recordComputeCommandBuffer(
+                    *imageFromDisk,
+                    *computeRenderTarget,
+                    pipelines[NODE_TYPE_READ]);
 
         submitComputeCommands();
 
