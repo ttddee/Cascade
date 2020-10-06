@@ -43,7 +43,12 @@ public:
             NodeBase* node);
     void processNode(
             NodeBase* node,
-            CsImage& inputImage,
+            CsImage& inputImageBack,
+            const QSize targetSize);
+    void processNode(
+            NodeBase* node,
+            CsImage& inputImageBack,
+            CsImage& inputImageFront,
             const QSize targetSize);
     void displayNode(NodeBase* node);
     void doClearScreen();
@@ -59,6 +64,7 @@ private:
     // Initialize
     void createVertexBuffer();
     void createSampler();
+    void createDescriptorPool();
     void createGraphicsDescriptors();
     void createGraphicsPipelineCache();
     void createGraphicsPipelineLayout();
@@ -66,7 +72,8 @@ private:
 
     void loadShadersFromDisk();
     void createComputePipelines();
-    VkPipeline createComputePipeline(const VkShaderModule& shaderModule);
+    VkPipeline createComputePipeline(NodeType nodeType);
+    VkPipeline createComputePipelineNoop();
 
     int getDeviceMemorySize();
 
@@ -91,18 +98,24 @@ private:
 
     void createComputeDescriptors();
     void updateComputeDescriptors(
-            CsImage& inputImage,
+            CsImage& inputImageBack,
+            CsImage& outputImage);
+    void updateComputeDescriptors(
+            CsImage& inputImageBack,
+            CsImage& inputImageFront,
             CsImage& outputImage);
     void createComputeCommandBuffer();
     void recordComputeCommandBuffer(
-            CsImage& inputImage,
+            CsImage& inputImageBack,
+            CsImage& outputImage,
+            VkPipeline& pl);
+    void recordComputeCommandBuffer(
+            CsImage& inputImageBack,
+            CsImage& inputImageFront,
             CsImage& outputImage,
             VkPipeline& pl);
 
-    //////////////////////
-
-
-    // Called in startNextFrame()
+    // Has to be called in startNextFrame()
     void submitComputeCommands();
     void createRenderPass();
 
@@ -114,9 +127,9 @@ private:
     VkBuffer buf = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    VkDescriptorPool descPool = VK_NULL_HANDLE;
-    VkDescriptorSetLayout descSetLayout = VK_NULL_HANDLE;
-    VkDescriptorSet descSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+    VkDescriptorSetLayout graphicsDescriptorSetLayout = VK_NULL_HANDLE;
+    VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
     VkPipelineCache pipelineCache = VK_NULL_HANDLE;
     VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
@@ -155,27 +168,33 @@ private:
     float position_z  = 0.0f;
     float scaleXY     = 1.0f;
 
+    // TODO: Replace this with proper render states
     bool clearScreen = true;
+    bool renderTwoInputs = false;
 
     // Compute resources
     struct Compute
     {
         VkQueue                     queue;                // Separate queue for compute commands (queue family may differ from the one used for graphics)
         VkCommandPool               commandPool;          // Use a separate command pool (queue family may differ from the one used for graphics)
-        VkCommandBuffer             commandBuffer;        // Command buffer storing the dispatch commands and barriers
+        VkCommandBuffer             commandBufferOneInput;    // Command buffer storing the dispatch commands and barriers
+        VkCommandBuffer             commandBufferTwoInputs;
         VkCommandBuffer             commandBufferImageLoad;    // Command buffer used only for initial initialization and transfering data accross the pci bus
         VkFence                     fence;                // Synchronization fence to avoid rewriting compute CB if still in use
         uint32_t                    queueFamilyIndex;     // Family index of the graphics queue, used for barriers
     };
 
     Compute                         compute;
-    VkPipelineLayout                computePipelineLayout      = VK_NULL_HANDLE;
-    VkPipeline                      computePipeline            = VK_NULL_HANDLE;
-    VkDescriptorSetLayout           computeDescriptorSetLayout = VK_NULL_HANDLE;
-    VkDescriptorSet                 computeDescriptorSet       = VK_NULL_HANDLE;
+    VkPipelineLayout                computePipelineLayoutOneInput       = VK_NULL_HANDLE;
+    VkPipelineLayout                computePipelineLayoutTwoInputs      = VK_NULL_HANDLE;
+    VkPipeline                      computePipeline                     = VK_NULL_HANDLE;
+    VkDescriptorSetLayout           computeDescriptorSetLayoutOneInput  = VK_NULL_HANDLE;
+    VkDescriptorSetLayout           computeDescriptorSetLayoutTwoInputs = VK_NULL_HANDLE;
+    VkDescriptorSet                 computeDescriptorSetOneInput        = VK_NULL_HANDLE;
+    VkDescriptorSet                 computeDescriptorSetTwoInputs       = VK_NULL_HANDLE;
 
-    std::unique_ptr<CsImage>        computeRenderTarget        = nullptr;
-    std::unique_ptr<CsImage>        imageFromDisk              = nullptr;
+    std::unique_ptr<CsImage>        computeRenderTarget                 = nullptr;
+    std::unique_ptr<CsImage>        imageFromDisk                       = nullptr;
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;

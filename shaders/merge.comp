@@ -1,0 +1,21 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImageBack;
+layout (binding = 1, rgba8) uniform readonly image2D inputImageFront;
+layout (binding = 2, rgba8) uniform image2D resultImage;
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);    
+
+    vec3 back = imageLoad(inputImageBack, pixelCoords).rgb;
+
+    vec3 front = imageLoad(inputImageFront, pixelCoords).rgb;
+
+	vec4 pixel = vec4(back, 1.0); 
+    pixel.r += back.r;
+
+	imageStore(resultImage, pixelCoords, pixel);
+                                    
+} 

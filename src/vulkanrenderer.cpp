@@ -49,6 +49,7 @@ void VulkanRenderer::initResources()
 
     createVertexBuffer();
     createSampler();
+    createDescriptorPool();
     createGraphicsDescriptors();
     createGraphicsPipelineCache();
     createGraphicsPipelineLayout();
@@ -64,10 +65,8 @@ void VulkanRenderer::initResources()
 
     // Load all the shaders we need
     loadShadersFromDisk();
-    // Load Noop shader
-    noopShader = createShaderFromFile(":/shaders/noop_comp.spv");
     // Create Noop pipeline
-    noopPipeline = createComputePipeline(noopShader);
+    noopPipeline = createComputePipelineNoop();
     // Create a pipeline for each shader
     createComputePipelines();
 
@@ -167,24 +166,32 @@ void VulkanRenderer::createSampler()
         qFatal("Failed to create sampler: %d", err);
 }
 
-void VulkanRenderer::createGraphicsDescriptors()
+void VulkanRenderer::createDescriptorPool()
 {
     // Create descriptor pool
-    VkDescriptorPoolSize descPoolSizes[3] = {
+    VkDescriptorPoolSize descPoolSizes[4] = {
         { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 * uint32_t(concurrentFrameCount) },
+        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
         { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
         { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,          2 * uint32_t(concurrentFrameCount) } //two per frame
     };
     VkDescriptorPoolCreateInfo descPoolInfo;
     memset(&descPoolInfo, 0, sizeof(descPoolInfo));
     descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    descPoolInfo.maxSets        = 4;
-    descPoolInfo.poolSizeCount  = 3;
+    descPoolInfo.maxSets        = 6;
+    descPoolInfo.poolSizeCount  = 4;
     descPoolInfo.pPoolSizes = descPoolSizes;
-    VkResult err = devFuncs->vkCreateDescriptorPool(device, &descPoolInfo, nullptr, &descPool);
+    VkResult err = devFuncs->vkCreateDescriptorPool(
+                device,
+                &descPoolInfo,
+                nullptr,
+                &descriptorPool);
     if (err != VK_SUCCESS)
         qFatal("Failed to create descriptor pool: %d", err);
+}
 
+void VulkanRenderer::createGraphicsDescriptors()
+{
     // Create DescriptorSetLayout
     VkDescriptorSetLayoutBinding layoutBinding[2] =
     {
@@ -210,7 +217,7 @@ void VulkanRenderer::createGraphicsDescriptors()
         2, // bindingCount
         layoutBinding
     };
-    err = devFuncs->vkCreateDescriptorSetLayout(device, &descLayoutInfo, nullptr, &descSetLayout);
+    VkResult err = devFuncs->vkCreateDescriptorSetLayout(device, &descLayoutInfo, nullptr, &graphicsDescriptorSetLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create descriptor set layout: %d", err);
 
@@ -234,7 +241,7 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
     pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
     pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &descSetLayout;
+    pipelineLayoutInfo.pSetLayouts = &graphicsDescriptorSetLayout;
     VkResult err = devFuncs->vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create pipeline layout: %d", err);
@@ -422,16 +429,6 @@ void VulkanRenderer::loadShadersFromDisk()
     }
 }
 
-void VulkanRenderer::createComputePipelines()
-{
-    for (int i = 0; i != NODE_TYPE_MAX; i++)
-    {
-        NodeType nodeType = static_cast<NodeType>(i);
-
-        pipelines[nodeType] = createComputePipeline(shaders[nodeType]);
-    }
-}
-
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 {
     computeRenderTarget = std::unique_ptr<CsImage>(
@@ -534,7 +531,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
 
 void VulkanRenderer::createComputeDescriptors()
 {
-    if (computeDescriptorSetLayout == VK_NULL_HANDLE)
+    if (computeDescriptorSetLayoutOneInput == VK_NULL_HANDLE)
     {
         // Define the layout of the input of the shader.
         // 1 image to read, 1 image to write
@@ -556,48 +553,114 @@ void VulkanRenderer::createComputeDescriptors()
         descriptorSetLayoutCreateInfo.bindingCount = 2;
 
         //Create the layout, store it to share between shaders
-        VkResult err = devFuncs->vkCreateDescriptorSetLayout(device, &descriptorSetLayoutCreateInfo, nullptr, &computeDescriptorSetLayout);
+        VkResult err = devFuncs->vkCreateDescriptorSetLayout(
+                    device,
+                    &descriptorSetLayoutCreateInfo,
+                    nullptr,
+                    &computeDescriptorSetLayoutOneInput);
         if (err != VK_SUCCESS)
             qFatal("Failed to create compute descriptor set layout: %d", err);
     }
 
-    //Descriptor sets
+    if (computeDescriptorSetLayoutTwoInputs == VK_NULL_HANDLE)
+    {
+        // Define the layout of the input of the shader.
+        // 2 images to read, 1 image to write
+        VkDescriptorSetLayoutBinding bindings[3]= {};
+
+        bindings[0].binding         = 0;
+        bindings[0].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+        bindings[0].descriptorCount = 1;
+        bindings[0].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        bindings[1].binding         = 1;
+        bindings[1].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+        bindings[1].descriptorCount = 1;
+        bindings[1].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        bindings[2].binding         = 2;
+        bindings[2].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+        bindings[2].descriptorCount = 1;
+        bindings[2].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+
+        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo {};
+        descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+        descriptorSetLayoutCreateInfo.pBindings = bindings;
+        descriptorSetLayoutCreateInfo.bindingCount = 3;
+
+        //Create the layout, store it to share between shaders
+        VkResult err = devFuncs->vkCreateDescriptorSetLayout(
+                    device,
+                    &descriptorSetLayoutCreateInfo,
+                    nullptr,
+                    &computeDescriptorSetLayoutTwoInputs);
+        if (err != VK_SUCCESS)
+            qFatal("Failed to create compute descriptor set layout: %d", err);
+    }
+
+    // Descriptor sets
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
-        VkDescriptorSetAllocateInfo descSetAllocInfo = {
-            VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-            nullptr,
-            descPool,
-            1,
-            &descSetLayout
-        };
-        VkResult err = devFuncs->vkAllocateDescriptorSets(device, &descSetAllocInfo, &descSet[i]);
-        if (err != VK_SUCCESS)
-            qFatal("Failed to allocate descriptor set: %d", err);
+        {
+            VkDescriptorSetAllocateInfo descSetAllocInfo = {
+                VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                nullptr,
+                descriptorPool,
+                1,
+                &graphicsDescriptorSetLayout
+            };
+            VkResult err = devFuncs->vkAllocateDescriptorSets(
+                        device,
+                        &descSetAllocInfo,
+                        &graphicsDescriptorSet[i]);
+            if (err != VK_SUCCESS)
+                qFatal("Failed to allocate descriptor set: %d", err);
+        }
 
         {
             VkDescriptorSetAllocateInfo descSetAllocInfo = {
                 VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
                 nullptr,
-                descPool,
+                descriptorPool,
                 1,
-                &computeDescriptorSetLayout
+                &computeDescriptorSetLayoutOneInput
             };
-            VkResult err = devFuncs->vkAllocateDescriptorSets(device, &descSetAllocInfo, &computeDescriptorSet);
+            VkResult err = devFuncs->vkAllocateDescriptorSets(
+                        device,
+                        &descSetAllocInfo,
+                        &computeDescriptorSetOneInput);
+            if (err != VK_SUCCESS)
+                qFatal("Failed to allocate descriptor set: %d", err);
+        }
+
+        {
+            VkDescriptorSetAllocateInfo descSetAllocInfo = {
+                VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+                nullptr,
+                descriptorPool,
+                1,
+                &computeDescriptorSetLayoutTwoInputs
+            };
+            VkResult err = devFuncs->vkAllocateDescriptorSets(
+                        device,
+                        &descSetAllocInfo,
+                        &computeDescriptorSetTwoInputs);
             if (err != VK_SUCCESS)
                 qFatal("Failed to allocate descriptor set: %d", err);
         }
     }
 }
 
-void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outputImage)
+void VulkanRenderer::updateComputeDescriptors(
+        CsImage& inputImageBack,
+        CsImage& outputImage)
 {
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
         VkWriteDescriptorSet descWrite[2];
         memset(descWrite, 0, sizeof(descWrite));
         descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet = descSet[i];
+        descWrite[0].dstSet = graphicsDescriptorSet[i];
         descWrite[0].dstBinding = 0;
         descWrite[0].descriptorCount = 1;
         descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
@@ -610,7 +673,7 @@ void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outp
         };
 
         descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet = descSet[i];
+        descWrite[1].dstSet = graphicsDescriptorSet[i];
         descWrite[1].dstBinding = 1;
         descWrite[1].descriptorCount = 1;
         descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
@@ -621,29 +684,101 @@ void VulkanRenderer::updateComputeDescriptors(CsImage& inputImage, CsImage& outp
 
     {
         VkDescriptorImageInfo destinationInfo = { };
-        destinationInfo.imageView             = computeRenderTarget->getImageView();
+        destinationInfo.imageView             = outputImage.getImageView();
         destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
 
         VkDescriptorImageInfo sourceInfo      = { };
-        sourceInfo.imageView                  = inputImage.getImageView();
+        sourceInfo.imageView                  = inputImageBack.getImageView();
         sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
 
         VkWriteDescriptorSet descWrite[2]= {};
 
         descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet                    = computeDescriptorSet;
+        descWrite[0].dstSet                    = computeDescriptorSetOneInput;
         descWrite[0].dstBinding                = 0;
         descWrite[0].descriptorCount           = 1;
         descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
         descWrite[0].pImageInfo                = &sourceInfo;
 
         descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet                    = computeDescriptorSet;
+        descWrite[1].dstSet                    = computeDescriptorSetOneInput;
         descWrite[1].dstBinding                = 1;
         descWrite[1].descriptorCount           = 1;
         descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
         descWrite[1].pImageInfo                = &destinationInfo;
         devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+    }
+}
+
+// TODO: This should be merged with function above
+void VulkanRenderer::updateComputeDescriptors(
+        CsImage& inputImageBack,
+        CsImage& inputImageFront,
+        CsImage& outputImage)
+{
+    for (int i = 0; i < concurrentFrameCount; ++i)
+    {
+        VkWriteDescriptorSet descWrite[2];
+        memset(descWrite, 0, sizeof(descWrite));
+        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[0].dstSet = graphicsDescriptorSet[i];
+        descWrite[0].dstBinding = 0;
+        descWrite[0].descriptorCount = 1;
+        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descWrite[0].pBufferInfo = &uniformBufInfo[i];
+
+        VkDescriptorImageInfo descImageInfo = {
+            sampler,
+            outputImage.getImageView(),
+            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+        };
+
+        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[1].dstSet = graphicsDescriptorSet[i];
+        descWrite[1].dstBinding = 1;
+        descWrite[1].descriptorCount = 1;
+        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+        descWrite[1].pImageInfo = &descImageInfo;
+
+        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+    }
+
+    {
+        VkDescriptorImageInfo sourceInfoBack     = { };
+        sourceInfoBack.imageView                  = inputImageBack.getImageView();
+        sourceInfoBack.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkDescriptorImageInfo sourceInfoFront     = { };
+        sourceInfoFront.imageView                  = inputImageFront.getImageView();
+        sourceInfoFront.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkDescriptorImageInfo destinationInfo = { };
+        destinationInfo.imageView             = outputImage.getImageView();
+        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
+
+        VkWriteDescriptorSet descWrite[3]= {};
+
+        descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[0].dstSet                    = computeDescriptorSetTwoInputs;
+        descWrite[0].dstBinding                = 0;
+        descWrite[0].descriptorCount           = 1;
+        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[0].pImageInfo                = &sourceInfoBack;
+
+        descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[1].dstSet                    = computeDescriptorSetTwoInputs;
+        descWrite[1].dstBinding                = 1;
+        descWrite[1].descriptorCount           = 1;
+        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[1].pImageInfo                = &sourceInfoFront;
+
+        descWrite[2].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[2].dstSet                    = computeDescriptorSetTwoInputs;
+        descWrite[2].dstBinding                = 2;
+        descWrite[2].descriptorCount           = 1;
+        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[2].pImageInfo                = &destinationInfo;
+        devFuncs->vkUpdateDescriptorSets(device, 3, descWrite, 0, nullptr);
     }
 }
 
@@ -654,22 +789,61 @@ void VulkanRenderer::createComputePipelineLayout()
     pushConstantRange.offset                        = 0;
     pushConstantRange.size                          = sizeof(pushConstants);
 
-    //Now create the layout info
-    VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
-    pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount               = 1;
-    pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayout;
-    pipelineLayoutInfo.pushConstantRangeCount       = 1;
-    pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
+    {
+        //Now create the layout info
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
+        pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipelineLayoutInfo.setLayoutCount               = 1;
+        pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayoutOneInput;
+        pipelineLayoutInfo.pushConstantRangeCount       = 1;
+        pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
 
-    //Create the layout, store it to share between shaders
-    VkResult err = devFuncs->vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &computePipelineLayout);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create compute pipeline layout: %d", err);
+        //Create the layout, store it to share between shaders
+        VkResult err = devFuncs->vkCreatePipelineLayout(
+                    device,
+                    &pipelineLayoutInfo,
+                    nullptr,
+                    &computePipelineLayoutOneInput);
+        if (err != VK_SUCCESS)
+            qFatal("Failed to create compute pipeline layout: %d", err);
+    }
+
+    {
+        //Now create the layout info
+        VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
+        pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+        pipelineLayoutInfo.setLayoutCount               = 1;
+        pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayoutTwoInputs;
+        pipelineLayoutInfo.pushConstantRangeCount       = 1;
+        pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
+
+        //Create the layout, store it to share between shaders
+        VkResult err = devFuncs->vkCreatePipelineLayout(
+                    device,
+                    &pipelineLayoutInfo,
+                    nullptr,
+                    &computePipelineLayoutTwoInputs);
+        if (err != VK_SUCCESS)
+            qFatal("Failed to create compute pipeline layout: %d", err);
+    }
+
 }
 
-VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderModule)
+
+void VulkanRenderer::createComputePipelines()
 {
+    for (int i = 0; i != NODE_TYPE_MAX; i++)
+    {
+        NodeType nodeType = static_cast<NodeType>(i);
+
+        pipelines[nodeType] = createComputePipeline(nodeType);
+    }
+}
+
+VkPipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
+{
+    auto shaderModule = shaders[nodeType];
+
     VkPipelineShaderStageCreateInfo computeStage = {
 
             VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
@@ -684,7 +858,14 @@ VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderMod
     VkComputePipelineCreateInfo pipelineInfo = {};
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
-    pipelineInfo.layout = computePipelineLayout;
+    if (nodeType == NODE_TYPE_MERGE)
+    {
+        pipelineInfo.layout = computePipelineLayoutTwoInputs;
+    }
+    else
+    {
+        pipelineInfo.layout = computePipelineLayoutOneInput;
+    }
 
     VkPipeline pl = VK_NULL_HANDLE;
 
@@ -699,6 +880,44 @@ VkPipeline VulkanRenderer::createComputePipeline(const VkShaderModule &shaderMod
         qFatal("Failed to create compute pipeline: %d", err);
 
     return pl;
+}
+
+VkPipeline VulkanRenderer::createComputePipelineNoop()
+{
+    // TODO: This should not be here.
+
+    auto shaderModule = createShaderFromFile(":/shaders/noop_comp.spv");;
+
+    VkPipelineShaderStageCreateInfo computeStage = {
+
+            VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO,
+            nullptr,
+            0,
+            VK_SHADER_STAGE_COMPUTE_BIT,
+            shaderModule,
+            "main",
+            nullptr
+        };
+
+    VkComputePipelineCreateInfo pipelineInfo = {};
+    pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
+    pipelineInfo.stage  = computeStage;
+    pipelineInfo.layout = computePipelineLayoutOneInput;
+
+    VkPipeline pl = VK_NULL_HANDLE;
+
+    VkResult err = devFuncs->vkCreateComputePipelines(
+                device,
+                pipelineCache,
+                1,
+                &pipelineInfo,
+                nullptr,
+                &pl);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to create compute pipeline: %d", err);
+
+    return pl;
+
 }
 
 void VulkanRenderer::createComputeQueue()
@@ -780,16 +999,17 @@ void VulkanRenderer::createComputeCommandBuffer()
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = compute.commandPool;
     commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    commandBufferAllocateInfo.commandBufferCount = 2;
+    commandBufferAllocateInfo.commandBufferCount = 3;
 
-    VkCommandBuffer buffers[2] = {};
+    VkCommandBuffer buffers[3] = {};
     VkResult err = devFuncs->vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, &buffers[0]);
 
     if (err != VK_SUCCESS)
         qFatal("Failed to allocate descriptor set: %d", err);
 
-    compute.commandBuffer = buffers[0];
-    compute.commandBufferImageLoad= buffers[1];
+    compute.commandBufferOneInput  = buffers[0];
+    compute.commandBufferImageLoad = buffers[1];
+    compute.commandBufferTwoInputs = buffers[2];
 
     // Fence for compute CB sync
     VkFenceCreateInfo fenceCreateInfo = {};
@@ -891,10 +1111,10 @@ void VulkanRenderer::createComputeCommandBuffer()
     devFuncs->vkCmdBindDescriptorSets(
                 compute.commandBufferImageLoad,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayout,
+                computePipelineLayoutOneInput,
                 0,
                 1,
-                &computeDescriptorSet,
+                &computeDescriptorSetOneInput,
                 0,
                 0);
     devFuncs->vkCmdDispatch(
@@ -1057,7 +1277,10 @@ void VulkanRenderer::initSwapChainResources()
     projection.translate(0, 0, -3);
 }
 
-void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& outputImage, VkPipeline& pl)
+void VulkanRenderer::recordComputeCommandBuffer(
+        CsImage& inputImageBack,
+        CsImage& outputImage,
+        VkPipeline& pl)
 {
     // Needs the right render target
     devFuncs->vkQueueWaitIdle(compute.queue);
@@ -1065,11 +1288,13 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    VkResult err = devFuncs->vkBeginCommandBuffer(compute.commandBuffer, &cmdBufferBeginInfo);
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferOneInput,
+                &cmdBufferBeginInfo);
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
 
-     VkCommandBuffer cb = compute.commandBuffer;
+     VkCommandBuffer cb = compute.commandBufferOneInput;
 
      {
          //Make the barriers for the resources
@@ -1083,7 +1308,7 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+        barrier[0].image           = inputImageBack.getImage();
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1098,29 +1323,34 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0, 0, nullptr, 0, nullptr,
-                                2, &barrier[0]);
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                2,
+                                &barrier[0]);
     }
 
     devFuncs->vkCmdPushConstants(
-                compute.commandBuffer,
-                computePipelineLayout,
+                compute.commandBufferOneInput,
+                computePipelineLayoutOneInput,
                 VK_SHADER_STAGE_COMPUTE_BIT, 0,
                 sizeof(pushConstants),
                 pushConstants.data());
     devFuncs->vkCmdBindPipeline(
-                compute.commandBuffer,
+                compute.commandBufferOneInput,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
                 pl);
     devFuncs->vkCmdBindDescriptorSets(
-                compute.commandBuffer,
+                compute.commandBufferOneInput,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayout, 0, 1,
-                &computeDescriptorSet, 0, 0);
+                computePipelineLayoutOneInput, 0, 1,
+                &computeDescriptorSetOneInput, 0, 0);
     // Adding one extra local workgroup here to
     // prevent flickering in crop shader
     devFuncs->vkCmdDispatch(
-                compute.commandBuffer,
+                compute.commandBufferOneInput,
                 outputImage.getWidth() / 16 + 1,
                 outputImage.getHeight() / 16 + 1, 1);
 
@@ -1136,7 +1366,7 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+        barrier[0].image           = inputImageBack.getImage();
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1151,15 +1381,161 @@ void VulkanRenderer::recordComputeCommandBuffer(CsImage& inputImage, CsImage& ou
         devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                             VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                            0, 0, nullptr, 0, nullptr,
-                            2, &barrier[0]);
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            2,
+                            &barrier[0]);
     }
 
-    devFuncs->vkEndCommandBuffer(compute.commandBuffer);
+    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
+}
+
+void VulkanRenderer::recordComputeCommandBuffer(
+        CsImage& inputImageBack,
+        CsImage& inputImageFront,
+        CsImage& outputImage,
+        VkPipeline& pl)
+{
+    // TODO: Merge with function above
+
+    devFuncs->vkQueueWaitIdle(compute.queue);
+
+    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferTwoInputs,
+                &cmdBufferBeginInfo);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to begin command buffer: %d", err);
+
+     VkCommandBuffer cb = compute.commandBufferTwoInputs;
+
+     {
+         //Make the barriers for the resources
+        VkImageMemoryBarrier barrier[3] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImageBack.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = inputImageFront.getImage();
+
+        barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[2].subresourceRange.levelCount = barrier[2].subresourceRange.layerCount = 1;
+
+        barrier[2].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+        barrier[2].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[2].srcAccessMask   = 0;
+        barrier[2].dstAccessMask   = 0;
+        barrier[2].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                3,
+                                &barrier[0]);
+    }
+
+    devFuncs->vkCmdPushConstants(
+                compute.commandBufferTwoInputs,
+                computePipelineLayoutTwoInputs,
+                VK_SHADER_STAGE_COMPUTE_BIT, 0,
+                sizeof(pushConstants),
+                pushConstants.data());
+    devFuncs->vkCmdBindPipeline(
+                compute.commandBufferTwoInputs,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                pl);
+    devFuncs->vkCmdBindDescriptorSets(
+                compute.commandBufferTwoInputs,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                computePipelineLayoutTwoInputs, 0, 1,
+                &computeDescriptorSetTwoInputs, 0, 0);
+    // Adding one extra local workgroup here to
+    // prevent flickering in crop shader
+    // TODO: Crop shader will never use this CB
+    devFuncs->vkCmdDispatch(
+                compute.commandBufferTwoInputs,
+                outputImage.getWidth() / 16 + 1,
+                outputImage.getHeight() / 16 + 1, 1);
+
+    {
+       //Make the barriers for the resources
+       VkImageMemoryBarrier barrier[3] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImageBack.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = inputImageFront.getImage();
+
+        barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[2].subresourceRange.levelCount = barrier[2].subresourceRange.layerCount = 1;
+
+        barrier[2].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[2].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[2].srcAccessMask   = 0;
+        barrier[2].dstAccessMask   = 0;
+        barrier[2].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            3,
+                            &barrier[0]);
+    }
+
+    devFuncs->vkEndCommandBuffer(compute.commandBufferTwoInputs);
 }
 
 void VulkanRenderer::createRenderPass()
 {
+    qDebug("Create Render Pass.");
+
     VkCommandBuffer cb = window->currentCommandBuffer();
     const QSize sz = window->swapChainImageSize();
 
@@ -1232,7 +1608,7 @@ void VulkanRenderer::createRenderPass()
                 pipelineLayout,
                 0,
                 1,
-                &descSet[window->currentFrame()],
+                &graphicsDescriptorSet[window->currentFrame()],
                 0,
                 nullptr);
     VkDeviceSize vbOffset = 0;
@@ -1281,7 +1657,14 @@ void VulkanRenderer::submitComputeCommands()
         VkSubmitInfo computeSubmitInfo {};
         computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         computeSubmitInfo.commandBufferCount = 1;
-        computeSubmitInfo.pCommandBuffers = &compute.commandBuffer;
+        if (!renderTwoInputs)
+        {
+            computeSubmitInfo.pCommandBuffers = &compute.commandBufferOneInput;
+        }
+        else
+        {
+            computeSubmitInfo.pCommandBuffers = &compute.commandBufferTwoInputs;
+        }
         devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
     }
 }
@@ -1334,9 +1717,11 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
 void VulkanRenderer::processNode(
         NodeBase* node,
-        CsImage &inputImage,
+        CsImage &inputImageBack,
         const QSize targetSize)
 {
+    renderTwoInputs = false;
+
     pushConstants = unpackPushConstants(node->getAllPropertyValues());
 
     if (currentRenderSize != targetSize)
@@ -1347,14 +1732,50 @@ void VulkanRenderer::processNode(
         std::cout << "Render target size changed." << std::endl;
     }
 
-    createComputeRenderTarget(targetSize.width(), targetSize.height());
+    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+        qFatal("Failed to create compute render target.");
 
     std::cout << "Created render target with width: " << targetSize.width() << std::endl;
     std::cout << "Created render target with height: " << targetSize.height() << std::endl;
 
-    updateComputeDescriptors(inputImage, *computeRenderTarget);
+    updateComputeDescriptors(inputImageBack, *computeRenderTarget);
 
-    recordComputeCommandBuffer(inputImage, *computeRenderTarget, pipelines[node->nodeType]);
+    recordComputeCommandBuffer(inputImageBack, *computeRenderTarget, pipelines[node->nodeType]);
+
+    submitComputeCommands();
+
+    node->cachedImage = std::move(computeRenderTarget);
+}
+
+void VulkanRenderer::processNode(
+        NodeBase* node,
+        CsImage &inputImageBack,
+        CsImage &inputImageFront,
+        const QSize targetSize)
+{
+    // TODO: Merge with function above
+
+    renderTwoInputs = true;
+
+    pushConstants = unpackPushConstants(node->getAllPropertyValues());
+
+    if (currentRenderSize != targetSize)
+    {
+        updateVertexData(targetSize.width(), targetSize.height());
+        createVertexBuffer();
+
+        std::cout << "Render target size changed." << std::endl;
+    }
+
+    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+        qFatal("Failed to create compute render target.");
+
+    std::cout << "Created render target with width: " << targetSize.width() << std::endl;
+    std::cout << "Created render target with height: " << targetSize.height() << std::endl;
+
+    updateComputeDescriptors(inputImageBack, inputImageFront, *computeRenderTarget);
+
+    recordComputeCommandBuffer(inputImageBack, inputImageFront, *computeRenderTarget, pipelines[node->nodeType]);
 
     submitComputeCommands();
 
@@ -1373,7 +1794,10 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
     CsImage& image = *node->cachedImage;
 
-    createComputeRenderTarget(image.getWidth(), image.getHeight());
+    std::cout << "image width: " << std::endl;
+
+    if (!createComputeRenderTarget(image.getWidth(), image.getHeight()))
+        qFatal("Failed to create compute render target.");
 
     updateComputeDescriptors(image, *computeRenderTarget);
 
@@ -1537,14 +1961,14 @@ void VulkanRenderer::releaseResources()
         pipelineCache = VK_NULL_HANDLE;
     }
 
-    if (descSetLayout) {
-        devFuncs->vkDestroyDescriptorSetLayout(device, descSetLayout, nullptr);
-        descSetLayout = VK_NULL_HANDLE;
+    if (graphicsDescriptorSetLayout) {
+        devFuncs->vkDestroyDescriptorSetLayout(device, graphicsDescriptorSetLayout, nullptr);
+        graphicsDescriptorSetLayout = VK_NULL_HANDLE;
     }
 
-    if (descPool) {
-        devFuncs->vkDestroyDescriptorPool(device, descPool, nullptr);
-        descPool = VK_NULL_HANDLE;
+    if (descriptorPool) {
+        devFuncs->vkDestroyDescriptorPool(device, descriptorPool, nullptr);
+        descriptorPool = VK_NULL_HANDLE;
     }
 
     if (buf) {
@@ -1557,9 +1981,14 @@ void VulkanRenderer::releaseResources()
         bufMem = VK_NULL_HANDLE;
     }
 
-    if ( computeDescriptorSetLayout ) {
-        devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayout, nullptr);
-        computeDescriptorSetLayout = VK_NULL_HANDLE;
+    if ( computeDescriptorSetLayoutOneInput ) {
+        devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutOneInput, nullptr);
+        computeDescriptorSetLayoutOneInput = VK_NULL_HANDLE;
+    }
+
+    if ( computeDescriptorSetLayoutTwoInputs ) {
+        devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutTwoInputs, nullptr);
+        computeDescriptorSetLayoutTwoInputs = VK_NULL_HANDLE;
     }
 
     if ( computePipeline ) {
@@ -1567,10 +1996,16 @@ void VulkanRenderer::releaseResources()
         computePipeline = VK_NULL_HANDLE;
     }
 
-    if ( computePipelineLayout ) {
-        devFuncs->vkDestroyPipelineLayout(device, computePipelineLayout, nullptr);
-        computePipelineLayout = VK_NULL_HANDLE;
+    if ( computePipelineLayoutOneInput ) {
+        devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutOneInput, nullptr);
+        computePipelineLayoutOneInput = VK_NULL_HANDLE;
     }
+
+    if ( computePipelineLayoutTwoInputs ) {
+        devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutTwoInputs, nullptr);
+        computePipelineLayoutTwoInputs = VK_NULL_HANDLE;
+    }
+
 
     if ( compute.fence ) {
         devFuncs->vkDestroyFence(device, compute.fence, nullptr);
@@ -1579,13 +2014,14 @@ void VulkanRenderer::releaseResources()
 
     if ( compute.commandPool )
     {
-        VkCommandBuffer buffers[2]=
+        VkCommandBuffer buffers[3]=
         {
-            compute.commandBuffer,
+            compute.commandBufferOneInput,
             compute.commandBufferImageLoad,
+            compute.commandBufferTwoInputs
         };
 
-        devFuncs->vkFreeCommandBuffers(device, compute.commandPool, 2, &buffers[0]);
+        devFuncs->vkFreeCommandBuffers(device, compute.commandPool, 3, &buffers[0]);
         devFuncs->vkDestroyCommandPool(device, compute.commandPool, nullptr);
     }
 }

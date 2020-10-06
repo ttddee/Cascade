@@ -106,10 +106,20 @@ void RenderManager::renderNode(NodeBase *node)
 {
     std::cout << "rendering node" << std::endl;
 
-    std::shared_ptr<CsImage> inputImage = nullptr;
+    std::shared_ptr<CsImage> inputImageBack = nullptr;
+    std::shared_ptr<CsImage> inputImageFront = nullptr;
 
-    inputImage = node->getUpstreamNodeBack()->cachedImage;
+    inputImageBack = node->getUpstreamNodeBack()->cachedImage;
 
-    renderer->processNode(node, *inputImage, node->getTargetSize());
-
+    if(node->getUpstreamNodeFront())
+    {
+        std::cout << "Rendering two inputs" << std::endl;
+        inputImageFront = node->getUpstreamNodeFront()->cachedImage;
+        renderer->processNode(node, *inputImageBack, *inputImageFront, node->getTargetSize());
+    }
+    else
+    {
+        std::cout << "Rendering one input" << std::endl;
+        renderer->processNode(node, *inputImageBack, node->getTargetSize());
+    }
 }

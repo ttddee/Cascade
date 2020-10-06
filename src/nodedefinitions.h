@@ -239,7 +239,7 @@ namespace Cascade
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] }
         },
-        ":/shaders/noop_comp.spv"
+        ":/shaders/merge_comp.spv"
     };
 
     const NodeInitProperties shuffleNodeInitProperties =
