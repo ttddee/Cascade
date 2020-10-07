@@ -14,7 +14,7 @@ void main()
     vec3 front = imageLoad(inputImageFront, pixelCoords).rgb;
 
 	vec4 pixel = vec4(back, 1.0); 
-    pixel.r += back.r;
+    pixel.r += front.r;
 
 	imageStore(resultImage, pixelCoords, pixel);
                                     

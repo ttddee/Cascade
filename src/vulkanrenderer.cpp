@@ -745,16 +745,16 @@ void VulkanRenderer::updateComputeDescriptors(
 
     {
         VkDescriptorImageInfo sourceInfoBack     = { };
-        sourceInfoBack.imageView                  = inputImageBack.getImageView();
-        sourceInfoBack.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+        sourceInfoBack.imageView                 = inputImageBack.getImageView();
+        sourceInfoBack.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
         VkDescriptorImageInfo sourceInfoFront     = { };
-        sourceInfoFront.imageView                  = inputImageFront.getImageView();
-        sourceInfoFront.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+        sourceInfoFront.imageView                 = inputImageFront.getImageView();
+        sourceInfoFront.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkDescriptorImageInfo destinationInfo = { };
-        destinationInfo.imageView             = outputImage.getImageView();
-        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
+        VkDescriptorImageInfo destinationInfo     = { };
+        destinationInfo.imageView                 = outputImage.getImageView();
+        destinationInfo.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
         VkWriteDescriptorSet descWrite[3]= {};
 
@@ -1787,6 +1787,8 @@ void VulkanRenderer::displayNode(NodeBase *node)
     // Should probably use something like cmdBlitImage
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
+
+    renderTwoInputs = false; // TODO: This is a problem
 
     std::cout << "Display node" << std::endl;
 

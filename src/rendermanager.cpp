@@ -67,14 +67,22 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
                 if (node->nodeType == NODE_TYPE_READ)
                 {
                     renderer->processReadNode(node);
+                    renderer->displayNode(node);
                 }
                 else
                 {
-                    renderNodes(node);
+                    if (!node->getUpstreamNodeFront())
+                    {
+                        renderNodes(node->getUpstreamNodeBack());
+                        renderer->displayNode(node->getUpstreamNodeBack());
+                    }
+                    else
+                    {
+                        renderNodes(node);
+                        renderer->displayNode(node);
+                    }
                 }
             }
-            renderer->displayNode(node);
-
             node->needsUpdate = false;
         }
     }
