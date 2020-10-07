@@ -52,6 +52,7 @@ public:
             const QSize targetSize);
     void displayNode(NodeBase* node);
     void doClearScreen();
+    void setDisplayMode(DisplayMode mode);
 
 private:
     // Setup
@@ -171,6 +172,8 @@ private:
     // TODO: Replace this with proper render states
     bool clearScreen = true;
     bool renderTwoInputs = false;
+
+    DisplayMode displayMode = DISPLAY_MODE_RGB;
 
     // Compute resources
     struct Compute

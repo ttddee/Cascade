@@ -27,6 +27,40 @@ namespace Cascade
     };
 
     ////////////////////////////////////
+    // Front Input Traits
+    ////////////////////////////////////
+    enum FrontInputTrait
+    {
+        FRONT_INPUT_ALWAYS_CLEAR,
+        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    };
+
+    ////////////////////////////////////
+    // Back Input Traits
+    ////////////////////////////////////
+    enum BackInputTrait
+    {
+        BACK_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    };
+
+    ////////////////////////////////////
+    // Alpha Traits
+    ////////////////////////////////////
+    enum AlphaOutputTrait
+    {
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR
+    };
+
+    ////////////////////////////////////
+    // Output Traits
+    ////////////////////////////////////
+    enum RGBOutputTrait
+    {
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR
+    };
+
+    ////////////////////////////////////
     // Global UI element types
     ////////////////////////////////////
     enum UIElementType
@@ -43,13 +77,13 @@ namespace Cascade
     ////////////////////////////////////
     enum NodeCategory
     {
-        NODE_CAT_IO,
-        NODE_CAT_GENERATE,
-        NODE_CAT_COLOR,
-        NODE_CAT_FILTER,
-        NODE_CAT_MERGE,
-        NODE_CAT_TRANSFORM,
-        NODE_CAT_MAX
+        NODE_CATEGORY_IO,
+        NODE_CATEGORY_GENERATE,
+        NODE_CATEGORY_COLOR,
+        NODE_CATEGORY_FILTER,
+        NODE_CATEGORY_MERGE,
+        NODE_CATEGORY_TRANSFORM,
+        NODE_CATEGORY_MAX
     };
 
     ////////////////////////////////////
@@ -57,12 +91,12 @@ namespace Cascade
     ////////////////////////////////////
     const QMap<NodeCategory, QString> categoryStrings =
     {
-        { NODE_CAT_IO, "IO" },
-        { NODE_CAT_GENERATE, "Generate" },
-        { NODE_CAT_COLOR, "Color" },
-        { NODE_CAT_FILTER, "Filter" },
-        { NODE_CAT_MERGE, "Merge" },
-        { NODE_CAT_TRANSFORM, "Transform" },
+        { NODE_CATEGORY_IO, "IO" },
+        { NODE_CATEGORY_GENERATE, "Generate" },
+        { NODE_CATEGORY_COLOR, "Color" },
+        { NODE_CATEGORY_FILTER, "Filter" },
+        { NODE_CATEGORY_MERGE, "Merge" },
+        { NODE_CATEGORY_TRANSFORM, "Transform" },
     };
 
     ////////////////////////////////////
@@ -125,6 +159,10 @@ namespace Cascade
         std::vector<NodeInputType> nodeInputs;
         std::vector<NodeOutputType> nodeOutputs;
         std::vector<std::pair<UIElementType, QString>> uiElements;
+        FrontInputTrait frontInputTrait;
+        BackInputTrait backInputTrait;
+        AlphaOutputTrait alphaOutputTrait;
+        RGBOutputTrait rgbOutputTrait;
         QString shaderPath;
     };
 
@@ -135,7 +173,7 @@ namespace Cascade
     {
         NODE_TYPE_CROP,
         nodeStrings[NODE_TYPE_CROP],
-        NODE_CAT_TRANSFORM,
+        NODE_CATEGORY_TRANSFORM,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
@@ -145,6 +183,10 @@ namespace Cascade
             { UI_ELEMENT_TYPE_SPINBOX, "Right,0,100000,1,0" },
             { UI_ELEMENT_TYPE_SPINBOX, "Bottom,0,100000,1,0" }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/crop_comp.spv"
     };
 
@@ -152,13 +194,17 @@ namespace Cascade
     {
         NODE_TYPE_READ,
         nodeStrings[NODE_TYPE_READ],
-        NODE_CAT_IO,
+        NODE_CATEGORY_IO,
         { },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_READ] },
             { UI_ELEMENT_TYPE_FILEBOX, "" }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_ALWAYS_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -166,13 +212,17 @@ namespace Cascade
     {
         NODE_TYPE_BLUR,
         nodeStrings[NODE_TYPE_BLUR],
-        NODE_CAT_FILTER,
+        NODE_CATEGORY_FILTER,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLUR] },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,0,100,1,3" }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/blur_test_comp.spv"
     };
 
@@ -180,12 +230,16 @@ namespace Cascade
     {
         NODE_TYPE_COLOR,
         nodeStrings[NODE_TYPE_COLOR],
-        NODE_CAT_COLOR,
+        NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -193,12 +247,16 @@ namespace Cascade
     {
         NODE_TYPE_RESIZE,
         nodeStrings[NODE_TYPE_RESIZE],
-        NODE_CAT_TRANSFORM,
+        NODE_CATEGORY_TRANSFORM,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RESIZE] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -206,12 +264,16 @@ namespace Cascade
     {
         NODE_TYPE_ROTATE,
         nodeStrings[NODE_TYPE_ROTATE],
-        NODE_CAT_TRANSFORM,
+        NODE_CATEGORY_TRANSFORM,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ROTATE] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -219,12 +281,16 @@ namespace Cascade
     {
         NODE_TYPE_SHARPEN,
         nodeStrings[NODE_TYPE_SHARPEN],
-        NODE_CAT_FILTER,
+        NODE_CATEGORY_FILTER,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHARPEN] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -232,13 +298,17 @@ namespace Cascade
     {
         NODE_TYPE_MERGE,
         nodeStrings[NODE_TYPE_MERGE],
-        NODE_CAT_MERGE,
+        NODE_CATEGORY_MERGE,
         { NODE_INPUT_TYPE_RGB_BACK,
           NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] }
         },
+        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/merge_comp.spv"
     };
 
@@ -246,12 +316,16 @@ namespace Cascade
     {
         NODE_TYPE_SHUFFLE,
         nodeStrings[NODE_TYPE_SHUFFLE],
-        NODE_CAT_COLOR,
+        NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHUFFLE] }
         },
+        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -259,13 +333,17 @@ namespace Cascade
     {
         NODE_TYPE_PIXELATE,
         nodeStrings[NODE_TYPE_PIXELATE],
-        NODE_CAT_FILTER,
+        NODE_CATEGORY_FILTER,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PIXELATE] },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Filter Size,0,100,1,5" }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/pixelate_comp.spv"
     };
 
@@ -273,7 +351,7 @@ namespace Cascade
     {
         NODE_TYPE_SOLARIZE,
         nodeStrings[NODE_TYPE_SOLARIZE],
-        NODE_CAT_FILTER,
+        NODE_CATEGORY_FILTER,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
@@ -282,6 +360,10 @@ namespace Cascade
             { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Green Thresh,0.0,1.0,0.1,0.5" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Blue Thresh,0.0,1.0,0.1,0.5" }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/solarize_comp.spv"
     };
 
@@ -289,12 +371,16 @@ namespace Cascade
     {
         NODE_TYPE_CONSTANT,
         nodeStrings[NODE_TYPE_CONSTANT],
-        NODE_CAT_GENERATE,
+        NODE_CATEGORY_GENERATE,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -302,12 +388,16 @@ namespace Cascade
     {
         NODE_TYPE_NOISE,
         nodeStrings[NODE_TYPE_NOISE],
-        NODE_CAT_GENERATE,
+        NODE_CATEGORY_GENERATE,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_NOISE] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -315,12 +405,16 @@ namespace Cascade
     {
         NODE_TYPE_DIFFERENCE,
         nodeStrings[NODE_TYPE_DIFFERENCE],
-        NODE_CAT_COLOR,
+        NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] }
         },
+        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -328,12 +422,16 @@ namespace Cascade
     {
         NODE_TYPE_PREMULT,
         nodeStrings[NODE_TYPE_PREMULT],
-        NODE_CAT_MERGE,
+        NODE_CATEGORY_MERGE,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PREMULT] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -341,12 +439,16 @@ namespace Cascade
     {
         NODE_TYPE_UNPREMULT,
         nodeStrings[NODE_TYPE_UNPREMULT],
-        NODE_CAT_MERGE,
+        NODE_CATEGORY_MERGE,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_UNPREMULT] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 
@@ -354,12 +456,16 @@ namespace Cascade
     {
         NODE_TYPE_WRITE,
         nodeStrings[NODE_TYPE_WRITE],
-        NODE_CAT_IO,
+        NODE_CATEGORY_IO,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] }
         },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv"
     };
 

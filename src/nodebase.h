@@ -22,6 +22,11 @@ namespace Ui {
 class NodeBase;
 }
 
+enum DisplayMode{
+    DISPLAY_MODE_RGB,
+    DISPLAY_MODE_ALPHA
+};
+
 class NodeBase : public QWidget
 {
     Q_OBJECT

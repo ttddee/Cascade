@@ -1532,6 +1532,11 @@ void VulkanRenderer::recordComputeCommandBuffer(
     devFuncs->vkEndCommandBuffer(compute.commandBufferTwoInputs);
 }
 
+void VulkanRenderer::setDisplayMode(DisplayMode mode)
+{
+    displayMode = mode;
+}
+
 void VulkanRenderer::createRenderPass()
 {
     qDebug("Create Render Pass.");
@@ -1593,7 +1598,7 @@ void VulkanRenderer::createRenderPass()
 
     // Choose to either display RGB or Alpha
     VkPipeline pl;
-    if (window->getViewerMode() == VIEWER_MODE_ALPHA)
+    if (displayMode == DISPLAY_MODE_ALPHA)
         pl = graphicsPipelineAlpha;
     else
         pl = graphicsPipelineRGB;
