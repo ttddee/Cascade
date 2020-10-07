@@ -432,7 +432,7 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/premult_comp.spv"
     };
 
     const NodeInitProperties unpremultNodeInitProperties =
@@ -449,7 +449,7 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/unpremult_comp.spv"
     };
 
     const NodeInitProperties writeNodeInitProperties =

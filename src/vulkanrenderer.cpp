@@ -1717,6 +1717,8 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         submitComputeCommands();
 
         node->cachedImage = std::move(computeRenderTarget);
+
+        // TODO: Need to free the staging memory here.
     }
 }
 
@@ -1799,16 +1801,16 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
     clearScreen = false;
 
-    CsImage& image = *node->cachedImage;
+    auto image = node->cachedImage;
 
     std::cout << "image width: " << std::endl;
 
-    if (!createComputeRenderTarget(image.getWidth(), image.getHeight()))
+    if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
         qFatal("Failed to create compute render target.");
 
-    updateComputeDescriptors(image, *computeRenderTarget);
+    updateComputeDescriptors(*image, *computeRenderTarget);
 
-    recordComputeCommandBuffer(image, *computeRenderTarget, noopPipeline);
+    recordComputeCommandBuffer(*image, *computeRenderTarget, noopPipeline);
 
     submitComputeCommands();
 
@@ -1952,7 +1954,6 @@ void VulkanRenderer::releaseResources()
         graphicsPipelineAlpha = VK_NULL_HANDLE;
     }
 
-
     if (graphicsPipelineRGB) {
         devFuncs->vkDestroyPipeline(device, graphicsPipelineRGB, nullptr);
         graphicsPipelineRGB = VK_NULL_HANDLE;
@@ -1988,38 +1989,38 @@ void VulkanRenderer::releaseResources()
         bufMem = VK_NULL_HANDLE;
     }
 
-    if ( computeDescriptorSetLayoutOneInput ) {
+    if (computeDescriptorSetLayoutOneInput) {
         devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutOneInput, nullptr);
         computeDescriptorSetLayoutOneInput = VK_NULL_HANDLE;
     }
 
-    if ( computeDescriptorSetLayoutTwoInputs ) {
+    if (computeDescriptorSetLayoutTwoInputs) {
         devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutTwoInputs, nullptr);
         computeDescriptorSetLayoutTwoInputs = VK_NULL_HANDLE;
     }
 
-    if ( computePipeline ) {
+    if (computePipeline) {
         devFuncs->vkDestroyPipeline(device, computePipeline, nullptr);
         computePipeline = VK_NULL_HANDLE;
     }
 
-    if ( computePipelineLayoutOneInput ) {
+    if (computePipelineLayoutOneInput) {
         devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutOneInput, nullptr);
         computePipelineLayoutOneInput = VK_NULL_HANDLE;
     }
 
-    if ( computePipelineLayoutTwoInputs ) {
+    if (computePipelineLayoutTwoInputs) {
         devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutTwoInputs, nullptr);
         computePipelineLayoutTwoInputs = VK_NULL_HANDLE;
     }
 
 
-    if ( compute.fence ) {
+    if (compute.fence) {
         devFuncs->vkDestroyFence(device, compute.fence, nullptr);
         compute.fence = VK_NULL_HANDLE;
     }
 
-    if ( compute.commandPool )
+    if (compute.commandPool)
     {
         VkCommandBuffer buffers[3]=
         {

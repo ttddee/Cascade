@@ -28,5 +28,7 @@
         <file>shaders/pixelate_comp.spv</file>
         <file>shaders/solarize_comp.spv</file>
         <file>shaders/merge_comp.spv</file>
+        <file>shaders/premult_comp.spv</file>
+        <file>shaders/unpremult_comp.spv</file>
     </qresource>
 </RCC>

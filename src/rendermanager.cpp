@@ -29,14 +29,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 
     auto viewerMode = wManager->getViewerMode();
 
-    if (viewerMode == VIEWER_MODE_ALPHA)
-    {
-        renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
-    }
-    else
-    {
-        renderer->setDisplayMode(DISPLAY_MODE_RGB);
-    }
+    renderer->setDisplayMode(DISPLAY_MODE_RGB);
 
     NodeBase* nodeToDisplay = nullptr;
 
@@ -66,6 +59,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     }
     else if (viewerMode == VIEWER_MODE_ALPHA)
     {
+        renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
         displayNode(node);
     }
     else if (viewerMode == VIEWER_MODE_OUTPUT)
@@ -115,11 +109,11 @@ bool RenderManager::renderNodes(NodeBase *node)
 
 void RenderManager::renderNode(NodeBase *node)
 {
-    if (node->nodeType == NODE_TYPE_READ)
+    if (node->nodeType == NODE_TYPE_READ && node->needsUpdate)
     {
         renderer->processReadNode(node);
     }
-    else if (node->needsUpdate && node->getUpstreamNodeBack())
+    else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
         std::cout << "rendering node" << std::endl;
 
@@ -139,7 +133,6 @@ void RenderManager::renderNode(NodeBase *node)
             std::cout << "Rendering one input" << std::endl;
             renderer->processNode(node, *inputImageBack, node->getTargetSize());
         }
-        node->needsUpdate = false;
     }
-
+    node->needsUpdate = false;
 }
