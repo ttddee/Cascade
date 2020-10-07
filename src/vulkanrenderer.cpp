@@ -858,7 +858,8 @@ VkPipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
     VkComputePipelineCreateInfo pipelineInfo = {};
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
-    if (nodeType == NODE_TYPE_MERGE)
+    // TODO: Get rid of this comparison and generalize it
+    if (nodeType == NODE_TYPE_MERGE || nodeType == NODE_TYPE_DIFFERENCE)
     {
         pipelineInfo.layout = computePipelineLayoutTwoInputs;
     }
@@ -1293,10 +1294,9 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 &cmdBufferBeginInfo);
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
+    VkCommandBuffer cb = compute.commandBufferOneInput;
 
-     VkCommandBuffer cb = compute.commandBufferOneInput;
-
-     {
+    {
          //Make the barriers for the resources
         VkImageMemoryBarrier barrier[2] = {};
 
@@ -1801,7 +1801,12 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
     clearScreen = false;
 
+
+
     auto image = node->cachedImage;
+
+    updateVertexData(image->getWidth(), image->getHeight());
+    createVertexBuffer();
 
     std::cout << "image width: " << std::endl;
 

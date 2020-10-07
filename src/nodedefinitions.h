@@ -406,7 +406,8 @@ namespace Cascade
         NODE_TYPE_DIFFERENCE,
         nodeStrings[NODE_TYPE_DIFFERENCE],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] }
@@ -415,7 +416,7 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/difference_comp.spv"
     };
 
     const NodeInitProperties premultNodeInitProperties =
