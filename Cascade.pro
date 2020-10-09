@@ -21,6 +21,8 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    src/colorbutton.cpp \
+    src/colorbuttonentity.cpp \
     src/connection.cpp \
     src/csimage.cpp \
     src/csslider.cpp \
@@ -46,6 +48,8 @@ SOURCES += \
     src/windowmanager.cpp
 
 HEADERS += \
+    src/colorbutton.h \
+    src/colorbuttonentity.h \
     src/connection.h \
     src/csimage.h \
     src/csslider.h \
@@ -72,6 +76,7 @@ HEADERS += \
     src/windowmanager.h
 
 FORMS += \
+    src/colorbuttonentity.ui \
     src/fileboxentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \

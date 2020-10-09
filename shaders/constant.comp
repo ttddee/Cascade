@@ -1,0 +1,54 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float red;
+    layout(offset = 4) float green;
+    layout(offset = 8) float blue;
+} pc;
+
+float linThresh = 0.0404482362771082;
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);   
+     
+    float r = pc.red / 255;
+    float g = pc.green / 255;
+    float b = pc.blue / 255;
+
+    if (r <= linThresh)
+    {
+        r /= 12.92;
+    }
+    else
+    {
+        r = pow(((r + 0.055) / 1.055), 2.4);
+    }
+
+    if (g <= linThresh)
+    {
+        g /= 12.92;
+    }
+    else
+    {
+        g = pow(((g + 0.055) / 1.055), 2.4);
+    }
+
+    if (b <= linThresh)
+    {
+        b /= 12.92;
+    }
+    else
+    {
+        b = pow(((b + 0.055) / 1.055), 2.4);
+    }
+            
+    vec4 pixel = vec4(vec3(r, g, b), 1.0);
+
+    imageStore(resultImage, pixelCoords, pixel);
+
+}
