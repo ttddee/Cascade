@@ -31,5 +31,6 @@
         <file>shaders/premult_comp.spv</file>
         <file>shaders/unpremult_comp.spv</file>
         <file>shaders/difference_comp.spv</file>
+        <file>shaders/sharpen_comp.spv</file>
     </qresource>
 </RCC>
