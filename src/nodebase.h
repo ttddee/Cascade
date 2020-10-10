@@ -53,7 +53,7 @@ public:
     void requestUpdate();
     QString getAllPropertyValues();
     QSize getTargetSize();
-    void updateCropSizes();
+
     bool supportsViewerMode(const ViewerMode mode);
     bool canBeRendered();
 
@@ -74,6 +74,9 @@ private:
     void getDownstreamNodes(std::vector<NodeBase*>& nodes);
     std::vector<NodeBase*> getAllDownstreamNodes();
     void invalidateAllDownstreamNodes();
+
+    void updateCropSizes();
+    void updateRotation();
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
@@ -97,6 +100,8 @@ private:
     int topCrop = 0;
     int rightCrop = 0;
     int bottomCrop = 0;
+
+    int rotation = 0;
 
     const int cornerRadius = 7;
     const QBrush defaultColorBrush = QBrush("#282d31");

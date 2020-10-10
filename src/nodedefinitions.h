@@ -270,13 +270,14 @@ namespace Cascade
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ROTATE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ROTATE] },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Angle,0,360,1,0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/rotate_comp.spv"
     };
 
     const NodeInitProperties sharpenNodeInitProperties =

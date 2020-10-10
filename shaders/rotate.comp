@@ -1,0 +1,40 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float angle;
+} pc;
+
+#define PI 3.1415926538
+
+int degrees = int(pc.angle);
+
+float radians = -degrees * PI / 180;
+
+void main()
+{   
+    ivec2 center= ivec2(int(imageSize(inputImage).x / 2), int(imageSize(inputImage).y / 2));
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec3 rgb = imageLoad(inputImage, pixelCoords).rgb;     
+
+    pixelCoords -= center;
+
+    int newX = int(cos(radians) * (pixelCoords.x) + sin(radians) * (pixelCoords.y));
+    int newY = int(-sin(radians) * (pixelCoords.x) + cos(radians) * (pixelCoords.y)); 
+
+    ivec2 targetCoords;
+    targetCoords.x = newX;
+    targetCoords.y = newY;
+
+    targetCoords += center;
+             
+    vec4 pixel = vec4(rgb, 1.0);
+
+    imageStore(resultImage, targetCoords, pixel);
+
+}

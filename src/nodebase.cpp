@@ -2,6 +2,7 @@
 #include "ui_nodebase.h"
 
 #include <iostream>
+#include <math.h>
 
 #include <QPainter>
 #include <QMouseEvent>
@@ -139,9 +140,13 @@ std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
 
 void NodeBase::requestUpdate()
 {
-    if(nodeType == NODE_TYPE_CROP)
+    if (nodeType == NODE_TYPE_CROP)
     {
         updateCropSizes();
+    }
+    else if (nodeType == NODE_TYPE_ROTATE)
+    {
+        updateRotation();
     }
 
     needsUpdate = true;
@@ -163,6 +168,7 @@ QSize NodeBase::getTargetSize()
 
         if (upstreamImage)
         {
+            // Crop
             int w = upstreamImage->getWidth() - leftCrop - rightCrop;
             int h = upstreamImage->getHeight() - topCrop - bottomCrop;
             if(w < 0)
@@ -173,6 +179,26 @@ QSize NodeBase::getTargetSize()
             {
                 h = 0;
             }
+
+            // TODO: this
+            // Rotation
+//            if (rotation < 90 || (rotation > 180 && rotation < 270))
+//            {
+//                w = abs((w * cos(rotation) + (h * sin(rotation))));
+//                h = abs((w * sin(rotation) + (h * cos(rotation))));
+//            }
+//            else
+//            {
+//                int temp = w;
+//                w = h;
+//                h = temp;
+
+//                w = abs((w * cos(-rotation) + (h * sin(-rotation))));
+//                h = abs((w * sin(-rotation) + (h * cos(-rotation))));
+//            }
+
+//            std::cout << "new size: " << w << " x " << h << std::endl;
+
             return QSize(w, h);
         }
     }
@@ -339,6 +365,12 @@ void NodeBase::updateCropSizes()
     topCrop = vals[1].toInt();
     rightCrop = vals[2].toInt();
     bottomCrop = vals[3].toInt();
+}
+
+void NodeBase::updateRotation()
+{
+    auto vals = getAllPropertyValues().split(",");
+    rotation = vals[0].toInt();
 }
 
 void NodeBase::mousePressEvent(QMouseEvent *event)
