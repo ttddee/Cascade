@@ -19,6 +19,7 @@ public:
 
     VkImage& getImage();
     VkImageView& getImageView();
+    VkDeviceMemory& getMemory();
 
     int getWidth() const;
     int getHeight() const;

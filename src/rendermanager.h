@@ -34,6 +34,7 @@ signals:
 
 public slots:
     void handleNodeDisplayRequest(NodeBase* node);
+    void handleNodeFileSaveRequest(NodeBase* node, const QString& path);
 };
 
 #endif // RENDERMANAGER_H

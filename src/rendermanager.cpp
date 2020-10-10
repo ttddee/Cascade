@@ -68,6 +68,19 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     }
 }
 
+void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& path)
+{
+    if (node->canBeRendered())
+    {
+        auto upstream = node->getUpstreamNodeBack();
+        auto image = upstream->cachedImage;
+        if(image)
+        {
+            renderer->saveImageToDisk(*image, path);
+        }
+    }
+}
+
 void RenderManager::displayNode(NodeBase* node)
 {
     if (node && node->canBeRendered())

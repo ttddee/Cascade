@@ -63,6 +63,7 @@ QPushButton {
     color: #f1f1f1;
     border: none;
     border-radius: 3px;
+    font-weight: bold;
 }
 QPushButton:hover {
     background-color: #626971;
@@ -292,4 +293,11 @@ QMenu {
 }
 QMenu::item:selected {
     background-color: #626971;
+}
+
+QLineEdit {
+    color: #f1f1f1;
+    background-color: #282d31;
+    font: 14px "Open Sans";
+    border-radius: 3px;
 }

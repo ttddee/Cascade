@@ -42,7 +42,7 @@ CsImage::CsImage(
     VkMemoryRequirements memReq;
     devFuncs->vkGetImageMemoryRequirements(*device, image, &memReq);
 
-    //The render target will be on the gpu
+    //The render target will be on the GPU
     uint32_t memIndex = window->deviceLocalMemoryIndex();
 
     if (!(memReq.memoryTypeBits & (1 << memIndex))) {
@@ -113,6 +113,11 @@ VkImage& CsImage::getImage()
 VkImageView& CsImage::getImageView()
 {
     return view;
+}
+
+VkDeviceMemory& CsImage::getMemory()
+{
+    return memory;
 }
 
 int CsImage::getWidth() const

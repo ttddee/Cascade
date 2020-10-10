@@ -70,7 +70,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE,
         UI_ELEMENT_TYPE_SPINBOX,
         UI_ELEMENT_TYPE_FILEBOX,
-        UI_ELEMENT_TYPE_COLOR_BUTTON
+        UI_ELEMENT_TYPE_COLOR_BUTTON,
+        UI_ELEMENT_TYPE_WRITE_PROPERTIES
     };
 
     ////////////////////////////////////
@@ -462,9 +463,10 @@ namespace Cascade
         nodeStrings[NODE_TYPE_WRITE],
         NODE_CATEGORY_IO,
         { NODE_INPUT_TYPE_RGB_BACK },
-        { NODE_OUTPUT_TYPE_RGB },
+        { },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] },
+            { UI_ELEMENT_TYPE_WRITE_PROPERTIES, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

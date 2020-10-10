@@ -10,6 +10,7 @@
 #include "spinboxsliderentity.h"
 #include "nodebase.h"
 #include "colorbuttonentity.h"
+#include "writepropertiesentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -105,6 +106,15 @@ NodeProperties::NodeProperties(
             layout->addWidget(b);
             widgets.push_back(b);
         }
+        else if (elem.first == UI_ELEMENT_TYPE_WRITE_PROPERTIES)
+        {
+            WritePropertiesEntity* p = new WritePropertiesEntity(
+                        UI_ELEMENT_TYPE_WRITE_PROPERTIES,
+                        this);
+            p->selfConnectToRequestFileSave(this);
+            layout->addWidget(p);
+            widgets.push_back(p);
+        }
     }
 }
 
@@ -112,4 +122,10 @@ void NodeProperties::handleSomeValueChanged()
 {
     std::cout << "Node value changed, requesting update." << std::endl;
     parentNode->requestUpdate();
+}
+
+void NodeProperties::handleFileSaveRequest(const QString& path)
+{
+    std::cout << path.toStdString() << std::endl;
+    emit parentNode->nodeRequestFileSave(parentNode, path);
 }

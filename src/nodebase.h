@@ -107,9 +107,10 @@ private:
     const QPen outputViewedColorPen = QPen(outputColor, 3);
 
 signals:
-    void nodeWasLeftClicked(NodeBase*);
-    void nodeWasDoubleClicked(NodeBase*);
-    void nodeRequestUpdate(NodeBase*);
+    void nodeWasLeftClicked(NodeBase* node);
+    void nodeWasDoubleClicked(NodeBase* node);
+    void nodeRequestUpdate(NodeBase* node);
+    void nodeRequestFileSave(NodeBase* node, const QString& path);
 };
 
 #endif // NODEBASE_H

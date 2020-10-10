@@ -31,6 +31,8 @@ NodeGraph::NodeGraph(QWidget* parent)
     //        rManager, &RenderManager::handleNodeDisplayRequest);
     connect(this, &NodeGraph::requestNodeDisplay,
             rManager, &RenderManager::handleNodeDisplayRequest);
+    connect(this, &NodeGraph::requestNodeFileSave,
+            rManager, &RenderManager::handleNodeFileSaveRequest);
 }
 
 void NodeGraph::createNode(const NodeType type)
@@ -49,6 +51,11 @@ void NodeGraph::createNode(const NodeType type)
             wManager, &WindowManager::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeRequestUpdate,
             this, &NodeGraph::handleNodeUpdateRequest);
+    if (type == NODE_TYPE_WRITE)
+    {
+        connect(n, &NodeBase::nodeRequestFileSave,
+                this, &NodeGraph::handleFileSaveRequest);
+    }
 }
 
 std::set<NodeBase*> NodeGraph::getAllUpstreamNodes(NodeBase *node)
@@ -152,6 +159,12 @@ void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 
         emit requestNodeDisplay(node);
     }
+}
+
+void NodeGraph::handleFileSaveRequest(NodeBase* node, const QString& path)
+{
+    viewNode(node);
+    emit requestNodeFileSave(node, path);
 }
 
 void NodeGraph::createOpenConnection(NodeOutput* nodeOut)

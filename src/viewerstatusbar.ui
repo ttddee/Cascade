@@ -162,7 +162,7 @@
    <item row="0" column="7">
     <widget class="QLabel" name="viewerModeLabel">
      <property name="text">
-      <string>None</string>
+      <string>Output</string>
      </property>
     </widget>
    </item>

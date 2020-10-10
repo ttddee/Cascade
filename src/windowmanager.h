@@ -14,8 +14,7 @@ enum ViewerMode
     VIEWER_MODE_FRONT,
     VIEWER_MODE_BACK,
     VIEWER_MODE_ALPHA,
-    VIEWER_MODE_OUTPUT,
-    VIEWER_MODE_NONE
+    VIEWER_MODE_OUTPUT
 };
 
 class WindowManager : public QObject
@@ -43,7 +42,7 @@ private:
     PropertiesView* propertiesView;
     ViewerStatusBar* viewerStatusBar;
 
-    ViewerMode currentViewerMode = VIEWER_MODE_NONE;
+    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT;
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);

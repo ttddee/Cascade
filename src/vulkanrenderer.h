@@ -54,6 +54,8 @@ public:
     void doClearScreen();
     void setDisplayMode(DisplayMode mode);
 
+    void saveImageToDisk(CsImage& inputImage, const QString& path);
+
 private:
     // Setup
     VulkanWindow *window;
@@ -115,9 +117,14 @@ private:
             CsImage& inputImageFront,
             CsImage& outputImage,
             VkPipeline& pl);
+    void recordComputeCommandBuffer(
+            CsImage& inputImage,
+            const QString& path);
+
+    void submitComputeCommands();
+    void submitImageSaveCommand();
 
     // Has to be called in startNextFrame()
-    void submitComputeCommands();
     void createRenderPass();
 
     void updateVertexData(int, int);
@@ -183,6 +190,7 @@ private:
         VkCommandBuffer             commandBufferOneInput;    // Command buffer storing the dispatch commands and barriers
         VkCommandBuffer             commandBufferTwoInputs;
         VkCommandBuffer             commandBufferImageLoad;    // Command buffer used only for initial initialization and transfering data accross the pci bus
+        VkCommandBuffer             commandBufferImageSave;
         VkFence                     fence;                // Synchronization fence to avoid rewriting compute CB if still in use
         uint32_t                    queueFamilyIndex;     // Family index of the graphics queue, used for barriers
     };

@@ -68,12 +68,14 @@ private:
 signals:
     void viewedNodeHasChanged(NodeBase* node);
     void requestNodeDisplay(NodeBase* node);
+    void requestNodeFileSave(NodeBase* node, const QString& path);
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);
     void handleNodeDoubleClicked(NodeBase* node);
     void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
     void handleNodeUpdateRequest(NodeBase* node);
+    void handleFileSaveRequest(NodeBase* node, const QString& path);
 };
 
 #endif // NODEGRAPH_H

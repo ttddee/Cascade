@@ -486,7 +486,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     if (!canSampleLinear && !canSampleOptimal) {
-        qWarning("Neither linear nor optimal image sampling is supported for RGBA8");
+        qWarning("Neither linear nor optimal image sampling is supported for image");
         return false;
     }
 
@@ -495,10 +495,10 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
                             window->hostVisibleMemoryIndex()))
         return false;
 
-    if (!createTextureImage(imageSize, &imageFromDisk->getImage(), &loadImageMem,
-                            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
-                            window->deviceLocalMemoryIndex()))
-        return false;
+//    if (!createTextureImage(imageSize, &imageFromDisk->getImage(), &loadImageMem,
+//                            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
+//                            window->deviceLocalMemoryIndex()))
+//        return false;
 
     if (!writeLinearImage(*cpuImage, loadImageStaging, loadImageStagingMem))
         return false;
@@ -1000,9 +1000,9 @@ void VulkanRenderer::createComputeCommandBuffer()
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = compute.commandPool;
     commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    commandBufferAllocateInfo.commandBufferCount = 3;
+    commandBufferAllocateInfo.commandBufferCount = 4;
 
-    VkCommandBuffer buffers[3] = {};
+    VkCommandBuffer buffers[4] = {};
     VkResult err = devFuncs->vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, &buffers[0]);
 
     if (err != VK_SUCCESS)
@@ -1011,6 +1011,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     compute.commandBufferOneInput  = buffers[0];
     compute.commandBufferImageLoad = buffers[1];
     compute.commandBufferTwoInputs = buffers[2];
+    compute.commandBufferImageSave = buffers[3];
 
     // Fence for compute CB sync
     VkFenceCreateInfo fenceCreateInfo = {};
@@ -1076,6 +1077,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     copyInfo.extent.width               = loadImageSize.width();
     copyInfo.extent.height              = loadImageSize.height();
     copyInfo.extent.depth               = 1;
+
     devFuncs->vkCmdCopyImage(cb, loadImageStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
                       imageFromDisk->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
 
@@ -1252,6 +1254,7 @@ bool VulkanRenderer::writeLinearImage(const ImageBuf &img, VkImage image, VkDevi
     }
 
     devFuncs->vkUnmapMemory(device, memory);
+
     return true;
 }
 
@@ -1532,9 +1535,168 @@ void VulkanRenderer::recordComputeCommandBuffer(
     devFuncs->vkEndCommandBuffer(compute.commandBufferTwoInputs);
 }
 
+void VulkanRenderer::recordComputeCommandBuffer(
+        CsImage& inputImage,
+        const QString& path)
+{
+    devFuncs->vkQueueWaitIdle(compute.queue);
+
+    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferImageSave,
+                &cmdBufferBeginInfo);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to begin command buffer: %d", err);
+
+    VkCommandBuffer cb = compute.commandBufferImageSave;
+
+    {
+         //Make the barriers for the resources
+        VkImageMemoryBarrier barrier[1] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = VK_ACCESS_MEMORY_READ_BIT;
+        barrier[0].dstAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
+        barrier[0].image           = inputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                1,
+                                &barrier[0]);
+    }
+
+//    VkImageSubresource subres = {
+//        VK_IMAGE_ASPECT_COLOR_BIT,
+//        0, // mip level
+//        0
+//    };
+//    VkSubresourceLayout layout;
+//    devFuncs->vkGetImageSubresourceLayout(device, inputImage.getImage(), &subres, &layout);
+
+    VkImage tmpImage;
+    VkDeviceMemory tmpMemory;
+
+    auto imageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
+
+    if (!createTextureImage(imageSize, &tmpImage, &tmpMemory,
+                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                            window->hostVisibleMemoryIndex()))
+    {
+        std::cout << "Could not create temporary image." << std::endl;
+    }
+
+    VkImageCopy copyInfo;
+    memset(&copyInfo, 0, sizeof(copyInfo));
+    copyInfo.srcSubresource.aspectMask  = VK_IMAGE_ASPECT_COLOR_BIT;
+    copyInfo.srcSubresource.layerCount  = 1;
+    copyInfo.dstSubresource.aspectMask  = VK_IMAGE_ASPECT_COLOR_BIT;
+    copyInfo.dstSubresource.layerCount  = 1;
+    copyInfo.extent.width               = inputImage.getWidth();
+    copyInfo.extent.height              = inputImage.getHeight();
+    copyInfo.extent.depth               = 1;
+
+    devFuncs->vkCmdCopyImage(cb, inputImage.getImage(), VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                             tmpImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
+
+    float *p;
+    err = devFuncs->vkMapMemory(
+                device,
+                tmpMemory,
+                0,
+                VK_WHOLE_SIZE,
+                0,
+                reinterpret_cast<void **>(&p));
+    if (err != VK_SUCCESS)
+    {
+        qWarning("Failed to map memory for output image: %d", err);
+    }
+
+    ImageSpec spec(inputImage.getWidth(), inputImage.getHeight(), TypeDesc::FLOAT);
+    std::unique_ptr<ImageBuf> saveImage =
+            std::unique_ptr<ImageBuf>(new ImageBuf(spec));
+
+    int width = inputImage.getWidth();
+    int height = inputImage.getHeight();
+    //int lineWidth = width * 16; // 4 channels * 4 bytes
+
+    float target[width * height];
+    float* pixels = &target[0];
+
+    for (int y = 0; y < width * height; ++y)
+    {
+        //std::cout << *p << std::endl;
+        //pixels = p;
+        memcpy(pixels, p, 16);
+        pixels += 4;
+        p += 4;
+    }
+
+    bool ok = saveImage->set_pixels(spec.roi(), TypeDesc::FLOAT, pixels);
+    if (!ok)
+    {
+        std::cout << "Problem copying pixels to ImageBuf." << std::endl;
+        std::cout << saveImage->geterror() << std::endl;
+    }
+
+    devFuncs->vkUnmapMemory(device, inputImage.getMemory());
+
+//    ImageSpec spec(inputImage.getWidth(), inputImage.getHeight(), TypeDesc::FLOAT);
+//    std::unique_ptr<ImageBuf> saveImage =
+//            std::unique_ptr<ImageBuf>(new ImageBuf(spec, target));
+
+    saveImage->write(path.toStdString());
+
+    {
+       //Make the barriers for the resources
+       VkImageMemoryBarrier barrier[1] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            1,
+                            &barrier[0]);
+    }
+
+    devFuncs->vkEndCommandBuffer(compute.commandBufferImageSave);
+}
+
 void VulkanRenderer::setDisplayMode(DisplayMode mode)
 {
     displayMode = mode;
+}
+
+void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
+{
+    recordComputeCommandBuffer(inputImage, path);
+    submitImageSaveCommand();
 }
 
 void VulkanRenderer::createRenderPass()
@@ -1672,6 +1834,21 @@ void VulkanRenderer::submitComputeCommands()
         }
         devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
     }
+}
+
+void VulkanRenderer::submitImageSaveCommand()
+{
+    // Use a fence to ensure that compute command buffer has finished executing before using it again
+    devFuncs->vkWaitForFences(device, 1, &compute.fence, VK_TRUE, UINT64_MAX);
+    devFuncs->vkResetFences(device, 1, &compute.fence);
+
+    VkSubmitInfo computeSubmitInfo {};
+    computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+    computeSubmitInfo.commandBufferCount = 1;
+
+    computeSubmitInfo.pCommandBuffers = &compute.commandBufferImageSave;
+
+    devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
 }
 
 std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
@@ -1878,8 +2055,6 @@ void VulkanRenderer::startNextFrame()
     }
     else
     {
-        //submitComputeCommands();
-
         createRenderPass();
     }
 

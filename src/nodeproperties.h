@@ -31,6 +31,7 @@ private:
 
 public slots:
     void handleSomeValueChanged();
+    void handleFileSaveRequest(const QString& path);
 };
 
 #endif // NODEPROPERTIES_H

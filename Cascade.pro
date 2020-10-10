@@ -45,7 +45,8 @@ SOURCES += \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp \
-    src/windowmanager.cpp
+    src/windowmanager.cpp \
+    src/writepropertiesentity.cpp
 
 HEADERS += \
     src/colorbutton.h \
@@ -73,7 +74,8 @@ HEADERS += \
     src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h \
-    src/windowmanager.h
+    src/windowmanager.h \
+    src/writepropertiesentity.h
 
 FORMS += \
     src/colorbuttonentity.ui \
@@ -83,7 +85,8 @@ FORMS += \
     src/propertiesheading.ui \
     src/spinboxentity.ui \
     src/spinboxsliderentity.ui \
-    src/viewerstatusbar.ui
+    src/viewerstatusbar.ui \
+    src/writepropertiesentity.ui
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

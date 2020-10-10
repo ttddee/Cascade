@@ -6,3 +6,4 @@ UiEntity::UiEntity(UIElementType et, QWidget *parent)
 {
 
 }
+
