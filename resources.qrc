@@ -15,7 +15,6 @@
         <file>fonts/opensans/OpenSans-Regular.ttf</file>
         <file>fonts/opensans/OpenSans-SemiBold.ttf</file>
         <file>fonts/opensans/OpenSans-SemiBoldItalic.ttf</file>
-        <file>shaders/blur_test_comp.spv</file>
         <file>design/ui/png/combobox_button_hover.png</file>
         <file>design/ui/png/combobox_button.png</file>
         <file>design/ui/png/slider_handle.png</file>

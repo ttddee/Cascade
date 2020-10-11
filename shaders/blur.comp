@@ -1,0 +1,36 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+	layout(offset = 0) float strength;
+} pc;
+
+void main()
+{
+    int strength = int(pc.strength);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
+
+    vec3 result = imageLoad(inputImage, pixelCoords).rgb;
+
+    vec3 sumH = vec3(0.0, 0.0, 0.0);
+    vec3 sumV = vec3(0.0, 0.0, 0.0);
+
+    for (int i = -strength; i < strength + 1; ++i)
+    {
+	    sumH += imageLoad(inputImage, ivec2(pixelCoords.x + i, pixelCoords.y)).rgb;
+       sumV += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y + i)).rgb;
+    }
+
+    int div = 2 * strength + 1;
+
+   sumH /= div;
+   sumV /= div;
+
+    vec4 res = vec4((sumH + sumV) / 2 , 1.0);
+
+    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);
+}
