@@ -4,7 +4,8 @@
 #include <QWidget>
 
 #include "uientity.h"
-#include "nodeproperties.h"
+
+class NodeProperties;
 
 namespace Ui {
 class ColorButtonEntity;

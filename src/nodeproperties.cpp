@@ -4,13 +4,15 @@
 
 #include <QLabel>
 
-#include "spinboxentity.h"
 #include "fileboxentity.h"
 #include "propertiesheading.h"
 #include "spinboxsliderentity.h"
 #include "nodebase.h"
 #include "colorbuttonentity.h"
 #include "writepropertiesentity.h"
+#include "spinboxentity.h"
+#include "comboboxentity.h"
+
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -30,90 +32,107 @@ NodeProperties::NodeProperties(
     {
         if(elem.first == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
         {
-            PropertiesHeading* heading = new PropertiesHeading(
+            PropertiesHeading* item = new PropertiesHeading(
                         elem.second,
                         this);
-            layout->addWidget(heading);
+            layout->addWidget(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
         {
-            SpinBoxSliderEntity* box =
+            SpinBoxSliderEntity* item =
                     new SpinBoxSliderEntity(
                         UI_ELEMENT_TYPE_SLIDERSPIN_INT,
                         this);
             auto parts = elem.second.split(",");
-            box->setName(parts.at(0));
-            box->setMinMaxStepValue(
+            item->setName(parts.at(0));
+            item->setMinMaxStepValue(
                         parts.at(1).toInt(),
                         parts.at(2).toInt(),
                         parts.at(3).toInt(),
                         parts.at(4).toInt());
-            box->selfConnectToValueChanged(this);
-            layout->addWidget(box);
-            widgets.push_back(box);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE)
         {
-            SpinBoxSliderEntity* box =
+            SpinBoxSliderEntity* item =
                     new SpinBoxSliderEntity(
                         UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE,
                         this);
-            box->makeDouble();
+            item->makeDouble();
             auto parts = elem.second.split(",");
-            box->setName(parts.at(0));
-            box->setMinMaxStepValue(
+            item->setName(parts.at(0));
+            item->setMinMaxStepValue(
                         parts.at(1).toDouble(),
                         parts.at(2).toDouble(),
                         parts.at(3).toDouble(),
                         parts.at(4).toDouble());
-            box->selfConnectToValueChanged(this);
-            layout->addWidget(box);
-            widgets.push_back(box);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SPINBOX)
         {
-            SpinBoxEntity* box =
+            SpinBoxEntity* item =
                     new SpinBoxEntity(
                         UI_ELEMENT_TYPE_SPINBOX,
                         this);
             auto parts = elem.second.split(",");
-            box->setName(parts.at(0));
-            box->setMinMaxStepValue(
+            item->setName(parts.at(0));
+            item->setMinMaxStepValue(
                         parts.at(1).toInt(),
                         parts.at(2).toInt(),
                         parts.at(3).toInt(),
                         parts.at(4).toInt());
-            box->selfConnectToValueChanged(this);
-            layout->addWidget(box);
-            widgets.push_back(box);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_FILEBOX)
         {
-            FileBoxEntity* f = new FileBoxEntity(
+            FileBoxEntity* item = new FileBoxEntity(
                         UI_ELEMENT_TYPE_FILEBOX,
                         this);
-            f->selfConnectToValueChanged(this);
-            layout->addWidget(f);
-            widgets.push_back(f);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_COLOR_BUTTON)
         {
-            ColorButtonEntity* b = new ColorButtonEntity(
+            ColorButtonEntity* item = new ColorButtonEntity(
                         UI_ELEMENT_TYPE_COLOR_BUTTON,
                         this);
-            b->selfConnectToValueChanged(this);
-            b->setName(elem.second);
-            layout->addWidget(b);
-            widgets.push_back(b);
+            item->selfConnectToValueChanged(this);
+            item->setName(elem.second);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_WRITE_PROPERTIES)
         {
-            WritePropertiesEntity* p = new WritePropertiesEntity(
+            WritePropertiesEntity* item = new WritePropertiesEntity(
                         UI_ELEMENT_TYPE_WRITE_PROPERTIES,
                         this);
-            p->selfConnectToRequestFileSave(this);
-            layout->addWidget(p);
-            widgets.push_back(p);
+            item->selfConnectToRequestFileSave(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_COMBOBOX)
+        {
+            ComboBoxEntity* item = new ComboBoxEntity(
+                        UI_ELEMENT_TYPE_COMBOBOX,
+                        this);
+            auto parts = elem.second.split(",");
+            item->setName(parts[0]);
+            std::vector<QString> options;
+            for (int i = 1; i < parts.size(); ++i)
+            {
+                options.push_back(parts[i]);
+            }
+            item->setOptions(options);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
     }
 }

@@ -178,6 +178,7 @@ QComboBox {
     border: 0px;
     border-radius: 3px;
     selection-background-color: #626971;
+    padding: 0 0 0 5;
 }
 QComboBox::drop-down {
     subcontrol-origin: padding;

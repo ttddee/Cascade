@@ -6,7 +6,8 @@
 
 #include "nodedefinitions.h"
 #include "uientity.h"
-#include "nodeproperties.h"
+
+class NodeProperties;
 
 using namespace Cascade;
 

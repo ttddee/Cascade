@@ -1,9 +1,13 @@
-#ifndef COMBOBOXENTITY_H
-#define COMBOBOXENTITY_H
+#ifndef SPINBOXENTITY_H
+#define SPINBOXENTITY_H
 
 #include <QWidget>
 
-#include "nodeproperties.h"
+#include "uientity.h"
+
+class NodeProperties;
+
+using namespace Cascade;
 
 namespace Ui {
 class SpinBoxEntity;
@@ -35,4 +39,4 @@ signals:
     void valueChanged();
 };
 
-#endif // COMBOBOXENTITY_H
+#endif // SPINBOXENTITY_H

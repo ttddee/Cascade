@@ -34,5 +34,6 @@
         <file>shaders/sharpen_comp.spv</file>
         <file>shaders/constant_comp.spv</file>
         <file>shaders/rotate_comp.spv</file>
+        <file>shaders/noise_comp.spv</file>
     </qresource>
 </RCC>

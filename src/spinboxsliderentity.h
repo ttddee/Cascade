@@ -3,7 +3,9 @@
 
 #include <QWidget>
 
-#include "nodeproperties.h"
+#include "uientity.h"
+
+class NodeProperties;
 
 namespace Ui {
 class SpinBoxSliderEntity;

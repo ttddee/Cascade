@@ -4,6 +4,8 @@
 #include <QMouseEvent>
 #include <QSlider>
 
+#include "nodeproperties.h"
+
 SpinBoxSliderEntity::SpinBoxSliderEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
     ui(new Ui::SpinBoxSliderEntity)

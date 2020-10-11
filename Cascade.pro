@@ -23,6 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/colorbutton.cpp \
     src/colorbuttonentity.cpp \
+    src/comboboxentity.cpp \
     src/connection.cpp \
     src/csimage.cpp \
     src/csslider.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
 HEADERS += \
     src/colorbutton.h \
     src/colorbuttonentity.h \
+    src/comboboxentity.h \
     src/connection.h \
     src/csimage.h \
     src/csslider.h \
@@ -79,6 +81,7 @@ HEADERS += \
 
 FORMS += \
     src/colorbuttonentity.ui \
+    src/comboboxentity.ui \
     src/fileboxentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \

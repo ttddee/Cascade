@@ -1,6 +1,8 @@
 #include "spinboxentity.h"
 #include "ui_spinboxentity.h"
 
+#include "nodeproperties.h"
+
 SpinBoxEntity::SpinBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::SpinBoxEntity)
