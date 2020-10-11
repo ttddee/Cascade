@@ -125,11 +125,11 @@ NodeProperties::NodeProperties(
             auto parts = elem.second.split(",");
             item->setName(parts[0]);
             std::vector<QString> options;
-            for (int i = 1; i < parts.size(); ++i)
+            for (int i = 1; i < parts.size() - 1; ++i)
             {
                 options.push_back(parts[i]);
             }
-            item->setOptions(options);
+            item->setOptions(options, parts.last().toInt());
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);

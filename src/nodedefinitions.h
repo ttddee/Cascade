@@ -328,13 +328,17 @@ namespace Cascade
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHUFFLE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHUFFLE] },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Red,Green,Blue,Alpha,0" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Green:,Red,Green,Blue,Alpha,1" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Blue:,Red,Green,Blue,Alpha,2" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Alpha:,Red,Green,Blue,Alpha,3" }
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/shuffle_comp.spv"
     };
 
     const NodeInitProperties pixelateNodeInitProperties =
@@ -402,7 +406,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_NOISE] },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Type:,Worley-Perlin,Worley" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Type:,Worley-Perlin,Worley,0" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Size,1,256,1,32"}
         },
         FRONT_INPUT_ALWAYS_CLEAR,

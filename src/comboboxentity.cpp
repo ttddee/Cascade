@@ -18,12 +18,13 @@ void ComboBoxEntity::setName(const QString &name)
     ui->label->setText(name);
 }
 
-void ComboBoxEntity::setOptions(const std::vector<QString> options)
+void ComboBoxEntity::setOptions(const std::vector<QString> options, int index)
 {
     foreach(auto& o, options)
     {
         ui->comboBox->addItem(o);
     }
+    ui->comboBox->setCurrentIndex(index);
 }
 
 void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
