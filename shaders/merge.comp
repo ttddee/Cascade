@@ -1,20 +1,71 @@
 #version 450
 
 layout (local_size_x = 16, local_size_y = 16) in;
-layout (binding = 0, rgba8) uniform readonly image2D inputImageBack;
-layout (binding = 1, rgba8) uniform readonly image2D inputImageFront;
-layout (binding = 2, rgba8) uniform image2D resultImage;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float mode;
+    layout(offset = 4) float xoffset;
+    layout(offset = 8) float yoffset;
+} pc;
 
 void main()
 {   
-    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);    
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);   
 
-    vec3 back = imageLoad(inputImageBack, pixelCoords).rgb;
+    ivec2 targetCoords = ivec2(pixelCoords.x - pc.xoffset, pixelCoords.y - pc.yoffset); 
 
-    vec3 front = imageLoad(inputImageFront, pixelCoords).rgb;
+    vec4 back = imageLoad(inputImageBack, pixelCoords).rgba;
 
-	vec4 pixel = vec4(back + front, 1.0); 
-    //pixel.r += front.r;
+    vec4 front = imageLoad(inputImageFront, targetCoords).rgba;
+
+    vec4 pixel = back;
+
+    if(pc.mode == 0.0) // Over
+    {
+        pixel += front * (1 - front.a);
+    }
+    else if (pc.mode == 1.0) // Add
+    {
+        pixel += front;
+    }
+    else if (pc.mode == 2.0) // Divide
+    {
+        if (front.r <= 0.0)
+        {
+            pixel.r = 0;
+        }
+        else
+        {
+            pixel.r /= front.r;
+        }
+        if (front.g <= 0.0)
+        {
+            pixel.g = 0;
+        }
+        else
+        {
+            pixel.g /= front.g;
+        }
+        if (front.b <= 0.0)
+        {
+            pixel.b = 0;
+        }
+        else
+        {
+            pixel.b /= front.b;
+        }
+    }
+    else if (pc.mode == 3.0) // Minus
+    {
+        pixel -= front;
+    }
+    else if (pc.mode == 4.0) // Multiply
+    {
+        pixel *= front;
+    }
 
 	imageStore(resultImage, pixelCoords, pixel);
                                     

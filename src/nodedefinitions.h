@@ -311,7 +311,10 @@ namespace Cascade
           NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Over,Add,Divide,Minus,Multiply,0" },
+            { UI_ELEMENT_TYPE_SPINBOX, "X Offset,-10000,10000,1,0" },
+            { UI_ELEMENT_TYPE_SPINBOX, "Y Offset,-10000,10000,1,0" }
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
