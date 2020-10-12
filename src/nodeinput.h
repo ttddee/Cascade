@@ -19,6 +19,8 @@ public:
     void updateConnection();
     bool hasConnection();
 
+    Connection* getConnection();
+
     NodeInputType getInputType();
 
     NodeBase* getUpstreamNode();

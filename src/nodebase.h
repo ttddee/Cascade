@@ -17,12 +17,14 @@ using namespace Cascade;
 class NodeInput;
 class NodeOutput;
 class NodeGraph;
+class Connection;
 
 namespace Ui {
 class NodeBase;
 }
 
-enum DisplayMode{
+enum DisplayMode
+{
     DISPLAY_MODE_RGB,
     DISPLAY_MODE_ALPHA
 };
@@ -50,9 +52,11 @@ public:
     NodeBase* getUpstreamNodeBack();
     NodeBase* getUpstreamNodeFront();
     std::set<NodeBase*> getAllUpstreamNodes();
+    std::set<Connection*> getAllConnections();
     void requestUpdate();
     QString getAllPropertyValues();
     QSize getTargetSize();
+    void invalidateAllDownstreamNodes();
 
     bool canBeRendered();
 
@@ -72,7 +76,6 @@ private:
 
     void getDownstreamNodes(std::vector<NodeBase*>& nodes);
     std::vector<NodeBase*> getAllDownstreamNodes();
-    void invalidateAllDownstreamNodes();
 
     void updateCropSizes();
     void updateRotation();

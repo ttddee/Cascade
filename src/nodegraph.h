@@ -23,12 +23,14 @@ public:
     NodeGraph(QWidget* parent);
 
     void createNode(const NodeType type);
-    std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
     void viewNode(NodeBase* node);
     NodeBase* getViewedNode();
+    NodeBase* getSelectedNode();
+    void deleteNode(NodeBase* node);
+
+    std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
 
     float getViewScale() const;
-    NodeBase* getSelectedNode();
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -40,6 +42,7 @@ private:
     void showContextMenu(const QPoint& pos);
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
+
     void createOpenConnection(NodeOutput* nodeOut);
     void destroyOpenConnection();
     void establishConnection(NodeInput* nodeIn);
@@ -69,6 +72,7 @@ private:
 signals:
     void requestNodeDisplay(NodeBase* node);
     void requestNodeFileSave(NodeBase* node, const QString& path);
+    void requestClearScreen();
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);

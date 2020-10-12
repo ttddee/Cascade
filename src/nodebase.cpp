@@ -10,6 +10,7 @@
 #include "nodeinput.h"
 #include "nodeoutput.h"
 #include "nodegraph.h"
+#include "connection.h"
 
 NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
     : QWidget(parent),
@@ -238,11 +239,43 @@ std::vector<NodeBase*> NodeBase::getAllDownstreamNodes()
     return nodes;
 }
 
+std::set<Connection*> NodeBase::getAllConnections()
+{
+    std::set<Connection*> connections;
+    if (rgbBackIn)
+    {
+        if (auto c = rgbBackIn->getConnection())
+        {
+            connections.insert(c);
+        }
+    }
+    if (rgbFrontIn)
+    {
+        if (auto c = rgbFrontIn->getConnection())
+        {
+            connections.insert(c);
+        }
+    }
+    if (rgbOut)
+    {
+        auto conns = rgbOut->getConnections();
+
+        if (conns.size() > 0)
+        {
+            foreach (auto& c, conns)
+            {
+                connections.insert(c);
+            }
+        }
+    }
+    return connections;
+}
+
 void NodeBase::invalidateAllDownstreamNodes()
 {
     foreach(auto& n, getAllDownstreamNodes())
     {
-        n->needsUpdate = true;
+        n->requestUpdate();
     }
 }
 

@@ -94,6 +94,11 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
     }
 }
 
+void RenderManager::handleClearScreenrequest()
+{
+    renderer->doClearScreen();
+}
+
 void RenderManager::displayNode(NodeBase* node)
 {
     if (node && node->canBeRendered())

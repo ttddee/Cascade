@@ -56,16 +56,28 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             currentViewerMode = VIEWER_MODE_FRONT_RGB;
             viewerStatusBar->setViewerModeText("Front RGB");
+
+            vulkanWindow->setViewerMode(currentViewerMode);
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
             currentViewerMode = VIEWER_MODE_BACK_RGB;
             viewerStatusBar->setViewerModeText("Back RGB");
+
+            vulkanWindow->setViewerMode(currentViewerMode);
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
             currentViewerMode = VIEWER_MODE_BACK_ALPHA;
             viewerStatusBar->setViewerModeText("Back Alpha");
+
+            vulkanWindow->setViewerMode(currentViewerMode);
+
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
@@ -89,11 +101,16 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
                 viewOutputAlpha = false;
             }
 
+            vulkanWindow->setViewerMode(currentViewerMode);
 
+            nodeGraph->viewNode(nodeGraph->getSelectedNode());
         }
-        vulkanWindow->setViewerMode(currentViewerMode);
 
-        nodeGraph->viewNode(nodeGraph->getSelectedNode());
+        if (keyEvent->key() == Qt::Key_Delete)
+        {
+            nodeGraph->deleteNode(nodeGraph->getSelectedNode());
+        }
+
 
         return true;
     }

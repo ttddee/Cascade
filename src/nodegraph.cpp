@@ -31,6 +31,8 @@ NodeGraph::NodeGraph(QWidget* parent)
             rManager, &RenderManager::handleNodeDisplayRequest);
     connect(this, &NodeGraph::requestNodeFileSave,
             rManager, &RenderManager::handleNodeFileSaveRequest);
+    connect(this, &NodeGraph::requestClearScreen,
+            rManager, &RenderManager::handleClearScreenrequest);
 }
 
 void NodeGraph::createNode(const NodeType type)
@@ -54,6 +56,30 @@ void NodeGraph::createNode(const NodeType type)
         connect(n, &NodeBase::nodeRequestFileSave,
                 this, &NodeGraph::handleFileSaveRequest);
     }
+}
+
+void NodeGraph::deleteNode(NodeBase *node)
+{
+    node->invalidateAllDownstreamNodes();
+
+    auto connections = node->getAllConnections();
+    foreach (auto& c, connections)
+    {
+        deleteConnection(c);
+    }
+
+    nodes.erase(remove(nodes.begin(), nodes.end(), node), nodes.end());
+
+    scene->removeItem(node->graphicsProxyWidget());
+
+    if (node == viewedNode)
+    {
+        emit requestClearScreen();
+    }
+
+    delete node;
+
+    selectedNode = nullptr;
 }
 
 std::set<NodeBase*> NodeGraph::getAllUpstreamNodes(NodeBase *node)

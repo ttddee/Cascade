@@ -33,6 +33,14 @@ bool NodeInput::hasConnection()
     return false;
 }
 
+Connection* NodeInput::getConnection()
+{
+    if (hasConnection())
+        return inConnection;
+
+    return nullptr;
+}
+
 void NodeInput::updateConnection()
 {
     if(inConnection)
