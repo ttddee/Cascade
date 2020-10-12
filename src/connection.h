@@ -22,6 +22,9 @@ public:
     NodeInput* targetInput = nullptr;
     NodeOutput* sourceOutput = nullptr;
 
+protected:
+    void mousePressEvent(QGraphicsSceneMouseEvent*) override;
+
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
@@ -30,6 +33,8 @@ private:
     const QPen backConnectedPen = QPen(backColor, 3);
     const QPen alphaConnectedPen = QPen(alphaColor, 3);
 
+signals:
+    void requestConnectionDeletion(Connection* c);
 
 };
 

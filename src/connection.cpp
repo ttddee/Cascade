@@ -27,6 +27,7 @@ Connection::Connection(NodeOutput* source)
                   source->mapToParent(source->pos()).x(),
                   source->mapToParent(source->pos()).y());
     this->setZValue(-1);
+    this->hide();
 }
 
 void Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt)
@@ -74,6 +75,7 @@ QPoint Connection::getStartPosition()
 
 void Connection::updatePosition()
 {
+    this->show();
     auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
 
     this->setLine(start.x() + sourceOutput->visualWidth / 2,
@@ -86,6 +88,7 @@ void Connection::updatePosition()
 
 void Connection::updatePosition(const QPoint end)
 {
+    this->show();
     auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
 
     if (!targetInput)
@@ -98,3 +101,14 @@ void Connection::updatePosition(const QPoint end)
     }
 
 }
+
+void Connection::mousePressEvent(QGraphicsSceneMouseEvent *event)
+{
+    event->accept();
+
+    if (event->button() == Qt::MiddleButton)
+    {
+        emit requestConnectionDeletion(this);
+    }
+}
+

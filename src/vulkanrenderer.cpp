@@ -2064,8 +2064,8 @@ void VulkanRenderer::startNextFrame()
 void VulkanRenderer::translate(float dx, float dy)
 {
     const QSize sz          = window->swapChainImageSize();
-    const float speed_x     = 4.f * abs(dx) / sz.width();       // normalize according to the window size
-    const float speed_y     = 4.f * abs(dy) / sz.height();
+    const float speed_x     = 2.f * abs(dx) / sz.width();       // normalize according to the window size
+    const float speed_y     = 2.f * abs(dy) / sz.height();
     const float sign_dx     = dx  < 0.0f ? -1.0f : 1.0f;
     const float sign_dy     = -dy < 0.0f ? -1.0f : 1.0f;        // invert y, it comes in window coordinate system
 

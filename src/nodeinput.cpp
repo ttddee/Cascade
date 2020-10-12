@@ -45,5 +45,12 @@ void NodeInput::addInConnection(Connection* c)
 {
     inConnection = c;
     updateConnection();
+    parentNode->requestUpdate();
+}
+
+void NodeInput::removeInConnection()
+{
+    inConnection = nullptr;
+    parentNode->requestUpdate();
 }
 

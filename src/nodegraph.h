@@ -34,7 +34,6 @@ protected:
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
-    //void keyPressEvent(QKeyEvent* event) override;
     void wheelEvent(QWheelEvent*) override;
 
 private:
@@ -44,6 +43,7 @@ private:
     void createOpenConnection(NodeOutput* nodeOut);
     void destroyOpenConnection();
     void establishConnection(NodeInput* nodeIn);
+    void deleteConnection(Connection* c);
 
     void selectNode(NodeBase* node);
     void activateNode(NodeBase* node);
@@ -76,6 +76,7 @@ public slots:
     void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
     void handleNodeUpdateRequest(NodeBase* node);
     void handleFileSaveRequest(NodeBase* node, const QString& path);
+    void handleConnectionDeletionRequest(Connection* c);
 };
 
 #endif // NODEGRAPH_H

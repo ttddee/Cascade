@@ -16,6 +16,7 @@ public:
     explicit NodeOutput(QWidget *parent = nullptr);
 
     void addConnection(Connection* c);
+    void removeConnection(Connection* c);
     void updateConnections();
     std::vector<Connection*> getConnections();
 
@@ -28,7 +29,6 @@ protected:
 
 private:
     std::vector<Connection*> outConnections;
-    //bool isDragging = false;
 
 signals:
     void nodeOutputLeftMouseClicked(NodeOutput* nodeOuptput);

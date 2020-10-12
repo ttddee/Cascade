@@ -21,6 +21,17 @@ void NodeOutput::addConnection(Connection *c)
     outConnections.push_back(c);
 }
 
+void NodeOutput::removeConnection(Connection *c)
+{
+    for(size_t i = 0; i < outConnections.size(); ++i)
+    {
+        if (c == outConnections[i])
+        {
+            outConnections.erase(outConnections.begin() + i);
+        }
+    }
+}
+
 void NodeOutput::updateConnections()
 {
     foreach(Connection* c, outConnections)

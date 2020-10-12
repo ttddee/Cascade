@@ -97,7 +97,6 @@ void NodeGraph::selectNode(NodeBase *node)
         n->setIsSelected(false);
     }
     node->setIsSelected(true);
-    std::cout << "Selecting node." << std::endl;
 }
 
 void NodeGraph::activateNode(NodeBase *node)
@@ -155,8 +154,6 @@ void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 
 void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 {
-    std::cout << "handle node update request" << std::endl;
-
     if (node->getIsViewed())
     {
         std::cout << "requesting node display" << std::endl;
@@ -176,6 +173,9 @@ void NodeGraph::createOpenConnection(NodeOutput* nodeOut)
     Connection* c = new Connection(nodeOut);
     openConnection = c;
     scene->addItem(openConnection);
+
+    connect(c, &Connection::requestConnectionDeletion,
+            this, &NodeGraph::handleConnectionDeletionRequest);
 }
 
 void NodeGraph::destroyOpenConnection()
@@ -197,9 +197,32 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
     openConnection = nullptr;
 }
 
+void NodeGraph::deleteConnection(Connection* c)
+{
+    for(size_t i = 0; i < connections.size(); ++i)
+    {
+        if (c == connections[i])
+        {
+            connections.erase(connections.begin() + i);
+        }
+    }
+
+    c->sourceOutput->removeConnection(c);
+    c->targetInput->removeInConnection();
+
+    scene->removeItem(c);
+    delete c;
+    c = nullptr;
+}
+
 NodeBase* NodeGraph::getSelectedNode()
 {
     return selectedNode;
+}
+
+void NodeGraph::handleConnectionDeletionRequest(Connection* c)
+{
+    deleteConnection(c);
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
@@ -277,17 +300,6 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
 
     QGraphicsView::mouseReleaseEvent(event);
 }
-
-//void NodeGraph::keyPressEvent(QKeyEvent *event)
-//{
-////    if(event->key() == Qt::Key_F4)
-////    {
-////        if(selectedNode)
-////        {
-////            viewNode(selectedNode);
-////        }
-////    }
-//}
 
 void NodeGraph::wheelEvent(QWheelEvent* event)
 {

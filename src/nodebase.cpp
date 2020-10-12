@@ -152,10 +152,7 @@ void NodeBase::requestUpdate()
     needsUpdate = true;
     invalidateAllDownstreamNodes();
 
-    if (getUpstreamNodeBack() || nodeType == NODE_TYPE_READ)
-    {
-        emit nodeRequestUpdate(this);
-    }
+    emit nodeRequestUpdate(this);
 }
 
 QSize NodeBase::getTargetSize()
