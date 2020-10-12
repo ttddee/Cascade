@@ -1277,8 +1277,8 @@ void VulkanRenderer::initSwapChainResources()
     // Projection matrix
     projection = window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
     const QSize sz = window->swapChainImageSize();
-    projection.perspective(45.0f, sz.width() / (float) sz.height(), 0.01f, 100.0f);
-    projection.translate(0, 0, -3);
+    projection.ortho( -sz.width() / scaleXY, sz.width() / scaleXY, -sz.height() / scaleXY, sz.height() / scaleXY, -1.0f, 100.0f);
+    projection.scale(500);
 }
 
 void VulkanRenderer::recordComputeCommandBuffer(
