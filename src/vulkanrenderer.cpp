@@ -1632,24 +1632,24 @@ void VulkanRenderer::recordComputeCommandBuffer(
     int height = inputImage.getHeight();
     //int lineWidth = width * 16; // 4 channels * 4 bytes
 
-    float target[width * height];
-    float* pixels = &target[0];
+    //float target[width * height];
+    //float* pixels = &target[0];
 
-    for (int y = 0; y < width * height; ++y)
-    {
-        //std::cout << *p << std::endl;
-        //pixels = p;
-        memcpy(pixels, p, 16);
-        pixels += 4;
-        p += 4;
-    }
+//    for (int y = 0; y < width * height; ++y)
+//    {
+//        //std::cout << *p << std::endl;
+//        //pixels = p;
+//        memcpy(pixels, p, 16);
+//        pixels += 4;
+//        p += 4;
+//    }
 
-    bool ok = saveImage->set_pixels(spec.roi(), TypeDesc::FLOAT, pixels);
-    if (!ok)
-    {
-        std::cout << "Problem copying pixels to ImageBuf." << std::endl;
-        std::cout << saveImage->geterror() << std::endl;
-    }
+//    bool ok = saveImage->set_pixels(spec.roi(), TypeDesc::FLOAT, pixels);
+//    if (!ok)
+//    {
+//        std::cout << "Problem copying pixels to ImageBuf." << std::endl;
+//        std::cout << saveImage->geterror() << std::endl;
+//    }
 
     devFuncs->vkUnmapMemory(device, inputImage.getMemory());
 

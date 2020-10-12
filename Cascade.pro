@@ -101,6 +101,68 @@ linux-g++ {
 }
 
 win32-msvc* {
+    INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
+    INCLUDEPATH += ../../Documents/vcpkg/installed/x64-windows/include
+
+    LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
+
+    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
+    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
+
+    COPIES += dlls
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO_Util.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/msvcp140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/concrt140.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/D3Dcompiler_47.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/libEGL.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/libEGLSV2.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/opengl32sw.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Svg.dll)
+
+    CONFIG(release, debug|release) {
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Widgets.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Gui.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Core.dll)
+    }
+
+    CONFIG(debug, debug|release) {
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Widgetsd.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Guid.dll)
+    dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Cored.dll)
+    }
+
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/IlmImf-2_3.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/IlmThread-2_3.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/Imath-2_3.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/Iex-2_3.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/Half-2_3.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/raw_r.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/jpeg62.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/libpng16.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/lzma.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/lcms2.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/jasper.dll)
+    dlls.files += $$files($$DESTDIR/../../../Documents/vcpkg/installed/x64-windows/bin/zlib1.dll)
+    dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_filesystem-vc141-mt-x64-1_66.dll)
+    dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_system-vc141-mt-x64-1_66.dll)
+    dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_thread-vc141-mt-x64-1_66.dll)
+    dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_chrono-vc141-mt-x64-1_66.dll)
+    dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_date_time-vc141-mt-x64-1_66.dll)
+    dlls.path = $$DESTDIR
+
+    CONFIG(release, debug|release) {
+    COPIES += platforms
+    platforms.files += $$files($$DESTDIR/../../external/msvc2019/Qt/platforms/release/*)
+    platforms.path = $$DESTDIR\platforms
+    }
+
+    CONFIG(debug, debug|release) {
+    COPIES += platforms
+    platforms.files += $$files($$DESTDIR/../../external/msvc2019/Qt/platforms/debug/*)
+    platforms.path = $$DESTDIR\platforms
+    }
 
 }
 

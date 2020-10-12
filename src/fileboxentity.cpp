@@ -14,8 +14,9 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
 {
     ui->setupUi(this);
 
-#ifdef QT_DEBUG
     QStringList slist;
+
+#ifdef QT_DEBUG
     slist.append(QString("../../images/bay.jpg"));
 #endif
 
