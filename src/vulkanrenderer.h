@@ -147,11 +147,9 @@ private:
 
     VkSampler sampler = VK_NULL_HANDLE;
 
-    VkFormat loadImageFormat;
-    VkDeviceMemory loadImageMem = VK_NULL_HANDLE;
-
     bool texLayoutPending = false;
 
+    VkFormat loadImageFormat;
     VkImage loadImageStaging = VK_NULL_HANDLE;
     VkDeviceMemory loadImageStagingMem = VK_NULL_HANDLE;
 

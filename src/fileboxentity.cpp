@@ -14,9 +14,10 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
 {
     ui->setupUi(this);
 
+#ifdef QT_DEBUG
     QStringList slist;
-    slist.append(QString("../../images/bay.jpg")); // TODO: Temporary
-
+    slist.append(QString("../../images/bay.jpg"));
+#endif
 
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);

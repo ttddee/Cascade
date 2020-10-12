@@ -54,7 +54,6 @@ public:
     QString getAllPropertyValues();
     QSize getTargetSize();
 
-    bool supportsViewerMode(const ViewerMode mode);
     bool canBeRendered();
 
     bool needsUpdate = true;

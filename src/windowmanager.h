@@ -11,10 +11,11 @@ class NodeBase;
 
 enum ViewerMode
 {
-    VIEWER_MODE_FRONT,
-    VIEWER_MODE_BACK,
-    VIEWER_MODE_ALPHA,
-    VIEWER_MODE_OUTPUT
+    VIEWER_MODE_FRONT_RGB,
+    VIEWER_MODE_BACK_RGB,
+    VIEWER_MODE_BACK_ALPHA,
+    VIEWER_MODE_OUTPUT_RGB,
+    VIEWER_MODE_OUTPUT_ALPHA
 };
 
 class WindowManager : public QObject
@@ -42,7 +43,8 @@ private:
     PropertiesView* propertiesView;
     ViewerStatusBar* viewerStatusBar;
 
-    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT;
+    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
+    bool viewOutputAlpha = false;
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);

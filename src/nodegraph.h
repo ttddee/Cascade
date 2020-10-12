@@ -25,6 +25,7 @@ public:
     void createNode(const NodeType type);
     std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
     void viewNode(NodeBase* node);
+    NodeBase* getViewedNode();
 
     float getViewScale() const;
     NodeBase* getSelectedNode();
@@ -66,7 +67,6 @@ private:
     Connection* openConnection = nullptr;
 
 signals:
-    void viewedNodeHasChanged(NodeBase* node);
     void requestNodeDisplay(NodeBase* node);
     void requestNodeFileSave(NodeBase* node, const QString& path);
 

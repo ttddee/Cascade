@@ -54,44 +54,48 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_F1)
         {
-            currentViewerMode = VIEWER_MODE_FRONT;
-            viewerStatusBar->setViewerModeText("Front");
-            vulkanWindow->setViewerMode(currentViewerMode);
-
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-
-            return true;
+            currentViewerMode = VIEWER_MODE_FRONT_RGB;
+            viewerStatusBar->setViewerModeText("Front RGB");
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
-            currentViewerMode = VIEWER_MODE_BACK;
-            viewerStatusBar->setViewerModeText("Back");
-            vulkanWindow->setViewerMode(currentViewerMode);
-
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-
-            return true;
+            currentViewerMode = VIEWER_MODE_BACK_RGB;
+            viewerStatusBar->setViewerModeText("Back RGB");
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
-            currentViewerMode = VIEWER_MODE_ALPHA;
-            viewerStatusBar->setViewerModeText("Alpha");
-            vulkanWindow->setViewerMode(currentViewerMode);
-
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-
-            return true;
+            currentViewerMode = VIEWER_MODE_BACK_ALPHA;
+            viewerStatusBar->setViewerModeText("Back Alpha");
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
-            currentViewerMode = VIEWER_MODE_OUTPUT;
-            viewerStatusBar->setViewerModeText("Output");
-            vulkanWindow->setViewerMode(currentViewerMode);
+            if (nodeGraph->getSelectedNode() != nodeGraph->getViewedNode())
+            {
+                viewOutputAlpha = false;
+            }
+            if (!viewOutputAlpha)
+            {
+                std::cout << "viewing RGB" << std::endl;
+                currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
+                viewerStatusBar->setViewerModeText("Output RGB");
 
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
+                viewOutputAlpha = true;
+            }
+            else
+            {
+                currentViewerMode = VIEWER_MODE_OUTPUT_ALPHA;
+                viewerStatusBar->setViewerModeText("Output Alpha");
 
-            return true;
+                viewOutputAlpha = false;
+            }
+
+
         }
+        vulkanWindow->setViewerMode(currentViewerMode);
+
+        nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+        return true;
     }
 
     if(event->type() == QEvent::MouseButtonPress)
@@ -123,4 +127,5 @@ void WindowManager::handleRenderTargetCreated(int w, int h)
     viewerStatusBar->setWidthText(QString::number(w));
     viewerStatusBar->setHeightText(QString::number(h));
 }
+
 

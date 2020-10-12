@@ -490,15 +490,20 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
         return false;
     }
 
+    if (loadImageStaging) {
+        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
+        loadImageStaging = VK_NULL_HANDLE;
+    }
+
+    if (loadImageStagingMem) {
+        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
+        loadImageStagingMem = VK_NULL_HANDLE;
+    }
+
     if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
                             VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
                             window->hostVisibleMemoryIndex()))
         return false;
-
-//    if (!createTextureImage(imageSize, &imageFromDisk->getImage(), &loadImageMem,
-//                            VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_STORAGE_BIT,
-//                            window->deviceLocalMemoryIndex()))
-//        return false;
 
     if (!writeLinearImage(*cpuImage, loadImageStaging, loadImageStagingMem))
         return false;
@@ -885,8 +890,6 @@ VkPipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
 
 VkPipeline VulkanRenderer::createComputePipelineNoop()
 {
-    // TODO: This should not be here.
-
     auto shaderModule = createShaderFromFile(":/shaders/noop_comp.spv");;
 
     VkPipelineShaderStageCreateInfo computeStage = {
@@ -1478,13 +1481,10 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 VK_PIPELINE_BIND_POINT_COMPUTE,
                 computePipelineLayoutTwoInputs, 0, 1,
                 &computeDescriptorSetTwoInputs, 0, 0);
-    // Adding one extra local workgroup here to
-    // prevent flickering in crop shader
-    // TODO: Crop shader will never use this CB
     devFuncs->vkCmdDispatch(
                 compute.commandBufferTwoInputs,
-                outputImage.getWidth() / 16 + 1,
-                outputImage.getHeight() / 16 + 1, 1);
+                outputImage.getWidth() / 16,
+                outputImage.getHeight() / 16, 1);
 
     {
        //Make the barriers for the resources
@@ -2111,22 +2111,6 @@ void VulkanRenderer::releaseResources()
     if (loadImageStagingMem) {
         devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
         loadImageStagingMem = VK_NULL_HANDLE;
-    }
-
-    // TODO: Destroy these
-//    if (texView) {
-//        devFuncs->vkDestroyImageView(device, texView, nullptr);
-//        texView = VK_NULL_HANDLE;
-//    }
-
-//    if (texImage) {
-//        devFuncs->vkDestroyImage(device, texImage, nullptr);
-//        texImage = VK_NULL_HANDLE;
-//    }
-
-    if (loadImageMem) {
-        devFuncs->vkFreeMemory(device, loadImageMem, nullptr);
-        loadImageMem = VK_NULL_HANDLE;
     }
 
     if (graphicsPipelineAlpha) {

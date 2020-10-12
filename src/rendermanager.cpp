@@ -33,7 +33,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 
     NodeBase* nodeToDisplay = nullptr;
 
-    if (viewerMode == VIEWER_MODE_FRONT)
+    if (viewerMode == VIEWER_MODE_FRONT_RGB)
     {
         if (props.frontInputTrait == FRONT_INPUT_ALWAYS_CLEAR)
         {
@@ -45,7 +45,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(nodeToDisplay);
         }
     }
-    else if (viewerMode == VIEWER_MODE_BACK)
+    else if (viewerMode == VIEWER_MODE_BACK_RGB)
     {
         if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
         {
@@ -57,13 +57,26 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(nodeToDisplay);
         }
     }
-    else if (viewerMode == VIEWER_MODE_ALPHA)
+    else if (viewerMode == VIEWER_MODE_BACK_ALPHA)
     {
-        renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
+        if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
+        {
+            renderer->doClearScreen();
+        }
+        else if (props.backInputTrait == BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR)
+        {
+            nodeToDisplay = node->getUpstreamNodeBack();
+            renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
+            displayNode(nodeToDisplay);
+        }
+    }
+    else if (viewerMode == VIEWER_MODE_OUTPUT_RGB)
+    {
         displayNode(node);
     }
-    else if (viewerMode == VIEWER_MODE_OUTPUT)
+    else if (viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
     {
+        renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
         displayNode(node);
     }
 }

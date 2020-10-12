@@ -272,19 +272,19 @@ void NodeBase::paintEvent(QPaintEvent *event)
         rect.setTopLeft(rect.topLeft() + QPoint(1, 1));
         rect.setBottomRight(rect.bottomRight() + QPoint(-1, -1));
 
-        if (mode == VIEWER_MODE_FRONT)
+        if (mode == VIEWER_MODE_FRONT_RGB)
         {
             painter.setPen(frontViewedColorPen);
         }
-        else if (mode == VIEWER_MODE_BACK)
+        else if (mode == VIEWER_MODE_BACK_RGB)
         {
             painter.setPen(backViewedColorPen);
         }
-        else if (mode == VIEWER_MODE_ALPHA)
+        else if (mode == VIEWER_MODE_BACK_ALPHA)
         {
             painter.setPen(alphaViewedColorPen);
         }
-        else if (mode == VIEWER_MODE_OUTPUT)
+        else if (mode == VIEWER_MODE_OUTPUT_RGB)
         {
             painter.setPen(outputViewedColorPen);
         }
@@ -315,30 +315,6 @@ bool NodeBase::canBeRendered()
         return false;
     }
     return true;
-}
-
-bool NodeBase::supportsViewerMode(const ViewerMode mode)
-{
-    // TODO: Do we need this?
-
-    if (mode == VIEWER_MODE_FRONT)
-    {
-        if (rgbFrontIn)
-            return true;
-        return false;
-    }
-    else if (mode == VIEWER_MODE_BACK)
-    {
-        if (rgbBackIn)
-            return true;
-        return false;
-    }
-    else if (mode == VIEWER_MODE_ALPHA)
-        return true;
-    else if (mode == VIEWER_MODE_OUTPUT)
-        return true;
-
-    return false;
 }
 
 NodeProperties* NodeBase::getProperties()
