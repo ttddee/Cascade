@@ -14,7 +14,7 @@ void main()
 
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
-    vec3 result = imageLoad(inputImage, pixelCoords).rgb;
+    float alpha = imageLoad(inputImage, pixelCoords).a;
 
     vec3 sumH = vec3(0.0, 0.0, 0.0);
     vec3 sumV = vec3(0.0, 0.0, 0.0);
@@ -30,7 +30,7 @@ void main()
    sumH /= div;
    sumV /= div;
 
-    vec4 res = vec4((sumH + sumV) / 2 , 1.0);
+    vec4 res = vec4((sumH + sumV) / 2 , alpha);
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);
 }

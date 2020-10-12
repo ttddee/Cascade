@@ -1,8 +1,8 @@
 #version 450
 
 layout (local_size_x = 16, local_size_y = 16) in;
-layout (binding = 0, rgba8) uniform readonly image2D inputImage;
-layout (binding = 1, rgba8) uniform image2D resultImage;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform image2D resultImage;
 
 layout(push_constant) uniform pushConstants {
     layout(offset = 0) float angle;
@@ -20,7 +20,7 @@ void main()
 
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec3 rgb = imageLoad(inputImage, pixelCoords).rgb;     
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;     
 
     pixelCoords -= center;
 
@@ -32,9 +32,7 @@ void main()
     targetCoords.y = newY;
 
     targetCoords += center;
-             
-    vec4 pixel = vec4(rgb, 1.0);
 
-    imageStore(resultImage, targetCoords, pixel);
+    imageStore(resultImage, targetCoords, rgba);
 
 }

@@ -1,8 +1,8 @@
 #version 450
 
 layout (local_size_x = 16, local_size_y = 16) in;
-layout (binding = 0, rgba8) uniform readonly image2D inputImage;
-layout (binding = 1, rgba8) uniform image2D resultImage;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform image2D resultImage;
 
 layout(push_constant) uniform pushConstants {
     layout(offset = 0) float amount;
@@ -39,6 +39,8 @@ void main()
 
     vec3 original = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y)).rgb;
 
+    float alpha = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y)).a;
+
     float[9] kernel;
     kernel[0] = -1.0; kernel[1] =  -1.0; kernel[2] =  -1.0;
     kernel[3] = -1.0; kernel[4] = 8.0; kernel[5] =  -1.0;
@@ -52,7 +54,7 @@ void main()
     }      
     else
     {
-        res = vec4(vec3(conv(kernel, imageData.rgb) / (100 / pc.amount) + original), 1.0);
+        res = vec4(vec3(conv(kernel, imageData.rgb) / (100 / pc.amount) + original), alpha);
     }                    
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);

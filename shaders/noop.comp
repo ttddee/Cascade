@@ -8,9 +8,7 @@ void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec3 rgb = imageLoad(inputImage, pixelCoords).rgb;  
-                                    
-    vec4 pixel = vec4(rgb, 1.0);
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;  
 
-    imageStore(resultImage, pixelCoords, pixel);
+    imageStore(resultImage, pixelCoords, rgba);
 }

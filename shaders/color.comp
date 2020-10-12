@@ -16,13 +16,11 @@ void main()
 
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec3 rgb = imageLoad(inputImage, pixelCoords).rgb;
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
 
-    rgb.r = pow(rgb.r, (1 / pc.gamma)) * pc.gain + pc.lift;
-    rgb.g = pow(rgb.g, (1 / pc.gamma)) * pc.gain + pc.lift;
-    rgb.b = pow(rgb.b, (1 / pc.gamma)) * pc.gain + pc.lift;
-                     
-    vec4 pixel = vec4(rgb, 1.0);
+    rgba.r = pow(rgba.r, (1 / pc.gamma)) * pc.gain + pc.lift;
+    rgba.g = pow(rgba.g, (1 / pc.gamma)) * pc.gain + pc.lift;
+    rgba.b = pow(rgba.b, (1 / pc.gamma)) * pc.gain + pc.lift;
 
-    imageStore(resultImage, pixelCoords, pixel);
+    imageStore(resultImage, pixelCoords, rgba);
 }

@@ -25,7 +25,7 @@ void main()
 
     if(pc.mode == 0.0) // Over
     {
-        pixel += front * (1 - front.a);
+        pixel = front + pixel * (1.0 - front.a);
     }
     else if (pc.mode == 1.0) // Add
     {
