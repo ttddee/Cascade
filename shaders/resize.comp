@@ -1,0 +1,119 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float factor;
+} pc;
+
+float factor = pc.factor;
+
+vec4 cubicInterpolate(vec4 p[4], float x)
+{
+    return p[1] + 0.5 * x*(p[2] - p[0] + x*(2.0*p[0] - 5.0*p[1] + 4.0*p[2] - p[3] + x*(3.0*(p[1] - p[2]) + p[3] - p[0])));
+}
+
+vec4 bicubicInterpolate (vec4 p[4][4], float x, float y) {
+	vec4 arr[4];
+	arr[0] = cubicInterpolate(p[0], y);
+	arr[1] = cubicInterpolate(p[1], y);
+	arr[2] = cubicInterpolate(p[2], y);
+	arr[3] = cubicInterpolate(p[3], y);
+	return cubicInterpolate(arr, x);
+}
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    ivec2 sourceCoords = ivec2(int(pixelCoords.x / factor), int(pixelCoords.y / factor));
+
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
+
+    if (factor < 1.0)
+    {
+        // Laczos interpolation
+
+        ivec2 centerCoordinate = ivec2(sourceCoords);
+        ivec2 oneStepLeftCoordinate = ivec2(sourceCoords.x - 1, sourceCoords.y);
+        ivec2 twoStepsLeftCoordinate = ivec2(sourceCoords.x - 2, sourceCoords.y);
+        ivec2 threeStepsLeftCoordinate = ivec2(sourceCoords.x - 3, sourceCoords.y);
+        ivec2 fourStepsLeftCoordinate = ivec2(sourceCoords.x - 4, sourceCoords.y);
+        ivec2 oneStepRightCoordinate = ivec2(sourceCoords.x + 1, sourceCoords.y);
+        ivec2 twoStepsRightCoordinate = ivec2(sourceCoords.x + 2, sourceCoords.y);
+        ivec2 threeStepsRightCoordinate = ivec2(sourceCoords.x + 3, sourceCoords.y);
+        ivec2 fourStepsRightCoordinate = ivec2(sourceCoords.x + 4, sourceCoords.y);
+
+        rgba = imageLoad(inputImage, centerCoordinate).rgba * 0.38026;  
+
+        rgba += imageLoad(inputImage, oneStepLeftCoordinate).rgba * 0.27667;  
+        rgba += imageLoad(inputImage, oneStepRightCoordinate).rgba * 0.27667;  
+
+        rgba += imageLoad(inputImage, twoStepsLeftCoordinate).rgba * 0.08074;  
+        rgba += imageLoad(inputImage, twoStepsRightCoordinate).rgba * 0.08074;  
+
+        rgba += imageLoad(inputImage, threeStepsLeftCoordinate).rgba * -0.02612;  
+        rgba += imageLoad(inputImage, threeStepsRightCoordinate).rgba * -0.02612;  
+
+        rgba += imageLoad(inputImage, fourStepsLeftCoordinate).rgba * -0.02143;  
+        rgba += imageLoad(inputImage, fourStepsRightCoordinate).rgba * -0.02143; 
+
+        ivec2 oneStepUpCoordinate = ivec2(sourceCoords.x, sourceCoords.y - 1);
+        ivec2 twoStepsUpCoordinate = ivec2(sourceCoords.x, sourceCoords.y - 2);
+        ivec2 threeStepsUpCoordinate = ivec2(sourceCoords.x, sourceCoords.y - 3);
+        ivec2 fourStepsUpCoordinate = ivec2(sourceCoords.x, sourceCoords.y - 4);
+        ivec2 oneStepDownCoordinate = ivec2(sourceCoords.x, sourceCoords.y + 1);
+        ivec2 twoStepsDownCoordinate = ivec2(sourceCoords.x, sourceCoords.y + 2);
+        ivec2 threeStepsDownCoordinate = ivec2(sourceCoords.x, sourceCoords.y + 3);
+        ivec2 fourStepsDownCoordinate = ivec2(sourceCoords.x, sourceCoords.y + 4);
+
+        rgba += imageLoad(inputImage, centerCoordinate).rgba * 0.38026;  
+
+        rgba += imageLoad(inputImage, oneStepUpCoordinate).rgba * 0.27667;  
+        rgba += imageLoad(inputImage, oneStepDownCoordinate).rgba * 0.27667;  
+
+        rgba += imageLoad(inputImage, twoStepsUpCoordinate).rgba * 0.08074;  
+        rgba += imageLoad(inputImage, twoStepsDownCoordinate).rgba * 0.08074;  
+
+        rgba += imageLoad(inputImage, threeStepsUpCoordinate).rgba * -0.02612;  
+        rgba += imageLoad(inputImage, threeStepsDownCoordinate).rgba * -0.02612;  
+
+        rgba += imageLoad(inputImage, fourStepsUpCoordinate).rgba * -0.02143;  
+        rgba += imageLoad(inputImage, fourStepsDownCoordinate).rgba * -0.02143;
+
+        rgba /= 2.0;
+    }
+    else if (factor > 1.0)
+    {
+        // Bicubic interpolation
+
+        vec4 pixels[4][4];
+
+        pixels[0][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 0)).rgba;
+        pixels[0][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 1)).rgba;
+        pixels[0][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 2)).rgba;
+        pixels[0][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 3)).rgba;
+        pixels[1][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 0)).rgba;
+        pixels[1][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 1)).rgba;
+        pixels[1][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 2)).rgba;
+        pixels[1][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 3)).rgba;
+        pixels[2][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 0)).rgba;
+        pixels[2][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 1)).rgba;
+        pixels[2][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 2)).rgba;
+        pixels[2][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 3)).rgba;
+        pixels[3][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 0)).rgba;
+        pixels[3][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 1)).rgba;
+        pixels[3][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 2)).rgba;
+        pixels[3][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 3)).rgba;
+
+        float x = gl_GlobalInvocationID.x / factor - int(gl_GlobalInvocationID.x / factor);
+        float y = gl_GlobalInvocationID.y / factor - int(gl_GlobalInvocationID.y / factor);
+
+        rgba = bicubicInterpolate(pixels, x, y); 
+    }
+
+    imageStore(resultImage, pixelCoords, rgba);
+
+}

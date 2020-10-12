@@ -36,5 +36,6 @@
         <file>shaders/noise_comp.spv</file>
         <file>shaders/color_comp.spv</file>
         <file>shaders/shuffle_comp.spv</file>
+        <file>shaders/resize_comp.spv</file>
     </qresource>
 </RCC>

@@ -60,6 +60,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
             vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            viewOutputAlpha = false;
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
@@ -69,6 +71,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
             vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            viewOutputAlpha = false;
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
@@ -78,6 +82,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
             vulkanWindow->setViewerMode(currentViewerMode);
 
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+            viewOutputAlpha = false;
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {

@@ -79,6 +79,7 @@ private:
 
     void updateCropSizes();
     void updateRotation();
+    void updateResizeFactor();
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
@@ -104,6 +105,8 @@ private:
     int bottomCrop = 0;
 
     int rotation = 0;
+
+    float resizeFactor = 1.0;
 
     const int cornerRadius = 7;
     const QBrush defaultColorBrush = QBrush("#282d31");

@@ -149,6 +149,10 @@ void NodeBase::requestUpdate()
     {
         updateRotation();
     }
+    else if (nodeType == NODE_TYPE_RESIZE)
+    {
+        updateResizeFactor();
+    }
 
     needsUpdate = true;
     invalidateAllDownstreamNodes();
@@ -166,16 +170,22 @@ QSize NodeBase::getTargetSize()
 
         if (upstreamImage)
         {
-            // Crop
-            int w = upstreamImage->getWidth() - leftCrop - rightCrop;
-            int h = upstreamImage->getHeight() - topCrop - bottomCrop;
-            if(w < 0)
+            int w = upstreamImage->getWidth();
+            int h = upstreamImage->getHeight();
+
+            if (nodeType == NODE_TYPE_CROP)
             {
-                w = 0;
-            }
-            if (h < 0)
-            {
-                h = 0;
+                // Crop
+                w = w - leftCrop - rightCrop;
+                h = h - topCrop - bottomCrop;
+                if(w < 0)
+                {
+                    w = 0;
+                }
+                if (h < 0)
+                {
+                    h = 0;
+                }
             }
 
             // TODO: this
@@ -196,6 +206,13 @@ QSize NodeBase::getTargetSize()
 //            }
 
 //            std::cout << "new size: " << w << " x " << h << std::endl;
+
+            if (nodeType == NODE_TYPE_RESIZE)
+            {
+                // Resize
+                w = static_cast<int>(w * resizeFactor);
+                h = static_cast<int>(h * resizeFactor);
+            }
 
             return QSize(w, h);
         }
@@ -377,6 +394,12 @@ void NodeBase::updateRotation()
 {
     auto vals = getAllPropertyValues().split(",");
     rotation = vals[0].toInt();
+}
+
+void NodeBase::updateResizeFactor()
+{
+    auto vals = getAllPropertyValues().split(",");
+    resizeFactor = vals[0].toFloat();
 }
 
 void NodeBase::mousePressEvent(QMouseEvent *event)
