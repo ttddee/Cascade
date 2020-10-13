@@ -37,6 +37,7 @@ private:
 
 signals:
     void noGPUFound();
+    void deviceLost();
     void rendererHasBeenCreated();
     void requestZoomTextUpdate(float f);
     void renderTargetHasBeenCreated(int w, int h);

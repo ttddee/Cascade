@@ -10,29 +10,72 @@ layout(push_constant) uniform pushConstants {
 
 #define PI 3.1415926538
 
-int degrees = int(pc.angle);
+int degrees = 360 - int(pc.angle);
 
 float radians = -degrees * PI / 180;
 
+ivec2 center = ivec2(int(imageSize(inputImage).x / 2), int(imageSize(inputImage).y / 2));
+
+vec4 cubicInterpolate(vec4 p[4], float x)
+{
+    return p[1] + 0.5 * x*(p[2] - p[0] + x*(2.0*p[0] - 5.0*p[1] + 4.0*p[2] - p[3] + x*(3.0*(p[1] - p[2]) + p[3] - p[0])));
+}
+
+vec4 bicubicInterpolate (vec4 p[4][4], float x, float y) {
+	vec4 arr[4];
+	arr[0] = cubicInterpolate(p[0], y);
+	arr[1] = cubicInterpolate(p[1], y);
+	arr[2] = cubicInterpolate(p[2], y);
+	arr[3] = cubicInterpolate(p[3], y);
+	return cubicInterpolate(arr, x);
+}
+
 void main()
 {   
-    ivec2 center= ivec2(int(imageSize(inputImage).x / 2), int(imageSize(inputImage).y / 2));
-
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;     
+    vec4 rgba = vec4(0.0, 0.0, 0.0, 0.0);
 
-    pixelCoords -= center;
+    if (pc.angle != 0 && pc.angle != 360)
+    {
+        pixelCoords -= center;
 
-    int newX = int(cos(radians) * (pixelCoords.x) + sin(radians) * (pixelCoords.y));
-    int newY = int(-sin(radians) * (pixelCoords.x) + cos(radians) * (pixelCoords.y)); 
+        int sourceX = int(cos(radians) * (pixelCoords.x) + sin(radians) * (pixelCoords.y)) + center.x;
+        int sourceY = int(-sin(radians) * (pixelCoords.x) + cos(radians) * (pixelCoords.y)) + center.y; 
 
-    ivec2 targetCoords;
-    targetCoords.x = newX;
-    targetCoords.y = newY;
+        ivec2 sourceCoords = ivec2(sourceX, sourceY);
 
-    targetCoords += center;
+        // Bicubic interpolation
 
-    imageStore(resultImage, targetCoords, rgba);
+        vec4 pixels[4][4];
+
+        pixels[0][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 0)).rgba;
+        pixels[0][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 1)).rgba;
+        pixels[0][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 2)).rgba;
+        pixels[0][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 0, sourceCoords.y + 3)).rgba;
+        pixels[1][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 0)).rgba;
+        pixels[1][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 1)).rgba;
+        pixels[1][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 2)).rgba;
+        pixels[1][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 1, sourceCoords.y + 3)).rgba;
+        pixels[2][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 0)).rgba;
+        pixels[2][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 1)).rgba;
+        pixels[2][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 2)).rgba;
+        pixels[2][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 2, sourceCoords.y + 3)).rgba;
+        pixels[3][0] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 0)).rgba;
+        pixels[3][1] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 1)).rgba;
+        pixels[3][2] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 2)).rgba;
+        pixels[3][3] = imageLoad(inputImage, ivec2(sourceCoords.x + 3, sourceCoords.y + 3)).rgba;
+
+        // Arbitrary values for x and y. Would be better to find real values.
+        rgba = bicubicInterpolate(pixels, 0.5, 0.5); 
+
+        pixelCoords += center;
+    }  
+    else
+    {
+        rgba = imageLoad(inputImage, pixelCoords).rgba; 
+    }
+
+    imageStore(resultImage, pixelCoords, rgba);
 
 }

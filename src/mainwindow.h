@@ -26,6 +26,7 @@ private:
 public slots:
     void handleRendererHasBeenCreated();
     void handleNoGPUFound();
+    void handleDeviceLost();
 
 };
 #endif // MAINWINDOW_H

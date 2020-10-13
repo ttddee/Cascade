@@ -129,6 +129,8 @@ private:
 
     void updateVertexData(int, int);
 
+    void logicalDeviceLost() override;
+
     std::vector<float> unpackPushConstants(const QString s);
 
     VkDeviceMemory bufMem = VK_NULL_HANDLE;

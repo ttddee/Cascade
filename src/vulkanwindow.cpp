@@ -22,6 +22,7 @@ VulkanRenderer* VulkanWindow::getRenderer()
 
 void VulkanWindow::handleZoomResetRequest()
 {
+    scale = 1.0;
     renderer->scale(1.0);
 }
 

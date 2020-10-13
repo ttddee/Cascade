@@ -24,6 +24,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::handleRendererHasBeenCreated);
     connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
             this, &MainWindow::handleNoGPUFound);
+    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
+            this, &MainWindow::handleDeviceLost);
 }
 
 void MainWindow::handleRendererHasBeenCreated()
@@ -40,6 +42,15 @@ void MainWindow::handleNoGPUFound()
 {
     QMessageBox messageBox;
     messageBox.critical(0,"Error","No compatible GPU found. Shutting down!");
+    messageBox.setFixedSize(500, 200);
+
+    QApplication::quit();
+}
+
+void MainWindow::handleDeviceLost()
+{
+    QMessageBox messageBox;
+    messageBox.critical(0,"Device Lost","We lost contact to the GPU and need to shut down. Sorry!");
     messageBox.setFixedSize(500, 200);
 
     QApplication::quit();
