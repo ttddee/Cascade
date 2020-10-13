@@ -45,6 +45,7 @@ public:
     static WindowManager& getInstance();
     WindowManager(WindowManager const&) = delete;
     void operator=(WindowManager const&) = delete;
+
     void setUp(VulkanWindow* vw,
                NodeGraph* ng,
                PropertiesView* pv,

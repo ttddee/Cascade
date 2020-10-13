@@ -42,7 +42,9 @@ public:
     explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
     QString getCurrentPath();
+
     void selfConnectToValueChanged(NodeProperties* p);
+
     QString getValuesAsString() override;
 
     ~FileBoxEntity();

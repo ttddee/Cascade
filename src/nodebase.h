@@ -67,17 +67,22 @@ public:
     bool getIsViewed() const;
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
+
     NodeProperties* getProperties();
-    NodeBase* getUpstreamNodeBack();
-    NodeBase* getUpstreamNodeFront();
-    std::set<NodeBase*> getAllUpstreamNodes();
-    std::set<Connection*> getAllConnections();
-    void requestUpdate();
     QString getAllPropertyValues();
     QSize getTargetSize();
+
+    NodeBase* getUpstreamNodeBack();
+    NodeBase* getUpstreamNodeFront();
+
+    std::set<NodeBase*> getAllUpstreamNodes();
+    std::set<Connection*> getAllConnections();
+
     void invalidateAllDownstreamNodes();
 
     bool canBeRendered();
+
+    void requestUpdate();
 
     bool needsUpdate = true;
 
@@ -85,14 +90,8 @@ private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
+
     void updateConnectionPositions();
-
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
-    void mouseDoubleClickEvent(QMouseEvent*) override;
-    void paintEvent(QPaintEvent*) override;
-
     void getDownstreamNodes(std::vector<NodeBase*>& nodes);
     std::vector<NodeBase*> getAllDownstreamNodes();
 
@@ -100,22 +99,34 @@ private:
     void updateRotation();
     void updateResizeFactor();
 
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void mouseDoubleClickEvent(QMouseEvent*) override;
+    void paintEvent(QPaintEvent*) override;
+
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
+
     QPoint inAnchorPos;
     QPoint outAnchorPos;
+
     std::vector<NodeInput*> nodeInputs;
     std::vector<NodeOutput*> nodeOutputs;
+
     NodeInput* rgbBackIn = nullptr;
     NodeInput* rgbFrontIn = nullptr;
     NodeOutput* rgbOut = nullptr;
+
     NodeProperties* propertiesView;
+
     WindowManager* wManager;
 
     bool isSelected = false;
     bool isActive = false;
     bool isViewed = false;
     bool isDragging = false;
+
     QPoint oldPos;
 
     int leftCrop = 0;

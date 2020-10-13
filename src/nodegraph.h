@@ -43,9 +43,10 @@ public:
 
     void createNode(const NodeType type);
     void viewNode(NodeBase* node);
+    void deleteNode(NodeBase* node);
+
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
-    void deleteNode(NodeBase* node);
 
     std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
 
@@ -59,6 +60,7 @@ protected:
 
 private:
     void showContextMenu(const QPoint& pos);
+
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
 
@@ -73,20 +75,24 @@ private:
     QGraphicsScene* scene;
     WindowManager* wManager;
     RenderManager* rManager;
-    const int viewWidth = 60000;
-    const int viewHeight = 60000;
+    NodeGraphContextMenu* contextMenu;
+
     std::vector<NodeBase*> nodes;
     std::vector<Connection*> connections;
-    NodeGraphContextMenu* contextMenu;
+
     bool leftMouseIsDragging = false;
     bool middleMouseIsDragging = false;
     QPoint lastMousePos;
+
     float viewScale = 1.0f;
 
     NodeBase* selectedNode = nullptr;
     NodeBase* activeNode = nullptr;
     NodeBase* viewedNode = nullptr;
     Connection* openConnection = nullptr;
+
+    const int viewWidth = 60000;
+    const int viewHeight = 60000;
 
 signals:
     void requestNodeDisplay(NodeBase* node);

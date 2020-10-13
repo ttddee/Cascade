@@ -51,12 +51,10 @@ public:
     void releaseSwapChainResources() override;
     void releaseResources() override;
 
-    void startNextFrame() override;
+    QString getGpuName();
 
     void translate(float dx, float dy);
     void scale(float s);
-
-    QString getGpuName();
 
     void processReadNode(
             NodeBase* node);
@@ -75,8 +73,9 @@ public:
 
     void saveImageToDisk(CsImage& inputImage, const QString& path);
 
+    void startNextFrame() override;
+
 private:
-    // Setup
     VulkanWindow *window;
     VkDevice device;
     VkPhysicalDevice physicalDevice;
@@ -105,15 +104,13 @@ private:
                                 VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex);
     bool writeLinearImage(const ImageBuf &img, VkImage image, VkDeviceMemory memory);
 
-    // Compute
-    // ONCE
+    // Compute setup
     void createComputePipelineLayout();
     void createComputeQueue();
     void createComputeCommandPool();
     void createQueryPool();
 
-    // RECURRING
-    // Load shader
+    // Recurring compute
     VkShaderModule createShaderFromFile(const QString &name);
 
     bool createComputeRenderTarget( uint32_t width, uint32_t height);
@@ -181,7 +178,7 @@ private:
     QSize currentRenderSize;
 
     std::unique_ptr<ImageBuf> cpuImage;
-    QString imagePath = "../../images/empty.jpg";
+    QString imagePath;
 
     VkShaderModule noopShader;
     VkPipeline noopPipeline;
@@ -204,14 +201,14 @@ private:
     // Compute resources
     struct Compute
     {
-        VkQueue                     queue;                // Separate queue for compute commands (queue family may differ from the one used for graphics)
-        VkCommandPool               commandPool;          // Use a separate command pool (queue family may differ from the one used for graphics)
-        VkCommandBuffer             commandBufferOneInput;    // Command buffer storing the dispatch commands and barriers
-        VkCommandBuffer             commandBufferTwoInputs;
-        VkCommandBuffer             commandBufferImageLoad;    // Command buffer used only for initial initialization and transfering data accross the pci bus
-        VkCommandBuffer             commandBufferImageSave;
-        VkFence                     fence;                // Synchronization fence to avoid rewriting compute CB if still in use
-        uint32_t                    queueFamilyIndex;     // Family index of the graphics queue, used for barriers
+        VkQueue                     computeQueue;
+        VkCommandPool               computeCommandPool;
+        VkCommandBuffer             commandBufferOneInput;    // Command buffer for shaders using one input
+        VkCommandBuffer             commandBufferTwoInputs;   // Command buffer for shaders using two inputs
+        VkCommandBuffer             commandBufferImageLoad;   // Command buffer for loading images from disk
+        VkCommandBuffer             commandBufferImageSave;   // Command buffer for writing images to disk
+        VkFence                     fence;
+        uint32_t                    queueFamilyIndex;         // Family index of the graphics queue, used for barriers
     };
 
     Compute                         compute;

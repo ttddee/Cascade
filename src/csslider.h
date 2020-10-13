@@ -26,6 +26,7 @@
 class CsSlider : public QSlider
 {
     Q_OBJECT
+
 public:
     CsSlider(QWidget* parent = nullptr);
 

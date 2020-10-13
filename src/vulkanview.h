@@ -30,6 +30,7 @@ class VulkanView : public QWidget
 
 public:
     explicit VulkanView(QWidget *parent = nullptr);
+
     VulkanWindow* getVulkanWindow();
 
 private:

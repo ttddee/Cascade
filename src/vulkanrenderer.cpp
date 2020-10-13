@@ -983,7 +983,7 @@ void VulkanRenderer::createComputeQueue()
     }
 
     // Get a compute queue from the device
-    devFuncs->vkGetDeviceQueue(device, compute.queueFamilyIndex, 0, &compute.queue);
+    devFuncs->vkGetDeviceQueue(device, compute.queueFamilyIndex, 0, &compute.computeQueue);
 }
 
 void VulkanRenderer::createComputeCommandPool()
@@ -996,7 +996,7 @@ void VulkanRenderer::createComputeCommandPool()
 
     VkResult err;
 
-    err = devFuncs->vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &compute.commandPool);
+    err = devFuncs->vkCreateCommandPool(device, &cmdPoolInfo, nullptr, &compute.computeCommandPool);
 
     if (err != VK_SUCCESS)
         qFatal("Failed to create compute command pool: %d", err);
@@ -1020,7 +1020,7 @@ void VulkanRenderer::createComputeCommandBuffer()
     // Create the command buffer for loading an image from disk
     VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-    commandBufferAllocateInfo.commandPool = compute.commandPool;
+    commandBufferAllocateInfo.commandPool = compute.computeCommandPool;
     commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
     commandBufferAllocateInfo.commandBufferCount = 4;
 
@@ -1047,7 +1047,7 @@ void VulkanRenderer::createComputeCommandBuffer()
 
     // Flush the queue if we're rebuilding the command buffer
     // after a pipeline change to ensure it's not currently in use
-    devFuncs->vkQueueWaitIdle(compute.queue);
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1309,7 +1309,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         VkPipeline& pl)
 {
     // Needs the right render target
-    devFuncs->vkQueueWaitIdle(compute.queue);
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1426,7 +1426,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
 {
     // TODO: Merge with function above
 
-    devFuncs->vkQueueWaitIdle(compute.queue);
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1558,7 +1558,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         CsImage& inputImage,
         const QString& path)
 {
-    devFuncs->vkQueueWaitIdle(compute.queue);
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1836,7 +1836,7 @@ void VulkanRenderer::submitComputeCommands()
         computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         computeSubmitInfo.commandBufferCount = 1;
         computeSubmitInfo.pCommandBuffers = &compute.commandBufferImageLoad;
-        devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
+        devFuncs->vkQueueSubmit(compute.computeQueue, 1, &computeSubmitInfo, compute.fence);
     }
     else
     {
@@ -1851,7 +1851,7 @@ void VulkanRenderer::submitComputeCommands()
         {
             computeSubmitInfo.pCommandBuffers = &compute.commandBufferTwoInputs;
         }
-        devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
+        devFuncs->vkQueueSubmit(compute.computeQueue, 1, &computeSubmitInfo, compute.fence);
     }
 }
 
@@ -1867,7 +1867,7 @@ void VulkanRenderer::submitImageSaveCommand()
 
     computeSubmitInfo.pCommandBuffers = &compute.commandBufferImageSave;
 
-    devFuncs->vkQueueSubmit(compute.queue, 1, &computeSubmitInfo, compute.fence);
+    devFuncs->vkQueueSubmit(compute.computeQueue, 1, &computeSubmitInfo, compute.fence);
 }
 
 std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
@@ -2115,7 +2115,7 @@ void VulkanRenderer::releaseResources()
 {
     qDebug("releaseResources");
 
-    devFuncs->vkQueueWaitIdle(compute.queue);
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     if (queryPool) {
         devFuncs->vkDestroyQueryPool(device, queryPool, nullptr);
@@ -2208,7 +2208,7 @@ void VulkanRenderer::releaseResources()
         compute.fence = VK_NULL_HANDLE;
     }
 
-    if (compute.commandPool)
+    if (compute.computeCommandPool)
     {
         VkCommandBuffer buffers[3]=
         {
@@ -2217,8 +2217,8 @@ void VulkanRenderer::releaseResources()
             compute.commandBufferTwoInputs
         };
 
-        devFuncs->vkFreeCommandBuffers(device, compute.commandPool, 3, &buffers[0]);
-        devFuncs->vkDestroyCommandPool(device, compute.commandPool, nullptr);
+        devFuncs->vkFreeCommandBuffers(device, compute.computeCommandPool, 3, &buffers[0]);
+        devFuncs->vkDestroyCommandPool(device, compute.computeCommandPool, nullptr);
     }
 }
 

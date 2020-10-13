@@ -38,8 +38,10 @@ public:
     explicit ColorButtonEntity(UIElementType et, QWidget *parent = nullptr);
 
     void setName(const QString&);
+
     QColor getColor();
     void setColor(QColor);
+
     void selfConnectToValueChanged(NodeProperties*);
 
     QString getValuesAsString();
