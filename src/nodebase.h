@@ -54,7 +54,6 @@ class NodeBase : public QWidget
 
 public:
     explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
-    ~NodeBase();
 
     const NodeType nodeType;
 
@@ -83,6 +82,8 @@ public:
     bool canBeRendered();
 
     void requestUpdate();
+
+    virtual ~NodeBase();
 
     bool needsUpdate = true;
 
