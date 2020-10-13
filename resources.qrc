@@ -37,5 +37,6 @@
         <file>shaders/color_comp.spv</file>
         <file>shaders/shuffle_comp.spv</file>
         <file>shaders/resize_comp.spv</file>
+        <file>shaders/invert_comp.spv</file>
     </qresource>
 </RCC>

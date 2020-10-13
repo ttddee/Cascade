@@ -124,6 +124,7 @@ namespace Cascade
         NODE_TYPE_PREMULT,
         NODE_TYPE_UNPREMULT,
         NODE_TYPE_WRITE,
+        NODE_TYPE_INVERT,
         NODE_TYPE_MAX
     };
 
@@ -148,7 +149,8 @@ namespace Cascade
         { NODE_TYPE_DIFFERENCE, "Difference" },
         { NODE_TYPE_PREMULT, "Premult" },
         { NODE_TYPE_UNPREMULT, "Unpremult" },
-        { NODE_TYPE_WRITE, "Write" }
+        { NODE_TYPE_WRITE, "Write" },
+        { NODE_TYPE_INVERT, "Invert" }
     };
 
     ////////////////////////////////////
@@ -490,6 +492,23 @@ namespace Cascade
         ":/shaders/noop_comp.spv"
     };
 
+    const NodeInitProperties invertNodeInitProperties =
+    {
+        NODE_TYPE_INVERT,
+        nodeStrings[NODE_TYPE_INVERT],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/invert_comp.spv"
+    };
+
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
@@ -559,6 +578,10 @@ namespace Cascade
         else if(t == NODE_TYPE_WRITE)
         {
             return writeNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_INVERT)
+        {
+            return invertNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }
