@@ -25,6 +25,8 @@
 #include <QWidget>
 #include <QPen>
 
+#include <gtest/gtest_prod.h>
+
 #include "nodedefinitions.h"
 #include "nodeproperties.h"
 #include "csimage.h"
@@ -51,10 +53,6 @@ enum DisplayMode
 class NodeBase : public QWidget
 {
     Q_OBJECT
-
-#ifdef QT_DEBUG
-    friend class NodeBaseTest;
-#endif
 
 public:
     explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
@@ -84,7 +82,7 @@ public:
     NodeBase* getUpstreamNodeBack();
     NodeBase* getUpstreamNodeFront();
 
-    std::set<NodeBase*> getAllUpstreamNodes();
+    void getAllUpstreamNodes(std::vector<NodeBase*>& nodes);
     std::set<Connection*> getAllConnections();
 
     void invalidateAllDownstreamNodes();
@@ -98,13 +96,17 @@ public:
     bool needsUpdate = true;
 
 private:
+#ifdef QT_DEBUG
+    FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes);
+    FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
+#endif
+
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
     void updateConnectionPositions();
-    void getDownstreamNodes(std::vector<NodeBase*>& nodes);
-    std::vector<NodeBase*> getAllDownstreamNodes();
+    void getAllDownstreamNodes(std::vector<NodeBase*>& nodes);
 
     void updateCropSizes();
     void updateRotation();

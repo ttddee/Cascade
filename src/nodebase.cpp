@@ -37,7 +37,7 @@ NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
       nodeType(type),
       ui(new Ui::NodeBase),
       nodeGraph(graph),
-      id(QUuid::createUuid().toString())
+      id(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     ui->setupUi(this);
 
@@ -170,26 +170,26 @@ NodeBase* NodeBase::getUpstreamNodeFront()
     return nullptr;
 }
 
-std::set<NodeBase*> NodeBase::getAllUpstreamNodes()
+void NodeBase::getAllUpstreamNodes(std::vector<NodeBase*>& nodes)
 {
-    std::set<NodeBase*> nodes;
+    //std::vector<NodeBase*> nodes;
     if(auto n = getUpstreamNodeBack())
     {
-        auto add = n->getAllUpstreamNodes();
-        std::merge(nodes.begin(), nodes.end(),
-                   add.begin(), add.end(),
-                   std::inserter(nodes, nodes.end()));
+        n->getAllUpstreamNodes(nodes);
+//        std::merge(nodes.begin(), nodes.end(),
+//                   add.begin(), add.end(),
+//                   std::inserter(nodes, nodes.end()));
     }
     if(auto n = getUpstreamNodeFront())
     {
-        auto add = n->getAllUpstreamNodes();
-        std::merge(nodes.begin(), nodes.end(),
-                   add.begin(), add.end(),
-                   std::inserter(nodes, nodes.end()));
+        n->getAllUpstreamNodes(nodes);
+//        std::merge(nodes.begin(), nodes.end(),
+//                   add.begin(), add.end(),
+//                   std::inserter(nodes, nodes.end()));
     }
-    nodes.insert(this);
+    nodes.push_back(this);
 
-    return nodes;
+    //return nodes;
 }
 
 void NodeBase::requestUpdate()
@@ -289,24 +289,16 @@ QString NodeBase::getAllPropertyValues()
     return vals;
 }
 
-void NodeBase::getDownstreamNodes(std::vector<NodeBase*>& nodes)
+void NodeBase::getAllDownstreamNodes(std::vector<NodeBase*>& nodes)
 {    
     if(rgbaOut)
     {
         foreach(Connection* c, rgbaOut->getConnections())
         {
             nodes.push_back(c->targetInput->parentNode);
-            c->targetInput->parentNode->getDownstreamNodes(nodes);
+            c->targetInput->parentNode->getAllDownstreamNodes(nodes);
         }
     }
-}
-
-std::vector<NodeBase*> NodeBase::getAllDownstreamNodes()
-{
-    std::vector<NodeBase*> nodes;
-    getDownstreamNodes(nodes);
-
-    return nodes;
 }
 
 std::set<Connection*> NodeBase::getAllConnections()
@@ -343,7 +335,9 @@ std::set<Connection*> NodeBase::getAllConnections()
 
 void NodeBase::invalidateAllDownstreamNodes()
 {
-    foreach(auto& n, getAllDownstreamNodes())
+    std::vector<NodeBase*> nodes;
+    getAllDownstreamNodes(nodes);
+    foreach(auto& n, nodes)
     {
         n->requestUpdate();
     }

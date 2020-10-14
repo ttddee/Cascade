@@ -76,7 +76,7 @@ protected:
 
 };
 
-TEST_F(NodeBaseTest, getAllConnections_NodesConnected_NumberConnections)
+TEST_F(NodeBaseTest, getAllConnections_CorrectNumberOfConnections)
 {
     auto connsRead = readNode1->getAllConnections();
     auto connsMerge = mergeNode->getAllConnections();
@@ -87,6 +87,65 @@ TEST_F(NodeBaseTest, getAllConnections_NodesConnected_NumberConnections)
     EXPECT_EQ(connsMerge.size(), 3);
     EXPECT_EQ(connsResize.size(), 2);
     EXPECT_EQ(connsWrite.size(), 1);
+}
+
+TEST_F(NodeBaseTest, getAllUpstreamNodes_CorrectNumberOfNodes)
+{
+    std::vector<NodeBase*> nodes;
+    writeNode->getAllUpstreamNodes(nodes);
+
+    EXPECT_EQ(nodes.size(), 6);
+}
+
+TEST_F(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes)
+{
+    std::vector<NodeBase*> nodes;
+    writeNode->getAllUpstreamNodes(nodes);
+
+    EXPECT_EQ(nodes[0]->getID(), readNode1->getID());
+    EXPECT_EQ(nodes[1]->getID(), colorNode->getID());
+    EXPECT_EQ(nodes[2]->getID(), readNode2->getID());
+    EXPECT_EQ(nodes[3]->getID(), resizeNode->getID());
+    EXPECT_EQ(nodes[4]->getID(), mergeNode->getID());
+    EXPECT_EQ(nodes[5]->getID(), writeNode->getID());
+}
+
+TEST_F(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes)
+{
+    std::vector<NodeBase*> nodes;
+    readNode1->getAllDownstreamNodes(nodes);
+
+    EXPECT_EQ(nodes.size(), 3);
+}
+
+TEST_F(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes)
+{
+    std::vector<NodeBase*> nodes;
+    readNode1->getAllDownstreamNodes(nodes);
+
+    EXPECT_EQ(nodes[0]->getID(), colorNode->getID());
+    EXPECT_EQ(nodes[1]->getID(), mergeNode->getID());
+    EXPECT_EQ(nodes[2]->getID(), writeNode->getID());
+}
+
+TEST_F(NodeBaseTest, invalidateAllDownstreamNodes_AllInvalidated)
+{
+    readNode1->needsUpdate = false;
+    colorNode->needsUpdate = false;
+    readNode2->needsUpdate = false;
+    resizeNode->needsUpdate = false;
+    mergeNode->needsUpdate = false;
+    writeNode->needsUpdate = false;
+
+    readNode1->invalidateAllDownstreamNodes();
+
+    EXPECT_EQ(colorNode->needsUpdate, true);
+    EXPECT_EQ(mergeNode->needsUpdate, true);
+    EXPECT_EQ(writeNode->needsUpdate, true);
+    EXPECT_EQ(readNode1->needsUpdate, false);
+    EXPECT_EQ(readNode2->needsUpdate, false);
+    EXPECT_EQ(resizeNode->needsUpdate, false);
+
 }
 
 #endif // TST_NODEBASETESTS_H

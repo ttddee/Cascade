@@ -101,11 +101,6 @@ void NodeGraph::deleteNode(NodeBase *node)
     selectedNode = nullptr;
 }
 
-std::set<NodeBase*> NodeGraph::getAllUpstreamNodes(NodeBase *node)
-{
-    return node->getAllUpstreamNodes();
-}
-
 float NodeGraph::getViewScale() const
 {
     return viewScale;

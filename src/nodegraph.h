@@ -52,8 +52,6 @@ public:
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
 
-    std::set<NodeBase*> getAllUpstreamNodes(NodeBase* node);
-
     float getViewScale() const;
 
 protected:

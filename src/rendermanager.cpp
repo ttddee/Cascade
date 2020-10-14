@@ -141,7 +141,9 @@ bool RenderManager::renderNodes(NodeBase *node)
 {
     bool allNodesRendered = true;
 
-    auto nodes = node->getAllUpstreamNodes();
+    std::vector<NodeBase*> nodes;
+    node->getAllUpstreamNodes(nodes);
+
     foreach(NodeBase* n, nodes)
     {
         if (n->canBeRendered())
