@@ -25,6 +25,7 @@
 
 #include <QPainter>
 #include <QMouseEvent>
+#include <QUuid>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -35,7 +36,8 @@ NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
     : QWidget(parent),
       nodeType(type),
       ui(new Ui::NodeBase),
-      nodeGraph(graph)
+      nodeGraph(graph),
+      id(QUuid::createUuid().toString())
 {
     ui->setupUi(this);
 
@@ -69,11 +71,11 @@ void NodeBase::createInputs(const NodeInitProperties &props)
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
         {
-            this->rgbBackIn = nodeIn;
+            this->rgbaBackIn = nodeIn;
         }
         else if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_FRONT)
         {
-            this->rgbFrontIn = nodeIn;
+            this->rgbaFrontIn = nodeIn;
         }
     }
 }
@@ -90,7 +92,7 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
         if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
         {
             //nodeOut->setObjectName("RGBOut");
-            this->rgbOut = nodeOut;
+            this->rgbaOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
                 nodeGraph, &NodeGraph::handleNodeOutputLeftClicked);
@@ -118,20 +120,52 @@ void NodeBase::setIsViewed(const bool b)
     isViewed = b;
 }
 
+QString NodeBase::getID() const
+{
+    return id;
+}
+
+NodeInput* NodeBase::getRgbaBackIn()
+{
+    if (rgbaBackIn)
+    {
+        return rgbaBackIn;
+    }
+    return nullptr;
+}
+
+NodeInput* NodeBase::getRgbaFrontIn()
+{
+    if (rgbaFrontIn)
+    {
+        return rgbaFrontIn;
+    }
+    return nullptr;
+}
+
+NodeOutput* NodeBase::getRgbaOut()
+{
+    if (rgbaOut)
+    {
+        return rgbaOut;
+    }
+    return nullptr;
+}
+
 NodeBase* NodeBase::getUpstreamNodeBack()
 {
-    if(rgbBackIn && rgbBackIn->hasConnection())
+    if(rgbaBackIn && rgbaBackIn->hasConnection())
     {
-        return rgbBackIn->inConnection->sourceOutput->parentNode;
+        return rgbaBackIn->inConnection->sourceOutput->parentNode;
     }
     return nullptr;
 }
 
 NodeBase* NodeBase::getUpstreamNodeFront()
 {
-    if(rgbFrontIn && rgbFrontIn->hasConnection())
+    if(rgbaFrontIn && rgbaFrontIn->hasConnection())
     {
-        return rgbFrontIn->inConnection->sourceOutput->parentNode;
+        return rgbaFrontIn->inConnection->sourceOutput->parentNode;
     }
     return nullptr;
 }
@@ -257,9 +291,9 @@ QString NodeBase::getAllPropertyValues()
 
 void NodeBase::getDownstreamNodes(std::vector<NodeBase*>& nodes)
 {    
-    if(rgbOut)
+    if(rgbaOut)
     {
-        foreach(Connection* c, rgbOut->getConnections())
+        foreach(Connection* c, rgbaOut->getConnections())
         {
             nodes.push_back(c->targetInput->parentNode);
             c->targetInput->parentNode->getDownstreamNodes(nodes);
@@ -278,23 +312,23 @@ std::vector<NodeBase*> NodeBase::getAllDownstreamNodes()
 std::set<Connection*> NodeBase::getAllConnections()
 {
     std::set<Connection*> connections;
-    if (rgbBackIn)
+    if (rgbaBackIn)
     {
-        if (auto c = rgbBackIn->getConnection())
+        if (auto c = rgbaBackIn->getConnection())
         {
             connections.insert(c);
         }
     }
-    if (rgbFrontIn)
+    if (rgbaFrontIn)
     {
-        if (auto c = rgbFrontIn->getConnection())
+        if (auto c = rgbaFrontIn->getConnection())
         {
             connections.insert(c);
         }
     }
-    if (rgbOut)
+    if (rgbaOut)
     {
-        auto conns = rgbOut->getConnections();
+        auto conns = rgbaOut->getConnections();
 
         if (conns.size() > 0)
         {
@@ -376,7 +410,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 
 bool NodeBase::canBeRendered()
 {
-    if (rgbBackIn && !rgbBackIn->hasConnection())
+    if (rgbaBackIn && !rgbaBackIn->hasConnection())
     {
         return false;
     }

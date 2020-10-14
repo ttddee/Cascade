@@ -38,6 +38,10 @@ class NodeGraph : public QGraphicsView
 {
     Q_OBJECT
 
+#ifdef QT_DEBUG
+    friend class NodeBaseTest;
+#endif
+
 public:
     NodeGraph(QWidget* parent);
 
@@ -64,7 +68,7 @@ private:
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
 
-    void createOpenConnection(NodeOutput* nodeOut);
+    Connection* createOpenConnection(NodeOutput* nodeOut);
     void destroyOpenConnection();
     void establishConnection(NodeInput* nodeIn);
     void deleteConnection(Connection* c);

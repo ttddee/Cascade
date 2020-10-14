@@ -52,6 +52,10 @@ class NodeBase : public QWidget
 {
     Q_OBJECT
 
+#ifdef QT_DEBUG
+    friend class NodeBaseTest;
+#endif
+
 public:
     explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
 
@@ -65,11 +69,17 @@ public:
 
     bool getIsViewed() const;
 
+    QString getID() const;
+
     NodeInput* getNodeInputAtPosition(const QPoint pos);
 
     NodeProperties* getProperties();
     QString getAllPropertyValues();
     QSize getTargetSize();
+
+    NodeInput* getRgbaBackIn();
+    NodeInput* getRgbaFrontIn();
+    NodeOutput* getRgbaOut();
 
     NodeBase* getUpstreamNodeBack();
     NodeBase* getUpstreamNodeFront();
@@ -109,15 +119,17 @@ private:
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
 
+    const QString id;
+
     QPoint inAnchorPos;
     QPoint outAnchorPos;
 
     std::vector<NodeInput*> nodeInputs;
     std::vector<NodeOutput*> nodeOutputs;
 
-    NodeInput* rgbBackIn = nullptr;
-    NodeInput* rgbFrontIn = nullptr;
-    NodeOutput* rgbOut = nullptr;
+    NodeInput* rgbaBackIn = nullptr;
+    NodeInput* rgbaFrontIn = nullptr;
+    NodeOutput* rgbaOut = nullptr;
 
     NodeProperties* propertiesView;
 

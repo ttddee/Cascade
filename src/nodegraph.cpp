@@ -213,14 +213,16 @@ void NodeGraph::handleFileSaveRequest(NodeBase* node, const QString& path)
     emit requestNodeFileSave(node, path);
 }
 
-void NodeGraph::createOpenConnection(NodeOutput* nodeOut)
+Connection* NodeGraph::createOpenConnection(NodeOutput* nodeOut)
 {
     Connection* c = new Connection(nodeOut);
+    scene->addItem(c);
     openConnection = c;
-    scene->addItem(openConnection);
 
     connect(c, &Connection::requestConnectionDeletion,
             this, &NodeGraph::handleConnectionDeletionRequest);
+
+    return c;
 }
 
 void NodeGraph::destroyOpenConnection()
