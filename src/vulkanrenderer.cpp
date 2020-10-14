@@ -1993,36 +1993,35 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
     renderTwoInputs = false; // TODO: This is a problem
 
-    std::cout << "Display node" << std::endl;
+    if(auto image = node->cachedImage)
+    {
+        clearScreen = false;
 
-    clearScreen = false;
+        updateVertexData(image->getWidth(), image->getHeight());
+        createVertexBuffer();
 
+        std::cout << "image width: " << std::endl;
 
+        if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
+            qFatal("Failed to create compute render target.");
 
-    auto image = node->cachedImage;
+        updateComputeDescriptors(*image, *computeRenderTarget);
 
-    updateVertexData(image->getWidth(), image->getHeight());
-    createVertexBuffer();
+        recordComputeCommandBuffer(*image, *computeRenderTarget, noopPipeline);
 
-    std::cout << "image width: " << std::endl;
+        submitComputeCommands();
 
-    if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
-        qFatal("Failed to create compute render target.");
-
-    updateComputeDescriptors(*image, *computeRenderTarget);
-
-    recordComputeCommandBuffer(*image, *computeRenderTarget, noopPipeline);
-
-    submitComputeCommands();
-
-    window->requestUpdate();
+        window->requestUpdate();
+    }
+    else
+    {
+        doClearScreen();
+    }
 }
 
 void VulkanRenderer::doClearScreen()
 {
     clearScreen = true;
-
-    std::cout << "Clearing screen" << std::endl;
 
     window->requestUpdate();
 }
