@@ -1931,15 +1931,10 @@ void VulkanRenderer::processNode(
     {
         updateVertexData(targetSize.width(), targetSize.height());
         createVertexBuffer();
-
-        std::cout << "Render target size changed." << std::endl;
     }
 
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
-
-    std::cout << "Created render target with width: " << targetSize.width() << std::endl;
-    std::cout << "Created render target with height: " << targetSize.height() << std::endl;
 
     updateComputeDescriptors(inputImageBack, *computeRenderTarget);
 
@@ -1966,15 +1961,10 @@ void VulkanRenderer::processNode(
     {
         updateVertexData(targetSize.width(), targetSize.height());
         createVertexBuffer();
-
-        std::cout << "Render target size changed." << std::endl;
     }
 
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
-
-    std::cout << "Created render target with width: " << targetSize.width() << std::endl;
-    std::cout << "Created render target with height: " << targetSize.height() << std::endl;
 
     updateComputeDescriptors(inputImageBack, inputImageFront, *computeRenderTarget);
 
