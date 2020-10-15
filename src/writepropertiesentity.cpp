@@ -38,6 +38,10 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
             this, &WritePropertiesEntity::handleSetFolderButtonClicked);
     connect(ui->saveImageButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSaveFileButtonClicked);
+
+#ifdef QT_DEBUG
+    setFolder("/tmp");
+#endif
 }
 
 void WritePropertiesEntity::selfConnectToRequestFileSave(NodeProperties *p)

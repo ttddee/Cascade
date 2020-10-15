@@ -9,6 +9,7 @@ layout(push_constant) uniform pushConstants {
     layout(offset = 0) float mode;
     layout(offset = 4) float xoffset;
     layout(offset = 8) float yoffset;
+    layout(offset = 12) float opacity;
 } pc;
 
 void main()
@@ -21,52 +22,65 @@ void main()
 
     vec4 front = imageLoad(inputImageFront, targetCoords).rgba;
 
-    vec4 pixel = back;
-
     if(pc.mode == 0.0) // Over
     {
-        pixel = front + pixel * (1.0 - front.a);
+        if (pc.opacity != 0.0)
+        {
+            back = (front * pc.opacity)  + back * (1.0 - front.a);
+        }
     }
     else if (pc.mode == 1.0) // Add
     {
-        pixel += front;
+        back += (front * pc.opacity);
     }
     else if (pc.mode == 2.0) // Divide
     {
         if (front.r <= 0.0)
         {
-            pixel.r = 0;
+            back.r = 0;
         }
         else
         {
-            pixel.r /= front.r;
+            if (pc.opacity != 0.0)
+            {
+                back.r = ((1.0 - pc.opacity) * back.r) + ((back.r / front.r) * pc.opacity);
+            }
         }
         if (front.g <= 0.0)
         {
-            pixel.g = 0;
+            back.g = 0;
         }
         else
         {
-            pixel.g /= front.g;
+            if (pc.opacity != 0.0)
+            {
+                back.g = ((1.0 - pc.opacity) * back.g) + ((back.g / front.g) * pc.opacity);
+            }
         }
         if (front.b <= 0.0)
         {
-            pixel.b = 0;
+            back.b = 0;
         }
         else
         {
-            pixel.b /= front.b;
+            if (pc.opacity != 0.0)
+            {
+                back.b = ((1.0 - pc.opacity) * back.b) + ((back.b / front.b) * pc.opacity);
+            }
         }
     }
     else if (pc.mode == 3.0) // Minus
     {
-        pixel -= front;
+        back -= (front * pc.opacity);
     }
     else if (pc.mode == 4.0) // Multiply
     {
-        pixel *= front;
+        if (pc.opacity != 0.0)
+        {
+            back = ((1.0 - pc.opacity) * back) + (back * front * pc.opacity);
+        }
     }
 
-	imageStore(resultImage, pixelCoords, pixel);
+	imageStore(resultImage, pixelCoords, back);
                                     
 } 
