@@ -1562,6 +1562,16 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
     auto imageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
 
+    VkImage tempImage;
+    VkDeviceMemory tempMemory;
+
+    if (!createTextureImage(imageSize, &tempImage, &tempMemory,
+                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_DST_BIT,
+                            window->hostVisibleMemoryIndex()))
+    {
+        std::cout << "Could not create temporary image." << std::endl;
+    }
+
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -1574,28 +1584,90 @@ void VulkanRenderer::recordComputeCommandBuffer(
     VkCommandBuffer cb = compute.commandBufferImageSave;
 
     {
-         //Make the barriers for the resources
-        VkImageMemoryBarrier barrier[1] = {};
+        VkImageMemoryBarrier barrier[2] = {};
 
         barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
         barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = VK_ACCESS_MEMORY_READ_BIT;
-        barrier[0].dstAccessMask   = VK_ACCESS_MEMORY_READ_BIT;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier[0].srcAccessMask   = VK_ACCESS_HOST_WRITE_BIT;
+        barrier[0].dstAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
         barrier[0].image           = inputImage.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_PREINITIALIZED;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = VK_ACCESS_TRANSFER_WRITE_BIT;
+        barrier[1].image           = tempImage;
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT,
                                 0,
                                 0,
                                 nullptr,
                                 0,
                                 nullptr,
-                                1,
+                                2,
+                                &barrier[0]);
+    }
+
+    VkImageCopy copyInfo;
+    memset(&copyInfo, 0, sizeof(copyInfo));
+    copyInfo.srcSubresource.aspectMask  = VK_IMAGE_ASPECT_COLOR_BIT;
+    copyInfo.srcSubresource.layerCount  = 1;
+    copyInfo.dstSubresource.aspectMask  = VK_IMAGE_ASPECT_COLOR_BIT;
+    copyInfo.dstSubresource.layerCount  = 1;
+    copyInfo.extent.width               = imageSize.width();
+    copyInfo.extent.height              = imageSize.height();
+    copyInfo.extent.depth               = 1;
+
+    devFuncs->vkCmdCopyImage(
+                cb,
+                inputImage.getImage(),
+                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                tempImage,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                1,
+                &copyInfo);
+    {
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = tempImage;
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                2,
                                 &barrier[0]);
     }
 
@@ -1605,12 +1677,12 @@ void VulkanRenderer::recordComputeCommandBuffer(
         0
     };
     VkSubresourceLayout layout;
-    devFuncs->vkGetImageSubresourceLayout(device, inputImage.getImage(), &subres, &layout);
+    devFuncs->vkGetImageSubresourceLayout(device, tempImage, &subres, &layout);
 
     float *input;
     err = devFuncs->vkMapMemory(
                 device,
-                inputImage.getMemory(),
+                tempMemory,
                 layout.offset,
                 VK_WHOLE_SIZE,
                 0,
@@ -1620,8 +1692,8 @@ void VulkanRenderer::recordComputeCommandBuffer(
         qWarning("Failed to map memory for temp image: %d", err);
     }
 
-    int width = inputImage.getWidth();
-    int height = inputImage.getHeight();
+    int width = imageSize.width();
+    int height = imageSize.height();
 
     int numValues = width * height * 4;
 
