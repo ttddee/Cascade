@@ -144,6 +144,7 @@ namespace Cascade
         NODE_TYPE_UNPREMULT,
         NODE_TYPE_WRITE,
         NODE_TYPE_INVERT,
+        NODE_TYPE_EDGE_DETECT,
         NODE_TYPE_MAX
     };
 
@@ -169,7 +170,8 @@ namespace Cascade
         { NODE_TYPE_PREMULT, "Premult" },
         { NODE_TYPE_UNPREMULT, "Unpremult" },
         { NODE_TYPE_WRITE, "Write" },
-        { NODE_TYPE_INVERT, "Invert" }
+        { NODE_TYPE_INVERT, "Invert" },
+        { NODE_TYPE_EDGE_DETECT, "Edge Detect" }
     };
 
     ////////////////////////////////////
@@ -529,6 +531,24 @@ namespace Cascade
         ":/shaders/invert_comp.spv"
     };
 
+    const NodeInitProperties edgeDetectNodeInitProperties =
+    {
+        NODE_TYPE_EDGE_DETECT,
+        nodeStrings[NODE_TYPE_EDGE_DETECT],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EDGE_DETECT] },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,10.0,0.1,1.0" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/sobel_comp.spv"
+    };
+
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
@@ -602,6 +622,10 @@ namespace Cascade
         else if(t == NODE_TYPE_INVERT)
         {
             return invertNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_EDGE_DETECT)
+        {
+            return edgeDetectNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

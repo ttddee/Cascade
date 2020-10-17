@@ -67,8 +67,8 @@ private:
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
 
     Connection* createOpenConnection(NodeOutput* nodeOut);
-    void destroyOpenConnection();
     void establishConnection(NodeInput* nodeIn);
+    void destroyOpenConnection();
     void deleteConnection(Connection* c);
 
     void selectNode(NodeBase* node);
