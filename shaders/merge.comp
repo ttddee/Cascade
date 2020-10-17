@@ -81,6 +81,5 @@ void main()
         }
     }
 
-	imageStore(resultImage, pixelCoords, back);
-                                    
+	imageStore(resultImage, pixelCoords, back);                                
 } 

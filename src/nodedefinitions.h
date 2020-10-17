@@ -229,7 +229,7 @@ namespace Cascade
         BACK_INPUT_ALWAYS_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/read_comp.spv"
     };
 
     const NodeInitProperties blurNodeInitProperties =

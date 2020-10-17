@@ -29,6 +29,9 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
 {
     qDebug("Creating renderer");
 
+    // Makes sure we keep our GPU resources when window loses focus
+    this->setFlags(QVulkanWindow::PersistentResources);
+
     renderer = new VulkanRenderer(this);
 
     return renderer;

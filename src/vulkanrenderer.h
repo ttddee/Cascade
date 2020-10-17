@@ -149,6 +149,8 @@ private:
 
     std::vector<float> unpackPushConstants(const QString s);
 
+    uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
+
     VkDeviceMemory bufMem = VK_NULL_HANDLE;
     VkBuffer buf = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
