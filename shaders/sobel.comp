@@ -1,0 +1,70 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float gain;
+} pc;
+
+vec3 conv(in float[9] kernel, in vec3[9] data) 
+{
+   vec3 res = {0.0, 0.0, 0.0};
+   for (int i=0; i<9; ++i) 
+   {
+      res += kernel[i] * data[i];
+   }
+   return res;
+}
+
+struct ImageData 
+{
+	 vec3 rgb[9];
+} imageData;    
+
+void main()
+{   
+    // Fetch neighbouring texels
+    int n = -1;
+    for (int i=-1; i<2; ++i) 
+    {   
+        for(int j=-1; j<2; ++j) 
+        {    
+            n++;    
+            vec3 rgb = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.x + i, gl_GlobalInvocationID.y + j)).rgb;
+            imageData.rgb[n] = rgb;
+        }
+    }
+
+    float[9] xKernel;
+    xKernel[0] = 1.0; xKernel[1] =  0.0; xKernel[2] = -1.0;
+    xKernel[3] = 2.0; xKernel[4] = 0.0; xKernel[5] = -2.0;
+    xKernel[6] = 1.0; xKernel[7] =  0.0; xKernel[8] = -1.0;
+
+    float[9] yKernel;
+    yKernel[0] = -1.0; yKernel[1] =  -2.0; yKernel[2] =  -1.0;
+    yKernel[3] = 0.0; yKernel[4] = 0.0; yKernel[5] = 0.0;
+    yKernel[6] = 1.0; yKernel[7] =  2.0; yKernel[8] = 1.0;
+                                    
+    vec3 resX = vec3(conv(xKernel, imageData.rgb));
+
+    vec3 resY = vec3(conv(yKernel, imageData.rgb));
+
+    vec3 mag = sqrt((resX * resX) + (resY * resY));
+
+    float gray = (0.2126 * mag.r + 0.7152 * mag.g + 0.0722 * mag.b) / 3.0;
+
+    if (pc.gain == 0.0)
+    {
+        gray = 0.0;
+    }
+    else
+    {
+        gray *= pc.gain;
+    )
+
+    vec4 final = vec4(gray, gray, gray, gray);
+
+    imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), final);
+}

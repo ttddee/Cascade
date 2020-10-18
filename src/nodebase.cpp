@@ -382,6 +382,10 @@ void NodeBase::paintEvent(QPaintEvent *event)
         {
             painter.setPen(outputViewedColorPen);
         }
+        else if (mode == VIEWER_MODE_OUTPUT_ALPHA)
+        {
+            painter.setPen(alphaViewedColorPen);
+        }
 
         painter.drawRoundedRect(rect, cornerRadius - 2, cornerRadius - 2);
     }
