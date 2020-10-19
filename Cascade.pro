@@ -105,6 +105,7 @@ win32-msvc* {
     INCLUDEPATH += ../../Documents/vcpkg/installed/x64-windows/include
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
+    LIBS += -LC:/VulkanSDK/1.2.148.0/Lib -lvulkan-1
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -113,13 +114,17 @@ win32-msvc* {
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO_Util.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140_1.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/msvcp140.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/concrt140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/vcomp140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/msvcp140_1.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/D3Dcompiler_47.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/libEGL.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/libEGLSV2.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/opengl32sw.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Svg.dll)
+    dlls.files += $$files(C:/VulkanSDK/1.2.148.0/Lib/vulkan-1.lib)
 
     CONFIG(release, debug|release) {
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Widgets.dll)
@@ -164,6 +169,21 @@ win32-msvc* {
     platforms.path = $$DESTDIR\platforms
     }
 
+    COPIES += iconengines
+    iconengines.files += $$files($$DESTDIR/../../external/msvc2019/Qt/iconengines/*)
+    iconengines.path = $$DESTDIR\iconengines
+
+    COPIES += imageformats
+    imageformats.files += $$files($$DESTDIR/../../external/msvc2019/Qt/imageformats/*)
+    imageformats.path = $$DESTDIR/imageformats
+
+    COPIES += styles
+    styles.files += $$files($$DESTDIR/../../external/msvc2019/Qt/styles/*)
+    styles.path = $$DESTDIR/styles
+
+    COPIES += translations
+    translations.files += $$files($$DESTDIR/../../external/msvc2019/Qt/translations/*)
+    translations.path = $$DESTDIR/translations
 }
 
 RESOURCES += \

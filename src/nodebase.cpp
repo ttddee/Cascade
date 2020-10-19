@@ -62,7 +62,6 @@ void NodeBase::setUpNode(const NodeType nodeType)
 
 void NodeBase::createInputs(const NodeInitProperties &props)
 {
-    // Create inputs
     for (size_t i = 0; i < props.nodeInputs.size(); i++)
     {
         auto nodeIn = new NodeInput(props.nodeInputs[i], this);
@@ -82,7 +81,6 @@ void NodeBase::createInputs(const NodeInitProperties &props)
 
 void NodeBase::createOutputs(const NodeInitProperties &props)
 {
-    // Create outputs
     for (size_t i = 0; i < props.nodeOutputs.size(); i++)
     {
         auto nodeOut = new NodeOutput(this);
@@ -172,24 +170,15 @@ NodeBase* NodeBase::getUpstreamNodeFront()
 
 void NodeBase::getAllUpstreamNodes(std::vector<NodeBase*>& nodes)
 {
-    //std::vector<NodeBase*> nodes;
     if(auto n = getUpstreamNodeBack())
     {
         n->getAllUpstreamNodes(nodes);
-//        std::merge(nodes.begin(), nodes.end(),
-//                   add.begin(), add.end(),
-//                   std::inserter(nodes, nodes.end()));
     }
     if(auto n = getUpstreamNodeFront())
     {
         n->getAllUpstreamNodes(nodes);
-//        std::merge(nodes.begin(), nodes.end(),
-//                   add.begin(), add.end(),
-//                   std::inserter(nodes, nodes.end()));
     }
     nodes.push_back(this);
-
-    //return nodes;
 }
 
 void NodeBase::requestUpdate()
