@@ -105,7 +105,6 @@ win32-msvc* {
     INCLUDEPATH += ../../Documents/vcpkg/installed/x64-windows/include
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
-    LIBS += -LC:/VulkanSDK/1.2.148.0/Lib -lvulkan-1
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -124,7 +123,6 @@ win32-msvc* {
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/libEGLSV2.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/opengl32sw.dll)
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Svg.dll)
-    dlls.files += $$files(C:/VulkanSDK/1.2.148.0/Lib/vulkan-1.lib)
 
     CONFIG(release, debug|release) {
     dlls.files += $$files(C:/Qt515/5.15.0/msvc2019_64/bin/Qt5Widgets.dll)

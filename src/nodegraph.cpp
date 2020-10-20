@@ -347,6 +347,9 @@ void NodeGraph::wheelEvent(QWheelEvent* event)
 {
     QPoint scrollAmount = event->angleDelta();
     double factor = (scrollAmount.y() > 0) ? 1.2 : 1 / 1.2;
-    this->scale(factor, factor);
-    viewScale *= factor;
+    if (viewScale * factor > 0.1 && viewScale * factor < 10.0)
+    {
+        this->scale(factor, factor);
+        viewScale *= factor;
+    }
 }
