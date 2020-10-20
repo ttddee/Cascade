@@ -1,4 +1,4 @@
-# Cascade
+# Cascade Image Editor
 
 ![Cascade](screenshots/csc-screen01.jpg)
 
