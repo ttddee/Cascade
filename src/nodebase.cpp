@@ -397,6 +397,14 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 
 bool NodeBase::canBeRendered()
 {
+    if (nodeType == NODE_TYPE_READ)
+    {
+        auto vals = getAllPropertyValues();
+        if (vals.size() == 0)
+        {
+            return false;
+        }
+    }
     if (rgbaBackIn && !rgbaBackIn->hasConnection())
     {
         return false;

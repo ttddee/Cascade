@@ -163,7 +163,10 @@ void RenderManager::renderNode(NodeBase *node)
 {
     if (node->nodeType == NODE_TYPE_READ && node->needsUpdate)
     {
-        renderer->processReadNode(node);
+        if (node->canBeRendered())
+        {
+            renderer->processReadNode(node);
+        }
     }
     else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
@@ -180,7 +183,7 @@ void RenderManager::renderNode(NodeBase *node)
             inputImageFront = node->getUpstreamNodeFront()->cachedImage;
             renderer->processNode(node, *inputImageBack, *inputImageFront, node->getTargetSize());
         }
-        else
+        else if (inputImageBack)
         {
             std::cout << "Rendering one input" << std::endl;
             renderer->processNode(node, *inputImageBack, node->getTargetSize());
