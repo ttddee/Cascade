@@ -50,7 +50,6 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 
     // Create Vulkan window container and put in layout
     vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);
-    //QHBoxLayout* layout = new QHBoxLayout();
     QGridLayout* layout = new QGridLayout();
     layout->addWidget(vulkanWrapper);
     this->setLayout(layout);
