@@ -302,3 +302,13 @@ QLineEdit {
     font: 14px "Open Sans";
     border-radius: 3px;
 }
+
+QMessageBox {
+    text-align: left;
+}
+
+QMessageBox QLabel {
+    font: 14px "Open Sans";
+    font-weight: bold;
+    color: #f1f1f1;
+}

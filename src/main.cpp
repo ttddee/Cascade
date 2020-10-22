@@ -60,8 +60,11 @@ int main(int argc, char *argv[])
 
     QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
+    auto title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
     // Log output to file
     qInstallMessageHandler(messageHandler);
+    qDebug(title.toLatin1());
 
     // Load font
     int fontId = QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Regular.ttf");
@@ -72,7 +75,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        std::cout << "Problem loading font." << std::endl;
+        qDebug("Problem loading font.");
     }
 
     // Load style sheet
@@ -84,7 +87,7 @@ int main(int argc, char *argv[])
     // Create window
     MainWindow w;
     w.setWindowState(Qt::WindowMaximized);
-    auto title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
     w.setWindowTitle(title);
     w.show();
     return a.exec();

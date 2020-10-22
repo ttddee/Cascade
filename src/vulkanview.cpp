@@ -21,13 +21,13 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QMessageBox>
 
 VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 {
     qDebug("Creating Vulkan instance");
 
     // Set up validation layers
-#ifdef QT_DEBUG
     instance.setLayers(QByteArrayList()
                        << "VK_LAYER_GOOGLE_threading"
                        << "VK_LAYER_LUNARG_parameter_validation"
@@ -36,11 +36,24 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
                        << "VK_LAYER_LUNARG_image"
                        << "VK_LAYER_LUNARG_swapchain"
                        << "VK_LAYER_GOOGLE_unique_objects");
-#endif
 
     if (!instance.create())
-        qFatal("Failed to create Vulkan instance: %d", instance.errorCode());
+    {
+        QMessageBox messageBox;
+        messageBox.setFixedSize(500, 200);
+        messageBox.setWindowTitle("Error");
+        messageBox.setText("<pre>Failed to initialize Vulkan.</pre>"
+                           "<pre>It could be that your GPU is not supported or your driver needs to be updated.</pre>"
+                           "<pre>You can find a list of supported GPUs at <span style=\"color: #999999;\"><a style=\"color: #999999;\" href=\"https://vulkan.gpuinfo.org\">vulkan.gpuinfo.org</a></span></pre>"
+                           "<pre>If you want to help out the developers, please send the file cascade.log <br />"
+                           "<br />and the make and model of your GPU to <a href=\"mailto:cascadeapp@protonmail.com\">"
+                           "<span style=\"color: #999999;\">cascadeapp@protonmail.com</span></a><br /><br />"
+                           "Or open an issue on: <span style=\"color: #999999;\"><a style=\"color: #999999;\" href=\"https://github.com/ttddee/Cascade\">github.com/ttddee/Cascade</a></span>.</pre>"
+                           );
+        messageBox.exec();
 
+        qFatal("Failed to create Vulkan instance. Error code: %d", instance.errorCode());
+    }
 
     // Create a VulkanWindow
     vulkanWindow = new VulkanWindow();
