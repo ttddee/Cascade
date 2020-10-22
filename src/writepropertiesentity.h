@@ -50,7 +50,7 @@ private:
     Ui::WritePropertiesEntity *ui;
 
     QString fileName = "unnamed";
-    QString folder;
+    QString folder = "";
 
 signals:
     void requestFileSave(const QString& path);

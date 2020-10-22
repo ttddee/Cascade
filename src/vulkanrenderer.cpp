@@ -1498,8 +1498,8 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 &computeDescriptorSetTwoInputs, 0, 0);
     devFuncs->vkCmdDispatch(
                 compute.commandBufferTwoInputs,
-                outputImage.getWidth() / 16,
-                outputImage.getHeight() / 16, 1);
+                outputImage.getWidth() / 16 + 1,
+                outputImage.getHeight() / 16 + 1, 1);
 
     {
        //Make the barriers for the resources

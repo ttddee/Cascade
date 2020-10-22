@@ -21,6 +21,7 @@
 #include "ui_writepropertiesentity.h"
 
 #include <QFileDialog>
+#include <QMessageBox>
 
 #include "nodeproperties.h"
 
@@ -95,6 +96,11 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
     if (folder != "")
     {
         emit requestFileSave(ui->fileNameLabel->text());
+    }
+    else
+    {
+        QMessageBox messageBox;
+        messageBox.information(0,"No folder set","Please select a folder.");
     }
 }
 
