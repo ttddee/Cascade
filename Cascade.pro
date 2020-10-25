@@ -26,6 +26,7 @@ SOURCES += \
     src/comboboxentity.cpp \
     src/connection.cpp \
     src/csimage.cpp \
+    src/csmessagebox.cpp \
     src/csslider.cpp \
     src/fileboxentity.cpp \
     src/main.cpp \
@@ -55,6 +56,7 @@ HEADERS += \
     src/comboboxentity.h \
     src/connection.h \
     src/csimage.h \
+    src/csmessagebox.h \
     src/csslider.h \
     src/fileboxentity.h \
     src/mainwindow.h \

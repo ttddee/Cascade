@@ -21,7 +21,8 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
-#include <QMessageBox>
+
+#include "csmessagebox.h"
 
 VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 {
@@ -39,16 +40,19 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 
     if (!instance.create())
     {
-        QMessageBox messageBox;
-        messageBox.setFixedSize(500, 200);
+        CsMessageBox messageBox;
         messageBox.setWindowTitle("Error");
-        messageBox.setText("<pre>Failed to initialize Vulkan.</pre>"
-                           "<pre>It could be that your GPU is not supported or your driver needs to be updated.</pre>"
-                           "<pre>You can find a list of supported GPUs at <span style=\"color: #999999;\"><a style=\"color: #999999;\" href=\"https://vulkan.gpuinfo.org\">vulkan.gpuinfo.org</a></span></pre>"
-                           "<pre>If you want to help out the developers, please send the file cascade.log <br />"
-                           "<br />and the make and model of your GPU to <a href=\"mailto:cascadeapp@protonmail.com\">"
-                           "<span style=\"color: #999999;\">cascadeapp@protonmail.com</span></a><br /><br />"
-                           "Or open an issue on: <span style=\"color: #999999;\"><a style=\"color: #999999;\" href=\"https://github.com/ttddee/Cascade\">github.com/ttddee/Cascade</a></span>.</pre>"
+        messageBox.setText("**Failed to initialize Vulkan.**\n"
+                           "\n"
+                           "It could be that your GPU is not supported or your driver needs to be updated.\n"
+                           "You can find a list of supported GPUs at **vulkan.gpuinfo.org**\n"
+                           "\n"
+                           "If you want to help out the developers, please send the file **cascade.log** "
+                           "and the make and model of your GPU to \n"
+                           "\n"
+                           "**cascadeapp @ protonmail.com**\n"
+                           "\n"
+                           "Or open an issue on: **github.com/ttddee/Cascade**"
                            );
         messageBox.exec();
 

@@ -304,11 +304,12 @@ QLineEdit {
 }
 
 QMessageBox {
-    text-align: left;
-}
-
-QMessageBox QLabel {
     font: 14px "Open Sans";
-    font-weight: bold;
     color: #f1f1f1;
 }
+
+QMessageBox QPushButton {
+    padding: 5 30 5 30;
+}
+
+

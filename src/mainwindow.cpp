@@ -25,6 +25,7 @@
 #include <QMessageBox>
 
 #include "vulkanrenderer.h"
+#include "csmessagebox.h"
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
