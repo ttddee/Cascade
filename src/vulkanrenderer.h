@@ -134,8 +134,7 @@ private:
             CsImage& outputImage,
             VkPipeline& pl);
     void recordComputeCommandBuffer(
-            CsImage& inputImage,
-            const QString& path);
+            CsImage& inputImage);
 
     void submitComputeCommands();
     void submitImageSaveCommand();
@@ -169,7 +168,8 @@ private:
 
     bool texLayoutPending = false;
 
-    VkFormat loadImageFormat;
+    VkFormat globalImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+
     VkImage loadImageStaging = VK_NULL_HANDLE;
     VkDeviceMemory loadImageStagingMem = VK_NULL_HANDLE;
 
@@ -185,7 +185,12 @@ private:
     VkShaderModule noopShader;
     VkPipeline noopPipeline;
 
-    int concurrentFrameCount;
+    int concurrentFrameCount;  
+
+    VkBuffer outputStagingBuffer;
+    VkDeviceMemory outputStagingBufferMemory;
+
+    QSize outputImageSize;
 
     QMatrix4x4 projection;
     float rotation    = 0.0f;

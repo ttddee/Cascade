@@ -489,15 +489,13 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
                                                  cpuImage->xend(),
                                                  cpuImage->yend()));
 
-    loadImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
-
     auto imageSize = QSize(cpuImage->xend(), cpuImage->yend());
 
     // Now we can either map and copy the image data directly, or have to go
     // through a staging buffer to copy and convert into the internal optimal
     // tiling format.
     VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), loadImageFormat, &props);
+    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
     const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     if (!canSampleLinear && !canSampleOptimal) {
@@ -530,7 +528,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
     viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
     viewInfo.image = imageFromDisk->getImage();
     viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = loadImageFormat;
+    viewInfo.format = globalImageFormat;
     viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
     viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
     viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
@@ -1083,7 +1081,11 @@ void VulkanRenderer::createComputeCommandBuffer()
     devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                             VK_PIPELINE_STAGE_TRANSFER_BIT,
-                            0, 0, nullptr, 0, nullptr,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
                             1, &barrier);
 
     VkImageCopy copyInfo;
@@ -1096,8 +1098,14 @@ void VulkanRenderer::createComputeCommandBuffer()
     copyInfo.extent.height              = loadImageSize.height();
     copyInfo.extent.depth               = 1;
 
-    devFuncs->vkCmdCopyImage(cb, loadImageStaging, VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                      imageFromDisk->getImage(), VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &copyInfo);
+    devFuncs->vkCmdCopyImage(
+                cb,
+                loadImageStaging,
+                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                imageFromDisk->getImage(),
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                1,
+                &copyInfo);
 
     {
         barrier.oldLayout     = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
@@ -1121,8 +1129,13 @@ void VulkanRenderer::createComputeCommandBuffer()
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                                 VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0, 0, nullptr, 0, nullptr,
-                                1, &barrier);
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                1,
+                                &barrier);
     }
 
     devFuncs->vkCmdBindPipeline(
@@ -1178,14 +1191,19 @@ void VulkanRenderer::createComputeCommandBuffer()
 }
 
 
-bool VulkanRenderer::createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
-                                        VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex)
+bool VulkanRenderer::createTextureImage(
+                const QSize &size,
+                VkImage *image,
+                VkDeviceMemory *mem,
+                VkImageTiling tiling,
+                VkImageUsageFlags usage,
+                uint32_t memIndex)
 {
     VkImageCreateInfo imageInfo;
     memset(&imageInfo, 0, sizeof(imageInfo));
     imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
     imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.format = loadImageFormat;
+    imageInfo.format = globalImageFormat;
     imageInfo.extent.width = size.width();
     imageInfo.extent.height = size.height();
     imageInfo.extent.depth = 1;
@@ -1565,8 +1583,7 @@ uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFla
 }
 
 void VulkanRenderer::recordComputeCommandBuffer(
-        CsImage& inputImage,
-        const QString& path)
+        CsImage& inputImage)
 {
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
@@ -1581,12 +1598,9 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
     VkCommandBuffer cb = compute.commandBufferImageSave;
 
-    auto imageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
+    outputImageSize = QSize(inputImage.getWidth(), inputImage.getHeight());
 
-    VkDeviceSize bufferSize = imageSize.width() * imageSize.height() * 4;
-
-    VkBuffer stagingBuffer;
-    VkDeviceMemory stagingBufferMemory;
+    VkDeviceSize bufferSize = outputImageSize.width() * outputImageSize.height() * 16; // 4 channels * 4 bytes
 
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -1594,13 +1608,13 @@ void VulkanRenderer::recordComputeCommandBuffer(
     bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
-    if (devFuncs->vkCreateBuffer(device, &bufferInfo, nullptr, &stagingBuffer) != VK_SUCCESS)
+    if (devFuncs->vkCreateBuffer(device, &bufferInfo, nullptr, &outputStagingBuffer) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to create buffer!");
     }
 
     VkMemoryRequirements memRequirements;
-    devFuncs->vkGetBufferMemoryRequirements(device, stagingBuffer, &memRequirements);
+    devFuncs->vkGetBufferMemoryRequirements(device, outputStagingBuffer, &memRequirements);
 
     VkMemoryAllocateInfo allocInfo{};
     allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
@@ -1609,12 +1623,12 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 memRequirements.memoryTypeBits,
                 VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
 
-    if (devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, &stagingBufferMemory) != VK_SUCCESS)
+    if (devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, &outputStagingBufferMemory) != VK_SUCCESS)
     {
         throw std::runtime_error("Failed to allocate buffer memory!");
     }
 
-    devFuncs->vkBindBufferMemory(device, stagingBuffer, stagingBufferMemory, 0);
+    devFuncs->vkBindBufferMemory(device, outputStagingBuffer, outputStagingBufferMemory, 0);
 
     {
         VkImageMemoryBarrier imageBarrier = {};
@@ -1625,17 +1639,9 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
         imageBarrier.oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         imageBarrier.newLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        imageBarrier.srcAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
+        imageBarrier.srcAccessMask   = 0;
         imageBarrier.dstAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
         imageBarrier.image           = inputImage.getImage();
-
-        VkBufferMemoryBarrier bufferBarrier = {};
-
-        bufferBarrier.sType           = VK_STRUCTURE_TYPE_BUFFER_MEMORY_BARRIER;
-        bufferBarrier.srcAccessMask   = 0;
-        bufferBarrier.dstAccessMask   = VK_ACCESS_TRANSFER_WRITE_BIT;
-        bufferBarrier.buffer          = stagingBuffer;
-        bufferBarrier.size            = bufferSize;
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1643,8 +1649,8 @@ void VulkanRenderer::recordComputeCommandBuffer(
                                 0,
                                 0,
                                 nullptr,
-                                1,
-                                &bufferBarrier,
+                                0,
+                                nullptr,
                                 1,
                                 &imageBarrier);
     }
@@ -1654,6 +1660,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         0,
         1
     };
+
     VkSubresourceLayout imageLayout;
     devFuncs->vkGetImageSubresourceLayout(device, inputImage.getImage(), &subres, &imageLayout);
 
@@ -1665,50 +1672,82 @@ void VulkanRenderer::recordComputeCommandBuffer(
         1
     };
 
-    std::cout << "Row pitch: " << imageLayout.rowPitch << std::endl;
-    std::cout << "Array pitch: " << imageLayout.arrayPitch << std::endl;
-    std::cout << "Depth pitch: " << imageLayout.depthPitch << std::endl;
-    std::cout << "Size: " << imageLayout.size << std::endl;
-    std::cout << "Offset: " << imageLayout.offset << std::endl;
-
     VkBufferImageCopy copyInfo;
     copyInfo.bufferOffset       = 0;
-    copyInfo.bufferRowLength    = imageSize.width();
-    copyInfo.bufferImageHeight  = imageSize.height();
+    copyInfo.bufferRowLength    = outputImageSize.width();
+    copyInfo.bufferImageHeight  = outputImageSize.height();
     copyInfo.imageSubresource   = imageLayers;
     copyInfo.imageOffset        = { 0, 0, 0 };
-    copyInfo.imageExtent.width  = imageSize.width();
-    copyInfo.imageExtent.height = imageSize.height();
+    copyInfo.imageExtent.width  = outputImageSize.width();
+    copyInfo.imageExtent.height = outputImageSize.height();
     copyInfo.imageExtent.depth  = 1;
 
     devFuncs->vkCmdCopyImageToBuffer(
                 cb,
                 inputImage.getImage(),
                 VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
-                stagingBuffer,
+                outputStagingBuffer,
                 1,
                 &copyInfo);
 
-    float *input;
-    err = devFuncs->vkMapMemory(
+    {
+       VkImageMemoryBarrier barrier = {};
+
+        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
+
+        barrier.oldLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+        barrier.newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier.srcAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
+        barrier.dstAccessMask   = 0;
+        barrier.image           = inputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT,
+                            VK_PIPELINE_STAGE_TRANSFER_BIT,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            1,
+                            &barrier);
+    }
+
+    devFuncs->vkEndCommandBuffer(compute.commandBufferImageSave);
+}
+
+void VulkanRenderer::setDisplayMode(DisplayMode mode)
+{
+    displayMode = mode;
+}
+
+void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
+{
+    recordComputeCommandBuffer(inputImage);
+    submitImageSaveCommand();
+
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+
+    float *pInput;
+    VkResult err = devFuncs->vkMapMemory(
                 device,
-                stagingBufferMemory,
+                outputStagingBufferMemory,
                 0,
-                bufferSize,
+                VK_WHOLE_SIZE,
                 0,
-                reinterpret_cast<void **>(&input));
+                reinterpret_cast<void **>(&pInput));
     if (err != VK_SUCCESS)
     {
         qWarning("Failed to map memory for staging buffer: %d", err);
     }
 
-    int width = imageSize.width();
-    int height = imageSize.height();
-
+    int width = outputImageSize.width();
+    int height = outputImageSize.height();
     int numValues = width * height * 4;
 
     float* output = new float[numValues];
-    float* pInput = input;
     float* pOutput = &output[0];
 
     for (int y = 0; y < numValues; ++y)
@@ -1724,51 +1763,9 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
     saveImage->write(path.toStdString());
 
-    // DELETE output
+    delete[] output;
 
-    devFuncs->vkUnmapMemory(device, stagingBufferMemory);
-
-    // DELETE buffer
-
-    // TODO: delete submit function
-
-    {
-       VkImageMemoryBarrier barrier[1] = {};
-
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
-
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].srcAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
-
-        devFuncs->vkCmdPipelineBarrier(cb,
-                            VK_PIPELINE_STAGE_TRANSFER_BIT,
-                            VK_PIPELINE_STAGE_TRANSFER_BIT,
-                            0,
-                            0,
-                            nullptr,
-                            0,
-                            nullptr,
-                            1,
-                            &barrier[0]);
-    }
-
-    devFuncs->vkEndCommandBuffer(compute.commandBufferImageSave);
-}
-
-void VulkanRenderer::setDisplayMode(DisplayMode mode)
-{
-    displayMode = mode;
-}
-
-void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
-{
-    recordComputeCommandBuffer(inputImage, path);
-    //submitImageSaveCommand();
+    devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
 }
 
 void VulkanRenderer::createRenderPass()
@@ -2205,6 +2202,16 @@ void VulkanRenderer::releaseResources()
     if (descriptorPool) {
         devFuncs->vkDestroyDescriptorPool(device, descriptorPool, nullptr);
         descriptorPool = VK_NULL_HANDLE;
+    }
+
+    if (outputStagingBuffer) {
+        devFuncs->vkDestroyBuffer(device, outputStagingBuffer, nullptr);
+        outputStagingBuffer = VK_NULL_HANDLE;
+    }
+
+    if (outputStagingBufferMemory) {
+        devFuncs->vkFreeMemory(device, outputStagingBufferMemory, nullptr);
+        outputStagingBufferMemory = VK_NULL_HANDLE;
     }
 
     if (buf) {
