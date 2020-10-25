@@ -1591,12 +1591,12 @@ void VulkanRenderer::recordComputeCommandBuffer(
     VkBufferCreateInfo bufferInfo{};
     bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
     bufferInfo.size = bufferSize;
-    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
     bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
 
     if (devFuncs->vkCreateBuffer(device, &bufferInfo, nullptr, &stagingBuffer) != VK_SUCCESS)
     {
-        throw std::runtime_error("failed to create buffer!");
+        throw std::runtime_error("Failed to create buffer!");
     }
 
     VkMemoryRequirements memRequirements;
@@ -1611,7 +1611,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
     if (devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, &stagingBufferMemory) != VK_SUCCESS)
     {
-        throw std::runtime_error("failed to allocate buffer memory!");
+        throw std::runtime_error("Failed to allocate buffer memory!");
     }
 
     devFuncs->vkBindBufferMemory(device, stagingBuffer, stagingBufferMemory, 0);
@@ -1733,7 +1733,6 @@ void VulkanRenderer::recordComputeCommandBuffer(
     // TODO: delete submit function
 
     {
-       //Make the barriers for the resources
        VkImageMemoryBarrier barrier[1] = {};
 
         barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
