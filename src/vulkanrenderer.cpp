@@ -62,11 +62,6 @@ void VulkanRenderer::initResources()
     device = window->device();
     physicalDevice = window->physicalDevice();
 
-    if(!window->physicalDevice())
-    {
-        emit window->noGPUFound();
-    }
-
     devFuncs = window->vulkanInstance()->deviceFunctions(device);
     f = window->vulkanInstance()->functions();
 

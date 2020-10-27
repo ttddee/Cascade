@@ -32,9 +32,9 @@ NodeInput::NodeInput(NodeInputType t, QWidget *parent)
 
     if (t == NODE_INPUT_TYPE_RGB_FRONT)
         setObjectName("Front");
-    if (t == NODE_INPUT_TYPE_RGB_BACK)
+    else if (t == NODE_INPUT_TYPE_RGB_BACK)
         setObjectName("Back");
-    if (t == NODE_INPUT_TYPE_ALPHA)
+    else if (t == NODE_INPUT_TYPE_ALPHA)
         setObjectName("Alpha");
 }
 
@@ -80,4 +80,16 @@ void NodeInput::removeInConnection()
     inConnection = nullptr;
     parentNode->requestUpdate();
 }
+
+void NodeInput::mousePressEvent(QMouseEvent *event)
+{
+    if (event->button() == Qt::LeftButton)
+    {
+        if (hasConnection())
+        {
+            emit connectedNodeInputClicked(inConnection);
+        }
+    }
+}
+
 

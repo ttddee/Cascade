@@ -121,13 +121,3 @@ void Connection::updatePosition(const QPoint end)
 
 }
 
-void Connection::mousePressEvent(QGraphicsSceneMouseEvent *event)
-{
-    event->accept();
-
-    if (event->button() == Qt::MiddleButton)
-    {
-        emit requestConnectionDeletion(this);
-    }
-}
-

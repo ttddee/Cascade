@@ -76,6 +76,9 @@ void NodeBase::createInputs(const NodeInitProperties &props)
         {
             this->rgbaFrontIn = nodeIn;
         }
+
+        connect(nodeIn, &NodeInput::connectedNodeInputClicked,
+                nodeGraph, &NodeGraph::handleConnectedNodeInputClicked);
     }
 }
 

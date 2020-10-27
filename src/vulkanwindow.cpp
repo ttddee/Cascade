@@ -58,6 +58,10 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
             qWarning("No discrete GPU found.");
         }
     }
+    else if (props.size() == 0)
+    {
+        emit noGPUFound();
+    }
 
     renderer = new VulkanRenderer(this);
 

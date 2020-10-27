@@ -196,8 +196,6 @@ void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 {
     if (node->getIsViewed())
     {
-        std::cout << "requesting node display" << std::endl;
-
         emit requestNodeDisplay(node);
     }
 }
@@ -214,8 +212,9 @@ Connection* NodeGraph::createOpenConnection(NodeOutput* nodeOut)
     scene->addItem(c);
     openConnection = c;
 
-    connect(c, &Connection::requestConnectionDeletion,
-            this, &NodeGraph::handleConnectionDeletionRequest);
+    openConnection->updatePosition(
+                QPoint(mapToScene(mapFromGlobal(QCursor::pos())).x(),
+                       mapToScene(mapFromGlobal(QCursor::pos())).y()));
 
     return c;
 }
@@ -262,8 +261,11 @@ NodeBase* NodeGraph::getSelectedNode()
     return selectedNode;
 }
 
-void NodeGraph::handleConnectionDeletionRequest(Connection* c)
+void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
 {
+    leftMouseIsDragging = true;
+    auto sourceOut = c->sourceOutput;
+    createOpenConnection(sourceOut);
     deleteConnection(c);
 }
 
@@ -301,9 +303,9 @@ void NodeGraph::mouseMoveEvent(QMouseEvent* event)
     {
         if(openConnection)
         {
-            openConnection->updatePosition(QPoint(
-                                           mapToScene(mapFromGlobal(QCursor::pos())).x(),
-                                           mapToScene(mapFromGlobal(QCursor::pos())).y()));
+            openConnection->updatePosition(
+                        QPoint(mapToScene(mapFromGlobal(QCursor::pos())).x() + 5,
+                               mapToScene(mapFromGlobal(QCursor::pos())).y() + 3));
         }
     }
     lastMousePos = event->pos();

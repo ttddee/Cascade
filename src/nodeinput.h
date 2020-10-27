@@ -38,6 +38,8 @@ public:
     void updateConnection();
     bool hasConnection();
 
+    void mousePressEvent(QMouseEvent*) override;
+
     Connection* getConnection();
 
     NodeInputType getInputType();
@@ -53,7 +55,7 @@ private:
 
 
 signals:
-
+    void connectedNodeInputClicked(Connection* c);
 };
 
 #endif // NODEIN_H

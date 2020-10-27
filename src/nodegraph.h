@@ -107,7 +107,7 @@ public slots:
     void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
     void handleNodeUpdateRequest(NodeBase* node);
     void handleFileSaveRequest(NodeBase* node, const QString& path);
-    void handleConnectionDeletionRequest(Connection* c);
+    void handleConnectedNodeInputClicked(Connection* c);
 };
 
 #endif // NODEGRAPH_H
