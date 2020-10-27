@@ -63,6 +63,7 @@ int main(int argc, char *argv[])
     auto title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
 
     // Log output to file
+    QFile::remove("cascade.log");
     qInstallMessageHandler(messageHandler);
     qDebug(title.toLatin1());
 
