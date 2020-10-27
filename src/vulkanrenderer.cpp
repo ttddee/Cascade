@@ -28,8 +28,12 @@
 #include <QMouseEvent>
 #include <QVulkanWindowRenderer>
 
+#include <OpenImageIO/imagebufalgo.h>
+
 #include "vulkanwindow.h"
 #include "fileboxentity.h"
+
+using namespace OIIO;
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -1763,6 +1767,9 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
     ImageSpec spec(width, height, 4, TypeDesc::FLOAT);
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
+
+    // Convert linear to sRGB
+    *saveImage = ImageBufAlgo::colorconvert (*saveImage, "linear", "sRGB", true);
 
     success = saveImage->write(path.toStdString());
 
