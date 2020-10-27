@@ -37,15 +37,13 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
 
 #ifdef QT_DEBUG
     slist.append(QString("../../images/bay.jpg"));
+    QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
+    ui->fileListView->setCurrentIndex(index);
 #endif
 
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
-
-    // Temporary
-    QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
-    ui->fileListView->setCurrentIndex(index);
 
     connect(ui->loadButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleLoadButtonClicked);
@@ -68,23 +66,40 @@ void FileBoxEntity::handleLoadButtonClicked()
 {
     QFileDialog dialog(nullptr);
     dialog.setFileMode(QFileDialog::ExistingFiles);
-    //dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.png *.tga *.tif *.cr2 *.nef *.arw)"));
-    dialog.setNameFilter(tr("Images (*.gif *.jpg *.png)"));
+    dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.png *.tga *.tif)"));
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
     {
-        QStringList fileNames = dialog.selectedFiles();
-        foreach(QString name, fileNames)
-        {
-            fileListModel->insertRow(fileListModel->rowCount());
-            QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
-            fileListModel->setData(index, name);
-
-            ui->fileListView->setCurrentIndex(index);
-        }
-        emit valueChanged();
+        addEntries(dialog.selectedFiles());
     }
+}
+
+void FileBoxEntity::addEntries(const QStringList& entries)
+{
+    foreach(QString name, entries)
+    {
+        fileListModel->insertRow(fileListModel->rowCount());
+        QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
+        fileListModel->setData(index, name);
+
+        ui->fileListView->setCurrentIndex(index);
+    }
+    emit valueChanged();
+}
+
+void FileBoxEntity::deleteCurrentEntry()
+{
+    QModelIndex index = ui->fileListView->currentIndex();
+    int row = index.row();
+
+    fileListModel->removeRows(row, 1);
+    if (row > 0)
+    {
+        index = fileListModel->index(row - 1, 0);
+        ui->fileListView->setCurrentIndex(index);
+    }
+    emit valueChanged();
 }
 
 void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -100,7 +115,7 @@ QString FileBoxEntity::getValuesAsString()
 
 void FileBoxEntity::handleDeleteButtonClicked()
 {
-
+    deleteCurrentEntry();
 }
 
 FileBoxEntity::~FileBoxEntity()

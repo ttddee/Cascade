@@ -50,7 +50,8 @@ public:
     ~FileBoxEntity();
 
 private:
-    void setCurrentState(const QString&);
+    void addEntries(const QStringList& entries);
+    void deleteCurrentEntry();
 
     Ui::FileBoxEntity *ui;
     QStringListModel* fileListModel;
