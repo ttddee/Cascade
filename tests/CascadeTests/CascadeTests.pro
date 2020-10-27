@@ -12,10 +12,13 @@ CONFIG += c++17
 DEFINES += \
     GTEST_LANG_CXX11
 
-INCLUDEPATH *= \
-    /usr/src/googletest \
-    /usr/src/gmock \
-    ../../ \
+VERSION_MAJOR = 0
+VERSION_MINOR = 1
+VERSION_BUILD = 2
+
+DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
+           "VERSION_MINOR=$$VERSION_MINOR"\
+           "VERSION_BUILD=$$VERSION_BUILD"
 
 HEADERS += \
         tst_nodebasetests.h \
@@ -28,6 +31,7 @@ HEADERS += \
         ../../src/csslider.h \
         ../../src/fileboxentity.h \
         ../../src/mainwindow.h \
+        ../../src/csmessagebox.h \
         ../../src/nodebase.h \
         ../../src/nodedefinitions.h \
         ../../src/nodegraph.h \
@@ -51,8 +55,6 @@ HEADERS += \
 
 
 SOURCES += \
-        /usr/src/googletest/src/gtest-all.cc \
-        /usr/src/gmock/src/gmock-all.cc \
         main.cpp \
         ../../src/colorbutton.cpp \
         ../../src/colorbuttonentity.cpp \
@@ -62,6 +64,7 @@ SOURCES += \
         ../../src/csslider.cpp \
         ../../src/fileboxentity.cpp \
         ../../src/mainwindow.cpp \
+        ../../src/csmessagebox.cpp \
         ../../src/nodebase.cpp \
         ../../src/nodegraph.cpp \
         ../../src/nodegraphcontextmenu.cpp \
@@ -95,7 +98,29 @@ FORMS += \
         ../../src/writepropertiesentity.ui
 
 linux-g++ {
+    SOURCES += \
+        /usr/src/googletest/src/gtest-all.cc \
+        /usr/src/gmock/src/gmock-all.cc \
+
+    INCLUDEPATH *= \
+        /usr/src/googletest \
+        /usr/src/gmock \
+        ../../ \
+
     LIBS += -L /usr/lib -lOpenImageIO
+}
+
+win32-msvc* {
+    SOURCES += \
+        ../../../Documents/vcpkg/installed/x64-windows/src/gtest-all.cc \
+
+    INCLUDEPATH += \
+        ../../../Documents/vcpkg/installed/x64-windows/include \
+        ../../../Documents/vcpkg/installed/x64-windows/ \
+        ../../external/msvc2019/OpenImageIO/include \
+        ../../ \
+
+    LIBS += -L../../../external/msvc2019/OpenImageIO/lib -lOpenImageIO
 }
 
 
