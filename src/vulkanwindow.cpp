@@ -29,8 +29,35 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
 {
     qDebug("Creating renderer");
 
-    // Makes sure we keep our GPU resources when window loses focus
+    // Make sure we keep our GPU resources when window loses focus
     this->setFlags(QVulkanWindow::PersistentResources);
+
+    // If there is more than one GPU, pick the discrete one if possible
+    auto props = availablePhysicalDevices();
+    if (props.size() > 1)
+    {
+        bool discreteAvailable = false;
+
+        for (int i = 0; i < props.size(); ++i)
+        {
+             if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+             {
+                 qDebug("Found discrete GPU.");
+                 this->setPhysicalDeviceIndex(i);
+                 discreteAvailable = true;
+
+                 break;
+             }
+             else if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+             {
+                 qDebug("Found integrated GPU.");
+             }
+        }
+        if(!discreteAvailable)
+        {
+            qWarning("No discrete GPU found.");
+        }
+    }
 
     renderer = new VulkanRenderer(this);
 
