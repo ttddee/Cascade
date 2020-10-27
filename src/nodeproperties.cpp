@@ -164,6 +164,5 @@ void NodeProperties::handleSomeValueChanged()
 
 void NodeProperties::handleFileSaveRequest(const QString& path)
 {
-    std::cout << path.toStdString() << std::endl;
     emit parentNode->nodeRequestFileSave(parentNode, path);
 }

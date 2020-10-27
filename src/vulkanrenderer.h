@@ -71,7 +71,7 @@ public:
     void doClearScreen();
     void setDisplayMode(DisplayMode mode);
 
-    void saveImageToDisk(CsImage& inputImage, const QString& path);
+    bool saveImageToDisk(CsImage& inputImage, const QString& path);
 
     void startNextFrame() override;
 

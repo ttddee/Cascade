@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include <QFile>
+#include <QMessageBox>
 
 #include "uientity.h"
 #include "fileboxentity.h"
@@ -108,7 +109,16 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
         auto image = upstream->cachedImage;
         if(image)
         {
-            renderer->saveImageToDisk(*image, path);
+            if(renderer->saveImageToDisk(*image, path))
+            {
+                QMessageBox messageBox;
+                messageBox.information(0,"Success","File saved successfully.");
+            }
+            else
+            {
+                QMessageBox messageBox;
+                messageBox.information(0,"Error","There was a problem saving the file.");
+            }
         }
     }
 }

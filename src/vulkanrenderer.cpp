@@ -1723,8 +1723,10 @@ void VulkanRenderer::setDisplayMode(DisplayMode mode)
     displayMode = mode;
 }
 
-void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
+bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
 {
+    bool success = true;
+
     recordComputeCommandBuffer(inputImage);
     submitImageSaveCommand();
 
@@ -1741,6 +1743,7 @@ void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
     if (err != VK_SUCCESS)
     {
         qWarning("Failed to map memory for staging buffer: %d", err);
+        success = false;
     }
 
     int width = outputImageSize.width();
@@ -1761,11 +1764,13 @@ void VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    saveImage->write(path.toStdString());
+    success = saveImage->write(path.toStdString());
 
     delete[] output;
 
     devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
+
+    return success;
 }
 
 void VulkanRenderer::createRenderPass()

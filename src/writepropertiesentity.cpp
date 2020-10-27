@@ -66,6 +66,9 @@ void WritePropertiesEntity::setFolder(const QString& f)
 {
     folder = f;
     updateFileNameLabel();
+
+    auto parts = f.split("/");
+    ui->folderLabel->setText(parts[parts.size() - 1]);
 }
 
 void WritePropertiesEntity::updateFileNameLabel()
