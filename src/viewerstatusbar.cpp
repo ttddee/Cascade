@@ -28,6 +28,18 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
 
     connect(ui->zoomResetButton, &QPushButton::clicked,
             this, &ViewerStatusBar::requestZoomReset);
+    connect(ui->bwCheckBox, &QCheckBox::toggled,
+            this, &ViewerStatusBar::handleBwToggled);
+    connect(ui->gammaSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            this, &ViewerStatusBar::handleGammaBoxValueChanged);
+    connect(ui->gammaSlider, &QSlider::valueChanged,
+            this, &ViewerStatusBar::handleGammaSliderValueChanged);
+    connect(ui->gainSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            this, &ViewerStatusBar::handleGainBoxValueChanged);
+    connect(ui->gainSlider, &QSlider::valueChanged,
+            this, &ViewerStatusBar::handleGainSliderValueChanged);
+    connect(ui->colorResetButton, &QPushButton::clicked,
+            this, &ViewerStatusBar::handleColorResetButtonClicked);
 }
 
 void ViewerStatusBar::setZoomText(const QString &s)
@@ -48,6 +60,71 @@ void ViewerStatusBar::setHeightText(const QString &s)
 void ViewerStatusBar::setViewerModeText(const QString &s)
 {
     ui->viewerModeLabel->setText(s);
+}
+
+void ViewerStatusBar::handleBwToggled()
+{
+    if(!bw)
+        bw = true;
+    else
+        bw = false;
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleGammaBoxValueChanged(double value)
+{
+    ui->gammaSlider->blockSignals(true);
+    ui->gammaSlider->setValue(value * 100);
+    ui->gammaSlider->blockSignals(false);
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleGammaSliderValueChanged(int value)
+{
+    ui->gammaSpinBox->blockSignals(true);
+    if (value > 0)
+        ui->gammaSpinBox->setValue(value / 100.0);
+    else
+        ui->gammaSpinBox->setValue(0);
+    ui->gammaSpinBox->blockSignals(false);
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleGainBoxValueChanged(double value)
+{
+    ui->gainSlider->blockSignals(true);
+    ui->gainSlider->setValue(value * 100);
+    ui->gainSlider->blockSignals(false);
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleGainSliderValueChanged(int value)
+{
+    ui->gainSpinBox->blockSignals(true);
+    if (value > 0)
+        ui->gainSpinBox->setValue(value / 100.0);
+    else
+        ui->gainSpinBox->setValue(0);
+    ui->gainSpinBox->blockSignals(false);
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleColorResetButtonClicked()
+{
+    ui->gainSpinBox->setValue(1.0);
+    ui->gammaSpinBox->setValue(1.0);
+}
+
+QString ViewerStatusBar::getViewerSettings()
+{
+    QString s;
+    s.append(QString::number(static_cast<float>(bw)));
+    s.append(",");
+    s.append(QString::number(ui->gammaSpinBox->value()));
+    s.append(",");
+    s.append(QString::number(ui->gainSpinBox->value()));
+
+    return s;
 }
 
 ViewerStatusBar::~ViewerStatusBar()

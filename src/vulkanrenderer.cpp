@@ -254,13 +254,24 @@ void VulkanRenderer::createGraphicsPipelineCache()
 
 void VulkanRenderer::createGraphicsPipelineLayout()
 {
-    // Pipeline layout
+    VkPushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags                    = VK_SHADER_STAGE_FRAGMENT_BIT;
+    pushConstantRange.offset                        = 0;
+    pushConstantRange.size                          = sizeof(viewerPushConstants);
+
     VkPipelineLayoutCreateInfo pipelineLayoutInfo;
     memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
-    pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount = 1;
-    pipelineLayoutInfo.pSetLayouts = &graphicsDescriptorSetLayout;
-    VkResult err = devFuncs->vkCreatePipelineLayout(device, &pipelineLayoutInfo, nullptr, &pipelineLayout);
+    pipelineLayoutInfo.sType =                  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+    pipelineLayoutInfo.setLayoutCount =         1;
+    pipelineLayoutInfo.pSetLayouts =            &graphicsDescriptorSetLayout;
+    pipelineLayoutInfo.pushConstantRangeCount = 1;
+    pipelineLayoutInfo.pPushConstantRanges =    &pushConstantRange;
+
+    VkResult err = devFuncs->vkCreatePipelineLayout(
+                device,
+                &pipelineLayoutInfo,
+                nullptr,
+                &pipelineLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create pipeline layout: %d", err);
 }
@@ -803,8 +814,9 @@ void VulkanRenderer::createComputePipelineLayout()
 {
     VkPushConstantRange pushConstantRange;
     pushConstantRange.stageFlags                    = VK_SHADER_STAGE_COMPUTE_BIT;
+    // Compute constants come after fragment constants
     pushConstantRange.offset                        = 0;
-    pushConstantRange.size                          = sizeof(pushConstants);
+    pushConstantRange.size                          = sizeof(computePushConstants);
 
     {
         //Now create the layout info
@@ -1373,9 +1385,10 @@ void VulkanRenderer::recordComputeCommandBuffer(
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferOneInput,
                 computePipelineLayoutOneInput,
-                VK_SHADER_STAGE_COMPUTE_BIT, 0,
-                sizeof(pushConstants),
-                pushConstants.data());
+                VK_SHADER_STAGE_COMPUTE_BIT,
+                0,
+                sizeof(computePushConstants),
+                computePushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBufferOneInput,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -1501,9 +1514,10 @@ void VulkanRenderer::recordComputeCommandBuffer(
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferTwoInputs,
                 computePipelineLayoutTwoInputs,
-                VK_SHADER_STAGE_COMPUTE_BIT, 0,
-                sizeof(pushConstants),
-                pushConstants.data());
+                VK_SHADER_STAGE_COMPUTE_BIT,
+                0,
+                sizeof(computePushConstants),
+                computePushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBufferTwoInputs,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -1782,8 +1796,17 @@ void VulkanRenderer::createRenderPass()
     VkCommandBuffer cb = window->currentCommandBuffer();
     const QSize sz = window->swapChainImageSize();
 
-    std::cout << "swapchain image width: " << sz.width() << std::endl;
-    std::cout << "swapchain image height: " << sz.height() << std::endl;
+    std::cout << "Swapchain image width: " << sz.width() << std::endl;
+    std::cout << "Swapchain image height: " << sz.height() << std::endl;
+
+    // Push constants for fragment shader
+    devFuncs->vkCmdPushConstants(
+                cb,
+                pipelineLayout,
+                VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(viewerPushConstants),
+                viewerPushConstants.data());
 
     // Clear background
     VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
@@ -1938,6 +1961,11 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
     return values;
 }
 
+void VulkanRenderer::setViewerPushConstants(const QString &s)
+{
+    viewerPushConstants = unpackPushConstants(s);
+}
+
 void VulkanRenderer::processReadNode(NodeBase *node)
 {
     QString path = node->getAllPropertyValues();
@@ -1980,7 +2008,7 @@ void VulkanRenderer::processNode(
 {
     renderTwoInputs = false;
 
-    pushConstants = unpackPushConstants(node->getAllPropertyValues());
+    computePushConstants = unpackPushConstants(node->getAllPropertyValues());
 
     if (currentRenderSize != targetSize)
     {
@@ -2010,7 +2038,7 @@ void VulkanRenderer::processNode(
 
     renderTwoInputs = true;
 
-    pushConstants = unpackPushConstants(node->getAllPropertyValues());
+    computePushConstants = unpackPushConstants(node->getAllPropertyValues());
 
     if (currentRenderSize != targetSize)
     {
@@ -2044,8 +2072,6 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
         updateVertexData(image->getWidth(), image->getHeight());
         createVertexBuffer();
-
-        std::cout << "image width: " << std::endl;
 
         if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
             qFatal("Failed to create compute render target.");

@@ -43,6 +43,11 @@ void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
     wManager = &WindowManager::getInstance();
 }
 
+void RenderManager::updateViewerPushConstants(const QString &s)
+{
+    renderer->setViewerPushConstants(s);
+}
+
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
     auto props = getPropertiesForType(node->nodeType);

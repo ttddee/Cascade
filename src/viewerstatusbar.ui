@@ -7,19 +7,19 @@
     <x>0</x>
     <y>0</y>
     <width>1000</width>
-    <height>25</height>
+    <height>30</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>1000</width>
-    <height>25</height>
+    <height>30</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>25</height>
+    <height>30</height>
    </size>
   </property>
   <property name="font">
@@ -33,24 +33,27 @@
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <property name="leftMargin">
-    <number>5</number>
+    <number>7</number>
    </property>
    <property name="topMargin">
     <number>0</number>
    </property>
    <property name="rightMargin">
-    <number>0</number>
+    <number>7</number>
    </property>
    <property name="bottomMargin">
     <number>0</number>
    </property>
-   <property name="spacing">
+   <property name="horizontalSpacing">
+    <number>5</number>
+   </property>
+   <property name="verticalSpacing">
     <number>0</number>
    </property>
-   <item row="0" column="4">
-    <widget class="QLabel" name="label_3">
-     <property name="text">
-      <string>   h: </string>
+   <item row="0" column="11">
+    <widget class="Line" name="line_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
      </property>
     </widget>
    </item>
@@ -73,13 +76,6 @@
      </property>
     </widget>
    </item>
-   <item row="0" column="2">
-    <widget class="QLabel" name="label_2">
-     <property name="text">
-      <string> | w: </string>
-     </property>
-    </widget>
-   </item>
    <item row="0" column="3">
     <widget class="QLabel" name="widthLabel">
      <property name="minimumSize">
@@ -93,10 +89,62 @@
      </property>
     </widget>
    </item>
+   <item row="0" column="16">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Gain: </string>
+     </property>
+    </widget>
+   </item>
    <item row="0" column="6">
     <widget class="QLabel" name="label">
      <property name="text">
       <string> | View: </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="14">
+    <widget class="QSlider" name="gammaSlider">
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="maximum">
+      <number>500</number>
+     </property>
+     <property name="value">
+      <number>100</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="15">
+    <widget class="Line" name="line_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="18">
+    <widget class="QSlider" name="gainSlider">
+     <property name="maximumSize">
+      <size>
+       <width>200</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="maximum">
+      <number>500</number>
+     </property>
+     <property name="value">
+      <number>100</number>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
      </property>
     </widget>
    </item>
@@ -108,6 +156,93 @@
        <height>0</height>
       </size>
      </property>
+     <property name="text">
+      <string/>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="20">
+    <widget class="QPushButton" name="colorResetButton">
+     <property name="minimumSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>20</width>
+       <height>20</height>
+      </size>
+     </property>
+     <property name="text">
+      <string>R</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QLabel" name="viewerModeLabel">
+     <property name="text">
+      <string>Output</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="8">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="0" column="2">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string> | w: </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="19">
+    <widget class="Line" name="line">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="4">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>   h: </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="12">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Gamma: </string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="17">
+    <widget class="QDoubleSpinBox" name="gainSpinBox">
+     <property name="maximum">
+      <double>5.000000000000000</double>
+     </property>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
+     </property>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="10">
+    <widget class="QCheckBox" name="bwCheckBox">
      <property name="text">
       <string/>
      </property>
@@ -146,23 +281,23 @@
      </item>
     </layout>
    </item>
-   <item row="0" column="8">
-    <spacer name="horizontalSpacer">
-     <property name="orientation">
-      <enum>Qt::Horizontal</enum>
+   <item row="0" column="13">
+    <widget class="QDoubleSpinBox" name="gammaSpinBox">
+     <property name="maximum">
+      <double>5.000000000000000</double>
      </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>40</width>
-       <height>20</height>
-      </size>
+     <property name="singleStep">
+      <double>0.010000000000000</double>
      </property>
-    </spacer>
+     <property name="value">
+      <double>1.000000000000000</double>
+     </property>
+    </widget>
    </item>
-   <item row="0" column="7">
-    <widget class="QLabel" name="viewerModeLabel">
+   <item row="0" column="9">
+    <widget class="QLabel" name="label_6">
      <property name="text">
-      <string>Output</string>
+      <string>BW </string>
      </property>
     </widget>
    </item>

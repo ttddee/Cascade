@@ -36,7 +36,10 @@ public:
     static RenderManager& getInstance();
     RenderManager(RenderManager const&) = delete;
     void operator=(RenderManager const&) = delete;
+
     void setUp(VulkanRenderer* r, NodeGraph* ng);
+
+    void updateViewerPushConstants(const QString& s);
 
 private:
     RenderManager() {}

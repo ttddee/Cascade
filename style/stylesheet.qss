@@ -311,5 +311,3 @@ QMessageBox {
 QMessageBox QPushButton {
     padding: 5 30 5 30;
 }
-
-

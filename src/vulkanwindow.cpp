@@ -75,7 +75,7 @@ VulkanRenderer* VulkanWindow::getRenderer()
 
 void VulkanWindow::handleZoomResetRequest()
 {
-    scale = 1.0;
+    zoomFactor = 1.0;
     renderer->scale(1.0);
 }
 
@@ -118,11 +118,18 @@ void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
 
 void VulkanWindow::wheelEvent(QWheelEvent *e)
 {
-    e->angleDelta().y() > 0 ? scale += scale * 0.1f : scale -= scale * 0.1f;
+    if(e->angleDelta().y() > 0)
+    {
+        zoomFactor += zoomFactor * 0.1f;
+    }
+    else
+    {
+        zoomFactor -= zoomFactor * 0.1f;
+    }
 
     //Limit the scale
-    scale = scale > minScale ? scale : minScale;
-    scale = scale < maxScale ? scale : maxScale;
-    renderer->scale(scale);
+    zoomFactor = zoomFactor > minZoom ? zoomFactor : minZoom;
+    zoomFactor = zoomFactor < maxZoom ? zoomFactor : maxZoom;
+    renderer->scale(zoomFactor);
 }
 

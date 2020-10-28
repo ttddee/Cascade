@@ -38,13 +38,26 @@ public:
     void setHeightText(const QString& s);
     void setViewerModeText(const QString& s);
 
+    QString getViewerSettings();
+
     ~ViewerStatusBar();
 
 private:
     Ui::ViewerStatusBar *ui;
 
+    bool bw = false;
+
 signals:
     void requestZoomReset();
+    void valueChanged();
+
+public slots:
+    void handleBwToggled();
+    void handleGammaBoxValueChanged(double value);
+    void handleGammaSliderValueChanged(int value);
+    void handleGainBoxValueChanged(double value);
+    void handleGainSliderValueChanged(int value);
+    void handleColorResetButtonClicked();
 };
 
 #endif // VIEWERSTATUSBAR_H

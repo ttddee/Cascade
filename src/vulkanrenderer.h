@@ -73,6 +73,8 @@ public:
 
     bool saveImageToDisk(CsImage& inputImage, const QString& path);
 
+    void setViewerPushConstants(const QString& s);
+
     void startNextFrame() override;
 
 private:
@@ -233,10 +235,9 @@ private:
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;
 
-    std::vector<float> pushConstants = { 1.0f };
+    std::vector<float> computePushConstants = { 1.0f };
+    std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
 
 };
-
-
 
 #endif // VULKANRENDERER_H

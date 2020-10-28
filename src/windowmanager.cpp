@@ -28,6 +28,7 @@
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "nodebase.h"
+#include "rendermanager.h"
 
 WindowManager& WindowManager::getInstance()
 {
@@ -58,6 +59,10 @@ void WindowManager::setUp(
             vulkanWindow, &VulkanWindow::handleZoomResetRequest);
     connect(vulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
             this, &WindowManager::handleRenderTargetCreated);
+    connect(viewerStatusBar, &ViewerStatusBar::valueChanged,
+            this, &WindowManager::handleViewerStatusBarValueChanged);
+
+    rManager = &RenderManager::getInstance();
 }
 
 ViewerMode WindowManager::getViewerMode()
@@ -135,8 +140,6 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         {
             nodeGraph->deleteNode(nodeGraph->getSelectedNode());
         }
-
-
         return true;
     }
 
@@ -168,6 +171,17 @@ void WindowManager::handleRenderTargetCreated(int w, int h)
 {
     viewerStatusBar->setWidthText(QString::number(w));
     viewerStatusBar->setHeightText(QString::number(h));
+}
+
+void WindowManager::handleViewerStatusBarValueChanged()
+{
+    rManager->updateViewerPushConstants(viewerStatusBar->getViewerSettings());
+
+    auto node = nodeGraph->getViewedNode();
+    if (node)
+    {
+        nodeGraph->requestNodeDisplay(node);
+    }
 }
 
 

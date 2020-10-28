@@ -27,6 +27,7 @@ class NodeGraph;
 class PropertiesView;
 class ViewerStatusBar;
 class NodeBase;
+class RenderManager;
 
 enum ViewerMode
 {
@@ -63,6 +64,8 @@ private:
     PropertiesView* propertiesView;
     ViewerStatusBar* viewerStatusBar;
 
+    RenderManager* rManager;
+
     ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
     bool viewOutputAlpha = false;
 
@@ -70,6 +73,7 @@ public slots:
     void handleNodeDoubleClicked(NodeBase* node);
     void handleZoomTextUpdateRequest(float f);
     void handleRenderTargetCreated(int w, int h);
+    void handleViewerStatusBarValueChanged();
 };
 
 #endif // WINDOWMANAGER_H
