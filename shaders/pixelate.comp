@@ -12,16 +12,16 @@ void main()
 {   
     int fSize = int(u_pushConstants.filterSize);
 
-	 if(gl_GlobalInvocationID.x % fSize == 0 && gl_GlobalInvocationID.y % fSize == 0)
+        if(gl_GlobalInvocationID.x % fSize == 0 && gl_GlobalInvocationID.y % fSize == 0)
 	{
-		vec4 rgba = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy)).rgba;
+            vec4 rgba = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy)).rgba;
 
-		for(int i = 0; i < fSize; i++)
-		{
-			for (int j = 0; j < fSize; j++)
-			{
-				imageStore(resultImage, ivec2(gl_GlobalInvocationID.x + i, gl_GlobalInvocationID.y + j), rgba);
-			}
-		}
+            for(int i = 0; i < fSize; i++)
+            {
+                for (int j = 0; j < fSize; j++)
+                {
+                    imageStore(resultImage, ivec2(gl_GlobalInvocationID.x + i, gl_GlobalInvocationID.y + j), rgba);
+                }
+            }
 	}                                     
 } 

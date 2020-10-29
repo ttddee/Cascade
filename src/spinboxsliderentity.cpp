@@ -20,6 +20,8 @@
 #include "spinboxsliderentity.h"
 #include "ui_spinboxsliderentity.h"
 
+#include <iostream>
+
 #include <QMouseEvent>
 #include <QSlider>
 
@@ -129,22 +131,22 @@ void SpinBoxSliderEntity::setSliderNoSignal(double d)
 void SpinBoxSliderEntity::setCurrentValue(int i)
 {
     currentValue = i;
-    //emit valueChangedInt(i);
 }
 
 void SpinBoxSliderEntity::setCurrentValue(double d)
 {
     currentValue = static_cast<int>(d * 100);
-    //emit valueChangedDouble(d);
 }
 
 void SpinBoxSliderEntity::reset()
 {
-    ui->spinBox->setValue(baseValue);
-    ui->doubleSpinBox->setValue(baseValue / 100);
+    setSpinBoxNoSignal(baseValue);
+    setSliderNoSignal(baseValue);
 
-    emit valueChangedInt(currentValue);
-    emit valueChangedDouble((double)currentValue / 100);
+    if (isDouble)
+        emit valueChangedDouble((double)currentValue / 100);
+    else
+        emit valueChangedInt(currentValue);
 }
 
 void SpinBoxSliderEntity::selfConnectToValueChanged(NodeProperties* p)
@@ -171,8 +173,11 @@ QString SpinBoxSliderEntity::getValuesAsString()
 
 void SpinBoxSliderEntity::handleSliderReleased()
 {
-    emit valueChangedInt(currentValue);
-    emit valueChangedDouble((double)currentValue / 100);
+    std::cout << "Slider released." << std::endl;
+    if (isDouble)
+        emit valueChangedDouble((double)currentValue / 100);
+    else
+        emit valueChangedInt(currentValue);
 }
 
 

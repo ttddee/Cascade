@@ -261,9 +261,9 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gamma,0.0,2.0,0.1,1.0" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,2.0,0.1,1.0" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Lift,-2.0,2.0,0.1,0.0" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gamma,0.0,2.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,2.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Lift,-2.0,2.0,0.01,0.0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -281,7 +281,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RESIZE] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Factor,0.1,2.0,0.1,1.0" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Factor,0.1,2.0,0.01,1.0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -339,7 +339,7 @@ namespace Cascade
             { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Over,Add,Divide,Minus,Multiply,0" },
             { UI_ELEMENT_TYPE_SPINBOX, "X Offset,-10000,10000,1,0" },
             { UI_ELEMENT_TYPE_SPINBOX, "Y Offset,-10000,10000,1,0" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Opacity,0.0,1.0,0.1,1.0" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Opacity,0.0,1.0,0.01,1.0" }
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -396,9 +396,9 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SOLARIZE] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Red Thresh,0.0,1.0,0.1,0.5" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Green Thresh,0.0,1.0,0.1,0.5" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Blue Thresh,0.0,1.0,0.1,0.5" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Red Thresh,0.0,1.0,0.01,0.5" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Green Thresh,0.0,1.0,0.01,0.5" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Blue Thresh,0.0,1.0,0.01,0.5" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -540,7 +540,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EDGE_DETECT] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,10.0,0.1,1.0" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,10.0,0.01,1.0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

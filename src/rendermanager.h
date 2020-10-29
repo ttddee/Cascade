@@ -52,12 +52,10 @@ private:
 
     WindowManager* wManager;
 
-signals:
-
 public slots:
     void handleNodeDisplayRequest(NodeBase* node);
     void handleNodeFileSaveRequest(NodeBase* node, const QString& path);
-    void handleClearScreenrequest();
+    void handleClearScreenRequest();
 };
 
 #endif // RENDERMANAGER_H

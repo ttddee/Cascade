@@ -31,7 +31,6 @@ public:
     CsSlider(QWidget* parent = nullptr);
 
 protected:
-    void mouseReleaseEvent(QMouseEvent*) override;
     void wheelEvent(QWheelEvent*) override;
 };
 

@@ -21,7 +21,7 @@ void main()
     if (pc.bw > 0.0)
     {
         float weights[3] = { 0.3086f, 0.6094f, 0.0820f };
-        float avg = (pixel.r * weights[0] + pixel.g * weights[1] + pixel.b * weights[2]) / 3.0;
+        float avg = (pixel.r * weights[0] + pixel.g * weights[1] + pixel.b * weights[2]);
         pixel = vec4(avg, avg, avg, pixel.a);
     }
     if (pc.gamma != 1.0)

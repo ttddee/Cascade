@@ -128,7 +128,7 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
     }
 }
 
-void RenderManager::handleClearScreenrequest()
+void RenderManager::handleClearScreenRequest()
 {
     renderer->doClearScreen();
 }
@@ -185,7 +185,7 @@ void RenderManager::renderNode(NodeBase *node)
     }
     else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
-        std::cout << "rendering node" << std::endl;
+        std::cout << "Rendering node" << std::endl;
 
         std::shared_ptr<CsImage> inputImageBack = nullptr;
         std::shared_ptr<CsImage> inputImageFront = nullptr;

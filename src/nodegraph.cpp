@@ -51,7 +51,7 @@ NodeGraph::NodeGraph(QWidget* parent)
     connect(this, &NodeGraph::requestNodeFileSave,
             rManager, &RenderManager::handleNodeFileSaveRequest);
     connect(this, &NodeGraph::requestClearScreen,
-            rManager, &RenderManager::handleClearScreenrequest);
+            rManager, &RenderManager::handleClearScreenRequest);
 }
 
 void NodeGraph::createNode(const NodeType type)

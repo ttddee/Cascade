@@ -18,9 +18,15 @@ void main()
 
     vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
 
-    rgba.r = pow(rgba.r, (1 / pc.gamma)) * pc.gain + pc.lift;
-    rgba.g = pow(rgba.g, (1 / pc.gamma)) * pc.gain + pc.lift;
-    rgba.b = pow(rgba.b, (1 / pc.gamma)) * pc.gain + pc.lift;
-
+    if (pc.gamma == 0.0)
+    {
+        rgba = vec4(0.0, 0.0, 0.0, rgba.a);
+    }
+    else
+    {
+        rgba.r = pow(rgba.r, (1 / pc.gamma)) * pc.gain + pc.lift;
+        rgba.g = pow(rgba.g, (1 / pc.gamma)) * pc.gain + pc.lift;
+        rgba.b = pow(rgba.b, (1 / pc.gamma)) * pc.gain + pc.lift;
+    }
     imageStore(resultImage, pixelCoords, rgba);
 }

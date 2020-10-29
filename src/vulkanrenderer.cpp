@@ -816,7 +816,7 @@ void VulkanRenderer::createComputePipelineLayout()
     pushConstantRange.stageFlags                    = VK_SHADER_STAGE_COMPUTE_BIT;
     // Compute constants come after fragment constants
     pushConstantRange.offset                        = 0;
-    pushConstantRange.size                          = sizeof(computePushConstants);
+    pushConstantRange.size                          = sizeof(computePushConstants) * 16;
 
     {
         //Now create the layout info
@@ -1382,6 +1382,15 @@ void VulkanRenderer::recordComputeCommandBuffer(
                                 &barrier[0]);
     }
 
+    // Push constants for fragment stage
+    devFuncs->vkCmdPushConstants(
+                compute.commandBufferOneInput,
+                pipelineLayout,
+                VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(viewerPushConstants),
+                viewerPushConstants.data());
+    // Push constants for compute stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferOneInput,
                 computePipelineLayoutOneInput,
@@ -1511,6 +1520,15 @@ void VulkanRenderer::recordComputeCommandBuffer(
                                 &barrier[0]);
     }
 
+     // Push constants for fragment stage
+     devFuncs->vkCmdPushConstants(
+                 compute.commandBufferOneInput,
+                 pipelineLayout,
+                 VK_SHADER_STAGE_FRAGMENT_BIT,
+                 0,
+                 sizeof(viewerPushConstants),
+                 viewerPushConstants.data());
+     // Push constants for compute stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferTwoInputs,
                 computePipelineLayoutTwoInputs,
@@ -1794,19 +1812,11 @@ void VulkanRenderer::createRenderPass()
     qDebug("Create Render Pass.");
 
     VkCommandBuffer cb = window->currentCommandBuffer();
+
     const QSize sz = window->swapChainImageSize();
 
     std::cout << "Swapchain image width: " << sz.width() << std::endl;
     std::cout << "Swapchain image height: " << sz.height() << std::endl;
-
-    // Push constants for fragment shader
-    devFuncs->vkCmdPushConstants(
-                cb,
-                pipelineLayout,
-                VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(viewerPushConstants),
-                viewerPushConstants.data());
 
     // Clear background
     VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
@@ -1815,6 +1825,8 @@ void VulkanRenderer::createRenderPass()
     memset(clearValues, 0, sizeof(clearValues));
     clearValues[0].color = clearColor;
     clearValues[1].depthStencil = clearDS;
+
+    qDebug("Beginning render pass.");
 
     VkRenderPassBeginInfo rpBeginInfo;
     memset(&rpBeginInfo, 0, sizeof(rpBeginInfo));
@@ -1863,6 +1875,8 @@ void VulkanRenderer::createRenderPass()
         pl = graphicsPipelineAlpha;
     else
         pl = graphicsPipelineRGB;
+
+    qDebug("Binding pipeline.");
 
     devFuncs->vkCmdBindPipeline(
                 cb,
@@ -1963,6 +1977,7 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
 
 void VulkanRenderer::setViewerPushConstants(const QString &s)
 {
+    std::cout << "Setting fragment stage push constants" << std::endl;
     viewerPushConstants = unpackPushConstants(s);
 }
 
