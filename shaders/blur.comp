@@ -21,14 +21,14 @@ void main()
 
     for (int i = -strength; i < strength + 1; ++i)
     {
-	    sumH += imageLoad(inputImage, ivec2(pixelCoords.x + i, pixelCoords.y)).rgb;
-       sumV += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y + i)).rgb;
+        sumH += imageLoad(inputImage, ivec2(pixelCoords.x + i, pixelCoords.y)).rgb;
+        sumV += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y + i)).rgb;
     }
 
     int div = 2 * strength + 1;
 
-   sumH /= div;
-   sumV /= div;
+    sumH /= div;
+    sumV /= div;
 
     vec4 res = vec4((sumH + sumV) / 2 , alpha);
 

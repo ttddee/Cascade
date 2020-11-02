@@ -1876,8 +1876,6 @@ void VulkanRenderer::createRenderPass()
     else
         pl = graphicsPipelineRGB;
 
-    qDebug("Binding pipeline.");
-
     devFuncs->vkCmdBindPipeline(
                 cb,
                 VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -2172,14 +2170,10 @@ void VulkanRenderer::logicalDeviceLost()
 
 void VulkanRenderer::translate(float dx, float dy)
 {
-    const QSize sz          = window->swapChainImageSize();
-    const float speed_x     = 2.f * abs(dx) / sz.width();       // normalize according to the window size
-    const float speed_y     = 2.f * abs(dy) / sz.height();
-    const float sign_dx     = dx  < 0.0f ? -1.0f : 1.0f;
-    const float sign_dy     = -dy < 0.0f ? -1.0f : 1.0f;        // invert y, it comes in window coordinate system
+    const QSize sz = window->size();
 
-    position_x            += sign_dx * speed_x;
-    position_y            += sign_dy * speed_y;
+    position_x += 6.0 * dx / sz.width();
+    position_y += 2.0 * -dy / sz.height();
 
     window->requestUpdate();
 }
@@ -2193,12 +2187,12 @@ void VulkanRenderer::scale(float s)
 
 void VulkanRenderer::releaseSwapChainResources()
 {
-    qDebug("releaseSwapChainResources");
+    qDebug("Releasing swapchain resources.");
 }
 
 void VulkanRenderer::releaseResources()
 {
-    qDebug("releaseResources");
+    qDebug("Releasing resources.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 

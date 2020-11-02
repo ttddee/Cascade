@@ -91,26 +91,22 @@ void VulkanWindow::setViewerMode(const ViewerMode mode)
 
 void VulkanWindow::mousePressEvent(QMouseEvent *e)
 {
-    pressed = true;
+    isDragging = true;
     lastPos = e->pos();
 }
 
 void VulkanWindow::mouseReleaseEvent(QMouseEvent *)
 {
-    pressed = false;
+    isDragging = false;
 }
 
 void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
 {
-    if (!pressed)
-        return;
-
-    float dx        = e->pos().x() - lastPos.x();
-    float dy        = e->pos().y() - lastPos.y();
-    float magnitude = std::max(abs(dx),abs(dy));
-
-    if (  magnitude > 0.0f )
+    if (isDragging)
     {
+        float dx = e->pos().x() - lastPos.x();
+        float dy = e->pos().y() - lastPos.y();
+
         renderer->translate(dx, dy);
     }
     lastPos = e->pos();

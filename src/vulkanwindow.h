@@ -48,7 +48,7 @@ private:
 
     VulkanRenderer* renderer;
 
-    bool pressed = false;
+    bool isDragging = false;
 
     QPoint lastPos;
 

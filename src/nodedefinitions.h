@@ -243,7 +243,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLUR] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,0,20,1,3" }
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,0,100,1,3" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
