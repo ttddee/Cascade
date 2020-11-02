@@ -45,6 +45,7 @@ NodeProperties::NodeProperties(
 
     layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignTop);
+    layout->setMargin(0);
     this->setLayout(layout);
 
     foreach (auto& elem, props.uiElements)

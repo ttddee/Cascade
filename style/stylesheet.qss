@@ -106,7 +106,7 @@ QSlider::groove:horizontal {
 }
 QSlider::handle:horizontal {
     background-image: url(:/design/ui/png/slider_handle.png);
-    width: 16px;
+    width: 20px;
     margin: -5px -6px;
 }
 QSlider::sub-page:horizontal {
