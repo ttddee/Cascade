@@ -184,6 +184,10 @@ win32-msvc* {
     COPIES += translations
     translations.files += $$files($$DESTDIR/../../external/msvc2019/Qt/translations/*)
     translations.path = $$DESTDIR/translations
+
+    COPIES += license
+    license.files += $$files($$DESTDIR/../../LICENSE)
+    license.path = $$DESTDIR
 }
 
 RESOURCES += \
