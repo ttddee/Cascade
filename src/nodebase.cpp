@@ -341,8 +341,7 @@ void NodeBase::paintEvent(QPaintEvent *event)
     painter.setRenderHint(QPainter::Antialiasing);
     QRect rect = this->rect();
     painter.setBrush(defaultColorBrush);
-    QPen pen(defaultColorBrush, 1);
-    painter.setPen(pen);
+    painter.setPen(defaultColorPen);
     painter.drawRoundedRect(rect, cornerRadius, cornerRadius);
 
     auto mode = wManager->getViewerMode();

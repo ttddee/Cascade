@@ -25,7 +25,10 @@ QWidget#NodeBase {
     background-color: #181b1e;
 }
 QWidget#ViewerStatusBar {
-
+    background-color: #282d31;
+    border-color: #626971;
+    border-style: solid;
+    border-width: 2px;
 }
 VulkanView {
     margin: 0px;
@@ -63,7 +66,6 @@ QPushButton {
     color: #f1f1f1;
     border: none;
     border-radius: 3px;
-    font-weight: bold;
 }
 QPushButton:hover {
     background-color: #626971;
@@ -94,9 +96,26 @@ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
        background: none;
  }
 
-LineNumberArea {
-    font-weight: bold;
+QScrollBar:horizontal {
+    border: 0px;
+    background: #1d2024;
 }
+QScrollBar::handle:horizontal {
+    background: #626971;
+}
+QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
+     border: 0px;
+     background: none;
+     color: none;
+ }
+ QScrollBar::add-line:horizontal {
+       border: none;
+       background: none;
+ }
+ QScrollBar::sub-line:horizontal {
+       border: none;
+       background: none;
+ }
 
 /*Slider*/
 QSlider::groove:horizontal {
@@ -198,7 +217,6 @@ QComboBox::down-arrow:hover {
 QComboBox QAbstractItemView {
     background-color: #282d31;
     selection-background-color: #626971;
-    border-radius: 3px;
 }
 
 QCheckBox {
@@ -260,13 +278,11 @@ QLabel {
 QLabel#propHeading {
     color: #f1f1f1;
     font: 14px "Open Sans";
-    font-weight: bold;
 }
 QLabel#NodeTitleLabel {
     color: #f1f1f1;
     background-color: none;
     font: 14px "Open Sans";
-    font-weight: bold;
 }
 QLabel#folderLabel {
     color: #00b6dd;
@@ -275,7 +291,7 @@ QLabel#fileNameLabel {
     color: #00b6dd;
 }
 QLabel#viewerModeLabel {
-    font-weight: bold;
+
 }
 
 QSplitter:handle {
@@ -285,12 +301,33 @@ QSplitter:handle {
 QStatusBar {
     background-color: #282d31;
 }
+QMenuBar {
+    border-color: #626971;
+    border-style: solid;
+    border-width: 0 0 1 0;
+}
+
+QMenuBar::item:selected {
+    background: #626971;
+}
+
+QMenuBar::item:pressed {
+    background: #626971;
+}
 
 QMenu {
     background-color: #282d31;
     font: 14px "Open Sans";
-    font-weight: bold;
     color: #f1f1f1;
+    border-color: #626971;
+    border-style: solid;
+    border-width: 1px;
+    padding: 3px;
+}
+QMenu::separator {
+    height: 1px;
+    background-color: #626971;
+    margin: 7 -3 2 0;
 }
 QMenu::item:selected {
     background-color: #626971;
@@ -311,3 +348,97 @@ QMessageBox {
 QMessageBox QPushButton {
     padding: 5 30 5 30;
 }
+
+/*Advanced Docking */
+ads--CDockContainerWidget {
+        background-color: #181b1e;
+}
+
+ads--CDockContainerWidget ads--CDockSplitter::handle {
+        background-color: #282d31;
+        border: 0px;
+}
+
+ads--CDockAreaWidget {
+        background-color: #282d31;
+        border: 0px;
+}
+
+ads--CDockWidgetTab {
+        background-color: #626971;
+        border-style: solid;
+        border-width: 0 0 0 1px;
+        border-color: #282d31;
+        padding: 0 0px;
+}
+
+ads--CDockWidgetTab[activeTab="true"] {
+        background-color: #626971;
+        padding: 5 5 5 0;
+}
+
+ads--CDockWidgetTab QLabel {
+        background-color: #626971;
+        color: #000;
+}
+
+ads--CDockWidgetTab[activeTab="true"] QLabel {
+        color: #000;
+}
+
+ads--CDockWidget {
+        background-color: #282d31;
+        border-color: #626971;
+        border-style: solid;
+        border-width: 1px;
+}
+
+ads--CTitleBarButton {
+        padding: 0px 0px;
+}
+
+QScrollArea#dockWidgetScrollArea {
+        padding: 0px;
+        border: none;
+}
+
+#tabCloseButton {
+        margin-top: 2px;
+        background: none;
+        border: none;
+        padding: 0px -2px;
+        qproperty-icon: url(:/ads/images/close-button.svg),
+                url(:/ads/images/close-button-disabled.svg) disabled;
+        qproperty-iconSize: 16px;
+}
+
+#tabCloseButton:hover {
+        border: 1px solid rgba(0, 0, 0, 32);
+        background: rgba(0, 0, 0, 16);
+}
+
+#tabCloseButton:pressed {
+        background: rgba(0, 0, 0, 32);
+}
+
+#tabsMenuButton::menu-indicator {
+        image: none;
+}
+
+#tabsMenuButton {
+        qproperty-icon: url(:/ads/images/tabs-menu-button.svg);
+        qproperty-iconSize: 16px;
+}
+
+#dockAreaCloseButton {
+        qproperty-icon: url(:/ads/images/close-button.svg),
+                url(:/ads/images/close-button-disabled.svg) disabled;
+        qproperty-iconSize: 16px;
+}
+
+#detachGroupButton {
+        qproperty-icon: url(:/ads/images/detach-button.svg),
+                url(:ads/images/detach-button-disabled.svg) disabled;
+        qproperty-iconSize: 16px;
+}
+

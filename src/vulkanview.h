@@ -24,12 +24,14 @@
 
 #include "vulkanwindow.h"
 
+class ViewerStatusBar;
+
 class VulkanView : public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit VulkanView(QWidget *parent = nullptr);
+    explicit VulkanView(ViewerStatusBar* statusBar, QWidget *parent = nullptr);
 
     VulkanWindow* getVulkanWindow();
 

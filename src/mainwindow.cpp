@@ -23,9 +23,13 @@
 #include <iostream>
 
 #include <QMessageBox>
+#include <QComboBox>
+#include <QDir>
 
 #include "vulkanrenderer.h"
 #include "csmessagebox.h"
+
+using namespace ads;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -33,19 +37,109 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
+    CDockManager::setConfigFlag(CDockManager::OpaqueSplitterResize, true);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
+    CDockManager::setConfigFlag(CDockManager::EqualSplitOnInsertion, true);
+
+    dockManager = new CDockManager(this);
+    // Disable the default style sheet
+    dockManager->setStyleSheet("");
+
+    viewerStatusBar = new ViewerStatusBar();
+
+    vulkanView = new VulkanView(viewerStatusBar);
+    CDockWidget* vulkanViewDockWidget = new CDockWidget("Viewer");
+    vulkanViewDockWidget->setWidget(vulkanView);
+    auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
+    centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);    
+
+    nodeGraph = new NodeGraph(this);
+    nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    CDockWidget* nodeGraphDockWidget = new CDockWidget("Node Graph");
+    nodeGraphDockWidget->setWidget(nodeGraph);
+    dockManager->addDockWidget(
+                DockWidgetArea::BottomDockWidgetArea,
+                nodeGraphDockWidget,
+                centralDockArea);
+    ui->menuView->addAction(nodeGraphDockWidget->toggleViewAction());
+
+    propertiesView = new PropertiesView();
+    CDockWidget* propertiesViewDockWidget = new CDockWidget("Properties");
+    propertiesViewDockWidget->setWidget(propertiesView);
+    propertiesViewDockWidget->resize(700, 700);
+    dockManager->addDockWidget(
+                DockWidgetArea::RightDockWidgetArea,
+                propertiesViewDockWidget,
+                centralDockArea);
+    ui->menuView->addAction(propertiesViewDockWidget->toggleViewAction());
+
+    ui->menuView->addSeparator();
+
+    saveLayoutAction = new QAction("Save Window Layout");
+    ui->menuView->addAction(saveLayoutAction);
+    restoreLayoutAction = new QAction("Restore Saved Layout");
+    ui->menuView->addAction(restoreLayoutAction);
+
+    ui->menuView->addSeparator();
+
+    restoreDefaultLayoutAction = new QAction("Restore Default Layout");
+    ui->menuView->addAction(restoreDefaultLayoutAction);
+
+    connect(saveLayoutAction, &QAction::triggered,
+            this, &MainWindow::saveUserLayout);
+    connect(restoreLayoutAction, &QAction::triggered,
+            this, &MainWindow::restoreUserLayout);
+    connect(restoreDefaultLayoutAction, &QAction::triggered,
+            this, &MainWindow::restoreDefaultLayout);
+
     windowManager = &WindowManager::getInstance();
     windowManager->setUp(
-                ui->vulkanView->getVulkanWindow(),
-                ui->nodeGraph,
-                ui->propertiesView,
-                ui->viewerStatusBar);
+                vulkanView->getVulkanWindow(),
+                nodeGraph,
+                propertiesView,
+                viewerStatusBar);
 
-    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
+    connect(vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
-    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
+    connect(vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
             this, &MainWindow::handleNoGPUFound);
-    connect(ui->vulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
+    connect(vulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
             this, &MainWindow::handleDeviceLost);
+
+    QSettings::setPath(
+                QSettings::IniFormat,
+                QSettings::SystemScope,
+                QDir::currentPath());
+}
+
+void MainWindow::saveUserLayout()
+{
+    QSettings settings(
+                QSettings::IniFormat,
+                QSettings::SystemScope,
+                "settings",
+                "user");
+    dockManager->addPerspective("custom");
+    dockManager->savePerspectives(settings);
+}
+
+void MainWindow::restoreUserLayout()
+{
+    QSettings settings(
+                QSettings::IniFormat,
+                QSettings::SystemScope,
+                "settings",
+                "user");
+    dockManager->loadPerspectives(settings);
+    dockManager->openPerspective("custom");
+}
+
+void MainWindow::restoreDefaultLayout()
+{
+
 }
 
 void MainWindow::handleRendererHasBeenCreated()
@@ -53,9 +147,9 @@ void MainWindow::handleRendererHasBeenCreated()
     // We are waiting for the renderer to be fully
     // initialized here before using it
     renderManager = &RenderManager::getInstance();
-    renderManager->setUp(ui->vulkanView->getVulkanWindow()->getRenderer(), ui->nodeGraph);
+    renderManager->setUp(vulkanView->getVulkanWindow()->getRenderer(), nodeGraph);
 
-    this->statusBar()->showMessage("GPU: " + ui->vulkanView->getVulkanWindow()->getRenderer()->getGpuName());
+    this->statusBar()->showMessage("GPU: " + vulkanView->getVulkanWindow()->getRenderer()->getGpuName());
 }
 
 void MainWindow::handleNoGPUFound()

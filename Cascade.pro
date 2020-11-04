@@ -8,7 +8,7 @@ CONFIG += c++17
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
-VERSION_BUILD = 3
+VERSION_BUILD = 4
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
            "VERSION_MINOR=$$VERSION_MINOR"\
@@ -105,8 +105,10 @@ linux-g++ {
 win32-msvc* {
     INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
     INCLUDEPATH += ../../Documents/vcpkg/installed/x64-windows/include
+    INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
+    LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -155,6 +157,7 @@ win32-msvc* {
     dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_thread-vc141-mt-x64-1_66.dll)
     dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_chrono-vc141-mt-x64-1_66.dll)
     dlls.files += $$files(C:/Program Files/Boost/boost_1_66_0/lib64-msvc-14.1/boost_date_time-vc141-mt-x64-1_66.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
     dlls.path = $$DESTDIR
 
     CONFIG(release, debug|release) {
@@ -195,3 +198,4 @@ RESOURCES += \
 
 DISTFILES += \
     style/stylesheet.qss
+

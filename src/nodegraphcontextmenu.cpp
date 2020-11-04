@@ -39,6 +39,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         {
             i.next();
             categories[i.key()] = this->addMenu(categoryStrings[i.key()]);
+            categories[i.key()]->setFixedWidth(150);
         }
     }
 

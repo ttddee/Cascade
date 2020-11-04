@@ -21,9 +21,19 @@
 #define MAINWINDOW_H
 
 #include <QMainWindow>
+#include <QWidgetAction>
+#include <QSettings>
+
+#include <DockManager.h>
+#include <DockAreaWidget.h>
+#include <DockWidget.h>
 
 #include "windowmanager.h"
 #include "rendermanager.h"
+#include "vulkanview.h"
+#include "nodegraph.h"
+#include "propertiesview.h"
+#include "viewerstatusbar.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -35,12 +45,28 @@ class MainWindow : public QMainWindow
 
 public:
     MainWindow(QWidget *parent = nullptr);
+
     ~MainWindow();
 
 private:
+    void saveUserLayout();
+    void restoreUserLayout();
+    void restoreDefaultLayout();
+
     Ui::MainWindow *ui;
+    VulkanView* vulkanView;
+    NodeGraph* nodeGraph;
+    PropertiesView* propertiesView;
+    ViewerStatusBar* viewerStatusBar;
+
     WindowManager* windowManager;
     RenderManager* renderManager;
+
+    ads::CDockManager* dockManager;
+
+    QAction* saveLayoutAction;
+    QAction* restoreLayoutAction;
+    QAction* restoreDefaultLayoutAction;
 
 public slots:
     void handleRendererHasBeenCreated();

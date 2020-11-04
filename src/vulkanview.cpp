@@ -23,8 +23,10 @@
 #include <QHBoxLayout>
 
 #include "csmessagebox.h"
+#include "viewerstatusbar.h"
 
-VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
+VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
+    : QWidget(parent)
 {
     qDebug("Creating Vulkan instance");
 
@@ -67,9 +69,10 @@ VulkanView::VulkanView(QWidget *parent) : QWidget(parent)
 
     // Create Vulkan window container and put in layout
     vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);
-    QGridLayout* layout = new QGridLayout();
+    QVBoxLayout* layout = new QVBoxLayout();
     layout->setMargin(0);
     layout->addWidget(vulkanWrapper);
+    layout->addWidget(statusBar);
     this->setLayout(layout);
 }
 
