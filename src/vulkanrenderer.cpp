@@ -887,8 +887,7 @@ VkPipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
     VkComputePipelineCreateInfo pipelineInfo = {};
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
-    // TODO: Get rid of this comparison and generalize it
-    if (nodeType == NODE_TYPE_MERGE || nodeType == NODE_TYPE_DIFFERENCE)
+    if (getPropertiesForType(nodeType).nodeInputs.size() > 1)
     {
         pipelineInfo.layout = computePipelineLayoutTwoInputs;
     }
@@ -1331,9 +1330,9 @@ void VulkanRenderer::initSwapChainResources()
 void VulkanRenderer::recordComputeCommandBuffer(
         CsImage& inputImageBack,
         CsImage& outputImage,
-        VkPipeline& pl)
+        VkPipeline& pl,
+        int numShaderPasses)
 {
-    // Needs the right render target
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1345,6 +1344,25 @@ void VulkanRenderer::recordComputeCommandBuffer(
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
     VkCommandBuffer cb = compute.commandBufferOneInput;
+
+    VkImage* targetImage;
+
+    targetImage = &outputImage.getImage();
+
+    if (numShaderPasses > 1)
+    {
+        computePushConstants.push_back(0.0);
+
+        intermediateImage = std::unique_ptr<CsImage>(new CsImage(
+                    window,
+                    &device,
+                    devFuncs,
+                    outputImage.getWidth(),
+                    outputImage.getHeight()));
+        targetImage = &intermediateImage->getImage();
+
+        updateComputeDescriptors(inputImageBack, *intermediateImage);
+    }
 
     {
          //Make the barriers for the resources
@@ -1360,6 +1378,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         barrier[0].dstAccessMask   = 0;
         barrier[0].image           = inputImageBack.getImage();
 
+
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
@@ -1368,7 +1387,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage.getImage();
+        barrier[1].image           = *targetImage;
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1414,9 +1433,70 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 outputImage.getWidth() / 16 + 1,
                 outputImage.getHeight() / 16 + 1, 1);
 
+    if (numShaderPasses > 1)
     {
-       //Make the barriers for the resources
-       VkImageMemoryBarrier barrier[2] = {};
+        {
+            VkImageMemoryBarrier barrier[2] = {};
+
+            barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[0].srcAccessMask   = 0;
+            barrier[0].dstAccessMask   = 0;
+            barrier[0].image           = intermediateImage->getImage();
+
+            barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+            barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+            barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[1].srcAccessMask   = 0;
+            barrier[1].dstAccessMask   = 0;
+            barrier[1].image           = outputImage.getImage();
+
+            devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                2,
+                                &barrier[0]);
+        }
+
+        computePushConstants[computePushConstants.size() - 1] += 1.0;
+
+        updateComputeDescriptors(*intermediateImage, outputImage);
+
+        devFuncs->vkCmdBindDescriptorSets(
+                    compute.commandBufferOneInput,
+                    VK_PIPELINE_BIND_POINT_COMPUTE,
+                    computePipelineLayoutOneInput, 0, 1,
+                    &computeDescriptorSetOneInput, 0, 0);
+
+        devFuncs->vkCmdPushConstants(
+                    compute.commandBufferOneInput,
+                    computePipelineLayoutOneInput,
+                    VK_SHADER_STAGE_COMPUTE_BIT,
+                    0,
+                    sizeof(computePushConstants),
+                    computePushConstants.data());
+
+        devFuncs->vkCmdDispatch(
+                    compute.commandBufferOneInput,
+                    outputImage.getWidth() / 16 + 1,
+                    outputImage.getHeight() / 16 + 1, 1);
+    }
+
+    {
+
+        VkImageMemoryBarrier barrier[2] = {};
 
         barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -2034,7 +2114,13 @@ void VulkanRenderer::processNode(
 
     updateComputeDescriptors(inputImageBack, *computeRenderTarget);
 
-    recordComputeCommandBuffer(inputImageBack, *computeRenderTarget, pipelines[node->nodeType]);
+    int shaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
+
+    recordComputeCommandBuffer(
+                inputImageBack,
+                *computeRenderTarget,
+                pipelines[node->nodeType],
+                shaderPasses);
 
     submitComputeCommands();
 

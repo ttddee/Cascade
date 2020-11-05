@@ -190,6 +190,7 @@ namespace Cascade
         AlphaOutputTrait alphaOutputTrait;
         RGBOutputTrait rgbOutputTrait;
         QString shaderPath;
+        int numShaderPasses;
     };
 
     ////////////////////////////////////
@@ -213,7 +214,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/crop_comp.spv"
+        ":/shaders/crop_comp.spv",
+        1
     };
 
     const NodeInitProperties readNodeInitProperties =
@@ -231,7 +233,8 @@ namespace Cascade
         BACK_INPUT_ALWAYS_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/read_comp.spv"
+        ":/shaders/read_comp.spv",
+        1
     };
 
     const NodeInitProperties blurNodeInitProperties =
@@ -249,7 +252,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/blur_comp.spv"
+        ":/shaders/blur_comp.spv",
+        2
     };
 
     const NodeInitProperties colorNodeInitProperties =
@@ -269,7 +273,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/color_comp.spv"
+        ":/shaders/color_comp.spv",
+        1
     };
 
     const NodeInitProperties resizeNodeInitProperties =
@@ -287,7 +292,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/resize_comp.spv"
+        ":/shaders/resize_comp.spv",
+        1
     };
 
     const NodeInitProperties rotateNodeInitProperties =
@@ -305,7 +311,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/rotate_comp.spv"
+        ":/shaders/rotate_comp.spv",
+        1
     };
 
     const NodeInitProperties sharpenNodeInitProperties =
@@ -323,7 +330,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/sharpen_comp.spv"
+        ":/shaders/sharpen_comp.spv",
+        1
     };
 
     const NodeInitProperties mergeNodeInitProperties =
@@ -345,7 +353,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/merge_comp.spv"
+        ":/shaders/merge_comp.spv",
+        1
     };
 
     const NodeInitProperties shuffleNodeInitProperties =
@@ -366,7 +375,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/shuffle_comp.spv"
+        ":/shaders/shuffle_comp.spv",
+        1
     };
 
     const NodeInitProperties pixelateNodeInitProperties =
@@ -384,7 +394,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/pixelate_comp.spv"
+        ":/shaders/pixelate_comp.spv",
+        1
     };
 
     const NodeInitProperties solarizeNodeInitProperties =
@@ -404,7 +415,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/solarize_comp.spv"
+        ":/shaders/solarize_comp.spv",
+        1
     };
 
     const NodeInitProperties constantNodeInitProperties =
@@ -422,7 +434,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/constant_comp.spv"
+        ":/shaders/constant_comp.spv",
+        1
     };
 
     const NodeInitProperties noiseNodeInitProperties =
@@ -441,7 +454,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noise_comp.spv"
+        ":/shaders/noise_comp.spv",
+        1
     };
 
     const NodeInitProperties differenceNodeInitProperties =
@@ -459,7 +473,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/difference_comp.spv"
+        ":/shaders/difference_comp.spv",
+        1
     };
 
     const NodeInitProperties premultNodeInitProperties =
@@ -476,7 +491,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/premult_comp.spv"
+        ":/shaders/premult_comp.spv",
+        1
     };
 
     const NodeInitProperties unpremultNodeInitProperties =
@@ -493,7 +509,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/unpremult_comp.spv"
+        ":/shaders/unpremult_comp.spv",
+        1
     };
 
     const NodeInitProperties writeNodeInitProperties =
@@ -511,7 +528,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv"
+        ":/shaders/noop_comp.spv",
+        1
     };
 
     const NodeInitProperties invertNodeInitProperties =
@@ -528,7 +546,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/invert_comp.spv"
+        ":/shaders/invert_comp.spv",
+        1
     };
 
     const NodeInitProperties edgeDetectNodeInitProperties =
@@ -546,7 +565,8 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/sobel_comp.spv"
+        ":/shaders/sobel_comp.spv",
+        1
     };
 
     static NodeInitProperties getPropertiesForType(const NodeType t)

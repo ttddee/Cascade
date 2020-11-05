@@ -6,31 +6,55 @@ layout (binding = 1, rgba32f) uniform image2D resultImage;
 
 layout(push_constant) uniform pushConstants {
 	layout(offset = 0) float strength;
+        layout(offset = 4) float shaderPass;
 } pc;
+
+int width = imageSize(inputImage).x;
+int height = imageSize(inputImage).y;
 
 void main()
 {
     int strength = int(pc.strength);
 
+    int div = 2 * strength + 1;
+
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y);
 
     float alpha = imageLoad(inputImage, pixelCoords).a;
 
-    vec3 sumH = vec3(0.0, 0.0, 0.0);
-    vec3 sumV = vec3(0.0, 0.0, 0.0);
+    vec3 sum = vec3(0.0, 0.0, 0.0);
 
-    for (int i = -strength; i < strength + 1; ++i)
+    if (pc.shaderPass == 0.0)
     {
-        sumH += imageLoad(inputImage, ivec2(pixelCoords.x + i, pixelCoords.y)).rgb;
-        sumV += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y + i)).rgb;
+        for (int i = -strength; i < strength + 1; ++i)
+        {
+            if (pixelCoords.x + i < 0 || pixelCoords.x + i > width)
+            {
+                sum += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y)).rgb;
+            }
+            else
+            {
+                sum += imageLoad(inputImage, ivec2(pixelCoords.x + i, pixelCoords.y)).rgb;
+            }
+        }
+
+    }
+    else
+    {
+        for (int i = -strength; i < strength + 1; ++i)
+        {
+            if (pixelCoords.y + i < 0 || pixelCoords.y + i > height)
+            {
+                sum += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y)).rgb;
+            }
+            else
+            {
+                sum += imageLoad(inputImage, ivec2(pixelCoords.x, pixelCoords.y + i)).rgb;
+            }
+        }
     }
 
-    int div = 2 * strength + 1;
-
-    sumH /= div;
-    sumV /= div;
-
-    vec4 res = vec4((sumH + sumV) / 2 , alpha);
+    vec4 res = vec4(sum / div , alpha);
 
     imageStore(resultImage, ivec2(gl_GlobalInvocationID.xy), res);
 }

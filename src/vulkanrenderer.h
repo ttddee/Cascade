@@ -129,7 +129,8 @@ private:
     void recordComputeCommandBuffer(
             CsImage& inputImageBack,
             CsImage& outputImage,
-            VkPipeline& pl);
+            VkPipeline& pl,
+            int numShaderPasses = 1);
     void recordComputeCommandBuffer(
             CsImage& inputImageBack,
             CsImage& inputImageFront,
@@ -231,6 +232,7 @@ private:
 
     std::unique_ptr<CsImage>        computeRenderTarget                 = nullptr;
     std::unique_ptr<CsImage>        imageFromDisk                       = nullptr;
+    std::unique_ptr<CsImage>        intermediateImage                   = nullptr;
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;
