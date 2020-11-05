@@ -49,6 +49,7 @@ public:
     ~MainWindow();
 
 private:
+    void exit();
     void saveUserLayout();
     void restoreUserLayout();
     void restoreDefaultLayout();

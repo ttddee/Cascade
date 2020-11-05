@@ -37,7 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    CDockManager::setConfigFlag(CDockManager::OpaqueSplitterResize, true);
+    CDockManager::setConfigFlag(CDockManager::OpaqueSplitterResize, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
                 DockWidgetArea::BottomDockWidgetArea,
                 nodeGraphDockWidget,
                 centralDockArea);
-    ui->menuView->addAction(nodeGraphDockWidget->toggleViewAction());
+
 
     propertiesView = new PropertiesView();
     CDockWidget* propertiesViewDockWidget = new CDockWidget("Properties");
@@ -74,6 +74,13 @@ MainWindow::MainWindow(QWidget *parent)
                 DockWidgetArea::RightDockWidgetArea,
                 propertiesViewDockWidget,
                 centralDockArea);
+
+    //--------- Main Menu
+
+    QAction* exitAction = new QAction("Exit");
+    ui->menuFile->addAction(exitAction);
+
+    ui->menuView->addAction(nodeGraphDockWidget->toggleViewAction());
     ui->menuView->addAction(propertiesViewDockWidget->toggleViewAction());
 
     ui->menuView->addSeparator();
@@ -88,12 +95,16 @@ MainWindow::MainWindow(QWidget *parent)
     restoreDefaultLayoutAction = new QAction("Restore Default Layout");
     ui->menuView->addAction(restoreDefaultLayoutAction);
 
+    connect(exitAction, &QAction::triggered,
+            this, &MainWindow::exit);
     connect(saveLayoutAction, &QAction::triggered,
             this, &MainWindow::saveUserLayout);
     connect(restoreLayoutAction, &QAction::triggered,
             this, &MainWindow::restoreUserLayout);
     connect(restoreDefaultLayoutAction, &QAction::triggered,
             this, &MainWindow::restoreDefaultLayout);
+
+    //--------- End Main Menu
 
     windowManager = &WindowManager::getInstance();
     windowManager->setUp(
@@ -113,6 +124,11 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
+}
+
+void MainWindow::exit()
+{
+    QApplication::quit();
 }
 
 void MainWindow::saveUserLayout()

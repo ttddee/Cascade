@@ -65,7 +65,7 @@ QPushButton {
     background-color: #282d31;
     color: #f1f1f1;
     border: none;
-    border-radius: 3px;
+    border-radius: 2px;
 }
 QPushButton:hover {
     background-color: #626971;
@@ -73,6 +73,10 @@ QPushButton:hover {
 QPushButton:disabled {
     color: #9299a1;
     background-color: #1d2024;
+}
+
+NodeInput, NodeOutput {
+    border-radius: 1px;
 }
 
 QScrollBar:vertical {
@@ -349,7 +353,7 @@ QMessageBox QPushButton {
     padding: 5 30 5 30;
 }
 
-/*Advanced Docking */
+/*-----------Advanced Docking------------*/
 ads--CDockContainerWidget {
         background-color: #181b1e;
 }
@@ -441,4 +445,14 @@ QScrollArea#dockWidgetScrollArea {
                 url(:ads/images/detach-button-disabled.svg) disabled;
         qproperty-iconSize: 16px;
 }
+
+ads--CDockOverlayCross
+{
+        qproperty-iconFrameColor: #f1f1f1;
+        qproperty-iconBackgroundColor: #282d31;
+        qproperty-iconOverlayColor: #9299a1;
+        qproperty-iconArrowColor: #626971;
+        qproperty-iconShadowColor: #181b1e;
+}
+
 
