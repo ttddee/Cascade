@@ -85,15 +85,17 @@ MainWindow::MainWindow(QWidget *parent)
 
     ui->menuView->addSeparator();
 
+    // Disabled for now until this is figured out:
+    // https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/issues/272
     saveLayoutAction = new QAction("Save Window Layout");
-    ui->menuView->addAction(saveLayoutAction);
+    //ui->menuView->addAction(saveLayoutAction);
     restoreLayoutAction = new QAction("Restore Saved Layout");
-    ui->menuView->addAction(restoreLayoutAction);
+    //ui->menuView->addAction(restoreLayoutAction);
 
-    ui->menuView->addSeparator();
+    //ui->menuView->addSeparator();
 
     restoreDefaultLayoutAction = new QAction("Restore Default Layout");
-    ui->menuView->addAction(restoreDefaultLayoutAction);
+    //ui->menuView->addAction(restoreDefaultLayoutAction);
 
     connect(exitAction, &QAction::triggered,
             this, &MainWindow::exit);

@@ -36,9 +36,15 @@
     <layout class="QGridLayout" name="gridLayout">
      <item row="0" column="0">
       <widget class="QLabel" name="label">
-       <property name="maximumSize">
+       <property name="minimumSize">
         <size>
          <width>60</width>
+         <height>0</height>
+        </size>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>120</width>
          <height>16777215</height>
         </size>
        </property>

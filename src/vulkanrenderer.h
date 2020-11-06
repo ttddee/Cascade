@@ -28,6 +28,7 @@
 #include <OpenImageIO/imagebuf.h>
 #include <OpenImageIO/imagebufalgo.h>
 #include <OpenImageIO/color.h>
+#include <OpenColorIO/OpenColorIO.h>
 
 #include "nodedefinitions.h"
 #include "csimage.h"
@@ -101,7 +102,7 @@ private:
     int getDeviceMemorySize();
 
     // Load image
-    bool createTextureFromFile(const QString &path);
+    bool createTextureFromFile(const QString &path, const int colorSpace);
     bool createTextureImage(const QSize &size, VkImage *image, VkDeviceMemory *mem,
                                 VkImageTiling tiling, VkImageUsageFlags usage, uint32_t memIndex);
     bool writeLinearImage(const ImageBuf &img, VkImage image, VkDeviceMemory memory);
@@ -239,6 +240,8 @@ private:
 
     std::vector<float> computePushConstants = { 1.0f };
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
+
+    OCIO::ConstConfigRcPtr ocioConfig;
 
 };
 

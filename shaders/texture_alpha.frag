@@ -13,17 +13,17 @@ void main()
     vec4 pixel = texture(tex, v_texcoord);
 
     // Linear to sRGB conversion
-    for(int i = 0; i < 4; i++)
-    {
-        if(pixel[i] <= thresh)
-        {
-            pixel[i] *= 12.92;
-        }
-        else
-        {
-            pixel[i] = 1.055 * pow(pixel[i], 1 / 2.4) - 0.055;
-        }
-    }
+//    for(int i = 0; i < 4; i++)
+//    {
+//        if(pixel[i] <= thresh)
+//        {
+//            pixel[i] *= 12.92;
+//        }
+//        else
+//        {
+//            pixel[i] = 1.055 * pow(pixel[i], 1 / 2.4) - 0.055;
+//        }
+//    }
 
     fragColor = vec4(pixel.a, pixel.a, pixel.a, pixel.a);
 }

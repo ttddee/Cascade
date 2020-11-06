@@ -104,10 +104,12 @@ linux-g++ {
 
 win32-msvc* {
     INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
+    INCLUDEPATH += ../external/msvc2019/OpenColorIO/include
     INCLUDEPATH += ../../Documents/vcpkg/installed/x64-windows/include
     INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
+    LIBS += -L../external/msvc2019/OpenColorIO/lib -lOpenColorIO
     LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
@@ -116,6 +118,7 @@ win32-msvc* {
     COPIES += dlls
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO_Util.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenColorIO/bin/OpenColorIO.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140_1.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/msvcp140.dll)
@@ -187,6 +190,14 @@ win32-msvc* {
     COPIES += translations
     translations.files += $$files($$DESTDIR/../../external/msvc2019/Qt/translations/*)
     translations.path = $$DESTDIR/translations
+
+    COPIES += ocio
+    ocio.files += $$files($$DESTDIR/../../ocio/config.ocio)
+    ocio.path = $$DESTDIR/ocio
+
+    COPIES += luts
+    luts.files += $$files($$DESTDIR/../../ocio/luts/*)
+    luts.path = $$DESTDIR/ocio/luts
 
     COPIES += license
     license.files += $$files($$DESTDIR/../../LICENSE)

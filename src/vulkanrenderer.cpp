@@ -30,10 +30,9 @@
 
 #include <OpenImageIO/imagebufalgo.h>
 
+
 #include "vulkanwindow.h"
 #include "fileboxentity.h"
-
-using namespace OIIO;
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -90,6 +89,17 @@ void VulkanRenderer::initResources()
 
     createComputeQueue();
     createComputeCommandPool();
+
+    try
+    {
+        const char* file = "ocio/config.ocio";
+        ocioConfig = OCIO::Config::CreateFromFile(file);
+    }
+    catch(OCIO::Exception& exception)
+    {
+        qDebug("OpenColorIO Error: ");
+        qDebug(exception.what());
+    }
 
     emit window->rendererHasBeenCreated();
 }
@@ -470,7 +480,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     return true;
 }
 
-bool VulkanRenderer::createTextureFromFile(const QString &path)
+bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
 {
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
     bool ok = cpuImage->read(0, 0, 0, 3, true, TypeDesc::FLOAT);
@@ -489,6 +499,71 @@ bool VulkanRenderer::createTextureFromFile(const QString &path)
 
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
+
+    // Transform color space
+    //
+    // 0 = sRGB
+    // 1 = Linear
+    // 2 = rec709
+    // 3 = Gamma 1.8
+    // 4 = Gamma 2.2
+    // 5 = Panalog
+    // 6 = REDLog
+    // 7 = ViperLog
+    // 8 = AlexaV3LogC
+    // 9 = PLogLin
+    // 10 = SLog
+    // 11 = Raw
+    // If space is Linear, no conversion necessary
+
+     const char* space;
+
+     switch(colorSpace)
+     {
+         case 0:
+             space = "sRGB";
+             break;
+         case 2:
+             space = "rec709";
+             break;
+         case 3:
+             space = "Gamma1.8";
+             break;
+         case 4:
+             space = "Gamma2.2";
+             break;
+         case 5:
+             space = "Panalog";
+             break;
+         case 6:
+             space = "REDLog";
+             break;
+         case 7:
+             space = "ViperLog";
+             break;
+         case 8:
+             space = "AlexaV3LogC";
+             break;
+         case 9:
+             space = "PLogLin";
+             break;
+         case 10:
+             space = "SLog";
+             break;
+         case 11:
+             space = "raw";
+             break;
+         default:
+             space = "Linear";
+      }
+
+    auto processor = ocioConfig->getProcessor("Linear", space);
+    OCIO::PackedImageDesc img(
+                static_cast<float*>(cpuImage->localpixels()),
+                cpuImage->xmax(),
+                cpuImage->ymax(),
+                4);
+    processor->apply(img);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
@@ -2061,7 +2136,9 @@ void VulkanRenderer::setViewerPushConstants(const QString &s)
 
 void VulkanRenderer::processReadNode(NodeBase *node)
 {
-    QString path = node->getAllPropertyValues();
+    auto parts = node->getAllPropertyValues().split(",");
+    QString path = parts[0];
+    int colorSpace = parts[1].toInt();
 
     if(path != "")
     {
@@ -2070,7 +2147,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         imagePath = path;
 
         // Create texture
-        if (!createTextureFromFile(imagePath))
+        if (!createTextureFromFile(imagePath, colorSpace))
             qFatal("Failed to create texture");
 
         // Update the projection size
