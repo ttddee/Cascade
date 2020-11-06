@@ -1,0 +1,47 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba8) uniform readonly image2D inputImage;
+layout (binding = 1, rgba8) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+        layout(offset = 0) float angle;
+        layout(offset = 4) float strength;
+        layout(offset = 8) float iterations;
+        layout(offset = 12) float gain;
+} pc;
+
+float blurX = pc.strength * cos(radians(pc.angle)) * 10;
+float blurY = pc.strength * sin(radians(pc.angle)) * 10;
+
+float random(vec3 scale, float seed) 
+{
+    return fract(sin(dot(gl_GlobalInvocationID.xyz + seed, scale)) * 8643.5453 + seed);
+}
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec3 rgb = imageLoad(inputImage, pixelCoords).rgb;  
+
+    vec2 direction;
+    direction = vec2(blurX, blurY);
+
+    float noise = random(vec3(543.12341, 74.30434, 13123.4234234), 2.0);
+    vec4 color = vec4(0.0);
+    float ws = 0.0;
+
+    for (float steps = -pc.iterations; steps <= pc.iterations; steps++)
+    {
+        float p = (steps + noise - 0.5) / 16.0;
+        float w = 1.0 - abs(p);
+        ivec2 coords = ivec2(pixelCoords.x + direction.x  * p, pixelCoords.y + direction.y * p);
+        color += imageLoad(inputImage, coords).rgba * w;
+        ws += w;
+    }
+                                    
+    vec4 pixel = vec4(color.rgb / ws * pc.gain, 1.0);
+
+    imageStore(resultImage, pixelCoords, pixel);
+}

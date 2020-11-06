@@ -145,6 +145,7 @@ namespace Cascade
         NODE_TYPE_WRITE,
         NODE_TYPE_INVERT,
         NODE_TYPE_EDGE_DETECT,
+        NODE_TYPE_DIRECTIONAL_BLUR,
         NODE_TYPE_MAX
     };
 
@@ -171,7 +172,8 @@ namespace Cascade
         { NODE_TYPE_UNPREMULT, "Unpremult" },
         { NODE_TYPE_WRITE, "Write" },
         { NODE_TYPE_INVERT, "Invert" },
-        { NODE_TYPE_EDGE_DETECT, "Edge Detect" }
+        { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
+        { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" }
     };
 
     ////////////////////////////////////
@@ -570,6 +572,28 @@ namespace Cascade
         1
     };
 
+    const NodeInitProperties directionalBlurNodeInitProperties =
+    {
+        NODE_TYPE_DIRECTIONAL_BLUR,
+        nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR] },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Angle,0,360,1,0" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,1,100,1,1" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Iterations,1,100,1,10" },
+            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,2.0,0.01,1.0" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/directionalblur_comp.spv",
+        1
+    };
+
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
@@ -647,6 +671,10 @@ namespace Cascade
         else if(t == NODE_TYPE_EDGE_DETECT)
         {
             return edgeDetectNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_DIRECTIONAL_BLUR)
+        {
+            return directionalBlurNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

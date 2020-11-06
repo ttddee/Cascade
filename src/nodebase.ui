@@ -28,17 +28,20 @@
   <widget class="QLabel" name="NodeTitleLabel">
    <property name="geometry">
     <rect>
-     <x>0</x>
+     <x>10</x>
      <y>18</y>
-     <width>121</width>
-     <height>16</height>
+     <width>101</width>
+     <height>41</height>
     </rect>
    </property>
    <property name="text">
     <string>TextLabel</string>
    </property>
    <property name="alignment">
-    <set>Qt::AlignCenter</set>
+    <set>Qt::AlignHCenter|Qt::AlignTop</set>
+   </property>
+   <property name="wordWrap">
+    <bool>true</bool>
    </property>
   </widget>
  </widget>
