@@ -71,7 +71,7 @@ signals:
     void valueChangedDouble(double);
 
 private slots:
-    void handleSliderReleased();
+    void handleSliderValueChanged();
 
 };
 

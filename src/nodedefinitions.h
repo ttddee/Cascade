@@ -91,7 +91,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_FILEBOX,
         UI_ELEMENT_TYPE_COLOR_BUTTON,
         UI_ELEMENT_TYPE_WRITE_PROPERTIES,
-        UI_ELEMENT_TYPE_COMBOBOX
+        UI_ELEMENT_TYPE_COMBOBOX,
+        UI_ELEMENT_TYPE_CHANNEL_SELECT
     };
 
     ////////////////////////////////////
@@ -249,6 +250,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLUR] },
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,0,100,1,3" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,

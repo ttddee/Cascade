@@ -31,6 +31,7 @@
 #include "writepropertiesentity.h"
 #include "spinboxentity.h"
 #include "comboboxentity.h"
+#include "channelselectentity.h"
 
 
 NodeProperties::NodeProperties(
@@ -150,6 +151,15 @@ NodeProperties::NodeProperties(
                 options.push_back(parts[i]);
             }
             item->setOptions(options, parts.last().toInt());
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_CHANNEL_SELECT)
+        {
+            ChannelSelectEntity* item = new ChannelSelectEntity(
+                        UI_ELEMENT_TYPE_CHANNEL_SELECT,
+                        this);
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);

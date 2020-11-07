@@ -8,7 +8,7 @@ CONFIG += c++17
 
 VERSION_MAJOR = 0
 VERSION_MINOR = 1
-VERSION_BUILD = 4
+VERSION_BUILD = 5
 
 DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
            "VERSION_MINOR=$$VERSION_MINOR"\
@@ -21,6 +21,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    src/channelselectentity.cpp \
     src/colorbutton.cpp \
     src/colorbuttonentity.cpp \
     src/comboboxentity.cpp \
@@ -51,6 +52,7 @@ SOURCES += \
     src/writepropertiesentity.cpp
 
 HEADERS += \
+    src/channelselectentity.h \
     src/colorbutton.h \
     src/colorbuttonentity.h \
     src/comboboxentity.h \
@@ -82,6 +84,7 @@ HEADERS += \
     src/writepropertiesentity.h
 
 FORMS += \
+    src/channelselectentity.ui \
     src/colorbuttonentity.ui \
     src/comboboxentity.ui \
     src/fileboxentity.ui \

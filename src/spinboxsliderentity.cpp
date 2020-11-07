@@ -42,18 +42,12 @@ SpinBoxSliderEntity::SpinBoxSliderEntity(UIElementType et, QWidget *parent)
             this, [this]{this->setSpinBoxNoSignal(ui->slider->value());});
     connect(ui->resetButton, &QPushButton::clicked,
             this, &SpinBoxSliderEntity::reset);
-    // Only emit valueChanged on sliderRelease and Spinbox change
-    connect(ui->slider, &QSlider::sliderReleased,
-            this, &SpinBoxSliderEntity::handleSliderReleased);
+    connect(ui->slider, &QSlider::valueChanged,
+            this, &SpinBoxSliderEntity::handleSliderValueChanged);
     connect(ui->spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, &SpinBoxSliderEntity::handleSliderReleased);
+            this, &SpinBoxSliderEntity::handleSliderValueChanged);
     connect(ui->doubleSpinBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-            this, &SpinBoxSliderEntity::handleSliderReleased);
-}
-
-SpinBoxSliderEntity::~SpinBoxSliderEntity()
-{
-    delete ui;
+            this, &SpinBoxSliderEntity::handleSliderValueChanged);
 }
 
 void SpinBoxSliderEntity::makeDouble()
@@ -171,13 +165,17 @@ QString SpinBoxSliderEntity::getValuesAsString()
         return QString::number(currentValue);
 }
 
-void SpinBoxSliderEntity::handleSliderReleased()
+void SpinBoxSliderEntity::handleSliderValueChanged()
 {
-    std::cout << "Slider released." << std::endl;
     if (isDouble)
         emit valueChangedDouble((double)currentValue / 100);
     else
         emit valueChangedInt(currentValue);
+}
+
+SpinBoxSliderEntity::~SpinBoxSliderEntity()
+{
+    delete ui;
 }
 
 

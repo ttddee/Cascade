@@ -242,6 +242,19 @@ QCheckBox::indicator:unchecked:hover {
     color: #f1f1f1;
 }
 
+QCheckBox#redBox::indicator:checked {
+    background-color: #dc4c46;
+}
+QCheckBox#greenBox::indicator:checked {
+    background-color: #9bcf43;
+}
+QCheckBox#blueBox::indicator:checked {
+    background-color: #00b6dd;
+}
+QCheckBox#alphaBox::indicator:checked {
+    background-color: #f1f1f1;
+}
+
 /* NodeInput */
 QPushButton#Front {
     background-color: #dc4c46;
