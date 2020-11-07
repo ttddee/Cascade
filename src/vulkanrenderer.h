@@ -154,8 +154,8 @@ private:
 
     uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
-    VkDeviceMemory bufMem = VK_NULL_HANDLE;
-    VkBuffer buf = VK_NULL_HANDLE;
+    VkBuffer vertexBuffer = VK_NULL_HANDLE;
+    VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
     VkDescriptorPool descriptorPool = VK_NULL_HANDLE;

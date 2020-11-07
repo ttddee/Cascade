@@ -4,49 +4,11 @@ layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
 layout (binding = 1, rgba32f) uniform image2D resultImage;
 
-float linThresh = 0.0404482362771082;
-
 void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
     vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;  
-
-    if (rgba.r <= linThresh)
-    {
-        rgba.r /= 12.92;
-    }
-    else
-    {
-        rgba.r = pow(((rgba.r + 0.055) / 1.055), 2.4);
-    }
-
-    if (rgba.g <= linThresh)
-    {
-        rgba.g /= 12.92;
-    }
-    else
-    {
-        rgba.g = pow(((rgba.g + 0.055) / 1.055), 2.4);
-    }
-
-    if (rgba.b <= linThresh)
-    {
-        rgba.b /= 12.92;
-    }
-    else
-    {
-        rgba.b = pow(((rgba.b + 0.055) / 1.055), 2.4);
-    }
-
-    if (rgba.a <= linThresh)
-    {
-        rgba.a /= 12.92;
-    }
-    else
-    {
-        rgba.a = pow(((rgba.a + 0.055) / 1.055), 2.4);
-    }
 
     imageStore(resultImage, pixelCoords, rgba);
 }

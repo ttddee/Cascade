@@ -103,6 +103,7 @@ linux-g++ {
 }
 
 win32-msvc* {
+    INCLUDEPATH += ../external/msvc2019/Other/include
     INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
     INCLUDEPATH += ../external/msvc2019/OpenColorIO/include
     INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
