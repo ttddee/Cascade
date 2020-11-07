@@ -10,6 +10,8 @@ This is still an early prototype and not ready for production use.
 
 Cascade is free software. If you want to try it out, the latest binaries are [here](https://github.com/ttddee/Cascade/releases).
 
+If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM).
+
 ## Features
 
 - Node-based non-destructive editing workflow
