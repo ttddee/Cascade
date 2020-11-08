@@ -897,7 +897,6 @@ void VulkanRenderer::createComputePipelineLayout()
 {
     VkPushConstantRange pushConstantRange;
     pushConstantRange.stageFlags                    = VK_SHADER_STAGE_COMPUTE_BIT;
-    // Compute constants come after fragment constants
     pushConstantRange.offset                        = 0;
     pushConstantRange.size                          = sizeof(float) * 16;
 
@@ -1423,16 +1422,6 @@ void VulkanRenderer::recordComputeCommandBuffer(
 {
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
-    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-
-    VkResult err = devFuncs->vkBeginCommandBuffer(
-                compute.commandBufferOneInput,
-                &cmdBufferBeginInfo);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to begin command buffer: %d", err);
-    VkCommandBuffer cb = compute.commandBufferOneInput;
-
     VkImage* targetImage;
 
     targetImage = &outputImage.getImage();
@@ -1451,6 +1440,16 @@ void VulkanRenderer::recordComputeCommandBuffer(
 
         updateComputeDescriptors(inputImageBack, *intermediateImage);
     }
+
+    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferOneInput,
+                &cmdBufferBeginInfo);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to begin command buffer: %d", err);
+    VkCommandBuffer cb = compute.commandBufferOneInput;
 
     {
          //Make the barriers for the resources
@@ -1503,7 +1502,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 computePipelineLayoutOneInput,
                 VK_SHADER_STAGE_COMPUTE_BIT,
                 0,
-                sizeof(computePushConstants),
+                computePushConstants.size() * 4,
                 computePushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBufferOneInput,
@@ -1573,7 +1572,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
                     computePipelineLayoutOneInput,
                     VK_SHADER_STAGE_COMPUTE_BIT,
                     0,
-                    sizeof(computePushConstants),
+                    computePushConstants.size() * 4,
                     computePushConstants.data());
 
         devFuncs->vkCmdDispatch(
@@ -1688,8 +1687,6 @@ void VulkanRenderer::recordComputeCommandBuffer(
                                &barrier[0]);
     }
 
-    qDebug("Adding push constants.");
-
     // Push constants for fragment stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferTwoInputs,
@@ -1704,7 +1701,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 computePipelineLayoutTwoInputs,
                 VK_SHADER_STAGE_COMPUTE_BIT,
                 0,
-                sizeof(computePushConstants),
+                computePushConstants.size() * 4,
                 computePushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBufferTwoInputs,

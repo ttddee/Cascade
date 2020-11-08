@@ -4,13 +4,35 @@ layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
 layout (binding = 1, rgba32f) uniform image2D resultImage;
 
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float bRed;
+    layout(offset = 4) float bGreen;
+    layout(offset = 8) float bBlue;
+    layout(offset = 12) float bAlpha;
+} pc;
+
 void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
     vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;  
 
-    rgba = 1.0 - rgba;
+    if (pc.bRed > 0.0)
+    {
+        rgba.r = 1.0 - rgba.r;
+    }
+    if (pc.bGreen > 0.0)
+    {
+        rgba.g = 1.0 - rgba.g;
+    }
+    if (pc.bBlue > 0.0)
+    {
+        rgba.b = 1.0 - rgba.b;
+    }
+    if (pc.bAlpha > 0.0)
+    {
+        rgba.a = 1.0 - rgba.a;
+    }
 
     imageStore(resultImage, pixelCoords, rgba);
 }

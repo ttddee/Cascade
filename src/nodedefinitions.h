@@ -329,6 +329,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHARPEN] },
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Amount,0,100,1,1" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
@@ -545,7 +546,8 @@ namespace Cascade
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] },
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -583,6 +585,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR] },
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Angle,0,360,1,0" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Strength,1,100,1,1" },
             { UI_ELEMENT_TYPE_SLIDERSPIN_INT, "Iterations,1,100,1,10" },
