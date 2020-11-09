@@ -51,5 +51,6 @@
         <file alias="/ads/images/tabs-menu-button.svg">design/advanceddocking/tabs-menu-button.svg</file>
         <file alias="/ads/images/close-button.svg">design/advanceddocking/close-button.svg</file>
         <file>shaders/directionalblur_comp.spv</file>
+        <file>shaders/channelcopy_comp.spv</file>
     </qresource>
 </RCC>

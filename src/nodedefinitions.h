@@ -115,6 +115,7 @@ namespace Cascade
         NODE_CATEGORY_FILTER,
         NODE_CATEGORY_MERGE,
         NODE_CATEGORY_TRANSFORM,
+        NODE_CATEGORY_CHANNEL,
         NODE_CATEGORY_MAX
     };
 
@@ -129,6 +130,7 @@ namespace Cascade
         { NODE_CATEGORY_FILTER, "Filter" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
+        { NODE_CATEGORY_CHANNEL, "Channel" },
     };
 
     ////////////////////////////////////
@@ -156,6 +158,7 @@ namespace Cascade
         NODE_TYPE_INVERT,
         NODE_TYPE_EDGE_DETECT,
         NODE_TYPE_DIRECTIONAL_BLUR,
+        NODE_TYPE_CHANNEL_COPY,
         NODE_TYPE_MAX
     };
 
@@ -183,7 +186,8 @@ namespace Cascade
         { NODE_TYPE_WRITE, "Write" },
         { NODE_TYPE_INVERT, "Invert" },
         { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
-        { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" }
+        { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
+        { NODE_TYPE_CHANNEL_COPY, "Channel Copy" }
     };
 
     ////////////////////////////////////
@@ -385,7 +389,7 @@ namespace Cascade
     {
         NODE_TYPE_SHUFFLE,
         nodeStrings[NODE_TYPE_SHUFFLE],
-        NODE_CATEGORY_COLOR,
+        NODE_CATEGORY_CHANNEL,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
@@ -630,6 +634,30 @@ namespace Cascade
         1
     };
 
+    const NodeInitProperties channelCopyNodeInitProperties =
+    {
+        NODE_TYPE_CHANNEL_COPY,
+        nodeStrings[NODE_TYPE_CHANNEL_COPY],
+        NODE_CATEGORY_CHANNEL,
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_RGB_FRONT},
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
+        },
+        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/channelcopy_comp.spv",
+        1
+    };
+
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
@@ -711,6 +739,10 @@ namespace Cascade
         else if(t == NODE_TYPE_DIRECTIONAL_BLUR)
         {
             return directionalBlurNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_CHANNEL_COPY)
+        {
+            return channelCopyNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

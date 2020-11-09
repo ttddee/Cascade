@@ -1,0 +1,35 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(push_constant) uniform pushConstants {
+    layout(offset = 0) float red;
+    layout(offset = 4) float green;
+    layout(offset = 8) float blue;
+    layout(offset = 8) float alpha;
+} pc;
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 back = imageLoad(inputImageBack, pixelCoords).rgba;
+    vec4 front = imageLoad(inputImageFront, pixelCoords).rgba;
+
+    float values[8];
+    values[0] = back.r;
+    values[1] = back.g;
+    values[2] = back.b;
+    values[3] = back.a;
+    values[4] = front.r;
+    values[5] = front.g;
+    values[6] = front.b;
+    values[7] = front.a;
+
+    vec4 rgba = vec4(values[int(pc.red)], values[int(pc.green)], values[int(pc.blue)], values[int(pc.alpha)]);
+
+    imageStore(resultImage, pixelCoords, rgba);
+}

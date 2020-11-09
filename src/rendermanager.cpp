@@ -187,8 +187,6 @@ void RenderManager::renderNode(NodeBase *node)
     }
     else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
-        std::cout << "Rendering node" << std::endl;
-
         std::shared_ptr<CsImage> inputImageBack = nullptr;
         std::shared_ptr<CsImage> inputImageFront = nullptr;
 
