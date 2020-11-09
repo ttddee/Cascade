@@ -2,6 +2,8 @@
 
 ![Cascade](screenshots/csc-screen01.jpg)
 
+![Cascade](screenshots/csc-screen02.jpg)
+
 Cascade is a node-based image editor with GPU-acceleration.
 
 This is still an early prototype and not ready for production use.
