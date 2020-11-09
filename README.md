@@ -49,3 +49,5 @@ The easiest way is to open the project with QtCreator and build from there with 
 ### Windows
 
 On Windows it can be a little bit tricky to get the dependencies built. [Here](https://drive.marvao.net/d/f/585884087212880337) is a dependency package that should get you going. Unzip and place into the root of the project.
+
+All the binaries are built with MSVC2019.
