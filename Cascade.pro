@@ -104,7 +104,11 @@ else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
 linux-g++ {
+    INCLUDEPATH += ../Qt-Advanced-Docking-System/src
+
     LIBS += -L /usr/lib -lOpenImageIO
+    LIBS += -L /usr/lib -lOpenColorIO
+    LIBS += -L /usr/lib -lqtadvanceddocking
 }
 
 win32-msvc* {

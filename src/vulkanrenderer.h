@@ -37,6 +37,12 @@
 
 using namespace Cascade;
 using namespace OIIO;
+#ifdef Q_OS_WIN
+using namespace OIIO;
+#endif
+#ifdef Q_OS_LINUX
+namespace OCIO = OpenColorIO;
+#endif
 
 class VulkanWindow;
 
