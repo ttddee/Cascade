@@ -100,8 +100,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
-            currentViewerMode = VIEWER_MODE_BACK_ALPHA;
-            viewerStatusBar->setViewerModeText("Back Alpha");
+            currentViewerMode = VIEWER_MODE_INPUT_ALPHA;
+            viewerStatusBar->setViewerModeText("Input Mask");
 
             vulkanWindow->setViewerMode(currentViewerMode);
 

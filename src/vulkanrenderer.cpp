@@ -1377,6 +1377,7 @@ bool VulkanRenderer::writeLinearImage(const ImageBuf &img, VkImage image, VkDevi
     {
         pad = 4;
     }
+
     for (int y = 0; y < img.yend(); ++y)
     {
         memcpy(p, pixels, lineWidth);

@@ -64,11 +64,20 @@ namespace Cascade
     };
 
     ////////////////////////////////////
-    // Alpha Traits
+    // Alpha Input Traits
+    ////////////////////////////////////
+    enum AlphaInputTrait
+    {
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    };
+
+    ////////////////////////////////////
+    // Alpha Output Traits
     ////////////////////////////////////
     enum AlphaOutputTrait
     {
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR
     };
 
     ////////////////////////////////////
@@ -190,6 +199,7 @@ namespace Cascade
         std::vector<std::pair<UIElementType, QString>> uiElements;
         FrontInputTrait frontInputTrait;
         BackInputTrait backInputTrait;
+        AlphaInputTrait alphaInputTrait;
         AlphaOutputTrait alphaOutputTrait;
         RGBOutputTrait rgbOutputTrait;
         QString shaderPath;
@@ -215,7 +225,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/crop_comp.spv",
         1
@@ -235,7 +246,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_ALWAYS_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/read_comp.spv",
         1
@@ -255,7 +267,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/blur_comp.spv",
         2
@@ -276,7 +289,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/color_comp.spv",
         1
@@ -295,7 +309,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/resize_comp.spv",
         1
@@ -314,7 +329,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/rotate_comp.spv",
         1
@@ -334,7 +350,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/sharpen_comp.spv",
         1
@@ -357,7 +374,8 @@ namespace Cascade
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/merge_comp.spv",
         1
@@ -379,7 +397,8 @@ namespace Cascade
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/shuffle_comp.spv",
         1
@@ -398,7 +417,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/pixelate_comp.spv",
         1
@@ -419,7 +439,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/solarize_comp.spv",
         1
@@ -438,7 +459,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/constant_comp.spv",
         1
@@ -458,7 +480,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noise_comp.spv",
         1
@@ -477,7 +500,8 @@ namespace Cascade
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/difference_comp.spv",
         1
@@ -495,7 +519,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/premult_comp.spv",
         1
@@ -513,7 +538,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/unpremult_comp.spv",
         1
@@ -533,7 +559,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv",
         1
@@ -552,7 +579,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/invert_comp.spv",
         1
@@ -571,7 +599,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/sobel_comp.spv",
         1
@@ -594,7 +623,8 @@ namespace Cascade
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/directionalblur_comp.spv",
         1

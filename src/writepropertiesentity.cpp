@@ -105,12 +105,12 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
 {
     if (folder != "")
     {
-        emit requestFileSave(ui->fileNameLabel->text());
+        emit requestFileSave(folder + "/" + ui->fileNameLabel->text());
     }
     else
     {
         QMessageBox messageBox;
-        messageBox.information(0,"No folder set","Please select a folder.");
+        messageBox.information(0,"No folder set", "Please select a folder.");
     }
 }
 

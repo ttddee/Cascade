@@ -20,6 +20,8 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
+#QMAKE_CXXFLAGS += -openmp
+
 SOURCES += \
     src/channelselectentity.cpp \
     src/colorbutton.cpp \

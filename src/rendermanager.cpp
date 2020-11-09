@@ -82,15 +82,15 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(nodeToDisplay);
         }
     }
-    else if (viewerMode == VIEWER_MODE_BACK_ALPHA)
+    else if (viewerMode == VIEWER_MODE_INPUT_ALPHA)
     {
-        if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
+        if (props.alphaInputTrait == ALPHA_INPUT_ALWAYS_CLEAR)
         {
             renderer->doClearScreen();
         }
-        else if (props.backInputTrait == BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR)
+        else if (props.alphaInputTrait == ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            nodeToDisplay = node->getUpstreamNodeBack();
+            nodeToDisplay = node->getUpstreamNodeFront();
             renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
             displayNode(nodeToDisplay);
         }

@@ -365,7 +365,7 @@ void NodeBase::paintEvent(QPaintEvent *event)
         {
             painter.setPen(backViewedColorPen);
         }
-        else if (mode == VIEWER_MODE_BACK_ALPHA)
+        else if (mode == VIEWER_MODE_INPUT_ALPHA)
         {
             painter.setPen(alphaViewedColorPen);
         }
