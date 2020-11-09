@@ -623,8 +623,8 @@ void VulkanRenderer::transformColorSpace(const QString& from, const QString& to,
 
     OCIO::PackedImageDesc desc(
                 static_cast<float*>(image.localpixels()),
-                cpuImage->xend(),
-                cpuImage->yend(),
+                image.xend(),
+                image.yend(),
                 4);
     processor->apply(desc);
 }
@@ -1368,13 +1368,20 @@ bool VulkanRenderer::writeLinearImage(const ImageBuf &img, VkImage image, VkDevi
         return false;
     }
 
+    // TODO: Parallelize this
     float* pixels = (float*)img.localpixels();
     int lineWidth = img.xend() * 16; // 4 channels * 4 bytes
+    // TODO: Why is this??????
+    int pad = 0;
+    if (img.xend() % 2 != 0)
+    {
+        pad = 4;
+    }
     for (int y = 0; y < img.yend(); ++y)
     {
         memcpy(p, pixels, lineWidth);
         pixels += img.xend() * 4;
-        p += img.xend() * 4;
+        p += img.xend() * 4 + pad;
     }
 
     devFuncs->vkUnmapMemory(device, memory);
@@ -1928,13 +1935,14 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
         success = false;
     }
 
-    int width = outputImageSize.width();
-    int height = outputImageSize.height();
+    int width = inputImage.getWidth();
+    int height = inputImage.getHeight();
     int numValues = width * height * 4;
 
     float* output = new float[numValues];
     float* pOutput = &output[0];
 
+    //TODO: Parallelize this
     for (int y = 0; y < numValues; ++y)
     {
         *pOutput = *pInput;
@@ -1949,6 +1957,12 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
+
+    if (!success)
+    {
+        qDebug("Problem saving image.");
+        qDebug(saveImage->geterror().c_str());
+    }
 
     delete[] output;
 
