@@ -33,12 +33,19 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
 
     ui->fileNameEdit->setText(this->fileName);
 
+    foreach(auto& t, filetypes)
+    {
+        ui->fileTypeBox->addItem(t);
+    }
+
     connect(ui->fileNameEdit, &QLineEdit::textChanged,
             this, &WritePropertiesEntity::handleFileNametextChanged);
     connect(ui->setFolderButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSetFolderButtonClicked);
     connect(ui->saveImageButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSaveFileButtonClicked);
+    connect(ui->fileTypeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &WritePropertiesEntity::updateFileNameLabel);
 
 #ifdef QT_DEBUG
     setFolder("/tmp");
@@ -73,7 +80,7 @@ void WritePropertiesEntity::setFolder(const QString& f)
 
 void WritePropertiesEntity::updateFileNameLabel()
 {
-    QString text = folder + "/" + fileName + ".jpg";
+    QString text = fileName + "." + ui->fileTypeBox->currentText();
     ui->fileNameLabel->setText(text);
 }
 

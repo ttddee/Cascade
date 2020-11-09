@@ -51,6 +51,7 @@ private:
 
     QString fileName = "unnamed";
     QString folder = "";
+    QStringList filetypes = { "jpg", "png", "tga", "tif" };
 
 signals:
     void requestFileSave(const QString& path);
