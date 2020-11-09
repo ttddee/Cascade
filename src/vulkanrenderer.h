@@ -72,7 +72,7 @@ public:
     void doClearScreen();
     void setDisplayMode(DisplayMode mode);
 
-    bool saveImageToDisk(CsImage& inputImage, const QString& path);
+    bool saveImageToDisk(CsImage& inputImage, const QString& path, const int colorSpace);
 
     void setViewerPushConstants(const QString& s);
 
@@ -147,6 +147,9 @@ private:
     void createRenderPass();
 
     void updateVertexData(int, int);
+
+    QString lookupColorSpace(const int i);
+    void transformColorSpace(const QString& from, const QString& to, ImageBuf& image);
 
     void logicalDeviceLost() override;
 

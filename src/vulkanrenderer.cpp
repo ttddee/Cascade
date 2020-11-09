@@ -502,74 +502,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    // Transform color space
-    //
-    // 0 = sRGB
-    // 1 = Linear
-    // 2 = rec709
-    // 3 = Gamma 1.8
-    // 4 = Gamma 2.2
-    // 5 = Panalog
-    // 6 = REDLog
-    // 7 = ViperLog
-    // 8 = AlexaV3LogC
-    // 9 = PLogLin
-    // 10 = SLog
-    // 11 = Raw
-    // If space is Linear, no conversion necessary
-
-    const char* space;
-
-    switch(colorSpace)
-    {
-        case 0:
-            space = "sRGB";
-            break;
-        case 2:
-            space = "rec709";
-            break;
-        case 3:
-            space = "Gamma1.8";
-            break;
-        case 4:
-            space = "Gamma2.2";
-            break;
-        case 5:
-            space = "Panalog";
-            break;
-        case 6:
-            space = "REDLog";
-            break;
-        case 7:
-            space = "ViperLog";
-            break;
-        case 8:
-            space = "AlexaV3LogC";
-            break;
-        case 9:
-            space = "PLogLin";
-            break;
-        case 10:
-            space = "SLog";
-            break;
-        case 11:
-            space = "raw";
-            break;
-        default:
-            space = "linear";
-    }
-
-    qDebug("Converting to linear color space from: ");
-    qDebug(space);
-
-    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(space, "linear");
-
-    OCIO::PackedImageDesc img(
-                static_cast<float*>(cpuImage->localpixels()),
-                cpuImage->xend(),
-                cpuImage->yend(),
-                4);
-    processor->apply(img);
+    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
@@ -636,6 +569,64 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     loadImageSize = imageSize;
 
     return true;
+}
+
+QString VulkanRenderer::lookupColorSpace(const int i)
+{
+    // 0 = sRGB
+    // 1 = Linear
+    // 2 = rec709
+    // 3 = Gamma 1.8
+    // 4 = Gamma 2.2
+    // 5 = Panalog
+    // 6 = REDLog
+    // 7 = ViperLog
+    // 8 = AlexaV3LogC
+    // 9 = PLogLin
+    // 10 = SLog
+    // 11 = Raw
+    // If space is Linear, no conversion necessary
+
+    switch(i)
+    {
+        case 0:
+            return "sRGB";
+        case 2:
+            return "rec709";
+        case 3:
+            return "Gamma1.8";
+        case 4:
+            return "Gamma2.2";
+        case 5:
+            return "Panalog";
+        case 6:
+            return "REDLog";
+        case 7:
+            return "ViperLog";
+        case 8:
+            return "AlexaV3LogC";
+        case 9:
+            return "PLogLin";
+        case 10:
+            return "SLog";
+        case 11:
+            return "raw";
+        default:
+            return "linear";
+    }
+}
+
+void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
+{
+    // TODO: Parallelize this
+    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
+
+    OCIO::PackedImageDesc desc(
+                static_cast<float*>(image.localpixels()),
+                cpuImage->xend(),
+                cpuImage->yend(),
+                4);
+    processor->apply(desc);
 }
 
 void VulkanRenderer::createComputeDescriptors()
@@ -1914,7 +1905,7 @@ void VulkanRenderer::setDisplayMode(DisplayMode mode)
     displayMode = mode;
 }
 
-bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
+bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, const int colorSpace)
 {
     bool success = true;
 
@@ -1955,15 +1946,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path)
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    // Convert linear to sRGB
-    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor("linear", "sRGB");
-
-    OCIO::PackedImageDesc img(
-                static_cast<float*>(saveImage->localpixels()),
-                saveImage->xend(),
-                saveImage->yend(),
-                4);
-    processor->apply(img);
+    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
 

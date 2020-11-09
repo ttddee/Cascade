@@ -114,7 +114,9 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
         auto image = upstream->cachedImage;
         if(image)
         {
-            if(renderer->saveImageToDisk(*image, path))
+            auto parts = node->getAllPropertyValues().split(",");
+
+            if(renderer->saveImageToDisk(*image, path, parts.last().toInt()))
             {
                 QMessageBox messageBox;
                 messageBox.information(0,"Success","File saved successfully.");
