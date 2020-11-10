@@ -89,6 +89,22 @@ void VulkanRenderer::initResources()
     createComputeQueue();
     createComputeCommandPool();
 
+    VkDeviceSize settingsBufferSize = sizeof (float) * 128;
+    createBuffer(settingsBuffer, settingsBufferMemory, settingsBufferSize);
+
+    // Map settings buffer permanently
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                settingsBufferMemory,
+                0,
+                VK_WHOLE_SIZE,
+                0,
+                reinterpret_cast<void **>(&pSettingsBuffer));
+    if (err != VK_SUCCESS)
+    {
+        qWarning("Failed to map memory for settings buffer: %d", err);
+    }
+
     try
     {
         const char* file = "ocio/config.ocio";
@@ -197,7 +213,7 @@ void VulkanRenderer::createDescriptorPool()
 {
     // Create descriptor pool
     VkDescriptorPoolSize descPoolSizes[4] = {
-        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1 * uint32_t(concurrentFrameCount) },
+        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 3 * uint32_t(concurrentFrameCount) },
         { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
         { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
         { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,          6 * uint32_t(concurrentFrameCount) }
@@ -266,7 +282,7 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     VkPushConstantRange pushConstantRange;
     pushConstantRange.stageFlags                    = VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset                        = 0;
-    pushConstantRange.size                          = 12;
+    pushConstantRange.size                          = sizeof(float) * 3;
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo;
     memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
@@ -283,6 +299,55 @@ void VulkanRenderer::createGraphicsPipelineLayout()
                 &graphicsPipelineLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create pipeline layout: %d", err);
+}
+
+void VulkanRenderer::createBuffer(
+        VkBuffer& buffer,
+        VkDeviceMemory& bufferMemory,
+        VkDeviceSize& size)
+{
+    VkBufferCreateInfo bufferInfo{};
+    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+    bufferInfo.size = size;
+    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+    if (devFuncs->vkCreateBuffer(device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to create buffer!");
+    }
+
+    VkMemoryRequirements memRequirements;
+    devFuncs->vkGetBufferMemoryRequirements(device, buffer, &memRequirements);
+
+    VkMemoryAllocateInfo allocInfo{};
+    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+    allocInfo.allocationSize = memRequirements.size;
+    allocInfo.memoryTypeIndex = findMemoryType(
+                memRequirements.memoryTypeBits,
+                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
+                VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
+
+    if (devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, &bufferMemory) != VK_SUCCESS)
+    {
+        throw std::runtime_error("Failed to allocate buffer memory!");
+    }
+
+    devFuncs->vkBindBufferMemory(device, buffer, bufferMemory, 0);
+}
+
+void VulkanRenderer::fillSettingsBuffer(NodeBase* node)
+{
+    auto props = node->getAllPropertyValues();
+    auto parts = props.split(",");
+
+    float* pBuffer = pSettingsBuffer;
+
+    foreach(auto& item, parts)
+    {
+        *pBuffer = item.toFloat();
+        pBuffer++;
+    }
 }
 
 void VulkanRenderer::createGraphicsPipeline(
@@ -633,9 +698,7 @@ void VulkanRenderer::createComputeDescriptors()
 {
     if (computeDescriptorSetLayoutOneInput == VK_NULL_HANDLE)
     {
-        // Define the layout of the input of the shader.
-        // 1 image to read, 1 image to write
-        VkDescriptorSetLayoutBinding bindings[2]= {};
+        VkDescriptorSetLayoutBinding bindings[3]= {};
 
         bindings[0].binding         = 0;
         bindings[0].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
@@ -647,10 +710,15 @@ void VulkanRenderer::createComputeDescriptors()
         bindings[1].descriptorCount = 1;
         bindings[1].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
 
+        bindings[2].binding         = 2;
+        bindings[2].descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[2].descriptorCount = 1;
+        bindings[2].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo {};
         descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         descriptorSetLayoutCreateInfo.pBindings = bindings;
-        descriptorSetLayoutCreateInfo.bindingCount = 2;
+        descriptorSetLayoutCreateInfo.bindingCount = 3;
 
         //Create the layout, store it to share between shaders
         VkResult err = devFuncs->vkCreateDescriptorSetLayout(
@@ -666,7 +734,7 @@ void VulkanRenderer::createComputeDescriptors()
     {
         // Define the layout of the input of the shader.
         // 2 images to read, 1 image to write
-        VkDescriptorSetLayoutBinding bindings[3]= {};
+        VkDescriptorSetLayoutBinding bindings[4]= {};
 
         bindings[0].binding         = 0;
         bindings[0].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
@@ -683,10 +751,15 @@ void VulkanRenderer::createComputeDescriptors()
         bindings[2].descriptorCount = 1;
         bindings[2].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
 
+        bindings[3].binding         = 3;
+        bindings[3].descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        bindings[3].descriptorCount = 1;
+        bindings[3].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+
         VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo {};
         descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
         descriptorSetLayoutCreateInfo.pBindings = bindings;
-        descriptorSetLayoutCreateInfo.bindingCount = 3;
+        descriptorSetLayoutCreateInfo.bindingCount = 4;
 
         //Create the layout, store it to share between shaders
         VkResult err = devFuncs->vkCreateDescriptorSetLayout(
@@ -793,7 +866,12 @@ void VulkanRenderer::updateComputeDescriptors(
         sourceInfo.imageView                  = inputImageBack.getImageView();
         sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkWriteDescriptorSet descWrite[2]= {};
+        VkDescriptorBufferInfo settingsBufferInfo = { };
+        settingsBufferInfo.buffer                 = settingsBuffer;
+        settingsBufferInfo.offset                 = 0;
+        settingsBufferInfo.range                  = VK_WHOLE_SIZE;
+
+        VkWriteDescriptorSet descWrite[3]= {};
 
         descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descWrite[0].dstSet                    = computeDescriptorSetOneInput;
@@ -808,7 +886,15 @@ void VulkanRenderer::updateComputeDescriptors(
         descWrite[1].descriptorCount           = 1;
         descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
         descWrite[1].pImageInfo                = &destinationInfo;
-        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+
+        descWrite[2].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[2].dstSet                    = computeDescriptorSetOneInput;
+        descWrite[2].dstBinding                = 2;
+        descWrite[2].descriptorCount           = 1;
+        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descWrite[2].pBufferInfo               = &settingsBufferInfo;
+
+        devFuncs->vkUpdateDescriptorSets(device, 3, descWrite, 0, nullptr);
     }
 }
 
@@ -858,29 +944,42 @@ void VulkanRenderer::updateComputeDescriptors(
         destinationInfo.imageView                 = outputImage.getImageView();
         destinationInfo.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkWriteDescriptorSet descWrite[3]= {};
+        VkDescriptorBufferInfo settingsBufferInfo = { };
+        settingsBufferInfo.buffer                 = settingsBuffer;
+        settingsBufferInfo.offset                 = 0;
+        settingsBufferInfo.range                  = VK_WHOLE_SIZE;
+
+        VkWriteDescriptorSet descWrite[4]= {};
 
         descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descWrite[0].dstSet                    = computeDescriptorSetTwoInputs;
         descWrite[0].dstBinding                = 0;
         descWrite[0].descriptorCount           = 1;
-        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
         descWrite[0].pImageInfo                = &sourceInfoBack;
 
         descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descWrite[1].dstSet                    = computeDescriptorSetTwoInputs;
         descWrite[1].dstBinding                = 1;
         descWrite[1].descriptorCount           = 1;
-        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
         descWrite[1].pImageInfo                = &sourceInfoFront;
 
         descWrite[2].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
         descWrite[2].dstSet                    = computeDescriptorSetTwoInputs;
         descWrite[2].dstBinding                = 2;
         descWrite[2].descriptorCount           = 1;
-        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
         descWrite[2].pImageInfo                = &destinationInfo;
-        devFuncs->vkUpdateDescriptorSets(device, 3, descWrite, 0, nullptr);
+
+        descWrite[3].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        descWrite[3].dstSet                    = computeDescriptorSetTwoInputs;
+        descWrite[3].dstBinding                = 3;
+        descWrite[3].descriptorCount           = 1;
+        descWrite[3].descriptorType            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        descWrite[3].pBufferInfo               = &settingsBufferInfo;
+
+        devFuncs->vkUpdateDescriptorSets(device, 4, descWrite, 0, nullptr);
     }
 }
 
@@ -892,7 +991,6 @@ void VulkanRenderer::createComputePipelineLayout()
     pushConstantRange.size                          = sizeof(float) * 16;
 
     {
-        //Now create the layout info
         VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
         pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount               = 1;
@@ -911,7 +1009,6 @@ void VulkanRenderer::createComputePipelineLayout()
     }
 
     {
-        //Now create the layout info
         VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
         pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount               = 1;
@@ -1856,33 +1953,7 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
 
     VkDeviceSize bufferSize = outputImageSize.width() * outputImageSize.height() * 16; // 4 channels * 4 bytes
 
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = bufferSize;
-    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
-
-    if (devFuncs->vkCreateBuffer(device, &bufferInfo, nullptr, &outputStagingBuffer) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create buffer!");
-    }
-
-    VkMemoryRequirements memRequirements;
-    devFuncs->vkGetBufferMemoryRequirements(device, outputStagingBuffer, &memRequirements);
-
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = findMemoryType(
-                memRequirements.memoryTypeBits,
-                VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT);
-
-    if (devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, &outputStagingBufferMemory) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to allocate buffer memory!");
-    }
-
-    devFuncs->vkBindBufferMemory(device, outputStagingBuffer, outputStagingBufferMemory, 0);
+    createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
 
     {
         VkImageMemoryBarrier imageBarrier = {};
@@ -2353,6 +2424,8 @@ void VulkanRenderer::processNode(
 
     computePushConstants = unpackPushConstants(node->getAllPropertyValues());
 
+    fillSettingsBuffer(node);
+
     if (currentRenderSize != targetSize)
     {
         updateVertexData(targetSize.width(), targetSize.height());
@@ -2496,6 +2569,8 @@ void VulkanRenderer::releaseResources()
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
+    devFuncs->vkUnmapMemory(device, settingsBufferMemory);
+
     if (queryPool) {
         devFuncs->vkDestroyQueryPool(device, queryPool, nullptr);
         queryPool = VK_NULL_HANDLE;
@@ -2564,6 +2639,16 @@ void VulkanRenderer::releaseResources()
     if (vertexBufferMemory) {
         devFuncs->vkFreeMemory(device, vertexBufferMemory, nullptr);
         vertexBufferMemory = VK_NULL_HANDLE;
+    }
+
+    if (settingsBuffer) {
+        devFuncs->vkDestroyBuffer(device, settingsBuffer, nullptr);
+        settingsBuffer = VK_NULL_HANDLE;
+    }
+
+    if (settingsBufferMemory) {
+        devFuncs->vkFreeMemory(device, settingsBufferMemory, nullptr);
+        settingsBufferMemory = VK_NULL_HANDLE;
     }
 
     if (computeDescriptorSetLayoutOneInput) {

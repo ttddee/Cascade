@@ -54,6 +54,7 @@ SOURCES += \
     src/writepropertiesentity.cpp
 
 HEADERS += \
+    src/benchmark.h \
     src/channelselectentity.h \
     src/colorbutton.h \
     src/colorbuttonentity.h \

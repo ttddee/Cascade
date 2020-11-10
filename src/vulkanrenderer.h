@@ -162,6 +162,13 @@ private:
     QString lookupColorSpace(const int i);
     void transformColorSpace(const QString& from, const QString& to, ImageBuf& image);
 
+    void createBuffer(
+            VkBuffer& buffer,
+            VkDeviceMemory& bufferMemory,
+            VkDeviceSize& size);
+
+    void fillSettingsBuffer(NodeBase* node);
+
     void logicalDeviceLost() override;
 
     std::vector<float> unpackPushConstants(const QString s);
@@ -254,6 +261,10 @@ private:
 
     std::vector<float> computePushConstants = { 1.0f };
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
+
+    VkBuffer settingsBuffer;
+    VkDeviceMemory settingsBufferMemory;
+    float* pSettingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
 

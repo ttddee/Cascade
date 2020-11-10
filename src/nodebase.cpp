@@ -76,6 +76,10 @@ void NodeBase::createInputs(const NodeInitProperties &props)
         {
             this->rgbaFrontIn = nodeIn;
         }
+        else if (props.nodeInputs[i] == NODE_INPUT_TYPE_ALPHA)
+        {
+            this->rgbaFrontIn = nodeIn;
+        }
 
         connect(nodeIn, &NodeInput::connectedNodeInputClicked,
                 nodeGraph, &NodeGraph::handleConnectedNodeInputClicked);

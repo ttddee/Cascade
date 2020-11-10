@@ -2,13 +2,15 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
-layout (binding = 1, rgba32f) uniform image2D resultImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float gamma;
     layout(offset = 4) float gain;
     layout(offset = 8) float lift;
-} pc;
+} sb;
 
 void main()
 {   
@@ -18,15 +20,15 @@ void main()
 
     vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
 
-    if (pc.gamma == 0.0)
+    if (sb.gamma == 0.0)
     {
         rgba = vec4(0.0, 0.0, 0.0, rgba.a);
     }
     else
     {
-        rgba.r = pow(rgba.r, (1 / pc.gamma)) * pc.gain + pc.lift;
-        rgba.g = pow(rgba.g, (1 / pc.gamma)) * pc.gain + pc.lift;
-        rgba.b = pow(rgba.b, (1 / pc.gamma)) * pc.gain + pc.lift;
+        rgba.r = pow(rgba.r, (1 / sb.gamma)) * sb.gain + sb.lift;
+        rgba.g = pow(rgba.g, (1 / sb.gamma)) * sb.gain + sb.lift;
+        rgba.b = pow(rgba.b, (1 / sb.gamma)) * sb.gain + sb.lift;
     }
     imageStore(resultImage, pixelCoords, rgba);
 }

@@ -284,7 +284,8 @@ namespace Cascade
         NODE_TYPE_COLOR,
         nodeStrings[NODE_TYPE_COLOR],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] },
