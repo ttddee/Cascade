@@ -5,32 +5,33 @@ layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
 layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
 layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float mode;
     layout(offset = 4) float xoffset;
     layout(offset = 8) float yoffset;
     layout(offset = 12) float opacity;
-} pc;
+} sb;
 
 void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);   
 
-    ivec2 targetCoords = ivec2(pixelCoords.x - pc.xoffset, pixelCoords.y - pc.yoffset); 
+    ivec2 targetCoords = ivec2(pixelCoords.x - sb.xoffset, pixelCoords.y - sb.yoffset); 
 
     vec4 back = imageLoad(inputImageBack, pixelCoords).rgba;
 
     vec4 front = imageLoad(inputImageFront, targetCoords).rgba;
 
-    if(pc.mode == 0.0) // Over
+    if(sb.mode == 0.0) // Over
     {
-        back = (front * pc.opacity)  + back * (1.0 - front.a);
+        back = (front * sb.opacity)  + back * (1.0 - front.a);
     }
-    else if (pc.mode == 1.0) // Add
+    else if (sb.mode == 1.0) // Add
     {
-        back += (front * pc.opacity);
+        back += (front * sb.opacity);
     }
-    else if (pc.mode == 2.0) // Divide
+    else if (sb.mode == 2.0) // Divide
     {
         if (front.r <= 0.0)
         {
@@ -38,9 +39,9 @@ void main()
         }
         else
         {
-            if (pc.opacity != 0.0)
+            if (sb.opacity != 0.0)
             {
-                back.r = ((1.0 - pc.opacity) * back.r) + ((back.r / front.r) * pc.opacity);
+                back.r = ((1.0 - sb.opacity) * back.r) + ((back.r / front.r) * sb.opacity);
             }
         }
         if (front.g <= 0.0)
@@ -49,9 +50,9 @@ void main()
         }
         else
         {
-            if (pc.opacity != 0.0)
+            if (sb.opacity != 0.0)
             {
-                back.g = ((1.0 - pc.opacity) * back.g) + ((back.g / front.g) * pc.opacity);
+                back.g = ((1.0 - sb.opacity) * back.g) + ((back.g / front.g) * sb.opacity);
             }
         }
         if (front.b <= 0.0)
@@ -60,21 +61,21 @@ void main()
         }
         else
         {
-            if (pc.opacity != 0.0)
+            if (sb.opacity != 0.0)
             {
-                back.b = ((1.0 - pc.opacity) * back.b) + ((back.b / front.b) * pc.opacity);
+                back.b = ((1.0 - sb.opacity) * back.b) + ((back.b / front.b) * sb.opacity);
             }
         }
     }
-    else if (pc.mode == 3.0) // Minus
+    else if (sb.mode == 3.0) // Minus
     {
-        back -= (front * pc.opacity);
+        back -= (front * sb.opacity);
     }
-    else if (pc.mode == 4.0) // Multiply
+    else if (sb.mode == 4.0) // Multiply
     {
-        if (pc.opacity != 0.0)
+        if (sb.opacity != 0.0)
         {
-            back = ((1.0 - pc.opacity) * back) + (back * front * pc.opacity);
+            back = ((1.0 - sb.opacity) * back) + (back * front * sb.opacity);
         }
     }
 

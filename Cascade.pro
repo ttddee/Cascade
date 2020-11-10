@@ -30,6 +30,7 @@ SOURCES += \
     src/connection.cpp \
     src/csimage.cpp \
     src/csmessagebox.cpp \
+    src/cssettingsbuffer.cpp \
     src/csslider.cpp \
     src/fileboxentity.cpp \
     src/main.cpp \
@@ -62,6 +63,7 @@ HEADERS += \
     src/connection.h \
     src/csimage.h \
     src/csmessagebox.h \
+    src/cssettingsbuffer.h \
     src/csslider.h \
     src/fileboxentity.h \
     src/mainwindow.h \

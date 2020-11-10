@@ -2,21 +2,23 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
-layout (binding = 1, rgba32f) uniform image2D resultImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float bRed;
     layout(offset = 4) float bGreen;
     layout(offset = 8) float bBlue;
     layout(offset = 12) float bAlpha;
     layout(offset = 16) float strength;
     layout(offset = 20) float shaderPass;
-} pc;
+} sb;
 
 int width = imageSize(inputImage).x;
 int height = imageSize(inputImage).y;
 
-int strength = int(pc.strength);
+int strength = int(sb.strength);
 
 int div = 2 * strength + 1;
 
@@ -26,11 +28,11 @@ void main()
 
     vec4 pixel = imageLoad(inputImage, pixelCoords.xy).rgba;
 
-    vec4 sum = pixel * abs(vec4(pc.bRed, pc.bGreen, pc.bBlue, pc.bAlpha) - 1.0);
+    vec4 sum = pixel * abs(vec4(sb.bRed, sb.bGreen, sb.bBlue, sb.bAlpha) - 1.0);
 
-    if (pc.strength != 0)
+    if (sb.strength != 0)
     {
-        if (pc.shaderPass == 0.0)
+        if (sb.shaderPass == 0.0)
         {
             for (int i = -strength; i <= strength; ++i)
             {
@@ -61,19 +63,19 @@ void main()
 
         sum = sum / div;
 
-        if (pc.bRed == 0.0)
+        if (sb.bRed == 0.0)
         {
             sum.r = pixel.r;
         }
-        if (pc.bGreen == 0.0)
+        if (sb.bGreen == 0.0)
         {
             sum.g = pixel.g;
         }
-        if (pc.bBlue == 0.0)
+        if (sb.bBlue == 0.0)
         {
             sum.b = pixel.b;
         }
-        if (pc.bAlpha == 0.0)
+        if (sb.bAlpha == 0.0)
         {
             sum.a = pixel.a;
         }
