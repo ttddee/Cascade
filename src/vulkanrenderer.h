@@ -177,7 +177,7 @@ private:
     VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
     VkPipelineCache pipelineCache = VK_NULL_HANDLE;
-    VkPipelineLayout pipelineLayout = VK_NULL_HANDLE;
+    VkPipelineLayout graphicsPipelineLayout = VK_NULL_HANDLE;
     VkPipeline graphicsPipelineRGB = VK_NULL_HANDLE;
     VkPipeline graphicsPipelineAlpha = VK_NULL_HANDLE;
     VkQueryPool queryPool = VK_NULL_HANDLE;

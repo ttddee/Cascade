@@ -266,7 +266,7 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     VkPushConstantRange pushConstantRange;
     pushConstantRange.stageFlags                    = VK_SHADER_STAGE_FRAGMENT_BIT;
     pushConstantRange.offset                        = 0;
-    pushConstantRange.size                          = sizeof(viewerPushConstants);
+    pushConstantRange.size                          = 12;
 
     VkPipelineLayoutCreateInfo pipelineLayoutInfo;
     memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
@@ -280,7 +280,7 @@ void VulkanRenderer::createGraphicsPipelineLayout()
                 device,
                 &pipelineLayoutInfo,
                 nullptr,
-                &pipelineLayout);
+                &graphicsPipelineLayout);
     if (err != VK_SUCCESS)
         qFatal("Failed to create pipeline layout: %d", err);
 }
@@ -416,7 +416,7 @@ void VulkanRenderer::createGraphicsPipeline(
     dyn.pDynamicStates = dynEnable;
     pipelineInfo.pDynamicState = &dyn;
 
-    pipelineInfo.layout = pipelineLayout;
+    pipelineInfo.layout = graphicsPipelineLayout;
     pipelineInfo.renderPass = window->defaultRenderPass();
 
     VkResult err = devFuncs->vkCreateGraphicsPipelines(
@@ -1470,7 +1470,7 @@ void VulkanRenderer::recordComputeCommandBufferOneInput(
     // Push constants for fragment stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferOneInput,
-                pipelineLayout,
+                graphicsPipelineLayout,
                 VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(viewerPushConstants),
@@ -1601,7 +1601,7 @@ void VulkanRenderer::recordComputeCommandBufferOneInputMultipass(
     // Push constants for fragment stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferOneInput,
-                pipelineLayout,
+                graphicsPipelineLayout,
                 VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(viewerPushConstants),
@@ -1744,7 +1744,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
     // Push constants for fragment stage
     devFuncs->vkCmdPushConstants(
                 compute.commandBufferTwoInputs,
-                pipelineLayout,
+                graphicsPipelineLayout,
                 VK_SHADER_STAGE_FRAGMENT_BIT,
                 0,
                 sizeof(viewerPushConstants),
@@ -2103,7 +2103,7 @@ void VulkanRenderer::createRenderPass()
     devFuncs->vkCmdBindDescriptorSets(
                 cb,
                 VK_PIPELINE_BIND_POINT_GRAPHICS,
-                pipelineLayout,
+                graphicsPipelineLayout,
                 0,
                 1,
                 &graphicsDescriptorSet[window->currentFrame()],
@@ -2526,9 +2526,9 @@ void VulkanRenderer::releaseResources()
         graphicsPipelineRGB = VK_NULL_HANDLE;
     }
 
-    if (pipelineLayout) {
-        devFuncs->vkDestroyPipelineLayout(device, pipelineLayout, nullptr);
-        pipelineLayout = VK_NULL_HANDLE;
+    if (graphicsPipelineLayout) {
+        devFuncs->vkDestroyPipelineLayout(device, graphicsPipelineLayout, nullptr);
+        graphicsPipelineLayout = VK_NULL_HANDLE;
     }
 
     if (pipelineCache) {

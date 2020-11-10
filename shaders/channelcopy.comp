@@ -9,7 +9,7 @@ layout(push_constant) uniform pushConstants {
     layout(offset = 0) float red;
     layout(offset = 4) float green;
     layout(offset = 8) float blue;
-    layout(offset = 8) float alpha;
+    layout(offset = 12) float alpha;
 } pc;
 
 void main()

@@ -131,7 +131,7 @@ namespace Cascade
         { NODE_CATEGORY_FILTER, "Filter" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
-        { NODE_CATEGORY_CHANNEL, "Channel" },
+        { NODE_CATEGORY_CHANNEL, "Channel" }
     };
 
     ////////////////////////////////////
@@ -636,28 +636,28 @@ namespace Cascade
     };
 
     const NodeInitProperties channelCopyNodeInitProperties =
-    {
-        NODE_TYPE_CHANNEL_COPY,
-        nodeStrings[NODE_TYPE_CHANNEL_COPY],
-        NODE_CATEGORY_CHANNEL,
-        { NODE_INPUT_TYPE_RGB_BACK,
-          NODE_INPUT_TYPE_RGB_FRONT},
-        { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
-        },
-        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
-        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/channelcopy_comp.spv",
-        1
-    };
+            NODE_TYPE_CHANNEL_COPY,
+            nodeStrings[NODE_TYPE_CHANNEL_COPY],
+            NODE_CATEGORY_CHANNEL,
+            { NODE_INPUT_TYPE_RGB_BACK,
+              NODE_INPUT_TYPE_RGB_FRONT},
+            { NODE_OUTPUT_TYPE_RGB },
+            {
+                { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
+            },
+            FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+            BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+            ALPHA_INPUT_ALWAYS_CLEAR,
+            ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+            OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+            ":/shaders/channelcopy_comp.spv",
+            1
+        };
 
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
