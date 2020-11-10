@@ -28,9 +28,9 @@
   <widget class="QLabel" name="NodeTitleLabel">
    <property name="geometry">
     <rect>
-     <x>10</x>
+     <x>20</x>
      <y>18</y>
-     <width>101</width>
+     <width>81</width>
      <height>41</height>
     </rect>
    </property>
