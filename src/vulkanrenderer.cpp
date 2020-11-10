@@ -1413,32 +1413,12 @@ void VulkanRenderer::initSwapChainResources()
     projection.scale(500);
 }
 
-void VulkanRenderer::recordComputeCommandBuffer(
-        CsImage& inputImageBack,
+void VulkanRenderer::recordComputeCommandBufferOneInput(
+        CsImage& inputImage,
         CsImage& outputImage,
-        VkPipeline& pl,
-        int numShaderPasses)
+        VkPipeline& pl)
 {
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
-
-    VkImage* targetImage;
-
-    targetImage = &outputImage.getImage();
-
-    if (numShaderPasses > 1)
-    {
-        computePushConstants.push_back(0.0);
-
-        intermediateImage = std::unique_ptr<CsImage>(new CsImage(
-                    window,
-                    &device,
-                    devFuncs,
-                    outputImage.getWidth(),
-                    outputImage.getHeight()));
-        targetImage = &intermediateImage->getImage();
-
-        updateComputeDescriptors(inputImageBack, *intermediateImage);
-    }
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -1462,7 +1442,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack.getImage();
+        barrier[0].image           = inputImage.getImage();
 
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -1473,7 +1453,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = *targetImage;
+        barrier[1].image           = outputImage.getImage();
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1519,67 +1499,6 @@ void VulkanRenderer::recordComputeCommandBuffer(
                 outputImage.getWidth() / 16 + 1,
                 outputImage.getHeight() / 16 + 1, 1);
 
-    if (numShaderPasses > 1)
-    {
-        {
-            VkImageMemoryBarrier barrier[2] = {};
-
-            barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-            barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
-
-            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-            barrier[0].srcAccessMask   = 0;
-            barrier[0].dstAccessMask   = 0;
-            barrier[0].image           = intermediateImage->getImage();
-
-            barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-            barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-            barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-            barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-            barrier[1].srcAccessMask   = 0;
-            barrier[1].dstAccessMask   = 0;
-            barrier[1].image           = outputImage.getImage();
-
-            devFuncs->vkCmdPipelineBarrier(cb,
-                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0,
-                                0,
-                                nullptr,
-                                0,
-                                nullptr,
-                                2,
-                                &barrier[0]);
-        }
-
-        computePushConstants[computePushConstants.size() - 1] += 1.0;
-
-        updateComputeDescriptors(*intermediateImage, outputImage);
-
-        devFuncs->vkCmdBindDescriptorSets(
-                    compute.commandBufferOneInput,
-                    VK_PIPELINE_BIND_POINT_COMPUTE,
-                    computePipelineLayoutOneInput, 0, 1,
-                    &computeDescriptorSetOneInput, 0, 0);
-
-        devFuncs->vkCmdPushConstants(
-                    compute.commandBufferOneInput,
-                    computePipelineLayoutOneInput,
-                    VK_SHADER_STAGE_COMPUTE_BIT,
-                    0,
-                    computePushConstants.size() * 4,
-                    computePushConstants.data());
-
-        devFuncs->vkCmdDispatch(
-                    compute.commandBufferOneInput,
-                    outputImage.getWidth() / 16 + 1,
-                    outputImage.getHeight() / 16 + 1, 1);
-    }
-
     {
 
         VkImageMemoryBarrier barrier[2] = {};
@@ -1592,7 +1511,7 @@ void VulkanRenderer::recordComputeCommandBuffer(
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack.getImage();
+        barrier[0].image           = inputImage.getImage();
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1619,7 +1538,143 @@ void VulkanRenderer::recordComputeCommandBuffer(
     devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
 }
 
-void VulkanRenderer::recordComputeCommandBuffer(
+void VulkanRenderer::recordComputeCommandBufferOneInputMultipass(
+        CsImage& inputImage,
+        CsImage& outputImage,
+        VkPipeline& pl,
+        int numShaderpasses,
+        int currentPass)
+{
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+
+    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferOneInput,
+                &cmdBufferBeginInfo);
+    if (err != VK_SUCCESS)
+        qFatal("Failed to begin command buffer: %d", err);
+    VkCommandBuffer cb = compute.commandBufferOneInput;
+
+    {
+         //Make the barriers for the resources
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        if(currentPass == 1)
+            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        else
+            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                2,
+                                &barrier[0]);
+    }
+
+    // Push constants for fragment stage
+    devFuncs->vkCmdPushConstants(
+                compute.commandBufferOneInput,
+                pipelineLayout,
+                VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(viewerPushConstants),
+                viewerPushConstants.data());
+    // Push constants for compute stage
+    devFuncs->vkCmdPushConstants(
+                compute.commandBufferOneInput,
+                computePipelineLayoutOneInput,
+                VK_SHADER_STAGE_COMPUTE_BIT,
+                0,
+                computePushConstants.size() * 4,
+                computePushConstants.data());
+    devFuncs->vkCmdBindPipeline(
+                compute.commandBufferOneInput,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                pl);
+    devFuncs->vkCmdBindDescriptorSets(
+                compute.commandBufferOneInput,
+                VK_PIPELINE_BIND_POINT_COMPUTE,
+                computePipelineLayoutOneInput, 0, 1,
+                &computeDescriptorSetOneInput, 0, 0);
+    // Adding one extra local workgroup here to
+    // prevent flickering in crop shader
+    devFuncs->vkCmdDispatch(
+                compute.commandBufferOneInput,
+                outputImage.getWidth() / 16 + 1,
+                outputImage.getHeight() / 16 + 1, 1);
+
+    {
+
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImage.getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+
+        if (currentPass != numShaderpasses)
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        else
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage.getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            2,
+                            &barrier[0]);
+    }
+
+    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
+}
+
+void VulkanRenderer::recordComputeCommandBufferTwoInputs(
         CsImage& inputImageBack,
         CsImage& inputImageFront,
         CsImage& outputImage,
@@ -1779,7 +1834,7 @@ uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFla
     throw std::runtime_error("Failed to find suitable memory type!");
 }
 
-void VulkanRenderer::recordComputeCommandBuffer(
+void VulkanRenderer::recordComputeCommandBufferCPUCopy(
         CsImage& inputImage)
 {
     // This is for outputting an image to the CPU
@@ -1917,7 +1972,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
 {
     bool success = true;
 
-    recordComputeCommandBuffer(inputImage);
+    recordComputeCommandBufferCPUCopy(inputImage);
     submitImageSaveCommand();
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
@@ -2140,7 +2195,6 @@ std::vector<float> VulkanRenderer::unpackPushConstants(const QString s)
 
 void VulkanRenderer::setViewerPushConstants(const QString &s)
 {
-    std::cout << "Setting fragment stage push constants" << std::endl;
     viewerPushConstants = unpackPushConstants(s);
 }
 
@@ -2170,7 +2224,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
 
         createComputeCommandBuffer();
-        recordComputeCommandBuffer(
+        recordComputeCommandBufferOneInput(
                     *imageFromDisk,
                     *computeRenderTarget,
                     pipelines[NODE_TYPE_READ]);
@@ -2201,19 +2255,89 @@ void VulkanRenderer::processNode(
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
 
-    updateComputeDescriptors(inputImageBack, *computeRenderTarget);
+    int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
+    int currentShaderPass = 1;
 
-    int shaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
+    if (numShaderPasses == 1)
+    {
+        updateComputeDescriptors(inputImageBack, *computeRenderTarget);
 
-    recordComputeCommandBuffer(
-                inputImageBack,
-                *computeRenderTarget,
-                pipelines[node->nodeType],
-                shaderPasses);
+        recordComputeCommandBufferOneInput(
+                    inputImageBack,
+                    *computeRenderTarget,
+                    pipelines[node->nodeType]);
 
-    submitComputeCommands();
+        submitComputeCommands();
 
-    node->cachedImage = std::move(computeRenderTarget);
+        node->cachedImage = std::move(computeRenderTarget);
+    }
+    else
+    {
+        for (int i = 1; i <= numShaderPasses; ++i)
+        {
+            if (currentShaderPass == 1)
+            {
+                // First pass of multipass shader
+                computePushConstants.push_back(0.0);
+
+                updateComputeDescriptors(inputImageBack, *computeRenderTarget);
+
+                recordComputeCommandBufferOneInputMultipass(
+                            inputImageBack,
+                            *computeRenderTarget,
+                            pipelines[node->nodeType],
+                            numShaderPasses,
+                            currentShaderPass);
+
+                submitComputeCommands();
+
+                intermediateImage = std::move(computeRenderTarget);
+            }
+            else if (currentShaderPass < numShaderPasses)
+            {
+                // Intermediate passes
+                computePushConstants[computePushConstants.size() - 1] += 1.0;
+
+                if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+                    qFatal("Failed to create compute render target.");
+
+                updateComputeDescriptors(*intermediateImage, *computeRenderTarget);
+
+                recordComputeCommandBufferOneInputMultipass(
+                            *intermediateImage,
+                            *computeRenderTarget,
+                            pipelines[node->nodeType],
+                            numShaderPasses,
+                            currentShaderPass);
+
+                submitComputeCommands();
+
+                intermediateImage = std::move(computeRenderTarget);
+            }
+            else
+            {
+                // Last pass
+                computePushConstants[computePushConstants.size() - 1] += 1.0;
+
+                if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+                    qFatal("Failed to create compute render target.");
+
+                updateComputeDescriptors(*intermediateImage, *computeRenderTarget);
+
+                recordComputeCommandBufferOneInputMultipass(
+                            *intermediateImage,
+                            *computeRenderTarget,
+                            pipelines[node->nodeType],
+                            numShaderPasses,
+                            currentShaderPass);
+
+                submitComputeCommands();
+
+                node->cachedImage = std::move(computeRenderTarget);
+            }
+            currentShaderPass++;
+        }
+    }
 }
 
 void VulkanRenderer::processNode(
@@ -2240,7 +2364,7 @@ void VulkanRenderer::processNode(
 
     updateComputeDescriptors(inputImageBack, inputImageFront, *computeRenderTarget);
 
-    recordComputeCommandBuffer(inputImageBack, inputImageFront, *computeRenderTarget, pipelines[node->nodeType]);
+    recordComputeCommandBufferTwoInputs(inputImageBack, inputImageFront, *computeRenderTarget, pipelines[node->nodeType]);
 
     submitComputeCommands();
 
@@ -2267,7 +2391,7 @@ void VulkanRenderer::displayNode(NodeBase *node)
 
         updateComputeDescriptors(*image, *computeRenderTarget);
 
-        recordComputeCommandBuffer(*image, *computeRenderTarget, noopPipeline);
+        recordComputeCommandBufferOneInput(*image, *computeRenderTarget, noopPipeline);
 
         submitComputeCommands();
 

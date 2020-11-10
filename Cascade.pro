@@ -99,9 +99,9 @@ FORMS += \
     src/writepropertiesentity.ui
 
 # Default rules for deployment.
-qnx: target.path = /tmp/$${TARGET}/bin
-else: unix:!android: target.path = /opt/$${TARGET}/bin
-!isEmpty(target.path): INSTALLS += target
+#qnx: target.path = /tmp/$${TARGET}/bin
+#else: unix:!android: target.path = /opt/$${TARGET}/bin
+#!isEmpty(target.path): INSTALLS += target
 
 linux-g++ {
     INCLUDEPATH += ../Qt-Advanced-Docking-System/src
@@ -109,6 +109,17 @@ linux-g++ {
     LIBS += -L /usr/lib -lOpenImageIO
     LIBS += -L /usr/lib -lOpenColorIO
     LIBS += -L /usr/lib -lqtadvanceddocking
+
+    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
+    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD
+
+    COPIES += ocio
+    ocio.files += $$files(ocio/config.ocio)
+    ocio.path = $$DESTDIR/ocio
+
+    COPIES += luts
+    luts.files += $$files(ocio/luts/*)
+    luts.path = $$DESTDIR/ocio/luts
 }
 
 win32-msvc* {

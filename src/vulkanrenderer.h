@@ -133,17 +133,22 @@ private:
             CsImage& inputImageFront,
             CsImage& outputImage);
     void createComputeCommandBuffer();
-    void recordComputeCommandBuffer(
+    void recordComputeCommandBufferOneInput(
             CsImage& inputImageBack,
             CsImage& outputImage,
+            VkPipeline& pl);
+    void recordComputeCommandBufferOneInputMultipass(
+            CsImage& inputImage,
+            CsImage& outputImage,
             VkPipeline& pl,
-            int numShaderPasses = 1);
-    void recordComputeCommandBuffer(
+            int numShaderPasses,
+            int currentPass);
+    void recordComputeCommandBufferTwoInputs(
             CsImage& inputImageBack,
             CsImage& inputImageFront,
             CsImage& outputImage,
             VkPipeline& pl);
-    void recordComputeCommandBuffer(
+    void recordComputeCommandBufferCPUCopy(
             CsImage& inputImage);
 
     void submitComputeCommands();

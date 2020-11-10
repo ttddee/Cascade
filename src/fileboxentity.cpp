@@ -35,12 +35,6 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
 
     QStringList slist;
 
-#ifdef QT_DEBUG
-    slist.append(QString("../../images/bay.jpg"));
-    QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
-    ui->fileListView->setCurrentIndex(index);
-#endif
-
     fileListModel = new QStringListModel(slist, this);
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
