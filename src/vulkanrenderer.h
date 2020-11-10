@@ -71,8 +71,8 @@ public:
             const QSize targetSize);
     void processNode(
             NodeBase* node,
-            CsImage& inputImageBack,
-            CsImage& inputImageFront,
+            std::shared_ptr<CsImage> inputImageBack,
+            std::shared_ptr<CsImage> inputImageFront,
             const QSize targetSize);
     void displayNode(NodeBase* node);
     void doClearScreen();
@@ -129,10 +129,12 @@ private:
             CsImage& inputImageBack,
             CsImage& outputImage);
     void updateComputeDescriptors(
-            CsImage& inputImageBack,
-            CsImage& inputImageFront,
-            CsImage& outputImage);
-    void createComputeCommandBuffer();
+            std::shared_ptr<CsImage> inputImageBack,
+            std::shared_ptr<CsImage> inputImageFront,
+            std::shared_ptr<CsImage> outputImage);
+    void createComputeCommandBuffers();
+    void recordComputeCommandBufferImageLoad(
+            std::shared_ptr<CsImage> outputImage);
     void recordComputeCommandBufferOneInput(
             CsImage& inputImageBack,
             CsImage& outputImage,
@@ -144,9 +146,9 @@ private:
             int numShaderPasses,
             int currentPass);
     void recordComputeCommandBufferTwoInputs(
-            CsImage& inputImageBack,
-            CsImage& inputImageFront,
-            CsImage& outputImage,
+            std::shared_ptr<CsImage> inputImageBack,
+            std::shared_ptr<CsImage> inputImageFront,
+            std::shared_ptr<CsImage> outputImage,
             VkPipeline& pl);
     void recordComputeCommandBufferCPUCopy(
             CsImage& inputImage);
@@ -244,17 +246,17 @@ private:
     };
 
     Compute                         compute;
-    VkPipelineLayout                computePipelineLayoutOneInput       = VK_NULL_HANDLE;
+    //VkPipelineLayout                computePipelineLayoutOneInput       = VK_NULL_HANDLE;
     VkPipelineLayout                computePipelineLayoutTwoInputs      = VK_NULL_HANDLE;
     VkPipeline                      computePipeline                     = VK_NULL_HANDLE;
-    VkDescriptorSetLayout           computeDescriptorSetLayoutOneInput  = VK_NULL_HANDLE;
+    //VkDescriptorSetLayout           computeDescriptorSetLayoutOneInput  = VK_NULL_HANDLE;
     VkDescriptorSetLayout           computeDescriptorSetLayoutTwoInputs = VK_NULL_HANDLE;
-    VkDescriptorSet                 computeDescriptorSetOneInput        = VK_NULL_HANDLE;
+    //VkDescriptorSet                 computeDescriptorSetOneInput        = VK_NULL_HANDLE;
     VkDescriptorSet                 computeDescriptorSetTwoInputs       = VK_NULL_HANDLE;
 
-    std::unique_ptr<CsImage>        computeRenderTarget                 = nullptr;
-    std::unique_ptr<CsImage>        imageFromDisk                       = nullptr;
-    std::unique_ptr<CsImage>        intermediateImage                   = nullptr;
+    std::shared_ptr<CsImage>        computeRenderTarget                 = nullptr;
+    std::shared_ptr<CsImage>        imageFromDisk                       = nullptr;
+    std::shared_ptr<CsImage>        intermediateImage                   = nullptr;
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;

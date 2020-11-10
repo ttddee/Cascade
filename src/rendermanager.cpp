@@ -145,7 +145,16 @@ void RenderManager::handleClearScreenRequest()
 
 void RenderManager::displayNode(NodeBase* node)
 {
-    if (node && node->canBeRendered())
+    if (node->nodeType == NODE_TYPE_READ)
+    {
+        if(node->needsUpdate)
+        {
+            renderer->processReadNode(node);
+        }
+        renderer->displayNode(node);
+        node->needsUpdate = false;
+    }
+    else if (node && node->canBeRendered())
     {
         if (renderNodes(node))
         {
@@ -193,7 +202,7 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processReadNode(node);
         }
     }
-    else if (node->getUpstreamNodeBack() && node->needsUpdate)
+    if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
         std::shared_ptr<CsImage> inputImageBack = nullptr;
         std::shared_ptr<CsImage> inputImageFront = nullptr;
@@ -204,12 +213,12 @@ void RenderManager::renderNode(NodeBase *node)
         {
             std::cout << "Rendering two inputs" << std::endl;
             inputImageFront = node->getUpstreamNodeFront()->cachedImage;
-            renderer->processNode(node, *inputImageBack, *inputImageFront, node->getTargetSize());
+            renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }
         else if (inputImageBack)
         {
             std::cout << "Rendering one input" << std::endl;
-            renderer->processNode(node, *inputImageBack, node->getTargetSize());
+            renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
         }
     }
     node->needsUpdate = false;

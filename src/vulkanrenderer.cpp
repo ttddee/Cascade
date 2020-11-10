@@ -88,6 +88,7 @@ void VulkanRenderer::initResources()
 
     createComputeQueue();
     createComputeCommandPool();
+    createComputeCommandBuffers();
 
     VkDeviceSize settingsBufferSize = sizeof (float) * 128;
     createBuffer(settingsBuffer, settingsBufferMemory, settingsBufferSize);
@@ -696,39 +697,39 @@ void VulkanRenderer::transformColorSpace(const QString& from, const QString& to,
 
 void VulkanRenderer::createComputeDescriptors()
 {
-    if (computeDescriptorSetLayoutOneInput == VK_NULL_HANDLE)
-    {
-        VkDescriptorSetLayoutBinding bindings[3]= {};
+//    if (computeDescriptorSetLayoutOneInput == VK_NULL_HANDLE)
+//    {
+//        VkDescriptorSetLayoutBinding bindings[3]= {};
 
-        bindings[0].binding         = 0;
-        bindings[0].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-        bindings[0].descriptorCount = 1;
-        bindings[0].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+//        bindings[0].binding         = 0;
+//        bindings[0].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+//        bindings[0].descriptorCount = 1;
+//        bindings[0].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
 
-        bindings[1].binding         = 1;
-        bindings[1].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
-        bindings[1].descriptorCount = 1;
-        bindings[1].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+//        bindings[1].binding         = 1;
+//        bindings[1].descriptorType  = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+//        bindings[1].descriptorCount = 1;
+//        bindings[1].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
 
-        bindings[2].binding         = 2;
-        bindings[2].descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        bindings[2].descriptorCount = 1;
-        bindings[2].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
+//        bindings[2].binding         = 2;
+//        bindings[2].descriptorType  = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+//        bindings[2].descriptorCount = 1;
+//        bindings[2].stageFlags      = VK_SHADER_STAGE_COMPUTE_BIT;
 
-        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo {};
-        descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-        descriptorSetLayoutCreateInfo.pBindings = bindings;
-        descriptorSetLayoutCreateInfo.bindingCount = 3;
+//        VkDescriptorSetLayoutCreateInfo descriptorSetLayoutCreateInfo {};
+//        descriptorSetLayoutCreateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
+//        descriptorSetLayoutCreateInfo.pBindings = bindings;
+//        descriptorSetLayoutCreateInfo.bindingCount = 3;
 
-        //Create the layout, store it to share between shaders
-        VkResult err = devFuncs->vkCreateDescriptorSetLayout(
-                    device,
-                    &descriptorSetLayoutCreateInfo,
-                    nullptr,
-                    &computeDescriptorSetLayoutOneInput);
-        if (err != VK_SUCCESS)
-            qFatal("Failed to create compute descriptor set layout: %d", err);
-    }
+//        //Create the layout, store it to share between shaders
+//        VkResult err = devFuncs->vkCreateDescriptorSetLayout(
+//                    device,
+//                    &descriptorSetLayoutCreateInfo,
+//                    nullptr,
+//                    &computeDescriptorSetLayoutOneInput);
+//        if (err != VK_SUCCESS)
+//            qFatal("Failed to create compute descriptor set layout: %d", err);
+//    }
 
     if (computeDescriptorSetLayoutTwoInputs == VK_NULL_HANDLE)
     {
@@ -790,21 +791,21 @@ void VulkanRenderer::createComputeDescriptors()
                 qFatal("Failed to allocate descriptor set: %d", err);
         }
 
-        {
-            VkDescriptorSetAllocateInfo descSetAllocInfo = {
-                VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
-                nullptr,
-                descriptorPool,
-                1,
-                &computeDescriptorSetLayoutOneInput
-            };
-            VkResult err = devFuncs->vkAllocateDescriptorSets(
-                        device,
-                        &descSetAllocInfo,
-                        &computeDescriptorSetOneInput);
-            if (err != VK_SUCCESS)
-                qFatal("Failed to allocate descriptor set: %d", err);
-        }
+//        {
+//            VkDescriptorSetAllocateInfo descSetAllocInfo = {
+//                VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO,
+//                nullptr,
+//                descriptorPool,
+//                1,
+//                &computeDescriptorSetLayoutOneInput
+//            };
+//            VkResult err = devFuncs->vkAllocateDescriptorSets(
+//                        device,
+//                        &descSetAllocInfo,
+//                        &computeDescriptorSetOneInput);
+//            if (err != VK_SUCCESS)
+//                qFatal("Failed to allocate descriptor set: %d", err);
+//        }
 
         {
             VkDescriptorSetAllocateInfo descSetAllocInfo = {
@@ -828,81 +829,81 @@ void VulkanRenderer::updateComputeDescriptors(
         CsImage& inputImageBack,
         CsImage& outputImage)
 {
-    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+//    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    for (int i = 0; i < concurrentFrameCount; ++i)
-    {
-        VkWriteDescriptorSet descWrite[2];
-        memset(descWrite, 0, sizeof(descWrite));
-        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet = graphicsDescriptorSet[i];
-        descWrite[0].dstBinding = 0;
-        descWrite[0].descriptorCount = 1;
-        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descWrite[0].pBufferInfo = &uniformBufInfo[i];
+//    for (int i = 0; i < concurrentFrameCount; ++i)
+//    {
+//        VkWriteDescriptorSet descWrite[2];
+//        memset(descWrite, 0, sizeof(descWrite));
+//        descWrite[0].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//        descWrite[0].dstSet = graphicsDescriptorSet[i];
+//        descWrite[0].dstBinding = 0;
+//        descWrite[0].descriptorCount = 1;
+//        descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+//        descWrite[0].pBufferInfo = &uniformBufInfo[i];
 
-        VkDescriptorImageInfo descImageInfo = {
-            sampler,
-            outputImage.getImageView(),
-            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
-        };
+//        VkDescriptorImageInfo descImageInfo = {
+//            sampler,
+//            outputImage.getImageView(),
+//            VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
+//        };
 
-        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet = graphicsDescriptorSet[i];
-        descWrite[1].dstBinding = 1;
-        descWrite[1].descriptorCount = 1;
-        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-        descWrite[1].pImageInfo = &descImageInfo;
+//        descWrite[1].sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//        descWrite[1].dstSet = graphicsDescriptorSet[i];
+//        descWrite[1].dstBinding = 1;
+//        descWrite[1].descriptorCount = 1;
+//        descWrite[1].descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+//        descWrite[1].pImageInfo = &descImageInfo;
 
-        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
-    }
+//        devFuncs->vkUpdateDescriptorSets(device, 2, descWrite, 0, nullptr);
+//    }
 
-    {
-        VkDescriptorImageInfo destinationInfo = { };
-        destinationInfo.imageView             = outputImage.getImageView();
-        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
+//    {
 
-        VkDescriptorImageInfo sourceInfo      = { };
-        sourceInfo.imageView                  = inputImageBack.getImageView();
-        sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
+//        VkDescriptorImageInfo sourceInfo      = { };
+//        sourceInfo.imageView                  = inputImageBack.getImageView();
+//        sourceInfo.imageLayout                = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkDescriptorBufferInfo settingsBufferInfo = { };
-        settingsBufferInfo.buffer                 = settingsBuffer;
-        settingsBufferInfo.offset                 = 0;
-        settingsBufferInfo.range                  = VK_WHOLE_SIZE;
+//        VkDescriptorImageInfo destinationInfo = { };
+//        destinationInfo.imageView             = outputImage.getImageView();
+//        destinationInfo.imageLayout           = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkWriteDescriptorSet descWrite[3]= {};
+//        VkDescriptorBufferInfo settingsBufferInfo = { };
+//        settingsBufferInfo.buffer                 = settingsBuffer;
+//        settingsBufferInfo.offset                 = 0;
+//        settingsBufferInfo.range                  = VK_WHOLE_SIZE;
 
-        descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[0].dstSet                    = computeDescriptorSetOneInput;
-        descWrite[0].dstBinding                = 0;
-        descWrite[0].descriptorCount           = 1;
-        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
-        descWrite[0].pImageInfo                = &sourceInfo;
+//        VkWriteDescriptorSet descWrite[3]= {};
 
-        descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[1].dstSet                    = computeDescriptorSetOneInput;
-        descWrite[1].dstBinding                = 1;
-        descWrite[1].descriptorCount           = 1;
-        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
-        descWrite[1].pImageInfo                = &destinationInfo;
+//        descWrite[0].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//        descWrite[0].dstSet                    = computeDescriptorSetOneInput;
+//        descWrite[0].dstBinding                = 0;
+//        descWrite[0].descriptorCount           = 1;
+//        descWrite[0].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+//        descWrite[0].pImageInfo                = &sourceInfo;
 
-        descWrite[2].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-        descWrite[2].dstSet                    = computeDescriptorSetOneInput;
-        descWrite[2].dstBinding                = 2;
-        descWrite[2].descriptorCount           = 1;
-        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descWrite[2].pBufferInfo               = &settingsBufferInfo;
+//        descWrite[1].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//        descWrite[1].dstSet                    = computeDescriptorSetOneInput;
+//        descWrite[1].dstBinding                = 1;
+//        descWrite[1].descriptorCount           = 1;
+//        descWrite[1].descriptorType            = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE ;
+//        descWrite[1].pImageInfo                = &destinationInfo;
 
-        devFuncs->vkUpdateDescriptorSets(device, 3, descWrite, 0, nullptr);
-    }
+//        descWrite[2].sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+//        descWrite[2].dstSet                    = computeDescriptorSetOneInput;
+//        descWrite[2].dstBinding                = 2;
+//        descWrite[2].descriptorCount           = 1;
+//        descWrite[2].descriptorType            = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+//        descWrite[2].pBufferInfo               = &settingsBufferInfo;
+
+//        devFuncs->vkUpdateDescriptorSets(device, 3, descWrite, 0, nullptr);
+//    }
 }
 
-// TODO: This should be merged with function above
 void VulkanRenderer::updateComputeDescriptors(
-        CsImage& inputImageBack,
-        CsImage& inputImageFront,
-        CsImage& outputImage)
+        std::shared_ptr<CsImage> inputImageBack,
+        std::shared_ptr<CsImage> inputImageFront,
+        std::shared_ptr<CsImage> outputImage)
 {
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
@@ -917,7 +918,7 @@ void VulkanRenderer::updateComputeDescriptors(
 
         VkDescriptorImageInfo descImageInfo = {
             sampler,
-            outputImage.getImageView(),
+            outputImage->getImageView(),
             VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL
         };
 
@@ -933,15 +934,22 @@ void VulkanRenderer::updateComputeDescriptors(
 
     {
         VkDescriptorImageInfo sourceInfoBack     = { };
-        sourceInfoBack.imageView                 = inputImageBack.getImageView();
+        sourceInfoBack.imageView                 = inputImageBack->getImageView();
         sourceInfoBack.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
-        VkDescriptorImageInfo sourceInfoFront     = { };
-        sourceInfoFront.imageView                 = inputImageFront.getImageView();
-        sourceInfoFront.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
+        VkDescriptorImageInfo sourceInfoFront    = { };
+        sourceInfoFront.imageLayout              = VK_IMAGE_LAYOUT_GENERAL;
+        if (inputImageFront)
+        {
+            sourceInfoFront.imageView            = inputImageFront->getImageView();
+        }
+        else
+        {
+            sourceInfoFront.imageView            = inputImageBack->getImageView();
+        }
 
         VkDescriptorImageInfo destinationInfo     = { };
-        destinationInfo.imageView                 = outputImage.getImageView();
+        destinationInfo.imageView                 = outputImage->getImageView();
         destinationInfo.imageLayout               = VK_IMAGE_LAYOUT_GENERAL;
 
         VkDescriptorBufferInfo settingsBufferInfo = { };
@@ -990,23 +998,23 @@ void VulkanRenderer::createComputePipelineLayout()
     pushConstantRange.offset                        = 0;
     pushConstantRange.size                          = sizeof(float) * 16;
 
-    {
-        VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
-        pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        pipelineLayoutInfo.setLayoutCount               = 1;
-        pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayoutOneInput;
-        pipelineLayoutInfo.pushConstantRangeCount       = 1;
-        pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
+//    {
+//        VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
+//        pipelineLayoutInfo.sType                        = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+//        pipelineLayoutInfo.setLayoutCount               = 1;
+//        pipelineLayoutInfo.pSetLayouts                  = &computeDescriptorSetLayoutOneInput;
+//        pipelineLayoutInfo.pushConstantRangeCount       = 1;
+//        pipelineLayoutInfo.pPushConstantRanges          = &pushConstantRange;
 
-        //Create the layout, store it to share between shaders
-        VkResult err = devFuncs->vkCreatePipelineLayout(
-                    device,
-                    &pipelineLayoutInfo,
-                    nullptr,
-                    &computePipelineLayoutOneInput);
-        if (err != VK_SUCCESS)
-            qFatal("Failed to create compute pipeline layout: %d", err);
-    }
+//        //Create the layout, store it to share between shaders
+//        VkResult err = devFuncs->vkCreatePipelineLayout(
+//                    device,
+//                    &pipelineLayoutInfo,
+//                    nullptr,
+//                    &computePipelineLayoutOneInput);
+//        if (err != VK_SUCCESS)
+//            qFatal("Failed to create compute pipeline layout: %d", err);
+//    }
 
     {
         VkPipelineLayoutCreateInfo pipelineLayoutInfo   = {};
@@ -1057,14 +1065,7 @@ VkPipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
     VkComputePipelineCreateInfo pipelineInfo = {};
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
-    if (getPropertiesForType(nodeType).nodeInputs.size() > 1)
-    {
-        pipelineInfo.layout = computePipelineLayoutTwoInputs;
-    }
-    else
-    {
-        pipelineInfo.layout = computePipelineLayoutOneInput;
-    }
+    pipelineInfo.layout = computePipelineLayoutTwoInputs;
 
     VkPipeline pl = VK_NULL_HANDLE;
 
@@ -1102,7 +1103,7 @@ VkPipeline VulkanRenderer::createComputePipelineNoop()
     VkComputePipelineCreateInfo pipelineInfo = {};
     pipelineInfo.sType  = VK_STRUCTURE_TYPE_COMPUTE_PIPELINE_CREATE_INFO;
     pipelineInfo.stage  = computeStage;
-    pipelineInfo.layout = computePipelineLayoutOneInput;
+    pipelineInfo.layout = computePipelineLayoutTwoInputs;
 
     VkPipeline pl = VK_NULL_HANDLE;
 
@@ -1194,25 +1195,24 @@ void VulkanRenderer::createQueryPool()
         qFatal("Failed to create query pool: %d", err);
 }
 
-void VulkanRenderer::createComputeCommandBuffer()
+void VulkanRenderer::createComputeCommandBuffers()
 {
     // Create the command buffer for loading an image from disk
     VkCommandBufferAllocateInfo commandBufferAllocateInfo {};
     commandBufferAllocateInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
     commandBufferAllocateInfo.commandPool = compute.computeCommandPool;
     commandBufferAllocateInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-    commandBufferAllocateInfo.commandBufferCount = 4;
+    commandBufferAllocateInfo.commandBufferCount = 3;
 
-    VkCommandBuffer buffers[4] = {};
+    VkCommandBuffer buffers[3] = {};
     VkResult err = devFuncs->vkAllocateCommandBuffers(device, &commandBufferAllocateInfo, &buffers[0]);
 
     if (err != VK_SUCCESS)
         qFatal("Failed to allocate descriptor set: %d", err);
 
-    compute.commandBufferOneInput  = buffers[0];
-    compute.commandBufferImageLoad = buffers[1];
-    compute.commandBufferTwoInputs = buffers[2];
-    compute.commandBufferImageSave = buffers[3];
+    compute.commandBufferImageLoad = buffers[0];
+    compute.commandBufferTwoInputs = buffers[1];
+    compute.commandBufferImageSave = buffers[2];
 
     // Fence for compute CB sync
     VkFenceCreateInfo fenceCreateInfo = {};
@@ -1224,21 +1224,26 @@ void VulkanRenderer::createComputeCommandBuffer()
     if (err != VK_SUCCESS)
         qFatal("Failed to create fence: %d", err);
 
-    // Flush the queue if we're rebuilding the command buffer
-    // after a pipeline change to ensure it's not currently in use
+
+}
+
+void VulkanRenderer::recordComputeCommandBufferImageLoad(
+        std::shared_ptr<CsImage> outputImage)
+{
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
     cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    err = devFuncs->vkBeginCommandBuffer(compute.commandBufferImageLoad, &cmdBufferBeginInfo);
+    VkResult err = devFuncs->vkBeginCommandBuffer(
+                compute.commandBufferImageLoad,
+                &cmdBufferBeginInfo);
 
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
 
     VkCommandBuffer cb = compute.commandBufferImageLoad;
 
-    // Create barriers for the resources
     VkImageMemoryBarrier barrier = {};
     memset(&barrier, 0, sizeof(barrier));
     barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -1309,7 +1314,7 @@ void VulkanRenderer::createComputeCommandBuffer()
         barrier.newLayout     = VK_IMAGE_LAYOUT_GENERAL;
         barrier.srcAccessMask = VK_ACCESS_MEMORY_READ_BIT;
         barrier.dstAccessMask = VK_ACCESS_MEMORY_WRITE_BIT;
-        barrier.image         = computeRenderTarget->getImage();
+        barrier.image         = outputImage->getImage();
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1330,10 +1335,10 @@ void VulkanRenderer::createComputeCommandBuffer()
     devFuncs->vkCmdBindDescriptorSets(
                 compute.commandBufferImageLoad,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayoutOneInput,
+                computePipelineLayoutTwoInputs,
                 0,
                 1,
-                &computeDescriptorSetOneInput,
+                &computeDescriptorSetTwoInputs,
                 0,
                 0);
     devFuncs->vkCmdDispatch(
@@ -1363,7 +1368,7 @@ void VulkanRenderer::createComputeCommandBuffer()
         barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = computeRenderTarget->getImage();
+        barrier[1].image           = outputImage->getImage();
 
         devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1374,7 +1379,6 @@ void VulkanRenderer::createComputeCommandBuffer()
 
     devFuncs->vkEndCommandBuffer(compute.commandBufferImageLoad);
 }
-
 
 bool VulkanRenderer::createTextureImage(
                 const QSize &size,
@@ -1515,124 +1519,124 @@ void VulkanRenderer::recordComputeCommandBufferOneInput(
         CsImage& outputImage,
         VkPipeline& pl)
 {
-    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+//    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
-    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+//    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    VkResult err = devFuncs->vkBeginCommandBuffer(
-                compute.commandBufferOneInput,
-                &cmdBufferBeginInfo);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to begin command buffer: %d", err);
-    VkCommandBuffer cb = compute.commandBufferOneInput;
+//    VkResult err = devFuncs->vkBeginCommandBuffer(
+//                compute.commandBufferOneInput,
+//                &cmdBufferBeginInfo);
+//    if (err != VK_SUCCESS)
+//        qFatal("Failed to begin command buffer: %d", err);
+//    VkCommandBuffer cb = compute.commandBufferOneInput;
 
-    {
-         //Make the barriers for the resources
-        VkImageMemoryBarrier barrier[2] = {};
+//    {
+//         //Make the barriers for the resources
+//        VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = inputImage.getImage();
 
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage.getImage();
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = outputImage.getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0,
-                                0,
-                                nullptr,
-                                0,
-                                nullptr,
-                                2,
-                                &barrier[0]);
-    }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                                0,
+//                                0,
+//                                nullptr,
+//                                0,
+//                                nullptr,
+//                                2,
+//                                &barrier[0]);
+//    }
 
-    // Push constants for fragment stage
-    devFuncs->vkCmdPushConstants(
-                compute.commandBufferOneInput,
-                graphicsPipelineLayout,
-                VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(viewerPushConstants),
-                viewerPushConstants.data());
-    // Push constants for compute stage
-    devFuncs->vkCmdPushConstants(
-                compute.commandBufferOneInput,
-                computePipelineLayoutOneInput,
-                VK_SHADER_STAGE_COMPUTE_BIT,
-                0,
-                computePushConstants.size() * 4,
-                computePushConstants.data());
-    devFuncs->vkCmdBindPipeline(
-                compute.commandBufferOneInput,
-                VK_PIPELINE_BIND_POINT_COMPUTE,
-                pl);
-    devFuncs->vkCmdBindDescriptorSets(
-                compute.commandBufferOneInput,
-                VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayoutOneInput, 0, 1,
-                &computeDescriptorSetOneInput, 0, 0);
-    // Adding one extra local workgroup here to
-    // prevent flickering in crop shader
-    devFuncs->vkCmdDispatch(
-                compute.commandBufferOneInput,
-                outputImage.getWidth() / 16 + 1,
-                outputImage.getHeight() / 16 + 1, 1);
+//    // Push constants for fragment stage
+//    devFuncs->vkCmdPushConstants(
+//                compute.commandBufferOneInput,
+//                graphicsPipelineLayout,
+//                VK_SHADER_STAGE_FRAGMENT_BIT,
+//                0,
+//                sizeof(viewerPushConstants),
+//                viewerPushConstants.data());
+//    // Push constants for compute stage
+//    devFuncs->vkCmdPushConstants(
+//                compute.commandBufferOneInput,
+//                computePipelineLayoutOneInput,
+//                VK_SHADER_STAGE_COMPUTE_BIT,
+//                0,
+//                computePushConstants.size() * 4,
+//                computePushConstants.data());
+//    devFuncs->vkCmdBindPipeline(
+//                compute.commandBufferOneInput,
+//                VK_PIPELINE_BIND_POINT_COMPUTE,
+//                pl);
+//    devFuncs->vkCmdBindDescriptorSets(
+//                compute.commandBufferOneInput,
+//                VK_PIPELINE_BIND_POINT_COMPUTE,
+//                computePipelineLayoutOneInput, 0, 1,
+//                &computeDescriptorSetOneInput, 0, 0);
+//    // Adding one extra local workgroup here to
+//    // prevent flickering in crop shader
+//    devFuncs->vkCmdDispatch(
+//                compute.commandBufferOneInput,
+//                outputImage.getWidth() / 16 + 1,
+//                outputImage.getHeight() / 16 + 1, 1);
 
-    {
+//    {
 
-        VkImageMemoryBarrier barrier[2] = {};
+//        VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = inputImage.getImage();
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage.getImage();
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = outputImage.getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                            0,
-                            0,
-                            nullptr,
-                            0,
-                            nullptr,
-                            2,
-                            &barrier[0]);
-    }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                            0,
+//                            0,
+//                            nullptr,
+//                            0,
+//                            nullptr,
+//                            2,
+//                            &barrier[0]);
+//    }
 
-    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
+//    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
 }
 
 void VulkanRenderer::recordComputeCommandBufferOneInputMultipass(
@@ -1642,143 +1646,141 @@ void VulkanRenderer::recordComputeCommandBufferOneInputMultipass(
         int numShaderpasses,
         int currentPass)
 {
-    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+//    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
-    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+//    VkCommandBufferBeginInfo cmdBufferBeginInfo {};
+//    cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-    VkResult err = devFuncs->vkBeginCommandBuffer(
-                compute.commandBufferOneInput,
-                &cmdBufferBeginInfo);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to begin command buffer: %d", err);
-    VkCommandBuffer cb = compute.commandBufferOneInput;
+//    VkResult err = devFuncs->vkBeginCommandBuffer(
+//                compute.commandBufferOneInput,
+//                &cmdBufferBeginInfo);
+//    if (err != VK_SUCCESS)
+//        qFatal("Failed to begin command buffer: %d", err);
+//    VkCommandBuffer cb = compute.commandBufferOneInput;
 
-    {
-         //Make the barriers for the resources
-        VkImageMemoryBarrier barrier[2] = {};
+//    {
+//         //Make the barriers for the resources
+//        VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        if(currentPass == 1)
-            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        else
-            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        if(currentPass == 1)
+//            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        else
+//            barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
 
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = inputImage.getImage();
 
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage.getImage();
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+//        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = outputImage.getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                                0,
-                                0,
-                                nullptr,
-                                0,
-                                nullptr,
-                                2,
-                                &barrier[0]);
-    }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                                0,
+//                                0,
+//                                nullptr,
+//                                0,
+//                                nullptr,
+//                                2,
+//                                &barrier[0]);
+//    }
 
-    // Push constants for fragment stage
-    devFuncs->vkCmdPushConstants(
-                compute.commandBufferOneInput,
-                graphicsPipelineLayout,
-                VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(viewerPushConstants),
-                viewerPushConstants.data());
-    // Push constants for compute stage
-    devFuncs->vkCmdPushConstants(
-                compute.commandBufferOneInput,
-                computePipelineLayoutOneInput,
-                VK_SHADER_STAGE_COMPUTE_BIT,
-                0,
-                computePushConstants.size() * 4,
-                computePushConstants.data());
-    devFuncs->vkCmdBindPipeline(
-                compute.commandBufferOneInput,
-                VK_PIPELINE_BIND_POINT_COMPUTE,
-                pl);
-    devFuncs->vkCmdBindDescriptorSets(
-                compute.commandBufferOneInput,
-                VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayoutOneInput, 0, 1,
-                &computeDescriptorSetOneInput, 0, 0);
-    // Adding one extra local workgroup here to
-    // prevent flickering in crop shader
-    devFuncs->vkCmdDispatch(
-                compute.commandBufferOneInput,
-                outputImage.getWidth() / 16 + 1,
-                outputImage.getHeight() / 16 + 1, 1);
+//    // Push constants for fragment stage
+//    devFuncs->vkCmdPushConstants(
+//                compute.commandBufferOneInput,
+//                graphicsPipelineLayout,
+//                VK_SHADER_STAGE_FRAGMENT_BIT,
+//                0,
+//                sizeof(viewerPushConstants),
+//                viewerPushConstants.data());
+//    // Push constants for compute stage
+//    devFuncs->vkCmdPushConstants(
+//                compute.commandBufferOneInput,
+//                computePipelineLayoutOneInput,
+//                VK_SHADER_STAGE_COMPUTE_BIT,
+//                0,
+//                computePushConstants.size() * 4,
+//                computePushConstants.data());
+//    devFuncs->vkCmdBindPipeline(
+//                compute.commandBufferOneInput,
+//                VK_PIPELINE_BIND_POINT_COMPUTE,
+//                pl);
+//    devFuncs->vkCmdBindDescriptorSets(
+//                compute.commandBufferOneInput,
+//                VK_PIPELINE_BIND_POINT_COMPUTE,
+//                computePipelineLayoutOneInput, 0, 1,
+//                &computeDescriptorSetOneInput, 0, 0);
+//    // Adding one extra local workgroup here to
+//    // prevent flickering in crop shader
+//    devFuncs->vkCmdDispatch(
+//                compute.commandBufferOneInput,
+//                outputImage.getWidth() / 16 + 1,
+//                outputImage.getHeight() / 16 + 1, 1);
 
-    {
+//    {
 
-        VkImageMemoryBarrier barrier[2] = {};
+//        VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+//        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImage.getImage();
+//        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[0].srcAccessMask   = 0;
+//        barrier[0].dstAccessMask   = 0;
+//        barrier[0].image           = inputImage.getImage();
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+//        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+//        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+//        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
 
-        if (currentPass != numShaderpasses)
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        else
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+//        if (currentPass != numShaderpasses)
+//            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+//        else
+//            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
 
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage.getImage();
+//        barrier[1].srcAccessMask   = 0;
+//        barrier[1].dstAccessMask   = 0;
+//        barrier[1].image           = outputImage.getImage();
 
-        devFuncs->vkCmdPipelineBarrier(cb,
-                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
-                            0,
-                            0,
-                            nullptr,
-                            0,
-                            nullptr,
-                            2,
-                            &barrier[0]);
-    }
+//        devFuncs->vkCmdPipelineBarrier(cb,
+//                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+//                            VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+//                            0,
+//                            0,
+//                            nullptr,
+//                            0,
+//                            nullptr,
+//                            2,
+//                            &barrier[0]);
+//    }
 
-    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
+//    devFuncs->vkEndCommandBuffer(compute.commandBufferOneInput);
 }
 
 void VulkanRenderer::recordComputeCommandBufferTwoInputs(
-        CsImage& inputImageBack,
-        CsImage& inputImageFront,
-        CsImage& outputImage,
+        std::shared_ptr<CsImage> inputImageBack,
+        std::shared_ptr<CsImage> inputImageFront,
+        std::shared_ptr<CsImage> outputImage,
         VkPipeline& pl)
 {
-    // TODO: Merge with function above
-
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1792,8 +1794,8 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
 
     VkCommandBuffer cb = compute.commandBufferTwoInputs;
 
+    if (inputImageFront)
     {
-        //Make the barriers for the resources
        VkImageMemoryBarrier barrier[3] = {};
 
        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -1804,7 +1806,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
        barrier[0].srcAccessMask   = 0;
        barrier[0].dstAccessMask   = 0;
-       barrier[0].image           = inputImageBack.getImage();
+       barrier[0].image           = inputImageBack->getImage();
 
        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1814,7 +1816,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
        barrier[1].srcAccessMask   = 0;
        barrier[1].dstAccessMask   = 0;
-       barrier[1].image           = inputImageFront.getImage();
+       barrier[1].image           = inputImageBack->getImage();
 
        barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
        barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1824,7 +1826,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
        barrier[2].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
        barrier[2].srcAccessMask   = 0;
        barrier[2].dstAccessMask   = 0;
-       barrier[2].image           = outputImage.getImage();
+       barrier[2].image           = outputImage->getImage();
 
        devFuncs->vkCmdPipelineBarrier(cb,
                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1836,6 +1838,41 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
                                nullptr,
                                3,
                                &barrier[0]);
+    }
+    else
+    {
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImageBack->getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage->getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                                VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                                0,
+                                0,
+                                nullptr,
+                                0,
+                                nullptr,
+                                2,
+                                &barrier[0]);
     }
 
     // Push constants for fragment stage
@@ -1861,16 +1898,20 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
     devFuncs->vkCmdBindDescriptorSets(
                 compute.commandBufferTwoInputs,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
-                computePipelineLayoutTwoInputs, 0, 1,
-                &computeDescriptorSetTwoInputs, 0, 0);
+                computePipelineLayoutTwoInputs,
+                0,
+                1,
+                &computeDescriptorSetTwoInputs,
+                0,
+                0);
     devFuncs->vkCmdDispatch(
                 compute.commandBufferTwoInputs,
-                outputImage.getWidth() / 16 + 1,
-                outputImage.getHeight() / 16 + 1, 1);
+                outputImage->getWidth() / 16 + 1,
+                outputImage->getHeight() / 16 + 1, 1);
 
+    if (inputImageFront)
     {
-       //Make the barriers for the resources
-       VkImageMemoryBarrier barrier[3] = {};
+        VkImageMemoryBarrier barrier[3] = {};
 
         barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1880,7 +1921,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
         barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack.getImage();
+        barrier[0].image           = inputImageBack->getImage();
 
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1890,7 +1931,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
         barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = inputImageFront.getImage();
+        barrier[1].image           = inputImageBack->getImage();
 
         barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -1900,7 +1941,7 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
         barrier[2].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[2].srcAccessMask   = 0;
         barrier[2].dstAccessMask   = 0;
-        barrier[2].image           = outputImage.getImage();
+        barrier[2].image           = outputImage->getImage();
 
         devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1911,6 +1952,41 @@ void VulkanRenderer::recordComputeCommandBufferTwoInputs(
                             0,
                             nullptr,
                             3,
+                            &barrier[0]);
+    }
+    else
+    {
+        VkImageMemoryBarrier barrier[2] = {};
+
+        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+
+        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].srcAccessMask   = 0;
+        barrier[0].dstAccessMask   = 0;
+        barrier[0].image           = inputImageBack->getImage();
+
+        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
+
+        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[1].srcAccessMask   = 0;
+        barrier[1].dstAccessMask   = 0;
+        barrier[1].image           = outputImage->getImage();
+
+        devFuncs->vkCmdPipelineBarrier(cb,
+                            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                            VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT | VK_PIPELINE_STAGE_COMPUTE_SHADER_BIT,
+                            0,
+                            0,
+                            nullptr,
+                            0,
+                            nullptr,
+                            2,
                             &barrier[0]);
     }
 
@@ -2226,14 +2302,7 @@ void VulkanRenderer::submitComputeCommands()
         VkSubmitInfo computeSubmitInfo {};
         computeSubmitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
         computeSubmitInfo.commandBufferCount = 1;
-        if (!renderTwoInputs)
-        {
-            computeSubmitInfo.pCommandBuffers = &compute.commandBufferOneInput;
-        }
-        else
-        {
-            computeSubmitInfo.pCommandBuffers = &compute.commandBufferTwoInputs;
-        }
+        computeSubmitInfo.pCommandBuffers = &compute.commandBufferTwoInputs;
         devFuncs->vkQueueSubmit(compute.computeQueue, 1, &computeSubmitInfo, compute.fence);
     }
 }
@@ -2292,13 +2361,9 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
             qFatal("Failed to create compute render target.");
 
-        updateComputeDescriptors(*imageFromDisk, *computeRenderTarget);
+        updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
 
-        createComputeCommandBuffer();
-        recordComputeCommandBufferOneInput(
-                    *imageFromDisk,
-                    *computeRenderTarget,
-                    pipelines[NODE_TYPE_READ]);
+        recordComputeCommandBufferImageLoad(computeRenderTarget);
 
         submitComputeCommands();
 
@@ -2413,14 +2478,14 @@ void VulkanRenderer::processNode(
 
 void VulkanRenderer::processNode(
         NodeBase* node,
-        CsImage &inputImageBack,
-        CsImage &inputImageFront,
+        std::shared_ptr<CsImage> inputImageBack,
+        std::shared_ptr<CsImage> inputImageFront,
         const QSize targetSize)
 {
-    // This is for nodes that have two inputs
-    // TODO: Merge with function above
-
-    renderTwoInputs = true;
+    if(inputImageFront)
+        renderTwoInputs = true;
+    else
+        renderTwoInputs = false;
 
     computePushConstants = unpackPushConstants(node->getAllPropertyValues());
 
@@ -2435,9 +2500,9 @@ void VulkanRenderer::processNode(
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
 
-    updateComputeDescriptors(inputImageBack, inputImageFront, *computeRenderTarget);
+    updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget);
 
-    recordComputeCommandBufferTwoInputs(inputImageBack, inputImageFront, *computeRenderTarget, pipelines[node->nodeType]);
+    recordComputeCommandBufferTwoInputs(inputImageBack, inputImageFront, computeRenderTarget, pipelines[node->nodeType]);
 
     submitComputeCommands();
 
@@ -2450,7 +2515,7 @@ void VulkanRenderer::displayNode(NodeBase *node)
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
 
-    renderTwoInputs = false; // TODO: This is a problem
+    //renderTwoInputs = false; // TODO: This is a problem
 
     if(auto image = node->cachedImage)
     {
@@ -2462,9 +2527,9 @@ void VulkanRenderer::displayNode(NodeBase *node)
         if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
             qFatal("Failed to create compute render target.");
 
-        updateComputeDescriptors(*image, *computeRenderTarget);
+        updateComputeDescriptors(image, nullptr, computeRenderTarget);
 
-        recordComputeCommandBufferOneInput(*image, *computeRenderTarget, noopPipeline);
+        recordComputeCommandBufferTwoInputs(image, nullptr, computeRenderTarget, noopPipeline);
 
         submitComputeCommands();
 
@@ -2651,10 +2716,10 @@ void VulkanRenderer::releaseResources()
         settingsBufferMemory = VK_NULL_HANDLE;
     }
 
-    if (computeDescriptorSetLayoutOneInput) {
-        devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutOneInput, nullptr);
-        computeDescriptorSetLayoutOneInput = VK_NULL_HANDLE;
-    }
+//    if (computeDescriptorSetLayoutOneInput) {
+//        devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutOneInput, nullptr);
+//        computeDescriptorSetLayoutOneInput = VK_NULL_HANDLE;
+//    }
 
     if (computeDescriptorSetLayoutTwoInputs) {
         devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutTwoInputs, nullptr);
@@ -2666,10 +2731,10 @@ void VulkanRenderer::releaseResources()
         computePipeline = VK_NULL_HANDLE;
     }
 
-    if (computePipelineLayoutOneInput) {
-        devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutOneInput, nullptr);
-        computePipelineLayoutOneInput = VK_NULL_HANDLE;
-    }
+//    if (computePipelineLayoutOneInput) {
+//        devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutOneInput, nullptr);
+//        computePipelineLayoutOneInput = VK_NULL_HANDLE;
+//    }
 
     if (computePipelineLayoutTwoInputs) {
         devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutTwoInputs, nullptr);
