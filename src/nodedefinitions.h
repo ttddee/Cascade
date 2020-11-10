@@ -85,7 +85,8 @@ namespace Cascade
     ////////////////////////////////////
     enum RGBOutputTrait
     {
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED
     };
 
     ////////////////////////////////////
@@ -376,7 +377,7 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_INPUT_ALWAYS_CLEAR,
         ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED,
         ":/shaders/merge_comp.spv",
         1
     };
@@ -502,7 +503,7 @@ namespace Cascade
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_INPUT_ALWAYS_CLEAR,
         ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED,
         ":/shaders/difference_comp.spv",
         1
     };

@@ -95,14 +95,22 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(nodeToDisplay);
         }
     }
-    else if (viewerMode == VIEWER_MODE_OUTPUT_RGB)
+    else if (viewerMode == VIEWER_MODE_OUTPUT_RGB || viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
     {
-        displayNode(node);
-    }
-    else if (viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
-    {
-        renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
-        displayNode(node);
+        nodeToDisplay = node;
+
+        if (viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
+        {
+            renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
+        }
+        if (props.rgbOutputTrait == OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED)
+        {
+            if (!node->getUpstreamNodeFront())
+            {
+                nodeToDisplay = node->getUpstreamNodeBack();
+            }
+        }
+        displayNode(nodeToDisplay);
     }
 }
 
