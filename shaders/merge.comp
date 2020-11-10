@@ -24,10 +24,7 @@ void main()
 
     if(pc.mode == 0.0) // Over
     {
-        if (pc.opacity != 0.0)
-        {
-            back = (front * pc.opacity)  + back * (1.0 - front.a);
-        }
+        back = (front * pc.opacity)  + back * (1.0 - front.a);
     }
     else if (pc.mode == 1.0) // Add
     {
