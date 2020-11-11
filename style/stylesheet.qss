@@ -7,6 +7,7 @@ Red: #dc4c46
 RedHover: #e8514b
 Green: #9bcf43
 GreenHover: #a4da47
+BlueDark: #233443
 Blue: #00b6dd
 BlueHover: #01c0e9
 FGDark: #9299a1
@@ -59,6 +60,8 @@ ControlsWidget {
 QFrame[frameShape="4"],
 QFrame[frameShape="5"] {
     background-color: #282d31;
+    border: node;
+    max-height: 1px;
 }
 
 QPushButton {
@@ -90,15 +93,15 @@ QScrollBar::up-arrow:vertical, QScrollBar::down-arrow:vertical {
      border: 0px;
      background: none;
      color: none;
- }
- QScrollBar::add-line:vertical {
-       border: none;
-       background: none;
- }
- QScrollBar::sub-line:vertical {
-       border: none;
-       background: none;
- }
+}
+QScrollBar::add-line:vertical {
+      border: none;
+      background: none;
+}
+QScrollBar::sub-line:vertical {
+      border: none;
+      background: none;
+}
 
 QScrollBar:horizontal {
     border: 0px;
@@ -133,7 +136,7 @@ QSlider::handle:horizontal {
     margin: -5px -6px;
 }
 QSlider::sub-page:horizontal {
-    background: #00b6dd;
+    background: #233443;
     height: 2px;
     margin: 2px 0;
 }
@@ -145,7 +148,7 @@ color: #f1f1f1;
 border: 0px;
 border-radius: 3px;
 padding: 0 0 0 2;
-selection-background-color: #00b6dd;
+selection-background-color: #233443;
 }
 QSpinBox::up-button {
     background-image: url(:/design/ui/png/spinbox_up_button.png);
@@ -173,7 +176,7 @@ QDoubleSpinBox {
     border: 0px;
     border-radius: 3px;
     padding: 0 0 0 2;
-    selection-background-color: #00b6dd;
+    selection-background-color: #233443;
 }
 QDoubleSpinBox::up-button {
     background-image: url(:/design/ui/png/spinbox_up_button.png);
@@ -220,7 +223,7 @@ QComboBox::down-arrow:hover {
 /*For the dropdown menu*/
 QComboBox QAbstractItemView {
     background-color: #282d31;
-    selection-background-color: #626971;
+    selection-background-color: #233443;
 }
 
 QCheckBox {
@@ -228,7 +231,7 @@ QCheckBox {
     color: #f1f1f1;
 }
 QCheckBox::indicator:checked {
-    background-color: #00b6dd;
+    background-color: #233443;
     color: #f1f1f1;
     border-radius: 3px;
 }
@@ -278,6 +281,42 @@ QPushButton#Alpha:hover {
     background-color: #01c0e9;
 }
 
+CsSliderBox QSlider::groove:horizontal {
+    border: 1px solid #626971;
+    background: #1d2024;
+    height: 20px;
+    border-radius: 3px;
+    margin: 0 0 0 0;
+}
+CsSliderBox QSlider::sub-page:horizontal {
+    border: 0px solid #626971;
+    background: #233443;
+    height:20px;
+    margin: 2 2 2 2;
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+    border-top-right-radius: 0px;
+    border-bottom-right-radius: 0px;
+}
+CsSliderBox QSlider::handle:horizontal {
+    border: 0px;
+    height: 0px;
+    width: 0px;
+}
+CsSliderBox QLabel {
+    background-color: rgba(0,0,0,0);
+    font: 12px "Open Sans";
+    color: #f1f1f1;
+    margin: 2px;
+}
+CsSliderBox QDoubleSpinBox {
+    background-color: rgba(0,0,0,0);
+    font: 12px "Open Sans";
+    color: #f1f1f1;
+    border: none;
+    selection-background-color: #626971;
+}
+
 
 /* NodeOutput */
 QPushButton#Output {
@@ -302,10 +341,10 @@ QLabel#NodeTitleLabel {
     font: 14px "Open Sans";
 }
 QLabel#folderLabel {
-    color: #00b6dd;
+    color: #233443;
 }
 QLabel#fileNameLabel {
-    color: #00b6dd;
+    color: #233443;
 }
 QLabel#viewerModeLabel {
 

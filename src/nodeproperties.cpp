@@ -32,7 +32,7 @@
 #include "spinboxentity.h"
 #include "comboboxentity.h"
 #include "channelselectentity.h"
-
+#include "cssliderbox.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -160,6 +160,23 @@ NodeProperties::NodeProperties(
             ChannelSelectEntity* item = new ChannelSelectEntity(
                         UI_ELEMENT_TYPE_CHANNEL_SELECT,
                         this);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX)
+        {
+            CsSliderBox* item =
+                    new CsSliderBox(
+                        UI_ELEMENT_TYPE_SLIDER_BOX,
+                        this);
+            auto parts = elem.second.split(",");
+            item->setName(parts.at(0));
+            item->setMinMaxStepValue(
+                        parts.at(1).toDouble(),
+                        parts.at(2).toDouble(),
+                        parts.at(3).toDouble(),
+                        parts.at(4).toDouble());
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);

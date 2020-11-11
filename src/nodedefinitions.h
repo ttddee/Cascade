@@ -102,7 +102,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_COLOR_BUTTON,
         UI_ELEMENT_TYPE_WRITE_PROPERTIES,
         UI_ELEMENT_TYPE_COMBOBOX,
-        UI_ELEMENT_TYPE_CHANNEL_SELECT
+        UI_ELEMENT_TYPE_CHANNEL_SELECT,
+        UI_ELEMENT_TYPE_SLIDER_BOX
     };
 
     ////////////////////////////////////
@@ -289,9 +290,9 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gamma,0.0,2.0,0.01,1.0" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Gain,0.0,2.0,0.01,1.0" },
-            { UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE, "Lift,-2.0,2.0,0.01,0.0" }
+            { UI_ELEMENT_TYPE_SLIDER_BOX, "Gamma,0.0,2.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX, "Gain,0.0,2.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX, "Lift,-2.0,2.0,0.01,0.0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

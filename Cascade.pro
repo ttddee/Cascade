@@ -30,6 +30,7 @@ SOURCES += \
     src/csmessagebox.cpp \
     src/cssettingsbuffer.cpp \
     src/csslider.cpp \
+    src/cssliderbox.cpp \
     src/fileboxentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
@@ -42,6 +43,7 @@ SOURCES += \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
+    src/slidernoclick.cpp \
     src/spinboxentity.cpp \
     src/spinboxsliderentity.cpp \
     src/uientity.cpp \
@@ -63,6 +65,7 @@ HEADERS += \
     src/csmessagebox.h \
     src/cssettingsbuffer.h \
     src/csslider.h \
+    src/cssliderbox.h \
     src/fileboxentity.h \
     src/mainwindow.h \
     src/nodebase.h \
@@ -75,6 +78,7 @@ HEADERS += \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
+    src/slidernoclick.h \
     src/spinboxentity.h \
     src/spinboxsliderentity.h \
     src/uicolors.h \
@@ -90,6 +94,7 @@ FORMS += \
     src/channelselectentity.ui \
     src/colorbuttonentity.ui \
     src/comboboxentity.ui \
+    src/cssliderbox.ui \
     src/fileboxentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \
