@@ -1,12 +1,14 @@
 #version 450
 
 layout (local_size_x = 16, local_size_y = 16) in;
-layout (binding = 0, rgba8) uniform readonly image2D inputImage;
-layout (binding = 1, rgba8) uniform image2D resultImage;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float gain;
-} pc;
+} sb;
 
 vec3 conv(in float[9] kernel, in vec3[9] data) 
 {
@@ -55,14 +57,14 @@ void main()
 
     float gray = (0.2126 * mag.r + 0.7152 * mag.g + 0.0722 * mag.b) / 3.0;
 
-    if (pc.gain == 0.0)
+    if (sb.gain == 0.0)
     {
         gray = 0.0;
     }
     else
     {
-        gray *= pc.gain;
-    )
+        gray *= sb.gain;
+    }
 
     vec4 final = vec4(gray, gray, gray, gray);
 

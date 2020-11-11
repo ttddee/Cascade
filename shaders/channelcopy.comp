@@ -5,12 +5,13 @@ layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
 layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
 layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float red;
     layout(offset = 4) float green;
     layout(offset = 8) float blue;
     layout(offset = 12) float alpha;
-} pc;
+} sb;
 
 void main()
 {   
@@ -29,7 +30,7 @@ void main()
     values[6] = front.b;
     values[7] = front.a;
 
-    vec4 rgba = vec4(values[int(pc.red)], values[int(pc.green)], values[int(pc.blue)], values[int(pc.alpha)]);
+    vec4 rgba = vec4(values[int(sb.red)], values[int(sb.green)], values[int(sb.blue)], values[int(sb.alpha)]);
 
     imageStore(resultImage, pixelCoords, rgba);
 }

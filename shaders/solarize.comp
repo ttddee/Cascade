@@ -2,27 +2,29 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
-layout (binding = 1, rgba32f) uniform image2D resultImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float rThresh;
     layout(offset = 4) float gThresh;
     layout(offset = 8) float bThresh;
-} u_pushConstants;
+} sb;
 
 void main()
 {   
 	  vec4 rgba = imageLoad(inputImage, ivec2(gl_GlobalInvocationID.xy)).rgba;
 
-	 if(rgba[0] < u_pushConstants.rThresh)
+	 if(rgba[0] < sb.rThresh)
 	 {
         rgba[0] = 1.0 - rgba[0];
 	 }
-	 if(rgba[1] < u_pushConstants.gThresh)
+	 if(rgba[1] < sb.gThresh)
 	 {
         rgba[1] = 1.0 - rgba[1];
 	 }
-	 if(rgba[2] < u_pushConstants.bThresh)
+	 if(rgba[2] < sb.bThresh)
 	 {
         rgba[2] = 1.0 - rgba[2];
 	 }

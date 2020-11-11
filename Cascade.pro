@@ -20,8 +20,6 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 
 DEFINES += QT_DEPRECATED_WARNINGS
 
-#QMAKE_CXXFLAGS += -openmp
-
 SOURCES += \
     src/channelselectentity.cpp \
     src/colorbutton.cpp \
@@ -100,11 +98,6 @@ FORMS += \
     src/spinboxsliderentity.ui \
     src/viewerstatusbar.ui \
     src/writepropertiesentity.ui
-
-# Default rules for deployment.
-#qnx: target.path = /tmp/$${TARGET}/bin
-#else: unix:!android: target.path = /opt/$${TARGET}/bin
-#!isEmpty(target.path): INSTALLS += target
 
 linux-g++ {
     INCLUDEPATH += ../Qt-Advanced-Docking-System/src

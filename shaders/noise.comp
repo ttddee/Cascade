@@ -2,12 +2,14 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
-layout (binding = 1, rgba32f) uniform image2D resultImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float mode;
     layout(offset = 4) float size;
-} pc;
+} sb;
 
 // copy from https://www.shadertoy.com/view/4l2GzW
 
@@ -85,7 +87,7 @@ void main()
 
     ivec2 imageSize = imageSize(inputImage);    
 
-    float size = pc.size;
+    float size = sb.size;
 
     float dis = (1.0+perlin_noise(vec3(pixelCoords.xy/imageSize, 1.0)*8.0)) 
         * (1.0+(worley(pixelCoords.xy, size)+
@@ -94,7 +96,7 @@ void main()
 
     float value = 0.0;
 
-    if (pc.mode == 0.0)
+    if (sb.mode == 0.0)
     {
         value = dis / 4.0;
     }

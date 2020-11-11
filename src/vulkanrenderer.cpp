@@ -172,13 +172,13 @@ void VulkanRenderer::createVertexBuffer()
         qFatal("Failed to map memory: %d", err);
     memcpy(p, vertexData, sizeof(vertexData));
     QMatrix4x4 ident;
-    memset(uniformBufInfo, 0, sizeof(uniformBufInfo));
+    memset(uniformBufferInfo, 0, sizeof(uniformBufferInfo));
     for (int i = 0; i < concurrentFrameCount; ++i) {
         const VkDeviceSize offset = vertexAllocSize + i * uniformAllocSize;
         memcpy(p + offset, ident.constData(), 16 * sizeof(float));
-        uniformBufInfo[i].buffer = vertexBuffer;
-        uniformBufInfo[i].offset = offset;
-        uniformBufInfo[i].range = uniformAllocSize;
+        uniformBufferInfo[i].buffer = vertexBuffer;
+        uniformBufferInfo[i].offset = offset;
+        uniformBufferInfo[i].range = uniformAllocSize;
     }
     devFuncs->vkUnmapMemory(device, vertexBufferMemory);
 }
@@ -771,7 +771,7 @@ void VulkanRenderer::updateComputeDescriptors(
         descWrite[0].dstBinding = 0;
         descWrite[0].descriptorCount = 1;
         descWrite[0].descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-        descWrite[0].pBufferInfo = &uniformBufInfo[i];
+        descWrite[0].pBufferInfo = &uniformBufferInfo[i];
 
         VkDescriptorImageInfo descImageInfo = {
             sampler,
@@ -1185,7 +1185,7 @@ void VulkanRenderer::recordComputeCommandBufferImageLoad(
         barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
 
         barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
         barrier[0].srcAccessMask   = 0;
         barrier[0].dstAccessMask   = 0;
         barrier[0].image           = imageFromDisk->getImage();
@@ -1364,7 +1364,7 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
     if (err != VK_SUCCESS)
         qFatal("Failed to begin command buffer: %d", err);
 
-    if (inputImageFront)
+    if (inputImageFront && inputImageFront != inputImageBack)
     {
        VkImageMemoryBarrier barrier[3] = {};
 
@@ -1431,6 +1431,11 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
         barrier[0].dstAccessMask   = 0;
         barrier[0].image           = inputImageBack->getImage();
 
+        qDebug("Shaderpass:");
+        qDebug(QString::number(currentShaderPass).toLocal8Bit());
+        qDebug("numPasses:");
+        qDebug(QString::number(numShaderPasses).toLocal8Bit());
+
         if (currentShaderPass == 1)
         {
             barrier[0].oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
@@ -1488,7 +1493,7 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
                 outputImage->getWidth() / 16 + 1,
                 outputImage->getHeight() / 16 + 1, 1);
 
-    if (inputImageFront)
+    if (inputImageFront && inputImageFront != inputImageBack)
     {
         VkImageMemoryBarrier barrier[3] = {};
 
@@ -1510,30 +1515,27 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
         barrier[1].dstAccessMask   = 0;
         barrier[1].image           = inputImageFront->getImage();
 
-        std::cout << "current: " << currentShaderPass << std::endl;
-        std::cout << "num: " << numShaderPasses << std::endl;
-
-        if (currentShaderPass == numShaderPasses)
-        {
-            barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-
-        }
-        else
-        {
-            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        }
-
         barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier[2].subresourceRange.levelCount = barrier[2].subresourceRange.layerCount = 1;
 
         barrier[2].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[2].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[2].srcAccessMask   = 0;
         barrier[2].dstAccessMask   = 0;
         barrier[2].image           = outputImage->getImage();
+
+        if (currentShaderPass == numShaderPasses)
+        {
+            barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            barrier[2].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        }
+        else
+        {
+            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[2].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        }
 
         devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1559,24 +1561,25 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
         barrier[0].dstAccessMask   = 0;
         barrier[0].image           = inputImageBack->getImage();
 
-        if (currentShaderPass == numShaderPasses)
-        {
-            barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        }
-        else
-        {
-            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        }
-
         barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
         barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
         barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
 
         barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
         barrier[1].srcAccessMask   = 0;
         barrier[1].dstAccessMask   = 0;
         barrier[1].image           = outputImage->getImage();
+
+        if (currentShaderPass == numShaderPasses)
+        {
+            barrier[0].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+        }
+        else
+        {
+            barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
+        }
 
         devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1812,7 +1815,7 @@ void VulkanRenderer::createRenderPass()
     VkResult err = devFuncs->vkMapMemory(
                 device,
                 vertexBufferMemory,
-                uniformBufInfo[window->currentFrame()].offset,
+                uniformBufferInfo[window->currentFrame()].offset,
                 UNIFORM_DATA_SIZE,
                 0,
                 reinterpret_cast<void **>(&p));
@@ -1947,8 +1950,6 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
     if(path != "")
     {
-        qDebug("Processing read node.");
-
         imagePath = path;
 
         // Create texture
@@ -1981,17 +1982,14 @@ void VulkanRenderer::processNode(
         const QSize targetSize)
 {
 
-    qDebug("Filling settings buffer");
     fillSettingsBuffer(node);
 
-    qDebug("Checking render size");
     if (currentRenderSize != targetSize)
     {
         updateVertexData(targetSize.width(), targetSize.height());
         createVertexBuffer();
     }
 
-    qDebug("Creating Render Target");
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
 
@@ -2000,10 +1998,8 @@ void VulkanRenderer::processNode(
 
     if (numShaderPasses == 1)
     {
-        qDebug("Updating descriptors");
         updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget);
 
-        qDebug("Recording command buffer");
         recordComputeCommandBufferGeneric(
                     inputImageBack,
                     inputImageFront,
@@ -2013,6 +2009,10 @@ void VulkanRenderer::processNode(
                     currentShaderPass);
 
         submitComputeCommands();
+
+        window->requestUpdate();
+
+        devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
         node->cachedImage = std::move(computeRenderTarget);
     }
@@ -2036,8 +2036,6 @@ void VulkanRenderer::processNode(
                                 currentShaderPass);
 
                     submitComputeCommands();
-
-                    node->cachedImage = std::move(computeRenderTarget);
                 }
                 else if (currentShaderPass <= numShaderPasses)
                 {
@@ -2058,12 +2056,17 @@ void VulkanRenderer::processNode(
                                 currentShaderPass);
 
                     submitComputeCommands();
-
-                    node->cachedImage = std::move(computeRenderTarget);
                 }
+
+                window->requestUpdate();
+
+                devFuncs->vkQueueWaitIdle(compute.computeQueue);
+
+                node->cachedImage = std::move(computeRenderTarget);
+
                 currentShaderPass++;
             }
-        }
+        }  
 }
 
 void VulkanRenderer::displayNode(NodeBase *node)

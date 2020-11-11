@@ -151,16 +151,13 @@ void RenderManager::displayNode(NodeBase* node)
         {
             renderer->processReadNode(node);
         }
+        // TODO: This is inefficient, better to display upon render
         renderer->displayNode(node);
         node->needsUpdate = false;
     }
     else if (node && node->canBeRendered())
     {
-        if (renderNodes(node))
-        {
-            renderer->displayNode(node);
-        }
-        else
+        if (!renderNodes(node))
         {
             renderer->doClearScreen();
         }

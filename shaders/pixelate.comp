@@ -2,15 +2,17 @@
 
 layout (local_size_x = 16, local_size_y = 16) in;
 layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
-layout (binding = 1, rgba32f) uniform image2D resultImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
 
-layout(push_constant) uniform pushConstants {
+layout(set = 0, binding = 3) uniform InputBuffer
+{
     layout(offset = 0) float filterSize;
-} u_pushConstants;
+} sb;
 
 void main()
 {   
-    int fSize = int(u_pushConstants.filterSize);
+    int fSize = int(sb.filterSize);
 
         if(gl_GlobalInvocationID.x % fSize == 0 && gl_GlobalInvocationID.y % fSize == 0)
 	{
