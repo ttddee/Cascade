@@ -266,8 +266,8 @@ private:
     VkDescriptorSetLayout           computeDescriptorSetLayoutGeneric = VK_NULL_HANDLE;
     VkDescriptorSet                 computeDescriptorSetGeneric       = VK_NULL_HANDLE;
 
-    std::shared_ptr<CsImage>        computeRenderTarget                 = nullptr;
-    std::shared_ptr<CsImage>        imageFromDisk                       = nullptr;
+    std::shared_ptr<CsImage>        computeRenderTarget               = nullptr;
+    std::shared_ptr<CsImage>        imageFromDisk                     = nullptr;
 
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;

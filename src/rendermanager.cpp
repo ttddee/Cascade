@@ -157,7 +157,11 @@ void RenderManager::displayNode(NodeBase* node)
     }
     else if (node && node->canBeRendered())
     {
-        if (!renderNodes(node))
+        if (renderNodes(node))
+        {
+            renderer->displayNode(node);
+        }
+        else
         {
             renderer->doClearScreen();
         }

@@ -1,6 +1,7 @@
 #include "cssettingsbuffer.h"
 
 #include <stdexcept>
+#include <iostream>
 
 #include <QString>
 #include <QStringList>
@@ -90,7 +91,7 @@ void CsSettingsBuffer::fillBuffer(const QString &s)
 void CsSettingsBuffer::appendValue(float f)
 {
     float *pBuffer = pBufferStart;
-    pBuffer += bufferSize + 1;
+    pBuffer += bufferSize;
     *pBuffer = f;
     bufferSize++;
 }
@@ -98,7 +99,7 @@ void CsSettingsBuffer::appendValue(float f)
 void CsSettingsBuffer::incrementLastValue()
 {
     float *pBuffer = pBufferStart;
-    pBuffer += bufferSize;
+    pBuffer += bufferSize - 1;
     *pBuffer = *pBuffer + 1.0;
 }
 

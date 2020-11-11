@@ -142,6 +142,16 @@ VkDeviceMemory& CsImage::getMemory()
     return memory;
 }
 
+VkImageLayout CsImage::getLayout()
+{
+    return currentLayout;
+}
+
+void CsImage::setLayout(VkImageLayout layout)
+{
+    currentLayout = layout;
+}
+
 int CsImage::getWidth() const
 {
     return width;

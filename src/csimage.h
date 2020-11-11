@@ -40,6 +40,9 @@ public:
     VkImageView& getImageView();
     VkDeviceMemory& getMemory();
 
+    VkImageLayout getLayout();
+    void setLayout(VkImageLayout layout);
+
     int getWidth() const;
     int getHeight() const;
 
@@ -55,6 +58,8 @@ private:
     VulkanWindow* window;
     QVulkanDeviceFunctions *devFuncs;
     const VkDevice* device;
+
+    VkImageLayout currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
 
     const int width;
     const int height;
