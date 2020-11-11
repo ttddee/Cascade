@@ -7,13 +7,13 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>36</height>
+    <height>26</height>
    </rect>
   </property>
   <property name="maximumSize">
    <size>
     <width>16777215</width>
-    <height>36</height>
+    <height>35</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -30,10 +30,13 @@
     <number>0</number>
    </property>
    <property name="bottomMargin">
-    <number>0</number>
+    <number>3</number>
    </property>
    <property name="horizontalSpacing">
     <number>3</number>
+   </property>
+   <property name="verticalSpacing">
+    <number>5</number>
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">

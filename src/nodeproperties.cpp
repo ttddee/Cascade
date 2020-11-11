@@ -33,6 +33,7 @@
 #include "comboboxentity.h"
 #include "channelselectentity.h"
 #include "cssliderbox.h"
+#include "colorpropertiesentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -168,7 +169,7 @@ NodeProperties::NodeProperties(
         {
             CsSliderBox* item =
                     new CsSliderBox(
-                        UI_ELEMENT_TYPE_SLIDER_BOX,
+                        UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
@@ -178,6 +179,15 @@ NodeProperties::NodeProperties(
                         parts.at(3).toDouble(),
                         parts.at(4).toDouble());
             item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_COLOR_PROPERTIES)
+        {
+            ColorPropertiesEntity* item = new ColorPropertiesEntity(
+                        UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                        this);
+            //item->selfConnectToRequestFileSave(this);
             layout->addWidget(item);
             widgets.push_back(item);
         }

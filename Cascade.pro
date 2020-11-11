@@ -24,6 +24,7 @@ SOURCES += \
     src/channelselectentity.cpp \
     src/colorbutton.cpp \
     src/colorbuttonentity.cpp \
+    src/colorpropertiesentity.cpp \
     src/comboboxentity.cpp \
     src/connection.cpp \
     src/csimage.cpp \
@@ -59,6 +60,7 @@ HEADERS += \
     src/channelselectentity.h \
     src/colorbutton.h \
     src/colorbuttonentity.h \
+    src/colorpropertiesentity.h \
     src/comboboxentity.h \
     src/connection.h \
     src/csimage.h \
@@ -93,6 +95,7 @@ HEADERS += \
 FORMS += \
     src/channelselectentity.ui \
     src/colorbuttonentity.ui \
+    src/colorpropertiesentity.ui \
     src/comboboxentity.ui \
     src/cssliderbox.ui \
     src/fileboxentity.ui \

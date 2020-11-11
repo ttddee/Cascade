@@ -103,7 +103,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_WRITE_PROPERTIES,
         UI_ELEMENT_TYPE_COMBOBOX,
         UI_ELEMENT_TYPE_CHANNEL_SELECT,
-        UI_ELEMENT_TYPE_SLIDER_BOX
+        UI_ELEMENT_TYPE_SLIDER_BOX,
+        UI_ELEMENT_TYPE_COLOR_PROPERTIES
     };
 
     ////////////////////////////////////
@@ -290,9 +291,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] },
-            { UI_ELEMENT_TYPE_SLIDER_BOX, "Gamma,0.0,2.0,0.01,1.0" },
-            { UI_ELEMENT_TYPE_SLIDER_BOX, "Gain,0.0,2.0,0.01,1.0" },
-            { UI_ELEMENT_TYPE_SLIDER_BOX, "Lift,-2.0,2.0,0.01,0.0" }
+            { UI_ELEMENT_TYPE_COLOR_PROPERTIES, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -648,9 +647,9 @@ namespace Cascade
             {
                 { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
                 { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
-                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
-                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
-                { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
+                { UI_ELEMENT_TYPE_COMBOBOX, "Green:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Blue:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
+                { UI_ELEMENT_TYPE_COMBOBOX, "Alpha:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
             },
             FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
             BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
