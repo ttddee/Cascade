@@ -78,7 +78,7 @@ void CsSliderBox::setMinMaxStepValue(
 {
     ui->slider->setMinimum(min * 1000);
     ui->slider->setMaximum(max * 1000);
-    ui->slider->setSingleStep(step * 1000);
+    ui->slider->setSingleStep(abs(max - min) * step * 250);
     ui->slider->setValue(value * 1000);
     valueBoxDouble->setMinimum(min);
     valueBoxDouble->setMaximum(max);
@@ -96,7 +96,7 @@ void CsSliderBox::setMinMaxStepValue(
 {
     ui->slider->setMinimum(min * 10);
     ui->slider->setMaximum(max * 10);
-    ui->slider->setSingleStep(step);
+    ui->slider->setSingleStep(abs(max - min) * step / 40);
     ui->slider->setValue(value * 10);
     valueBoxInt->setMinimum(min);
     valueBoxInt->setMaximum(max);

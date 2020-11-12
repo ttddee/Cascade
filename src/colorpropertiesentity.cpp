@@ -35,35 +35,35 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Saturation");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Contrast");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gamma");
-    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gain");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Lift");
-    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.01, 0.0);
     uiItems.push_back(item);
     ui->masterLayout->addWidget(item);
 
@@ -72,35 +72,35 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Saturation");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Contrast");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gamma");
-    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gain");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Lift");
-    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.01, 0.0);
     uiItems.push_back(item);
     ui->shadowsLayout->addWidget(item);
 
@@ -109,35 +109,35 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Saturation");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Contrast");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gamma");
-    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gain");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Lift");
-    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.01, 0.0);
     uiItems.push_back(item);
     ui->midtonesLayout->addWidget(item);
 
@@ -146,35 +146,35 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Saturation");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Contrast");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gamma");
-    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Gain");
-    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Lift");
-    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.01, 0.0);
     uiItems.push_back(item);
     ui->highlightsLayout->addWidget(item);
 
@@ -183,7 +183,7 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Shadow Range");
-    item->setMinMaxStepValue(0.0, 1.0, 0.001, 0.1);
+    item->setMinMaxStepValue(0.0, 1.0, 0.01, 0.1);
     uiItems.push_back(item);
     ui->verticalLayout->insertWidget(4, item);
 
@@ -191,7 +191,7 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Highlight Range");
-    item->setMinMaxStepValue(0.0, 1.0, 0.001, 0.5);
+    item->setMinMaxStepValue(0.0, 1.0, 0.01, 0.5);
     uiItems.push_back(item);
     ui->verticalLayout->insertWidget(6, item);
 
@@ -199,7 +199,7 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     item->setName("Mix");
-    item->setMinMaxStepValue(0.0, 1.0, 0.001, 1.0);
+    item->setMinMaxStepValue(0.0, 1.0, 0.01, 1.0);
     uiItems.push_back(item);
     ui->verticalLayout->insertWidget(8, item);
 
