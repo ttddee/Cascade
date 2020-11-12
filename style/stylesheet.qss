@@ -43,7 +43,8 @@ QListView {
     border: none;
 }
 QListView::item:selected {
-    background-color: #626971;
+    background-color: #233443;
+    color: #f1f1f1;
 }
 
 QPlainTextEdit {
@@ -316,7 +317,13 @@ CsSliderBox QDoubleSpinBox {
     border: none;
     selection-background-color: #626971;
 }
-
+CsSliderBox QSpinBox {
+    background-color: rgba(0,0,0,0);
+    font: 12px "Open Sans";
+    color: #f1f1f1;
+    border: none;
+    selection-background-color: #626971;
+}
 
 /* NodeOutput */
 QPushButton#Output {
@@ -341,10 +348,10 @@ QLabel#NodeTitleLabel {
     font: 14px "Open Sans";
 }
 QLabel#folderLabel {
-    color: #233443;
+    color: #9299a1;
 }
 QLabel#fileNameLabel {
-    color: #233443;
+    color: #9299a1;
 }
 QLabel#viewerModeLabel {
 

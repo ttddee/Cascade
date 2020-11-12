@@ -22,6 +22,8 @@
 
 #include <QWidget>
 
+#include "cssliderbox.h"
+
 namespace Ui {
 class ViewerStatusBar;
 }
@@ -47,17 +49,16 @@ private:
 
     bool bw = false;
 
+    CsSliderBox* gammaSlider;
+    CsSliderBox* gainSlider;
+
 signals:
     void requestZoomReset();
     void valueChanged();
 
 public slots:
     void handleBwToggled();
-    void handleGammaBoxValueChanged(double value);
-    void handleGammaSliderValueChanged(int value);
-    void handleGainBoxValueChanged(double value);
-    void handleGainSliderValueChanged(int value);
-    void handleColorResetButtonClicked();
+    void handleValueChanged();
 };
 
 #endif // VIEWERSTATUSBAR_H

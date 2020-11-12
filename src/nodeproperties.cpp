@@ -170,11 +170,11 @@ NodeProperties::NodeProperties(
             layout->addWidget(item);
             widgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX)
+        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         {
             CsSliderBox* item =
                     new CsSliderBox(
-                        UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                        UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
@@ -183,6 +183,23 @@ NodeProperties::NodeProperties(
                         parts.at(2).toDouble(),
                         parts.at(3).toDouble(),
                         parts.at(4).toDouble());
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_INT)
+        {
+            CsSliderBox* item =
+                    new CsSliderBox(
+                        UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                        this);
+            auto parts = elem.second.split(",");
+            item->setName(parts.at(0));
+            item->setMinMaxStepValue(
+                        parts.at(1).toInt(),
+                        parts.at(2).toInt(),
+                        parts.at(3).toInt(),
+                        parts.at(4).toInt());
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);

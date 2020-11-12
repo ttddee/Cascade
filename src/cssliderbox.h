@@ -39,6 +39,7 @@ public:
     explicit CsSliderBox(UIElementType et, QWidget *parent = nullptr);
 
     void setMinMaxStepValue(double, double, double, double);
+    void setMinMaxStepValue(int, int, int, int);
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
@@ -48,7 +49,8 @@ public:
 
 private:
     void setSpinBoxNoSignal(int i);
-    void setSliderNoSignal(double d);
+    void setSliderNoSignalDouble(double d);
+    void setSliderNoSignalInt(int i);
 
     bool eventFilter(QObject* watched, QEvent* event) override;
 
@@ -58,7 +60,8 @@ private:
     Ui::CsSliderBox *ui;
 
     QLabel* nameLabel;
-    QDoubleSpinBox* valueBox;
+    QDoubleSpinBox* valueBoxDouble;
+    QSpinBox* valueBoxInt;
 
     bool isDragging = false;
     QPoint lastPos;
@@ -66,7 +69,8 @@ private:
     float baseValue;
 
 signals:
-    void valueChanged(double d);
+    void valueChangedDouble(double d);
+    void valueChangedInt(int i);
 
 };
 
