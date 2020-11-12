@@ -1,4 +1,3 @@
-#ifndef CSSLIDERBOX_H
 /*
  *  Cascade Image Editor
  *
@@ -17,7 +16,7 @@
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
-
+#ifndef CSSLIDERBOX_H
 #define CSSLIDERBOX_H
 
 #include <QWidget>
@@ -62,10 +61,9 @@ private:
     QDoubleSpinBox* valueBox;
 
     bool isDragging = false;
-    bool controlPressed = false;
     QPoint lastPos;
 
-    int baseValue;
+    float baseValue;
 
 signals:
     void valueChanged(double d);

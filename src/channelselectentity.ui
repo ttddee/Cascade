@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>400</width>
-    <height>25</height>
+    <height>28</height>
    </rect>
   </property>
   <property name="maximumSize">
@@ -113,7 +113,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="label_4">
+      <widget class="QLabel" name="alphaLabel">
        <property name="maximumSize">
         <size>
          <width>15</width>

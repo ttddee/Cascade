@@ -40,6 +40,12 @@ ChannelSelectEntity::ChannelSelectEntity(UIElementType et, QWidget *parent)
             this, &ChannelSelectEntity::valueChanged);
 }
 
+void ChannelSelectEntity::hideAlphaChannel()
+{
+    ui->alphaLabel->setHidden(true);
+    ui->alphaBox->setHidden(true);
+}
+
 void ChannelSelectEntity::selfConnectToValueChanged(NodeProperties *p)
 {
     connect(this, &ChannelSelectEntity::valueChanged,

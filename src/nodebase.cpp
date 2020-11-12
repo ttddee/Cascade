@@ -273,6 +273,7 @@ QString NodeBase::getAllPropertyValues()
 {
     QString vals;
     auto widgets = getProperties()->widgets;
+
     for(size_t i = 0; i < widgets.size(); i++)
     {
         vals.append(widgets[i]->getValuesAsString());
@@ -281,7 +282,6 @@ QString NodeBase::getAllPropertyValues()
             vals.append(",");
         }
     }
-    std::cout << vals.toStdString() << std::endl;
     return vals;
 }
 

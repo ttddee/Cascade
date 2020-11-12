@@ -134,7 +134,6 @@ void VulkanRenderer::createVertexBuffer()
 {
     const VkPhysicalDeviceLimits *pdevLimits = &window->physicalDeviceProperties()->limits;
     const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
-    qDebug("uniform buffer offset alignment is %u", (uint) uniAlign);
     VkBufferCreateInfo bufInfo;
     memset(&bufInfo, 0, sizeof(bufInfo));
     bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
@@ -534,7 +533,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
 {
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
-    bool ok = cpuImage->read(0, 0, 0, 3, true, TypeDesc::FLOAT);
+    bool ok = cpuImage->read(0, 0, 0, 4, true, TypeDesc::FLOAT);
     if (!ok)
     {
         std::cout << "There was a problem reading the image." << std::endl;
@@ -1968,6 +1967,14 @@ void VulkanRenderer::processNode(
 
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
+
+    // Tells the shader if we have a mask on the front input
+    settingsBuffer->appendValue(0.0);
+    if (inputImageFront)
+    {
+        settingsBuffer->incrementLastValue();
+    }
+
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
     int currentShaderPass = 1;

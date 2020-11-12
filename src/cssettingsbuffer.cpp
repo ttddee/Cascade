@@ -74,6 +74,7 @@ CsSettingsBuffer::CsSettingsBuffer(
 
 void CsSettingsBuffer::fillBuffer(const QString &s)
 {
+    std::cout << s.toStdString() << std::endl;
     auto parts = s.split(",");
 
     float* pBuffer = pBufferStart;

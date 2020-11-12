@@ -37,6 +37,8 @@ class ChannelSelectEntity : public UiEntity
 public:
     explicit ChannelSelectEntity(UIElementType et, QWidget *parent = nullptr);
 
+    void hideAlphaChannel();
+
     void selfConnectToValueChanged(NodeProperties* p);
 
     QString getValuesAsString() override;

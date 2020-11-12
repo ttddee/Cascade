@@ -20,7 +20,9 @@
 #include "colorpropertiesentity.h"
 #include "ui_colorpropertiesentity.h"
 
-#include "cssliderbox.h"
+#include <iostream>
+
+#include "nodeproperties.h"
 
 ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
@@ -33,119 +35,213 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Saturation");
-    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
-    ui->verticalLayout->insertWidget(1, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Contrast");
-    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
-    ui->verticalLayout->insertWidget(2, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gamma");
-    item->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
-    ui->verticalLayout->insertWidget(3, item);
+    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gain");
-    item->setMinMaxStepValue(0.0, 4.0, 0.01, 1.0);
-    ui->verticalLayout->insertWidget(4, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->masterLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Lift");
-    item->setMinMaxStepValue(-1.0, 1.0, 0.01, 0.0);
-    ui->verticalLayout->insertWidget(5, item);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    uiItems.push_back(item);
+    ui->masterLayout->addWidget(item);
 
     // Shadows
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Saturation");
-    ui->verticalLayout->insertWidget(7, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Contrast");
-    ui->verticalLayout->insertWidget(8, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gamma");
-    ui->verticalLayout->insertWidget(9, item);
+    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gain");
-    ui->verticalLayout->insertWidget(10, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->shadowsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Lift");
-    ui->verticalLayout->insertWidget(11, item);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    uiItems.push_back(item);
+    ui->shadowsLayout->addWidget(item);
 
     // Midtones
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Saturation");
-    ui->verticalLayout->insertWidget(13, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Contrast");
-    ui->verticalLayout->insertWidget(14, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gamma");
-    ui->verticalLayout->insertWidget(15, item);
+    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gain");
-    ui->verticalLayout->insertWidget(16, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->midtonesLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Lift");
-    ui->verticalLayout->insertWidget(17, item);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    uiItems.push_back(item);
+    ui->midtonesLayout->addWidget(item);
 
     // Highlights
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Saturation");
-    ui->verticalLayout->insertWidget(19, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Contrast");
-    ui->verticalLayout->insertWidget(20, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gamma");
-    ui->verticalLayout->insertWidget(21, item);
+    item->setMinMaxStepValue(0.0, 5.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Gain");
-    ui->verticalLayout->insertWidget(22, item);
+    item->setMinMaxStepValue(0.0, 4.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->highlightsLayout->addWidget(item);
     item = new CsSliderBox(
                 UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                 this);
     item->setName("Lift");
-    ui->verticalLayout->insertWidget(23, item);
+    item->setMinMaxStepValue(-1.0, 1.0, 0.001, 0.0);
+    uiItems.push_back(item);
+    ui->highlightsLayout->addWidget(item);
 
+    // General
+    item = new CsSliderBox(
+                UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                this);
+    item->setName("Shadow Range");
+    item->setMinMaxStepValue(0.0, 1.0, 0.001, 0.1);
+    uiItems.push_back(item);
+    ui->verticalLayout->insertWidget(4, item);
+
+    item = new CsSliderBox(
+                UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                this);
+    item->setName("Highlight Range");
+    item->setMinMaxStepValue(0.0, 1.0, 0.001, 0.5);
+    uiItems.push_back(item);
+    ui->verticalLayout->insertWidget(6, item);
+
+    item = new CsSliderBox(
+                UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                this);
+    item->setName("Mix");
+    item->setMinMaxStepValue(0.0, 1.0, 0.001, 1.0);
+    uiItems.push_back(item);
+    ui->verticalLayout->insertWidget(8, item);
+
+    foreach(auto& item, uiItems)
+    {
+        connect(item, &CsSliderBox::valueChanged,
+                this, &ColorPropertiesEntity::handleValueChanged);
+    }
+    connect(ui->maskCheckBox, &QCheckBox::toggled,
+            this, &ColorPropertiesEntity::handleValueChanged);
+    connect(ui->clampBlackCheckBox, &QCheckBox::toggled,
+            this, &ColorPropertiesEntity::handleValueChanged);
+    connect(ui->clampWhiteCheckBox, &QCheckBox::toggled,
+            this, &ColorPropertiesEntity::handleValueChanged);
+}
+
+void ColorPropertiesEntity::selfConnectToValueChanged(NodeProperties* p)
+{
+    connect(this, &ColorPropertiesEntity::valueChanged,
+            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString ColorPropertiesEntity::getValuesAsString()
 {
-    return "";
+    QString vals;
+    foreach(auto& item, uiItems)
+    {
+        vals.append(item->getValuesAsString());
+        vals.append(",");
+    }
+    vals.append(QString::number(ui->maskCheckBox->isChecked()));
+    vals.append(",");
+    vals.append(QString::number(ui->clampBlackCheckBox->isChecked()));
+    vals.append(",");
+    vals.append(QString::number(ui->clampWhiteCheckBox->isChecked()));
+
+    return vals;
+}
+
+void ColorPropertiesEntity::handleValueChanged()
+{
+    emit valueChanged();
 }
 
 ColorPropertiesEntity::~ColorPropertiesEntity()

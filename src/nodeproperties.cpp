@@ -161,6 +161,11 @@ NodeProperties::NodeProperties(
             ChannelSelectEntity* item = new ChannelSelectEntity(
                         UI_ELEMENT_TYPE_CHANNEL_SELECT,
                         this);
+            auto parts = elem.second.split(",");
+            if (parts.at(0).toInt() == 1)
+            {
+                item->hideAlphaChannel();
+            }
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
@@ -187,7 +192,7 @@ NodeProperties::NodeProperties(
             ColorPropertiesEntity* item = new ColorPropertiesEntity(
                         UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                         this);
-            //item->selfConnectToRequestFileSave(this);
+            item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
         }
@@ -196,7 +201,6 @@ NodeProperties::NodeProperties(
 
 void NodeProperties::handleSomeValueChanged()
 {
-    std::cout << "Node value changed, requesting update." << std::endl;
     parentNode->requestUpdate();
 }
 

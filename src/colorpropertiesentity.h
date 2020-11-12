@@ -23,6 +23,7 @@
 #include <QWidget>
 
 #include "uientity.h"
+#include "cssliderbox.h"
 
 namespace Ui {
 class ColorPropertiesEntity;
@@ -35,12 +36,21 @@ class ColorPropertiesEntity : public UiEntity
 public:
     explicit ColorPropertiesEntity(UIElementType et, QWidget *parent = nullptr);
 
+    void selfConnectToValueChanged(NodeProperties* p);
     QString getValuesAsString() override;
 
     ~ColorPropertiesEntity();
 
 private:
     Ui::ColorPropertiesEntity *ui;
+
+    std::vector<CsSliderBox*> uiItems;
+
+signals:
+    void valueChanged();
+
+public slots:
+    void handleValueChanged();
 };
 
 #endif // COLORPROPERTIESENTITY_H

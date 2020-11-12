@@ -405,6 +405,30 @@ QMessageBox QPushButton {
     padding: 5 30 5 30;
 }
 
+QTabWidget {
+    color: #f1f1f1;
+    font: 14px "Open Sans";
+    border: none;
+}
+QTabWidget::pane {
+    border: none;
+}
+QTabWidget::tab-bar {
+}
+QTabBar::tab {
+    color: #f1f1f1;
+    background-color: #282d31;
+    padding: 2px 6px;
+    margin: 0 4 0 0;
+}
+QTabBar::tab:selected {
+    background-color: #233443;
+}
+
+ColorPropertiesEntity QCheckBox {
+    font: 12px "Open Sans";
+}
+
 /*-----------Advanced Docking------------*/
 ads--CDockContainerWidget {
         background-color: #181b1e;

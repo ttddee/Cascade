@@ -7,10 +7,163 @@ layout (binding = 2, rgba32f) uniform image2D resultImage;
 
 layout(set = 0, binding = 3) uniform InputBuffer
 {
-    layout(offset = 0) float gamma;
-    layout(offset = 4) float gain;
-    layout(offset = 8) float lift;
+    layout(offset = 0) float bRed;
+    layout(offset = 4) float bGreen;
+    layout(offset = 8) float bBlue;
+    layout(offset = 12) float bAlpha;
+    layout(offset = 16) float maSat;
+    layout(offset = 20) float maCon;
+    layout(offset = 24) float maGam;
+    layout(offset = 28) float maGain;
+    layout(offset = 32) float maLift;
+    layout(offset = 36) float sSat;
+    layout(offset = 40) float sCon;
+    layout(offset = 44) float sGam;
+    layout(offset = 48) float sGain;
+    layout(offset = 52) float sLift;
+    layout(offset = 56) float miSat;
+    layout(offset = 60) float miCon;
+    layout(offset = 64) float miGam;
+    layout(offset = 68) float miGain;
+    layout(offset = 72) float miLift;
+    layout(offset = 76) float hSat;
+    layout(offset = 80) float hCon;
+    layout(offset = 84) float hGam;
+    layout(offset = 88) float hGain;
+    layout(offset = 92) float hLift;
+    layout(offset = 96) float sRange;
+    layout(offset = 100) float hRange;
+    layout(offset = 104) float mix;
+    layout(offset = 108) float useMask;
+    layout(offset = 112) float clampBlack;
+    layout(offset = 116) float clampWhite;
+    layout(offset = 120) float hasMask;
 } sb;
+
+const vec3 satWeights = vec3(0.2125, 0.7154, 0.0721);
+
+vec3 bRGB = vec3(sb.bRed, sb.bGreen, sb.bBlue);
+
+float maskMaster = 1.0;
+
+vec3 applyColor(vec3 pixel, float sat, float con, float gam, float gain, float lift, int range, float rangeLow, float rangeHigh)
+{
+    // Range
+    // 0 = master
+    // 1 = shadows
+    // 2 = midtones
+    // 3 = highlights
+
+    vec3 ret = pixel;
+
+    if (sat != 1.0)
+    {
+        vec3 intensity = (vec3(dot(ret.rgb, satWeights)));
+        ret.rgb = vec3(mix(intensity, ret.rgb, sat));
+    }
+
+    if (con != 1.0)
+    {
+        // This is what Natron does for contrast
+        ret.rgb = pow(ret.rgb / 0.18, vec3(con, con, con)) * 0.18;
+    }
+
+    if (gam != 1.0)
+    {
+        float div = 1 / gam;
+        ret.rgb = pow(ret.rgb, vec3(div, div, div));
+    }
+
+    if (gain != 1.0)
+    {
+        ret.rgb = ret.rgb * gain;
+    }
+
+    if (lift != 0.0)
+    {
+        ret.rgb = ret.rgb + lift;
+    }
+
+    if (range == 1 && rangeLow != 0.0)
+    {
+        if (pixel.r <= rangeLow)
+        {
+            float intensity = 1.0 - pixel.r / rangeLow;
+            ret.r = intensity * ret.r + abs(intensity - 1.0) * pixel.r;
+        }
+        else
+        {
+            ret.r = pixel.r;
+        }
+        if (pixel.g <= rangeLow)
+        {
+            float intensity = 1.0 - pixel.g / rangeLow;
+            ret.g = intensity * ret.g + abs(intensity - 1.0) * pixel.g;
+        }
+        else
+        {
+            ret.g = pixel.g;
+        }
+        if (pixel.b <= rangeLow)
+        {
+            float intensity = 1.0 - pixel.b / rangeLow;
+            ret.b = intensity * ret.b + abs(intensity - 1.0) * pixel.b;
+        }
+        else
+        {
+            ret.b = pixel.b;
+        }
+    }
+
+    if (range == 2)
+    {
+        float lowIntensity = 1.0 - pixel.r / rangeLow;
+        lowIntensity = max(lowIntensity, 0.0);
+        float highIntensity = (1.0 - rangeHigh / pixel.r) * (1.0 / (1.0 - rangeHigh));
+        highIntensity = min(highIntensity, 1.0);
+
+        ret.r = pixel.r * highIntensity + ret.r * abs(1.0 - highIntensity); 
+        ret.g = pixel.g * highIntensity + ret.g * abs(1.0 - highIntensity); 
+        ret.b = pixel.b * highIntensity + ret.b * abs(1.0 - highIntensity); 
+
+        ret.r = pixel.r * lowIntensity + ret.r * abs(1.0 - lowIntensity); 
+        ret.g = pixel.g * lowIntensity + ret.g * abs(1.0 - lowIntensity); 
+        ret.b = pixel.b * lowIntensity + ret.b * abs(1.0 - lowIntensity); 
+    }
+
+    if (range == 3)
+    {
+        if (pixel.r >= rangeHigh)
+        {
+            float intensity = (1.0 - rangeHigh / pixel.r) * (1.0 / (1.0 - rangeHigh));
+            ret.r = intensity * ret.r + abs(intensity - 1.0) * pixel.r;
+        }
+        else
+        {
+            ret.r = pixel.r;
+        }
+        if (pixel.g >= rangeHigh)
+        {
+            float intensity = (1.0 - rangeHigh / pixel.g) * (1.0 / (1.0 - rangeHigh));
+            ret.g = intensity * ret.g + abs(intensity - 1.0) * pixel.g;
+        }
+        else
+        {
+            ret.g = pixel.g;
+        }
+        if (pixel.b >= rangeHigh)
+        {
+            float intensity = (1.0 - rangeHigh / pixel.b) * (1.0 / (1.0 - rangeHigh));
+            ret.b = intensity * ret.b + abs(intensity - 1.0) * pixel.b;
+        }
+        else
+        {
+            ret.b = pixel.b;
+        }
+    }
+
+    return ret;
+}
 
 void main()
 {   
@@ -18,17 +171,37 @@ void main()
 
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
+    vec4 source = imageLoad(inputImage, pixelCoords).rgba;
 
-    if (sb.gamma == 0.0)
+    vec3 target = applyColor(source.rgb, sb.maSat, sb.maCon, sb.maGam, sb.maGain, sb.maLift, 0, 0.0, 1.0);
+
+    target = applyColor(target.rgb, sb.sSat, sb.sCon, sb.sGam, sb.sGain, sb.sLift, 1, sb.sRange, 1.0);
+
+    target = applyColor(target.rgb, sb.miSat, sb.miCon, sb.miGam, sb.miGain, sb.miLift, 2, sb.sRange, sb.hRange);
+
+    target = applyColor(target.rgb, sb.hSat, sb.hCon, sb.hGam, sb.hGain, sb.hLift, 3, 0.0, sb.hRange);
+    
+    // Ignore changes if channel not selected
+    target.rgb = bRGB * target.rgb + abs(bRGB - 1) * source.rgb;
+
+    // Mix
+    target.rgb = target.rgb * sb.mix + (1.0 - sb.mix) * source.rgb;
+
+    // Mask
+    if (sb.useMask != 0.0 && sb.hasMask != 0.0)
     {
-        rgba = vec4(0.0, 0.0, 0.0, rgba.a);
+        float mask = imageLoad(mask, pixelCoords).a;
+        target.rgb = target.rgb * mask + (1.0 - mask) * source.rgb;
     }
-    else
+
+    if (sb.clampBlack != 0.0)
     {
-        rgba.r = pow(rgba.r, (1 / sb.gamma)) * sb.gain + sb.lift;
-        rgba.g = pow(rgba.g, (1 / sb.gamma)) * sb.gain + sb.lift;
-        rgba.b = pow(rgba.b, (1 / sb.gamma)) * sb.gain + sb.lift;
+        target.rgb = max(target.rgb, vec3(0.0, 0.0, 0.0));
     }
-    imageStore(resultImage, pixelCoords, rgba);
+    if (sb.clampWhite != 0.0)
+    {
+        target.rgb = min(target.rgb, vec3(1.0, 1.0, 1.0));
+    }
+
+    imageStore(resultImage, pixelCoords, vec4(target, source.a));
 }

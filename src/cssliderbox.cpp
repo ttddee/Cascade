@@ -57,10 +57,10 @@ void CsSliderBox::setMinMaxStepValue(
         double step,
         double value)
 {
-    ui->slider->setMinimum(min * 100);
-    ui->slider->setMaximum(max * 100);
-    ui->slider->setSingleStep(step * 100);
-    ui->slider->setValue(value * 100);
+    ui->slider->setMinimum(min * 1000);
+    ui->slider->setMaximum(max * 1000);
+    ui->slider->setSingleStep(step * 1000);
+    ui->slider->setValue(value * 1000);
     valueBox->setMinimum(min);
     valueBox->setMaximum(max);
     valueBox->setSingleStep(step);
@@ -78,7 +78,7 @@ void CsSliderBox::selfConnectToValueChanged(NodeProperties* p)
 void CsSliderBox::setSpinBoxNoSignal(int i)
 {
     valueBox->blockSignals(true);
-    valueBox->setValue(i / 100.0);
+    valueBox->setValue(i / 1000.0);
     valueBox->blockSignals(false);
 
     emit valueChanged(valueBox->value());
@@ -87,7 +87,7 @@ void CsSliderBox::setSpinBoxNoSignal(int i)
 void CsSliderBox::setSliderNoSignal(double d)
 {
     ui->slider->blockSignals(true);
-    ui->slider->setValue(static_cast<int>(d * 100));
+    ui->slider->setValue(static_cast<int>(d * 1000));
     ui->slider->blockSignals(false);
 
     emit valueChanged(valueBox->value());
@@ -100,7 +100,7 @@ void CsSliderBox::setName(const QString &name)
 
 QString CsSliderBox::getValuesAsString()
 {
-    return QString::number(ui->slider->value() / 100.0);
+    return QString::number(ui->slider->value() / 1000.0);
 }
 
 bool CsSliderBox::eventFilter(QObject *watched, QEvent *event)
@@ -114,30 +114,10 @@ bool CsSliderBox::eventFilter(QObject *watched, QEvent *event)
             lastPos = QCursor::pos();
             isDragging = true;
 
-            if (controlPressed)
+            if (QApplication::queryKeyboardModifiers() == Qt::ControlModifier)
             {
                 valueBox->setValue(baseValue);
             }
-        }
-    }
-
-    if(event->type() == QEvent::KeyPress)
-    {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-
-        if (keyEvent->key() == Qt::Key_Control)
-        {
-            controlPressed = true;
-        }
-    }
-
-    if(event->type() == QEvent::KeyRelease)
-    {
-        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
-
-        if (keyEvent->key() == Qt::Key_Control)
-        {
-            controlPressed = false;
         }
     }
 
