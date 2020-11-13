@@ -22,6 +22,7 @@
 #include <iostream>
 
 #include <QMouseEvent>
+#include <QLabel>
 
 #include "vulkanrenderer.h"
 

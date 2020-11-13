@@ -1764,7 +1764,6 @@ void VulkanRenderer::createRenderPass()
     std::cout << "Swapchain image height: " << sz.height() << std::endl;
 
     // Clear background
-    VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
     VkClearDepthStencilValue clearDS = { 1, 0 };
     VkClearValue clearValues[2];
     memset(clearValues, 0, sizeof(clearValues));
@@ -2121,7 +2120,6 @@ void VulkanRenderer::startNextFrame()
         const QSize sz = window->swapChainImageSize();
 
         // Clear background
-        VkClearColorValue clearColor = {{ 0.0f, 0.0f, 0.0f, 0.0f }};
         VkClearDepthStencilValue clearDS = { 1, 0 };
         VkClearValue clearValues[2];
         memset(clearValues, 0, sizeof(clearValues));

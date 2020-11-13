@@ -235,6 +235,8 @@ private:
 
     QSize outputImageSize;
 
+    VkClearColorValue clearColor = {{ 0.05f, 0.05f, 0.05f, 0.0f }};
+
     QMatrix4x4 projection;
     float rotation    = 0.0f;
     float position_x  = 0.0f;

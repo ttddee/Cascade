@@ -12,7 +12,8 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 8) float bBlue;
     layout(offset = 12) float bAlpha;
     layout(offset = 16) float strength;
-    layout(offset = 20) float shaderPass;
+    layout(offset = 20) float hasMask;
+    layout(offset = 24) float shaderPass;
 } sb;
 
 int width = imageSize(inputImage).x;
