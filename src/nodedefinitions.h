@@ -105,7 +105,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_CHANNEL_SELECT,
         UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
         UI_ELEMENT_TYPE_SLIDER_BOX_INT,
-        UI_ELEMENT_TYPE_COLOR_PROPERTIES
+        UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+        UI_ELEMENT_TYPE_SIZEBOX
     };
 
     ////////////////////////////////////
@@ -463,7 +464,8 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] },
-            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color" }
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color" },
+            { UI_ELEMENT_TYPE_SIZEBOX, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
@@ -484,7 +486,8 @@ namespace Cascade
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_NOISE] },
             { UI_ELEMENT_TYPE_COMBOBOX, "Type:,Worley-Perlin,Worley,0" },
-            { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Size,1,256,1,32"}
+            { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Size,1,256,1,32"},
+            { UI_ELEMENT_TYPE_SIZEBOX, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

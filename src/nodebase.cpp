@@ -209,8 +209,37 @@ void NodeBase::requestUpdate()
     emit nodeRequestUpdate(this);
 }
 
+QString NodeBase::getCustomSize()
+{
+    return sizeSource->getValuesAsString();
+}
+
+bool NodeBase::getHasCustomSize()
+{
+    return hasCustomSize;
+}
+
+void NodeBase::setHasCustomSize(UiEntity* source)
+{
+    hasCustomSize = true;
+    sizeSource = source;
+}
+
 QSize NodeBase::getTargetSize()
 {
+    if (hasCustomSize)
+    {
+        auto s = getCustomSize();
+
+        if (s != "")
+        {
+            auto parts = s.split(",");
+            QSize size(parts.at(0).toInt(), parts.at(1).toInt());
+
+            return size;
+        }
+    }
+
     auto upstreamNode = getUpstreamNodeBack();
 
     if (upstreamNode)
@@ -410,6 +439,10 @@ bool NodeBase::canBeRendered()
         {
             return false;
         }
+    }
+    if (hasCustomSize && getCustomSize() != "")
+    {
+        return true;
     }
     if (rgbaBackIn && !rgbaBackIn->hasConnection())
     {

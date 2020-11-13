@@ -25,7 +25,6 @@
 
 #include "fileboxentity.h"
 #include "propertiesheading.h"
-#include "spinboxsliderentity.h"
 #include "nodebase.h"
 #include "colorbuttonentity.h"
 #include "writepropertiesentity.h"
@@ -34,6 +33,7 @@
 #include "channelselectentity.h"
 #include "cssliderbox.h"
 #include "colorpropertiesentity.h"
+#include "sizeboxentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -58,41 +58,6 @@ NodeProperties::NodeProperties(
                         elem.second,
                         this);
             layout->addWidget(item);
-        }
-        else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_INT)
-        {
-            SpinBoxSliderEntity* item =
-                    new SpinBoxSliderEntity(
-                        UI_ELEMENT_TYPE_SLIDERSPIN_INT,
-                        this);
-            auto parts = elem.second.split(",");
-            item->setName(parts.at(0));
-            item->setMinMaxStepValue(
-                        parts.at(1).toInt(),
-                        parts.at(2).toInt(),
-                        parts.at(3).toInt(),
-                        parts.at(4).toInt());
-            item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
-        }
-        else if (elem.first == UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE)
-        {
-            SpinBoxSliderEntity* item =
-                    new SpinBoxSliderEntity(
-                        UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE,
-                        this);
-            item->makeDouble();
-            auto parts = elem.second.split(",");
-            item->setName(parts.at(0));
-            item->setMinMaxStepValue(
-                        parts.at(1).toDouble(),
-                        parts.at(2).toDouble(),
-                        parts.at(3).toDouble(),
-                        parts.at(4).toDouble());
-            item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SPINBOX)
         {
@@ -212,6 +177,16 @@ NodeProperties::NodeProperties(
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_SIZEBOX)
+        {
+            SizeBoxEntity* item = new SizeBoxEntity(
+                        UI_ELEMENT_TYPE_SIZEBOX,
+                        this);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+            parentNode->setHasCustomSize(item);
         }
     }
 }

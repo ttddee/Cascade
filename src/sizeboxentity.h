@@ -17,8 +17,8 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef SPINBOXSLIDERENTITY_H
-#define SPINBOXSLIDERENTITY_H
+#ifndef SIZEBOXENTITY_H
+#define SIZEBOXENTITY_H
 
 #include <QWidget>
 
@@ -27,52 +27,49 @@
 class NodeProperties;
 
 namespace Ui {
-class SpinBoxSliderEntity;
+class SizeBoxEntity;
 }
 
-class SpinBoxSliderEntity : public UiEntity
+class SizeBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit SpinBoxSliderEntity(UIElementType et, QWidget *parent = nullptr);
+    explicit SizeBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
-    void makeDouble();
-    void setName(const QString& name);
-    void setMinMaxStepValue(int, int, int, int);
-    void setMinMaxStepValue(double, double, double, double);
     void selfConnectToValueChanged(NodeProperties* p);
 
     QString getValuesAsString() override;
 
-    auto value()
-    {
-        return isDouble ? currentValue / 100.0 : currentValue;
-    }
-
-    ~SpinBoxSliderEntity();
+    ~SizeBoxEntity();
 
 private:
-    void setSpinBoxNoSignal(int);
-    void setSliderNoSignal(int);
-    void setSliderNoSignal(double);
-    void setCurrentValue(int);
-    void setCurrentValue(double);
-    void reset();
+    void setSizeBoxNoSignal(const QSize& size);
 
-    Ui::SpinBoxSliderEntity *ui;
+    void hideCustomSizeElements();
+    void unHideCustomSizeElements();
 
-    bool isDouble = false;
-    int baseValue = 0;
-    int currentValue = 0;
+    Ui::SizeBoxEntity *ui;
+
+    QMap<QString, QPair<int, int>> sizePresets =
+    {
+        { "NTSC", { 720, 486 } },
+        { "PAL", { 720, 576 } },
+        { "HD 720p", { 1280, 720 } },
+        { "HD 1080p", { 1920, 1080 } },
+        { "2K", { 2048, 1024 } },
+        { "4K", { 4096, 2160 } },
+        { "256 Square", { 256, 256 } },
+        { "512 Square", { 512, 512 } },
+        { "1K Square", { 1024, 1024 } },
+        { "2K Square", { 2048, 2048 } }
+    };
 
 signals:
-    void valueChangedInt(int);
-    void valueChangedDouble(double);
+    void valueChanged();
 
-private slots:
-    void handleSliderValueChanged();
-
+public slots:
+    void handleSelectionChanged();
 };
 
-#endif // SPINBOXSLIDERENTITY_H
+#endif // SIZEBOXENTITY_H

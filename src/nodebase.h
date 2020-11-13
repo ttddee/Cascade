@@ -91,6 +91,11 @@ public:
 
     void requestUpdate();
 
+    QString getCustomSize();
+
+    bool getHasCustomSize();
+    void setHasCustomSize(UiEntity* source);
+
     virtual ~NodeBase();
 
     bool needsUpdate = true;
@@ -143,6 +148,9 @@ private:
     bool isDragging = false;
 
     QPoint oldPos;
+
+    bool hasCustomSize = false;
+    UiEntity* sizeSource;
 
     int leftCrop = 0;
     int topCrop = 0;

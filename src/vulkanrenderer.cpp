@@ -1975,6 +1975,17 @@ void VulkanRenderer::processNode(
         settingsBuffer->incrementLastValue();
     }
 
+    // TODO: This is a workaround for generative nodes without input
+    // but should not be necessary
+    if (!inputImageBack)
+    {
+        inputImageBack = std::shared_ptr<CsImage>(new CsImage(
+                                                      window,
+                                                      &device,
+                                                      devFuncs,
+                                                      targetSize.width(),
+                                                      targetSize.height()));
+    }
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
     int currentShaderPass = 1;

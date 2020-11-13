@@ -85,6 +85,7 @@ NodeInput, NodeOutput {
 
 QScrollBar:vertical {
     border: 0px;
+    width: 15px;
     background: #1d2024;
 }
 QScrollBar::handle:vertical {
@@ -106,6 +107,7 @@ QScrollBar::sub-line:vertical {
 
 QScrollBar:horizontal {
     border: 0px;
+    height: 15px;
     background: #1d2024;
 }
 QScrollBar::handle:horizontal {

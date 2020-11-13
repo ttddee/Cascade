@@ -203,6 +203,10 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processReadNode(node);
         }
     }
+    if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
+    {
+        renderer->processNode(node, nullptr, nullptr, node->getTargetSize());
+    }
     if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
         std::shared_ptr<CsImage> inputImageBack = nullptr;

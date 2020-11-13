@@ -44,9 +44,9 @@ SOURCES += \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
+    src/sizeboxentity.cpp \
     src/slidernoclick.cpp \
     src/spinboxentity.cpp \
-    src/spinboxsliderentity.cpp \
     src/uientity.cpp \
     src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
@@ -80,9 +80,9 @@ HEADERS += \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
+    src/sizeboxentity.h \
     src/slidernoclick.h \
     src/spinboxentity.h \
-    src/spinboxsliderentity.h \
     src/uicolors.h \
     src/uientity.h \
     src/viewerstatusbar.h \
@@ -102,8 +102,8 @@ FORMS += \
     src/mainwindow.ui \
     src/nodebase.ui \
     src/propertiesheading.ui \
+    src/sizeboxentity.ui \
     src/spinboxentity.ui \
-    src/spinboxsliderentity.ui \
     src/viewerstatusbar.ui \
     src/writepropertiesentity.ui
 
@@ -134,7 +134,12 @@ win32-msvc* {
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
     LIBS += -L../external/msvc2019/OpenColorIO/lib -lOpenColorIO
-    LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
+    CONFIG(release, debug|release) {
+        LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
+    }
+    CONFIG(debug, debug|release) {
+        LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddockingd
+    }
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -156,12 +161,14 @@ win32-msvc* {
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Widgets.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Gui.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Core.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddockingd.dll)
     }
 
     CONFIG(debug, debug|release) {
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Widgetsd.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Guid.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Cored.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
     }
 
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/IlmImf-2_3.dll)
@@ -181,7 +188,6 @@ win32-msvc* {
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_thread-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_chrono-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_date_time-vc141-mt-x64-1_66.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
     dlls.path = $$DESTDIR
 
     CONFIG(release, debug|release) {
