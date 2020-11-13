@@ -148,7 +148,6 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         QMouseEvent* mouseEvent = static_cast<QMouseEvent*>(event);
         if(mouseEvent->button() == Qt::LeftButton)
         {
-            // std::cout << "left button" << std::endl;
             return false;
         }
     }

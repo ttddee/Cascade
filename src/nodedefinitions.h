@@ -509,7 +509,7 @@ namespace Cascade
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] },
             { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
-            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,-1.0,4.0,0.01,1.0" }
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,4.0,0.01,1.0" }
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

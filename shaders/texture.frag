@@ -31,7 +31,6 @@ void main()
             pixel.r = pow(pixel.r, (1 / pc.gamma));
             pixel.g = pow(pixel.g, (1 / pc.gamma));
             pixel.b = pow(pixel.b, (1 / pc.gamma));
-            pixel.a = pow(pixel.a, (1 / pc.gamma));
         }
         else
         {
