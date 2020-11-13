@@ -185,7 +185,7 @@ namespace Cascade
         { NODE_TYPE_SOLARIZE, "Solarize" },
         { NODE_TYPE_CONSTANT, "Constant" },
         { NODE_TYPE_NOISE, "Noise" },
-        { NODE_TYPE_DIFFERENCE, "Difference" },
+        { NODE_TYPE_DIFFERENCE, "Difference Key" },
         { NODE_TYPE_PREMULT, "Premult" },
         { NODE_TYPE_UNPREMULT, "Unpremult" },
         { NODE_TYPE_WRITE, "Write" },
@@ -507,7 +507,9 @@ namespace Cascade
           NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] },
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,-1.0,4.0,0.01,1.0" }
         },
         FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

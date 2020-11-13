@@ -5,6 +5,15 @@ layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
 layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
 layout (binding = 2, rgba32f) uniform image2D resultImage;
 
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float bRed;
+    layout(offset = 4) float bGreen;
+    layout(offset = 8) float bBlue;
+    layout(offset = 12) float bAlpha;
+    layout(offset = 16) float gain;
+} sb;
+
 void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
@@ -13,7 +22,27 @@ void main()
 
     vec4 front = imageLoad(inputImageFront, pixelCoords).rgba;
 
-    vec4 pixel = abs(back - front);
+    float result = 0.0;
+    float div = 0.0;
 
-    imageStore(resultImage, pixelCoords, pixel);
+    if (sb.bRed != 0.0)
+    {
+        result += abs(back.r - front.r) / 3.0;
+        div += 1.0;
+    }
+    if (sb.bGreen != 0.0)
+    {
+        result += abs(back.g - front.g)  / 3.0;
+        div += 1.0;
+    }
+    if (sb.bBlue != 0.0)
+    {
+        result += abs(back.b - front.b)  / 3.0;
+        div += 1.0;
+    }
+
+    result *= sb.gain;
+    result /= div;
+
+    imageStore(resultImage, pixelCoords, vec4(back.rgb, result));
 }
