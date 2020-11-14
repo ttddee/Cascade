@@ -127,6 +127,11 @@ QScrollBar::up-arrow:horizontal, QScrollBar::down-arrow:horizontal {
        background: none;
  }
 
+QPlainTextEdit {
+    font: 12px "Open Sans";
+    color: #9299a1
+}
+
 /*Slider*/
 QSlider::groove:horizontal {
     height: 2px;

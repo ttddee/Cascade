@@ -80,6 +80,8 @@ public:
             CsImage& inputImage,
             const QString& path,
             const int colorSpace);
+    void processGmicNode(
+            CsImage& inputImage);
 
     void setViewerPushConstants(const QString& s);
 

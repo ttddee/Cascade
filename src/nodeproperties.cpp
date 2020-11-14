@@ -34,6 +34,7 @@
 #include "cssliderbox.h"
 #include "colorpropertiesentity.h"
 #include "sizeboxentity.h"
+#include "textboxentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -187,6 +188,15 @@ NodeProperties::NodeProperties(
             layout->addWidget(item);
             widgets.push_back(item);
             parentNode->setHasCustomSize(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_TEXTBOX)
+        {
+            TextBoxEntity* item = new TextBoxEntity(
+                        UI_ELEMENT_TYPE_TEXTBOX,
+                        this);
+            item->setText(elem.second);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
     }
 }

@@ -47,6 +47,7 @@ SOURCES += \
     src/sizeboxentity.cpp \
     src/slidernoclick.cpp \
     src/spinboxentity.cpp \
+    src/textboxentity.cpp \
     src/uientity.cpp \
     src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
@@ -83,6 +84,7 @@ HEADERS += \
     src/sizeboxentity.h \
     src/slidernoclick.h \
     src/spinboxentity.h \
+    src/textboxentity.h \
     src/uicolors.h \
     src/uientity.h \
     src/viewerstatusbar.h \
@@ -104,6 +106,7 @@ FORMS += \
     src/propertiesheading.ui \
     src/sizeboxentity.ui \
     src/spinboxentity.ui \
+    src/textboxentity.ui \
     src/viewerstatusbar.ui \
     src/writepropertiesentity.ui
 

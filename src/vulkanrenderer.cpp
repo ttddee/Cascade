@@ -1581,7 +1581,6 @@ uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFla
             return i;
         }
     }
-
     throw std::runtime_error("Failed to find suitable memory type!");
 }
 
@@ -1589,7 +1588,6 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
         CsImage& inputImage)
 {
     // This is for outputting an image to the CPU
-
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     VkCommandBufferBeginInfo cmdBufferBeginInfo {};
@@ -1691,6 +1689,54 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
 void VulkanRenderer::setDisplayMode(DisplayMode mode)
 {
     displayMode = mode;
+}
+
+void VulkanRenderer::processGmicNode(CsImage &inputImage)
+{
+    recordComputeCommandBufferCPUCopy(inputImage);
+    submitImageSaveCommand();
+
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+
+    float *pInput;
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                outputStagingBufferMemory,
+                0,
+                VK_WHOLE_SIZE,
+                0,
+                reinterpret_cast<void **>(&pInput));
+    if (err != VK_SUCCESS)
+    {
+        qWarning("Failed to map memory for staging buffer: %d", err);
+    }
+
+    int width = inputImage.getWidth();
+    int height = inputImage.getHeight();
+    int numValues = width * height * 4;
+
+    int fourth = numValues / 4;
+
+    float* output = new float[numValues];
+    float* pOutput = &output[0];
+
+    //TODO: Parallelize this
+    for (int y = 0; y < fourth; ++y)
+    {
+        *pOutput = *(pInput + y * 4);
+        *(pOutput + fourth) = *(pInput + y * 4 + 1);
+        *(pOutput + fourth * 2) = *(pInput + y * 4 + 2);
+        *(pOutput + fourth * 3) = *(pInput + y * 4 + 3);
+        pInput++;
+        pOutput += 4;
+    }
+
+
+
+    delete[] output;
+
+    devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
+
 }
 
 bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, const int colorSpace)
@@ -1887,6 +1933,8 @@ void VulkanRenderer::submitComputeCommands()
 
 void VulkanRenderer::submitImageSaveCommand()
 {
+    // TODO: Merge with function above
+
     // Use a fence to ensure that compute command buffer has finished executing before using it again
     devFuncs->vkWaitForFences(device, 1, &compute.fence, VK_TRUE, UINT64_MAX);
     devFuncs->vkResetFences(device, 1, &compute.fence);

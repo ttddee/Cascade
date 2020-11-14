@@ -52,5 +52,6 @@
         <file alias="/ads/images/close-button.svg">design/advanceddocking/close-button.svg</file>
         <file>shaders/directionalblur_comp.spv</file>
         <file>shaders/channelcopy_comp.spv</file>
+        <file>shaders/riverstyx_comp.spv</file>
     </qresource>
 </RCC>
