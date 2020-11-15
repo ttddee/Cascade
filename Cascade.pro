@@ -134,15 +134,20 @@ win32-msvc* {
     INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
     INCLUDEPATH += ../external/msvc2019/OpenColorIO/include
     INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
+    #INCLUDEPATH += ../external/msvc2019/gmic/release/include
 
     LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
     LIBS += -L../external/msvc2019/OpenColorIO/lib -lOpenColorIO
+
     CONFIG(release, debug|release) {
         LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
     }
     CONFIG(debug, debug|release) {
         LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddockingd
     }
+
+    #LIBS += -L../external/msvc2019/gmic/lib -lgmic
+    #LIBS += -L../external/msvc2019/Other/lib -lzlib
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -174,35 +179,26 @@ win32-msvc* {
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
     }
 
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/IlmImf-2_3.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/IlmThread-2_3.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/Imath-2_3.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/Iex-2_3.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/Half-2_3.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/raw_r.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/jpeg62.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/libpng16.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/lzma.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/lcms2.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/jasper.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/zlib1.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/*)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_filesystem-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_system-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_thread-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_chrono-vc141-mt-x64-1_66.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_date_time-vc141-mt-x64-1_66.dll)
+    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/gmic/bin/gmic.dll)
+    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/gmic/lib/gmic.lib)
     dlls.path = $$DESTDIR
 
     CONFIG(release, debug|release) {
     COPIES += platforms
     platforms.files += $$files($$DESTDIR/../../external/msvc2019/Qt/platforms/release/*)
-    platforms.path = $$DESTDIR\platforms
+    platforms.path = $$DESTDIR/platforms
     }
 
     CONFIG(debug, debug|release) {
     COPIES += platforms
     platforms.files += $$files($$DESTDIR/../../external/msvc2019/Qt/platforms/debug/*)
-    platforms.path = $$DESTDIR\platforms
+    platforms.path = $$DESTDIR/platforms
     }
 
     COPIES += iconengines

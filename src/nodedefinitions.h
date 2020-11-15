@@ -166,6 +166,7 @@ namespace Cascade
         NODE_TYPE_DIRECTIONAL_BLUR,
         NODE_TYPE_CHANNEL_COPY,
         NODE_TYPE_RIVER_STYX,
+        //NODE_TYPE_GMIC,
         NODE_TYPE_MAX
     };
 
@@ -196,6 +197,7 @@ namespace Cascade
         { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
         { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
         { NODE_TYPE_RIVER_STYX, "River Styx" }
+        //{ NODE_TYPE_GMIC, "G'MIC" }
     };
 
     ////////////////////////////////////
@@ -692,6 +694,25 @@ namespace Cascade
         1
     };
 
+//    const NodeInitProperties gmicNodeInitProperties =
+//    {
+//        NODE_TYPE_GMIC,
+//        nodeStrings[NODE_TYPE_GMIC],
+//        NODE_CATEGORY_FILTER,
+//        { NODE_INPUT_TYPE_RGB_BACK },
+//        { NODE_OUTPUT_TYPE_RGB },
+//        {
+//            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_GMIC] },
+//        },
+//        FRONT_INPUT_ALWAYS_CLEAR,
+//        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+//        ALPHA_INPUT_ALWAYS_CLEAR,
+//        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+//        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+//        ":/shaders/noop_comp.spv",
+//        1
+//    };
+
     static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
@@ -782,6 +803,10 @@ namespace Cascade
         {
             return riverStyxNodeInitProperties;
         }
+//        else if(t == NODE_TYPE_GMIC)
+//        {
+//            return gmicNodeInitProperties;
+//        }
         throw std::runtime_error("Node type not found.");
     }
 }
