@@ -51,6 +51,8 @@ CsImage::CsImage(
     imageInfo.sharingMode       = VK_SHARING_MODE_EXCLUSIVE;
     imageInfo.initialLayout     = VK_IMAGE_LAYOUT_UNDEFINED;
 
+    currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
     VkResult err = devFuncs->vkCreateImage(
                 *device,
                 &imageInfo,

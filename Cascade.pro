@@ -41,23 +41,6 @@ SOURCES += \
     src/nodeinput.cpp \
     src/nodeoutput.cpp \
     src/nodeproperties.cpp \
-    src/ofx/CsOfxClipInstance.cpp \
-    src/ofx/CsOfxEffectInstance.cpp \
-    src/ofx/CsOfxHostDescriptor.cpp \
-    src/ofx/CsOfxParamInstance.cpp \
-    src/ofx/ofxhBinary.cpp \
-    src/ofx/ofxhClip.cpp \
-    src/ofx/ofxhHost.cpp \
-    src/ofx/ofxhImageEffect.cpp \
-    src/ofx/ofxhImageEffectAPI.cpp \
-    src/ofx/ofxhInteract.cpp \
-    src/ofx/ofxhMemory.cpp \
-    src/ofx/ofxhParam.cpp \
-    src/ofx/ofxhPluginAPICache.cpp \
-    src/ofx/ofxhPluginCache.cpp \
-    src/ofx/ofxhPropertySuite.cpp \
-    src/ofx/ofxhUtilities.cpp \
-    src/ofxmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
@@ -95,26 +78,6 @@ HEADERS += \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \
-    src/ofx/CsOfxClipInstance.h \
-    src/ofx/CsOfxEffectInstance.h \
-    src/ofx/CsOfxHostDescriptor.h \
-    src/ofx/CsOfxParamInstance.h \
-    src/ofx/ofxhBinary.h \
-    src/ofx/ofxhClip.h \
-    src/ofx/ofxhHost.h \
-    src/ofx/ofxhImageEffect.h \
-    src/ofx/ofxhImageEffectAPI.h \
-    src/ofx/ofxhInteract.h \
-    src/ofx/ofxhMemory.h \
-    src/ofx/ofxhParam.h \
-    src/ofx/ofxhPluginAPICache.h \
-    src/ofx/ofxhPluginCache.h \
-    src/ofx/ofxhProgress.h \
-    src/ofx/ofxhPropertySuite.h \
-    src/ofx/ofxhTimeLine.h \
-    src/ofx/ofxhUtilities.h \
-    src/ofx/ofxhXml.h \
-    src/ofxmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
@@ -171,11 +134,8 @@ win32-msvc* {
     INCLUDEPATH += ../../vcpkg/installed/x64-windows/include
     INCLUDEPATH += ../external/msvc2019/OpenColorIO/include
     INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
-    INCLUDEPATH += ../external/msvc2019/ofx/include
-    INCLUDEPATH += ../external/msvc2019/expat/include
 
     LIBS += -L../external/msvc2019/OpenColorIO/lib -lOpenColorIO
-    LIBS += -L../external/msvc2019/expat/lib -llibexpat
 
     CONFIG(release, debug|release) {
         LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
@@ -249,9 +209,6 @@ win32-msvc* {
     dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/tiffd.dll)
     dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/lzmad.dll)
     }
-
-    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/*)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/expat/bin/libexpat.dll)
     dlls.path = $$DESTDIR
 
     CONFIG(release, debug|release) {

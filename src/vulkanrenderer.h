@@ -37,7 +37,6 @@
 #include "nodebase.h"
 #include "windowmanager.h"
 #include "cssettingsbuffer.h"
-#include "ofxmanager.h"
 
 using namespace Cascade;
 using namespace OIIO;
@@ -61,11 +60,6 @@ public:
     void releaseSwapChainResources() override;
     void releaseResources() override;
 
-    QString getGpuName();
-
-    void translate(float dx, float dy);
-    void scale(float s);
-
     void processReadNode(
             NodeBase* node);
     void processNode(
@@ -83,14 +77,15 @@ public:
             CsImage& inputImage,
             const QString& path,
             const int colorSpace);
-    void processOfxNode(
-            NodeBase *node,
-            std::shared_ptr<CsImage> inputImageBack,
-            const QSize targetSize);
 
     void setViewerPushConstants(const QString& s);
 
     void startNextFrame() override;
+
+    QString getGpuName();
+
+    void translate(float dx, float dy);
+    void scale(float s);
 
     ~VulkanRenderer();
 
@@ -124,8 +119,6 @@ private:
     bool createTextureFromFile(
             const QString &path,
             const int colorSpace);
-    bool createTextureFromOfx(
-            CsOfxHost::CsOfxImage& ofxImg);
     bool createTextureImage(
             const QSize &size,
             VkImage *image,
@@ -135,11 +128,6 @@ private:
             uint32_t memIndex);
     bool writeLinearImage(
             float* imgStart,
-            QSize imgSize,
-            VkImage image,
-            VkDeviceMemory memory);
-    bool writeOfxToLinearImage(
-            CsOfxHost::CsOfxImage& ofxImg,
             QSize imgSize,
             VkImage image,
             VkDeviceMemory memory);
@@ -157,6 +145,13 @@ private:
     bool createComputeRenderTarget(
             uint32_t width,
             uint32_t height);
+
+    void createImageMemoryBarrier(
+            VkImageMemoryBarrier& barrier,
+            VkImageLayout targetLayout,
+            VkAccessFlags srcMask,
+            VkAccessFlags dstMask,
+            CsImage& image);
 
     void createComputeDescriptors();
     void updateComputeDescriptors(
@@ -295,16 +290,6 @@ private:
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
-
-    OfxManager ofxManager;
-    std::shared_ptr<CsOfxHost::CsOfxImage> pOfxImage;
-
-
-    //CsOfxHost::CsOfxImage ofxImage = CsOfxHost::CsOfxImage();
-//    gmic_image<float> gmicImage;
-//    gmic_list<float> gmicList;
-//    gmic_list<char> gmicNames;
-//    gmic gmicInstance;
 
 };
 

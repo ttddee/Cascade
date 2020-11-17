@@ -531,6 +531,25 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     return true;
 }
 
+void VulkanRenderer::createImageMemoryBarrier(
+        VkImageMemoryBarrier& barrier,
+        VkImageLayout targetLayout,
+        VkAccessFlags srcMask,
+        VkAccessFlags dstMask,
+        CsImage& image)
+{
+    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
+
+    barrier.oldLayout       = image.getLayout();
+    image.setLayout(targetLayout);
+    barrier.newLayout       = targetLayout;
+    barrier.srcAccessMask   = srcMask;
+    barrier.dstAccessMask   = dstMask;
+    barrier.image           = image.getImage();
+}
+
 bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
 {
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
@@ -622,87 +641,6 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     }
 
     loadImageSize = imageSize;
-
-    return true;
-}
-
-bool VulkanRenderer::createTextureFromOfx(CsOfxHost::CsOfxImage& ofxImg)
-{
-    int width = ofxImg.getBounds().x2;
-    int height = ofxImg.getBounds().y2;
-
-    std::cout << "width ofx: " << width << std::endl;
-    std::cout << "height ofx: " << height << std::endl;
-
-    updateVertexData(width, height);
-
-    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
-                                                 window,
-                                                 &device,
-                                                 devFuncs,
-                                                 width,
-                                                 height));
-
-    //auto imageSize = QSize(ofxImage.getBounds().x2, ofxImage.getBounds().y2);
-
-    // Now we can either map and copy the image data directly, or have to go
-    // through a staging buffer to copy and convert into the internal optimal
-    // tiling format.
-    VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
-    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    if (!canSampleLinear && !canSampleOptimal) {
-        qWarning("Neither linear nor optimal image sampling is supported for image");
-        return false;
-    }
-
-    if (loadImageStaging) {
-        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
-        loadImageStaging = VK_NULL_HANDLE;
-    }
-
-    if (loadImageStagingMem) {
-        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
-        loadImageStagingMem = VK_NULL_HANDLE;
-    }
-
-    if (!createTextureImage(QSize(width, height), &loadImageStaging, &loadImageStagingMem,
-                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-                            window->hostVisibleMemoryIndex()))
-        return false;
-
-    if (!writeOfxToLinearImage(
-                ofxImg,
-                QSize(width, height),
-                loadImageStaging,
-                loadImageStagingMem))
-    {
-        return false;
-    }
-
-    texStagingPending = true;
-
-    VkImageViewCreateInfo viewInfo;
-    memset(&viewInfo, 0, sizeof(viewInfo));
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = imageFromDisk->getImage();
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = globalImageFormat;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
-
-    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
-        return false;
-    }
-
-    loadImageSize = QSize(width, height);
 
     return true;
 }
@@ -1413,69 +1351,6 @@ bool VulkanRenderer::writeLinearImage(
     return true;
 }
 
-bool VulkanRenderer::writeOfxToLinearImage(
-       CsOfxHost::CsOfxImage& ofxImg,
-        QSize imgSize,
-        VkImage image,
-        VkDeviceMemory memory)
-{
-    VkImageSubresource subres = {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0, // mip level
-        0
-    };
-    VkSubresourceLayout layout;
-    devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
-
-    float *p;
-    VkResult err = devFuncs->vkMapMemory(
-                device,
-                memory,
-                layout.offset,
-                layout.size,
-                0,
-                reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to map memory for linear image: %d", err);
-        return false;
-    }
-
-    // TODO: Parallelize this
-    for (int i = 0; i < imgSize.height(); ++i)
-    {
-        for (int j = 0; j < imgSize.width(); ++j)
-        {
-            OfxRGBAColourB* pix = ofxImg.pixel(j, imgSize.height() - 1 - i);
-            *p = pix->r / 256.0;
-            *(p + 1) = pix->g / 256.0;
-            *(p + 2) = pix->b / 256.0;
-            *(p + 3) = pix->a / 256.0;
-            p += 4;
-        }
-    }
-
-//    startTimer();
-//    OIIO::parallel_for_2D(
-//                1,
-//                imgSize.height(),
-//                1,
-//                imgSize.width(),
-//                [&](uint64_t i, uint64_t j)
-//    {
-//        OfxRGBAColourB* pix = ofxImg.pixel(j, imgSize.height() - 1 - i);
-//        *(p + (i * j * 4)) = pix->r / 256.0;
-//        *(p + (i * j * 4) + 1) = pix->g / 256.0;
-//        *(p + (i * j * 4) + 2) = pix->b / 256.0;
-//        *(p + (i * j * 4) + 3) = pix->a / 256.0;
-//    });
-//    stopTimerAndPrint("parallel copy");
-
-    devFuncs->vkUnmapMemory(device, memory);
-
-    return true;
-}
-
-
 void VulkanRenderer::updateVertexData( int w, int h)
 {
     vertexData[0]  = -0.002 * w;
@@ -1522,37 +1397,26 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
     {
        VkImageMemoryBarrier barrier[3] = {};
 
-       barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-       barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-       barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+       createImageMemoryBarrier(
+               barrier[0],
+               VK_IMAGE_LAYOUT_GENERAL,
+               0,
+               0,
+               *inputImageBack);
 
-       barrier[0].oldLayout       = inputImageBack->getLayout();
-       inputImageBack->setLayout(VK_IMAGE_LAYOUT_GENERAL);
-       barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-       barrier[0].srcAccessMask   = 0;
-       barrier[0].dstAccessMask   = 0;
-       barrier[0].image           = inputImageBack->getImage();
+       createImageMemoryBarrier(
+               barrier[1],
+               VK_IMAGE_LAYOUT_GENERAL,
+               0,
+               0,
+               *inputImageFront);
 
-       barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-       barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-       barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-       barrier[1].oldLayout       = inputImageFront->getLayout();
-       inputImageFront->setLayout(VK_IMAGE_LAYOUT_GENERAL);
-       barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-       barrier[1].srcAccessMask   = 0;
-       barrier[1].dstAccessMask   = 0;
-       barrier[1].image           = inputImageFront->getImage();
-
-       barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-       barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-       barrier[2].subresourceRange.levelCount = barrier[2].subresourceRange.layerCount = 1;
-
-       barrier[2].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-       barrier[2].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-       barrier[2].srcAccessMask   = 0;
-       barrier[2].dstAccessMask   = 0;
-       barrier[2].image           = outputImage->getImage();
+       createImageMemoryBarrier(
+               barrier[2],
+               VK_IMAGE_LAYOUT_GENERAL,
+               0,
+               0,
+               *outputImage);
 
        devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1569,26 +1433,19 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
     {
         VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+        createImageMemoryBarrier(
+                barrier[0],
+                VK_IMAGE_LAYOUT_GENERAL,
+                0,
+                0,
+                *inputImageBack);
 
-        barrier[0].oldLayout       = inputImageBack->getLayout();
-        inputImageBack->setLayout(VK_IMAGE_LAYOUT_GENERAL);
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack->getImage();
-
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage->getImage();
+        createImageMemoryBarrier(
+                barrier[1],
+                VK_IMAGE_LAYOUT_GENERAL,
+                0,
+                0,
+                *outputImage);
 
         devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1632,41 +1489,30 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
     {
         VkImageMemoryBarrier barrier[3] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+        createImageMemoryBarrier(
+                barrier[0],
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                0,
+                0,
+                *inputImageBack);
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack->getImage();
+        createImageMemoryBarrier(
+                barrier[1],
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                0,
+                0,
+                *inputImageFront);
 
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = inputImageFront->getImage();
-
-        barrier[2].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[2].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[2].subresourceRange.levelCount = barrier[2].subresourceRange.layerCount = 1;
-
-        barrier[2].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[2].srcAccessMask   = 0;
-        barrier[2].dstAccessMask   = 0;
-        barrier[2].image           = outputImage->getImage();
-
+        auto layout = VK_IMAGE_LAYOUT_GENERAL;
         if (currentShaderPass == numShaderPasses)
-        {
-            barrier[2].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        }
-        else
-        {
-            barrier[2].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        }
+            layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        createImageMemoryBarrier(
+                barrier[2],
+                layout,
+                0,
+                0,
+                *outputImage);
 
         devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1683,33 +1529,23 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
     {
         VkImageMemoryBarrier barrier[2] = {};
 
-        barrier[0].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[0].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+        createImageMemoryBarrier(
+                barrier[0],
+                VK_IMAGE_LAYOUT_GENERAL,
+                0,
+                0,
+                *inputImageBack);
 
-        barrier[0].oldLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        barrier[0].srcAccessMask   = 0;
-        barrier[0].dstAccessMask   = 0;
-        barrier[0].image           = inputImageBack->getImage();
-
-        barrier[1].sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier[1].subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-        barrier[1].oldLayout       = VK_IMAGE_LAYOUT_UNDEFINED;
-        barrier[1].srcAccessMask   = 0;
-        barrier[1].dstAccessMask   = 0;
-        barrier[1].image           = outputImage->getImage();
-
+        auto layout = VK_IMAGE_LAYOUT_GENERAL;
         if (currentShaderPass == numShaderPasses)
-        {
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        }
-        else
-        {
-            barrier[1].newLayout       = VK_IMAGE_LAYOUT_GENERAL;
-        }
+            layout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        createImageMemoryBarrier(
+                barrier[1],
+                layout,
+                0,
+                0,
+                *outputImage);
 
         devFuncs->vkCmdPipelineBarrier(compute.commandBufferGeneric,
                             VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1765,17 +1601,14 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
     createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
 
     {
-        VkImageMemoryBarrier imageBarrier = {};
+        VkImageMemoryBarrier barrier = {};
 
-        imageBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        imageBarrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        imageBarrier.subresourceRange.levelCount = imageBarrier.subresourceRange.layerCount = 1;
-
-        imageBarrier.oldLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        imageBarrier.newLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        imageBarrier.srcAccessMask   = 0;
-        imageBarrier.dstAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
-        imageBarrier.image           = inputImage.getImage();
+        createImageMemoryBarrier(
+                barrier,
+                VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL,
+                0,
+                0,
+                inputImage);
 
         devFuncs->vkCmdPipelineBarrier(cb,
                                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
@@ -1786,7 +1619,7 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
                                 0,
                                 nullptr,
                                 1,
-                                &imageBarrier);
+                                &barrier);
     }
 
     VkImageSubresourceLayers imageLayers =
@@ -1816,17 +1649,14 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
                 &copyInfo);
 
     {
-       VkImageMemoryBarrier barrier = {};
+        VkImageMemoryBarrier barrier = {};
 
-        barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-        barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
-
-        barrier.oldLayout       = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
-        barrier.newLayout       = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-        barrier.srcAccessMask   = VK_ACCESS_TRANSFER_READ_BIT;
-        barrier.dstAccessMask   = 0;
-        barrier.image           = inputImage.getImage();
+        createImageMemoryBarrier(
+                barrier,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_ACCESS_TRANSFER_READ_BIT,
+                0,
+                inputImage);
 
         devFuncs->vkCmdPipelineBarrier(cb,
                             VK_PIPELINE_STAGE_TRANSFER_BIT,
@@ -1846,95 +1676,6 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
 void VulkanRenderer::setDisplayMode(DisplayMode mode)
 {
     displayMode = mode;
-}
-
-void VulkanRenderer::processOfxNode(
-        NodeBase *node,
-        std::shared_ptr<CsImage> inputImageBack,
-        const QSize targetSize)
-{
-    qDebug("Process OFX node.");
-
-    int width = targetSize.width();
-    int height = targetSize.height();
-
-    recordComputeCommandBufferCPUCopy(*inputImageBack);
-    submitImageSaveCommand();
-
-    devFuncs->vkQueueWaitIdle(compute.computeQueue);
-
-    qDebug("CPU copy done.");
-
-    float *pInput;
-    VkResult err = devFuncs->vkMapMemory(
-                device,
-                outputStagingBufferMemory,
-                0,
-                VK_WHOLE_SIZE,
-                0,
-                reinterpret_cast<void **>(&pInput));
-    if (err != VK_SUCCESS)
-    {
-        qWarning("Failed to map memory for staging buffer: %d", err);
-    }
-
-    qDebug("Mapped memory.");
-
-//    std::cout << "width " << width << std::endl;
-
-//    int numValues = width * height * 4;
-
-//    int quarter = numValues / 4;
-
-//    float* pOutput = &gmicImage[0];// new float[numValues];
-//    //float* pOutput = &output[0];
-
-//    qDebug("Created gmic image.");
-
-//    //TODO: Parallelize this
-//    for (int y = 0; y < quarter; ++y)
-//    {
-//        *(pOutput + y) = *(pInput + y * 4);
-//        *(pOutput + y + quarter) = *(pInput + y * 4 + 1);
-//        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2);
-//        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3);
-//        //pOutput++;
-//    }
-
-//    qDebug("Copied image data.");
-
-    OfxPointI renderSize;
-    renderSize.x = targetSize.width();
-    renderSize.y = targetSize.height();
-
-    pOfxImage = ofxManager.renderOFX(renderSize, pInput);
-
-    if(!createTextureFromOfx(*pOfxImage))
-        qFatal("Failed to create texture from OFX image.");
-
-    // Update the projection size
-    createVertexBuffer();
-
-    // Create render target
-    if (!createComputeRenderTarget(width, height))
-        qFatal("Failed to create compute render target.");
-
-    updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
-
-    recordComputeCommandBufferImageLoad(computeRenderTarget);
-
-    submitComputeCommands();
-
-    qDebug("Moving render target OFX");
-
-    node->cachedImage = std::move(computeRenderTarget);
-
-
-    //ofxImg = nullptr;
-    //delete[] output;
-
-    devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
-
 }
 
 bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, const int colorSpace)

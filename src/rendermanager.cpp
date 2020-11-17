@@ -155,26 +155,6 @@ void RenderManager::displayNode(NodeBase* node)
         renderer->displayNode(node);
         node->needsUpdate = false;
     }
-    if (node->nodeType == NODE_TYPE_OFX)
-    {
-        if(node->needsUpdate)
-        {
-            if (node->canBeRendered())
-            {
-                auto img = node->getUpstreamNodeBack()->cachedImage;
-                renderer->processOfxNode(
-                            node,
-                            img,
-                            QSize(img->getWidth(), img->getHeight()));
-                renderer->displayNode(node);
-                node->needsUpdate = false;
-            }
-        }
-        else
-        {
-            renderer->displayNode(node);
-        }
-    }
     else if (node && node->canBeRendered())
     {
         if (renderNodes(node))
