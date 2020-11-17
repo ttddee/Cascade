@@ -40,12 +40,7 @@
 
 using namespace Cascade;
 using namespace OIIO;
-#ifdef Q_OS_WIN
-using namespace OIIO;
-#endif
-#ifdef Q_OS_LINUX
-namespace OCIO = OpenColorIO;
-#endif
+using namespace OpenColorIO;
 
 class VulkanWindow;
 
@@ -289,7 +284,7 @@ private:
 
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
-    OCIO::ConstConfigRcPtr ocioConfig;
+    OpenColorIO::ConstConfigRcPtr ocioConfig;
 
 };
 

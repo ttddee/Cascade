@@ -100,9 +100,9 @@ void VulkanRenderer::initResources()
     try
     {
         const char* file = "ocio/config.ocio";
-        ocioConfig = OCIO::Config::CreateFromFile(file);
+        ocioConfig = OpenColorIO::Config::CreateFromFile(file);
     }
-    catch(OCIO::Exception& exception)
+    catch(OpenColorIO::Exception& exception)
     {
         qDebug("OpenColorIO Error: ");
         qDebug(exception.what());
@@ -693,9 +693,9 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
     // TODO: Parallelize this
-    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
+    OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
 
-    OCIO::PackedImageDesc desc(
+    OpenColorIO::PackedImageDesc desc(
                 static_cast<float*>(image.localpixels()),
                 image.xend(),
                 image.yend(),
