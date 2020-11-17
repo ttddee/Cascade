@@ -28,13 +28,19 @@ PropertiesView::PropertiesView(QWidget *parent)
     this->setLayout(layout);
 }
 
-void PropertiesView::loadProperties(NodeProperties *prop)
+void PropertiesView::clear()
 {
     if (currentProperties)
     {
         layout->removeWidget(currentProperties);
         currentProperties->hide();
     }
+}
+
+void PropertiesView::loadProperties(NodeProperties *prop)
+{
+    clear();
+
     layout->addWidget(prop);
     currentProperties = prop;
     currentProperties->show();

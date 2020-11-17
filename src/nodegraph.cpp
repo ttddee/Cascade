@@ -52,6 +52,8 @@ NodeGraph::NodeGraph(QWidget* parent)
             rManager, &RenderManager::handleNodeFileSaveRequest);
     connect(this, &NodeGraph::requestClearScreen,
             rManager, &RenderManager::handleClearScreenRequest);
+    connect(this, &NodeGraph::requestClearProperties,
+            wManager, &WindowManager::handleClearPropertiesRequest);
 }
 
 void NodeGraph::createNode(const NodeType type)
@@ -94,6 +96,10 @@ void NodeGraph::deleteNode(NodeBase *node)
     if (node == viewedNode)
     {
         emit requestClearScreen();
+    }
+    if (node == selectedNode)
+    {
+        emit requestClearProperties();
     }
 
     delete node;

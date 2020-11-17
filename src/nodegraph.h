@@ -100,6 +100,7 @@ signals:
     void requestNodeDisplay(NodeBase* node);
     void requestNodeFileSave(NodeBase* node, const QString& path);
     void requestClearScreen();
+    void requestClearProperties();
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);

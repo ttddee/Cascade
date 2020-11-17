@@ -74,6 +74,7 @@ public slots:
     void handleZoomTextUpdateRequest(float f);
     void handleRenderTargetCreated(int w, int h);
     void handleViewerStatusBarValueChanged();
+    void handleClearPropertiesRequest();
 };
 
 #endif // WINDOWMANAGER_H

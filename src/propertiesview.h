@@ -34,6 +34,7 @@ public:
     explicit PropertiesView(QWidget *parent = nullptr);
 
     void loadProperties(NodeProperties* prop);
+    void clear();
 
 private:
     QVBoxLayout* layout;

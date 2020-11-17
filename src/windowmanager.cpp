@@ -156,6 +156,11 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
+void WindowManager::handleClearPropertiesRequest()
+{
+    propertiesView->clear();
+}
+
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 {
     propertiesView->loadProperties(node->getProperties());
