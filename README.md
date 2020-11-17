@@ -16,10 +16,10 @@ If you want to get involved or have questions, please join our [Discord](https:/
 
 ## Features
 
-- Node-based non-destructive editing workflow
+- Non-destructive node-based editing workflow
 - All image processing is done on the GPU
 - 32 bit linear color pipeline
-- Easy extensibility due to separation of processing pipeline from application logic
+- Support for the most common color spaces and file formats
 
 ## Shortcuts
 
@@ -31,19 +31,49 @@ If you want to get involved or have questions, please join our [Discord](https:/
 
 ## Build
 
-`git clone https://github.com/ttddee/Cascade`
+### Windows
 
-Dependencies:
-- [Qt](https://www.qt.io/) >= 5.10
-- [OpenImageIO](https://github.com/OpenImageIO/oiio)
-- [OpenColorIO](https://github.com/AcademySoftwareFoundation/OpenColorIO)
-- [Qt Andvanced Docking System](https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System)
+I order to build on Windows you will need the following:
 
-If you want to run the tests you will also need:
-- [GTest](https://github.com/google/googletest)
+- [Vulkan SDK](https://www.lunarg.com/vulkan-sdk)
+- A Vulkan-capable graphics driver. [Here](https://vulkan.gpuinfo.org/) is a list of compatible devices and driver versions.
+- [Microsoft VcPkg](https://github.com/microsoft/vcpkg) is not a must but makes it easy to install the dependencies.
+- MSVC. Comes with Visual Studio.
+- [Qt](https://www.qt.io/) version 5.10 or above
 
-You also need to have Vulkan and a Vulkan-capable graphics driver installed. [Here](https://vulkan.gpuinfo.org/) is a list of compatible devices and driver versions.
+#### Clone the project
 
-The easiest way is to open the project with QtCreator and build from there with QMake.
+`git clone --recurse-submodules https://github.com/ttddee/Cascade`
 
+#### Install dependencies
+
+From your VcPkg folder do:
+
+`vcpkg install openimageio:x64-windows
+
+ vcpkg install opencolorio:x64-windows
+
+ vcpkg install gtest:x64-windows`
+
+#### Build submodule
+
+Open the project file *Cascade/external/qtadvanceddocking/ads.pro* in QtCreator and configure it for MSVC2019 x64. Specify *Cascade/external/qtadvanceddocking/build as your build directory.
+
+Now build both *debug* and *release* targets within QtCreator.
+
+#### Configure Cascade.pro
+
+Open Cascade.pro in QtCreator. Configure MSVC2019 as compiler and *Cascade/build* as your build directory.
+
+In the Windows section of the .pro file (win32-msvc*) there are three variables that tell QMake where to find stuff:
+
+- **VCPKG_INSTALL_PATH**: Point this to you VcPkg install directory. In my case that is *C:/Users/till/vcpkg*.
+- **QT_INSTALL_PATH**: Point this to your Qt installation. In my case that is *C:/Qt515/5.15.1*.
+- **MSVC_INSTALL_PATH**: Point this to your where the MSVC compilers binaries are. In my case that is *C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64*.
+
+If all went well you should be able to build the project now.
+
+### Linux
+
+Coming soon...
 
