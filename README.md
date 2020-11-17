@@ -79,7 +79,7 @@ In the Windows section of the .pro file (win32-msvc*) there are three variables 
 
 **QT_INSTALL_PATH**: Point this to your Qt installation. In my case that is *C:/Qt515/5.15.1*.
 
-**MSVC_INSTALL_PATH**: Point this to your where the MSVC compilers binaries are. 
+**MSVC_INSTALL_PATH**: Point this to where the MSVC compilers binaries are. 
 In my case that is *C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64*.
 
 If all went well you should be able to build the project now.
