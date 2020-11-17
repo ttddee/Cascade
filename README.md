@@ -85,7 +85,7 @@ In my case that is *C:/Program Files (x86)/Microsoft Visual Studio/2019/Communit
 If all went well you should be able to build the project now.
 
 
-### Linux
+## Linux
 
 Coming soon...
 
