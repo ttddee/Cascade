@@ -1,0 +1,109 @@
+// based on https://www.shadertoy.com/view/XscXRl by FabriceNeyret2
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float mode;
+    layout(offset = 4) float amount;
+    layout(offset = 8) float shape;
+    layout(offset = 16) float shaderPass;
+} sb;
+
+#define p .3
+
+// brush:  0: disk 1:  star  2: diamond  3: square 
+bool brush(vec2 d)                                      
+{ d = abs(d);
+  return  sb.shape==0.0 ? dot(d,d) <= sb.amount*sb.amount            // disk
+        : sb.shape==1.0 ? pow(d.x,p)+pow(d.y,p) <= pow(sb.amount,p)  // star(p)
+        : sb.shape==2.0 ? d.x+d.y < sb.amount                        // diamond
+        : sb.shape==3.0 ? max(d.x,d.x*.5+d.y*.87) < sb.amount        // hexagon
+                        : true;                                      // square
+}
+
+ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+ivec2 inputSize = imageSize(inputImageBack);
+
+void main()
+{   
+    if (sb.shaderPass == 0.0)
+    {
+        vec4 pixel = imageLoad(inputImageBack, pixelCoords).rgba;  
+        vec4 original = pixel;
+        
+        vec2 R = inputSize, d;
+        vec4 m = vec4(1e9); 
+        vec4 M = -m;
+
+        for (float y = -sb.amount; y <= sb.amount; y++)
+        {
+            for (float x = -sb.amount; x <= sb.amount; x++)
+            {
+                if (brush(d = vec2(x,y))) 
+                {
+                    vec4 t = imageLoad(inputImageBack, ivec2(pixelCoords + d)).rgba;
+                    m = min(m,t); 
+                    M = max(M,t);
+                }
+            }
+        }	  
+
+        if (sb.mode == 0.0)
+        {
+            pixel = M; // dilatation
+        }
+        if (sb.mode == 1.0)
+        {
+            pixel = m; // erosion
+        }
+        imageStore(resultImage, pixelCoords, pixel);
+    }
+    else
+    {
+        vec4 secondPass = imageLoad(inputImageBack, pixelCoords).rgba;
+
+        if (sb.mode == 1.0)
+        {
+            if (pixelCoords.x < sb.amount)
+            {
+                vec4 pad = imageLoad(inputImageBack, ivec2(int(sb.amount) * 2 - pixelCoords.x, pixelCoords.y)).rgba;
+
+                imageStore(resultImage, pixelCoords, pad);
+            }
+            else if (pixelCoords.x > inputSize.x - int(sb.amount))
+            {
+                int dist = pixelCoords.x - inputSize.x;
+                vec4 pad = imageLoad(inputImageBack, ivec2(inputSize.x - int(sb.amount) * 2 - dist, pixelCoords.y)).rgba;
+
+                imageStore(resultImage, pixelCoords, pad);
+            }
+            else if (pixelCoords.y < sb.amount)
+            {
+                vec4 pad = imageLoad(inputImageBack, ivec2(pixelCoords.x, int(sb.amount) * 2 - pixelCoords.y)).rgba;
+
+                imageStore(resultImage, pixelCoords, pad);
+            }
+            else if (pixelCoords.y > inputSize.y - int(sb.amount))
+            {
+                int dist = pixelCoords.y - inputSize.y;
+                vec4 pad = imageLoad(inputImageBack, ivec2(pixelCoords.x, inputSize.y - int(sb.amount) * 2 - dist)).rgba;
+
+                imageStore(resultImage, pixelCoords, pad);
+            }
+            else
+            {
+                imageStore(resultImage, pixelCoords, secondPass);
+            }
+        }
+        else
+        {
+            imageStore(resultImage, pixelCoords, secondPass);
+        }
+    }   
+}

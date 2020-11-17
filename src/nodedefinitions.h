@@ -168,6 +168,7 @@ namespace Cascade
         NODE_TYPE_CHANNEL_COPY,
         NODE_TYPE_RIVER_STYX,
         NODE_TYPE_CLAMP,
+        NODE_TYPE_ERODE,
         //NODE_TYPE_OFX,
         NODE_TYPE_MAX
     };
@@ -199,7 +200,8 @@ namespace Cascade
         { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
         { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
         { NODE_TYPE_RIVER_STYX, "River Styx" },
-        { NODE_TYPE_CLAMP, "Clamp" }
+        { NODE_TYPE_CLAMP, "Clamp" },
+        { NODE_TYPE_ERODE, "Erode" },
         //{ NODE_TYPE_OFX, "OFX" }
     };
 
@@ -718,6 +720,28 @@ namespace Cascade
         1
     };
 
+    const NodeInitProperties erodeNodeInitProperties =
+    {
+        NODE_TYPE_ERODE,
+        nodeStrings[NODE_TYPE_ERODE],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ERODE] },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Erode,Dilate,0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Amount,1.0,50.0,0.01,5.0" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Shape:,Disc,Star,Diamond,Hexagon,Square,0" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/erodedilate_comp.spv",
+        2
+    };
+
 //    const NodeInitProperties ofxNodeInitProperties =
 //    {
 //        NODE_TYPE_OFX,
@@ -830,6 +854,10 @@ namespace Cascade
         else if(t == NODE_TYPE_CLAMP)
         {
             return clampNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_ERODE)
+        {
+            return erodeNodeInitProperties;
         }
 //        else if(t == NODE_TYPE_OFX)
 //        {
