@@ -2,8 +2,6 @@
 
 ![Cascade](screenshots/csc-screen01.jpg)
 
-![Cascade](screenshots/csc-screen02.jpg)
-
 Cascade is a node-based image editor with GPU-acceleration.
 
 This is still an early prototype and not ready for production use.
@@ -29,6 +27,8 @@ If you want to get involved or have questions, please join our [Discord](https:/
 - **F4** - Toggle between selected node RGB output and alpha output
 - **Delete** - Delete selected node
 
+- **Ctrl + Left Click** - Reset slider to default
+
 ## Build
 
 ### Windows
@@ -49,11 +49,12 @@ I order to build on Windows you will need the following:
 
 From your VcPkg folder do:
 
-`vcpkg install openimageio:x64-windows
+```
+vcpkg install openimageio:x64-windows
 
- vcpkg install opencolorio:x64-windows
+vcpkg install opencolorio:x64-windows
 
- vcpkg install gtest:x64-windows`
+vcpkg install gtest:x64-windows```
 
 #### Build submodule
 
