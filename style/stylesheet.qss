@@ -133,7 +133,7 @@ QPlainTextEdit {
 }
 
 /*Slider*/
-QSlider::groove:horizontal {
+/*QSlider::groove:horizontal {
     height: 2px;
     background: #626971;
     margin: 2px 0;
@@ -147,7 +147,7 @@ QSlider::sub-page:horizontal {
     background: #233443;
     height: 2px;
     margin: 2px 0;
-}
+}*/
 
 QSpinBox {
 background-color: #282d31;

@@ -41,6 +41,23 @@ SOURCES += \
     src/nodeinput.cpp \
     src/nodeoutput.cpp \
     src/nodeproperties.cpp \
+    src/ofx/CsOfxClipInstance.cpp \
+    src/ofx/CsOfxEffectInstance.cpp \
+    src/ofx/CsOfxHostDescriptor.cpp \
+    src/ofx/CsOfxParamInstance.cpp \
+    src/ofx/ofxhBinary.cpp \
+    src/ofx/ofxhClip.cpp \
+    src/ofx/ofxhHost.cpp \
+    src/ofx/ofxhImageEffect.cpp \
+    src/ofx/ofxhImageEffectAPI.cpp \
+    src/ofx/ofxhInteract.cpp \
+    src/ofx/ofxhMemory.cpp \
+    src/ofx/ofxhParam.cpp \
+    src/ofx/ofxhPluginAPICache.cpp \
+    src/ofx/ofxhPluginCache.cpp \
+    src/ofx/ofxhPropertySuite.cpp \
+    src/ofx/ofxhUtilities.cpp \
+    src/ofxmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
@@ -78,6 +95,26 @@ HEADERS += \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \
+    src/ofx/CsOfxClipInstance.h \
+    src/ofx/CsOfxEffectInstance.h \
+    src/ofx/CsOfxHostDescriptor.h \
+    src/ofx/CsOfxParamInstance.h \
+    src/ofx/ofxhBinary.h \
+    src/ofx/ofxhClip.h \
+    src/ofx/ofxhHost.h \
+    src/ofx/ofxhImageEffect.h \
+    src/ofx/ofxhImageEffectAPI.h \
+    src/ofx/ofxhInteract.h \
+    src/ofx/ofxhMemory.h \
+    src/ofx/ofxhParam.h \
+    src/ofx/ofxhPluginAPICache.h \
+    src/ofx/ofxhPluginCache.h \
+    src/ofx/ofxhProgress.h \
+    src/ofx/ofxhPropertySuite.h \
+    src/ofx/ofxhTimeLine.h \
+    src/ofx/ofxhUtilities.h \
+    src/ofx/ofxhXml.h \
+    src/ofxmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
@@ -131,62 +168,90 @@ linux-g++ {
 
 win32-msvc* {
     INCLUDEPATH += ../external/msvc2019/Other/include
-    INCLUDEPATH += ../external/msvc2019/OpenImageIO/include
+    INCLUDEPATH += ../../vcpkg/installed/x64-windows/include
     INCLUDEPATH += ../external/msvc2019/OpenColorIO/include
     INCLUDEPATH += ../external/msvc2019/AdvancedDocking/include
-    #INCLUDEPATH += ../external/msvc2019/gmic/release/include
+    INCLUDEPATH += ../external/msvc2019/ofx/include
+    INCLUDEPATH += ../external/msvc2019/expat/include
 
-    LIBS += -L../external/msvc2019/OpenImageIO/lib -lOpenImageIO
     LIBS += -L../external/msvc2019/OpenColorIO/lib -lOpenColorIO
+    LIBS += -L../external/msvc2019/expat/lib -llibexpat
 
     CONFIG(release, debug|release) {
         LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddocking
+        LIBS += -L../../vcpkg/installed/x64-windows/lib -lOpenImageIO
     }
     CONFIG(debug, debug|release) {
         LIBS += -L../external/msvc2019/AdvancedDocking/lib -lqtadvanceddockingd
+        LIBS += -L../../vcpkg/installed/x64-windows/debug/lib -lOpenImageIO
     }
-
-    #LIBS += -L../external/msvc2019/gmic/lib -lgmic
-    #LIBS += -L../external/msvc2019/Other/lib -lzlib
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 
     COPIES += dlls
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/OpenImageIO_Util.dll)
+
+
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenColorIO/bin/OpenColorIO.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/vcruntime140_1.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/msvcp140.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/OpenImageIO/bin/concrt140.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/vcomp140.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/msvcp140_1.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/vcruntime140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/vcruntime140_1.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/msvcp140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/concrt140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/vcomp140.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/msvcp140_1.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/opengl32sw.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Svg.dll)
 
     CONFIG(release, debug|release) {
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/OpenImageIO.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/OpenImageIO_Util.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Widgets.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Gui.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Core.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddockingd.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/boost_filesystem-vc142-mt-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/boost_system-vc142-mt-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/boost_thread-vc142-mt-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/boost_chrono-vc142-mt-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/boost_date_time-vc142-mt-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/zlib1.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/jpeg62.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/libpng16.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/IlmImf-2_5.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/Imath-2_5.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/Iex-2_5.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/Half-2_5.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/IlmThread-2_5.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/tiff.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/bin/lzma.dll)
     }
 
     CONFIG(debug, debug|release) {
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/OpenImageIO.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/OpenImageIO_Util.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Widgetsd.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Guid.dll)
     dlls.files += $$files($$DESTDIR/../../external/msvc2019/Qt/Qt5Cored.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddocking.dll)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/AdvancedDocking/lib/qtadvanceddockingd.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/boost_filesystem-vc142-mt-gd-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/boost_system-vc142-mt-gd-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/boost_thread-vc142-mt-gd-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/boost_chrono-vc142-mt-gd-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/boost_date_time-vc142-mt-gd-x64-1_74.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/zlibd1.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/jpeg62.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/libpng16d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/IlmImf-2_5_d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/Imath-2_5_d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/Iex-2_5_d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/Half-2_5_d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/IlmThread-2_5_d.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/tiffd.dll)
+    dlls.files += $$files($$DESTDIR/../../../vcpkg/installed/x64-windows/debug/bin/lzmad.dll)
     }
 
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/*)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_filesystem-vc141-mt-x64-1_66.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_system-vc141-mt-x64-1_66.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_thread-vc141-mt-x64-1_66.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_chrono-vc141-mt-x64-1_66.dll)
-    dlls.files += $$files($$DESTDIR/../../external/msvc2019/Boost/boost_date_time-vc141-mt-x64-1_66.dll)
-    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/gmic/bin/gmic.dll)
-    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/gmic/lib/gmic.lib)
+    #dlls.files += $$files($$DESTDIR/../../external/msvc2019/Other/bin/*)
+    dlls.files += $$files($$DESTDIR/../../external/msvc2019/expat/bin/libexpat.dll)
     dlls.path = $$DESTDIR
 
     CONFIG(release, debug|release) {
@@ -228,6 +293,12 @@ win32-msvc* {
     COPIES += license
     license.files += $$files($$DESTDIR/../../LICENSE)
     license.path = $$DESTDIR
+
+    COPIES += plugins
+    plugins.files += $$files($$DESTDIR/../../plugins/ofx)
+    plugins.path = $$DESTDIR/plugins
+
+    INSTALLS += plugins
 }
 
 RESOURCES += \

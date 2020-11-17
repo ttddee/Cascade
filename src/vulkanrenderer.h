@@ -37,6 +37,7 @@
 #include "nodebase.h"
 #include "windowmanager.h"
 #include "cssettingsbuffer.h"
+#include "ofxmanager.h"
 
 using namespace Cascade;
 using namespace OIIO;
@@ -82,10 +83,10 @@ public:
             CsImage& inputImage,
             const QString& path,
             const int colorSpace);
-//    void processGmicNode(
-//            NodeBase *node,
-//            std::shared_ptr<CsImage> inputImageBack,
-//            const QSize targetSize);
+    void processOfxNode(
+            NodeBase *node,
+            std::shared_ptr<CsImage> inputImageBack,
+            const QSize targetSize);
 
     void setViewerPushConstants(const QString& s);
 
@@ -123,8 +124,8 @@ private:
     bool createTextureFromFile(
             const QString &path,
             const int colorSpace);
-//    bool createTextureFromGmic(
-//            gmic_image<float>& gImg);
+    bool createTextureFromOfx(
+            CsOfxHost::CsOfxImage& ofxImg);
     bool createTextureImage(
             const QSize &size,
             VkImage *image,
@@ -137,11 +138,11 @@ private:
             QSize imgSize,
             VkImage image,
             VkDeviceMemory memory);
-//    bool writeGmicToLinearImage(
-//            float* imgStart,
-//            QSize imgSize,
-//            VkImage image,
-//            VkDeviceMemory memory);
+    bool writeOfxToLinearImage(
+            CsOfxHost::CsOfxImage& ofxImg,
+            QSize imgSize,
+            VkImage image,
+            VkDeviceMemory memory);
 
     // Compute setup
     void createComputePipelineLayout();
@@ -295,6 +296,11 @@ private:
 
     OCIO::ConstConfigRcPtr ocioConfig;
 
+    OfxManager ofxManager;
+    std::shared_ptr<CsOfxHost::CsOfxImage> pOfxImage;
+
+
+    //CsOfxHost::CsOfxImage ofxImage = CsOfxHost::CsOfxImage();
 //    gmic_image<float> gmicImage;
 //    gmic_list<float> gmicList;
 //    gmic_list<char> gmicNames;
