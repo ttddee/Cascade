@@ -53,5 +53,6 @@
         <file>shaders/directionalblur_comp.spv</file>
         <file>shaders/channelcopy_comp.spv</file>
         <file>shaders/riverstyx_comp.spv</file>
+        <file>shaders/clamp_comp.spv</file>
     </qresource>
 </RCC>

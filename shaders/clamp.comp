@@ -1,0 +1,30 @@
+#version 450
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImageBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputImageFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float clampBlack;
+    layout(offset = 4) float clampWhite;
+} sb;
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 pixel = imageLoad(inputImageBack, pixelCoords).rgba;  
+
+    if (sb.clampBlack != 0.0)
+    {
+        pixel.rgba = max(pixel.rgba, vec4(0.0, 0.0, 0.0, 0.0));
+    }
+    if (sb.clampWhite != 0.0)
+    {
+        pixel.rgba = min(pixel.rgba, vec4(1.0, 1.0, 1.0, 1.0));
+    }
+
+    imageStore(resultImage, pixelCoords, pixel);
+}

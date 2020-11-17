@@ -107,7 +107,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_SLIDER_BOX_INT,
         UI_ELEMENT_TYPE_COLOR_PROPERTIES,
         UI_ELEMENT_TYPE_SIZEBOX,
-        UI_ELEMENT_TYPE_TEXTBOX
+        UI_ELEMENT_TYPE_TEXTBOX,
+        UI_ELEMENT_TYPE_CHECKBOX
     };
 
     ////////////////////////////////////
@@ -166,6 +167,7 @@ namespace Cascade
         NODE_TYPE_DIRECTIONAL_BLUR,
         NODE_TYPE_CHANNEL_COPY,
         NODE_TYPE_RIVER_STYX,
+        NODE_TYPE_CLAMP,
         //NODE_TYPE_OFX,
         NODE_TYPE_MAX
     };
@@ -196,7 +198,8 @@ namespace Cascade
         { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
         { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
         { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
-        { NODE_TYPE_RIVER_STYX, "River Styx" }
+        { NODE_TYPE_RIVER_STYX, "River Styx" },
+        { NODE_TYPE_CLAMP, "Clamp" }
         //{ NODE_TYPE_OFX, "OFX" }
     };
 
@@ -694,6 +697,27 @@ namespace Cascade
         1
     };
 
+    const NodeInitProperties clampNodeInitProperties =
+    {
+        NODE_TYPE_CLAMP,
+        nodeStrings[NODE_TYPE_CLAMP],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CLAMP] },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Black,1," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "White,0," }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/clamp_comp.spv",
+        1
+    };
+
 //    const NodeInitProperties ofxNodeInitProperties =
 //    {
 //        NODE_TYPE_OFX,
@@ -802,6 +826,10 @@ namespace Cascade
         else if(t == NODE_TYPE_RIVER_STYX)
         {
             return riverStyxNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_CLAMP)
+        {
+            return clampNodeInitProperties;
         }
 //        else if(t == NODE_TYPE_OFX)
 //        {

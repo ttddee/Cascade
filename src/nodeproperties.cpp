@@ -35,6 +35,7 @@
 #include "colorpropertiesentity.h"
 #include "sizeboxentity.h"
 #include "textboxentity.h"
+#include "checkboxentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -195,6 +196,18 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_TEXTBOX,
                         this);
             item->setText(elem.second);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_CHECKBOX)
+        {
+            CheckBoxEntity* item = new CheckBoxEntity(
+                        UI_ELEMENT_TYPE_CHECKBOX,
+                        this);
+            item->selfConnectToValueChanged(this);
+            auto parts = elem.second.split(",");
+            item->setName(parts.at(0));
+            item->setChecked(parts.at(1).toInt());
             layout->addWidget(item);
             widgets.push_back(item);
         }

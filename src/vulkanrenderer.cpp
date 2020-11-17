@@ -29,6 +29,7 @@
 #include <QVulkanWindowRenderer>
 
 #include <OpenImageIO/imagebufalgo.h>
+#include <OpenImageIO/color.h>
 
 #include "vulkanwindow.h"
 #include "fileboxentity.h"

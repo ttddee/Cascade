@@ -9,6 +9,7 @@ namespace Cascade
 {
 
 static std::chrono::steady_clock::time_point timerBegin;
+static std::chrono::steady_clock::time_point timerEnd;
 
 void startTimer()
 {
@@ -17,9 +18,10 @@ void startTimer()
 
 void stopTimerAndPrint(const std::string& s)
 {
-    static std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+    timerEnd = std::chrono::steady_clock::now();
 
-    std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(end - timerBegin).count() << "[ms]" << std::endl;
+    std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count() << "[milliseconds]" << std::endl;
+    //std::cout << s + " " << std::chrono::duration_cast<std::chrono::microseconds>(timerEnd - timerBegin).count() << "[microseconds]" << std::endl;
 }
 
 }

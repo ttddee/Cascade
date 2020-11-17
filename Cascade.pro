@@ -22,6 +22,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/channelselectentity.cpp \
+    src/checkboxentity.cpp \
     src/colorbutton.cpp \
     src/colorbuttonentity.cpp \
     src/colorpropertiesentity.cpp \
@@ -59,6 +60,7 @@ SOURCES += \
 HEADERS += \
     src/benchmark.h \
     src/channelselectentity.h \
+    src/checkboxentity.h \
     src/colorbutton.h \
     src/colorbuttonentity.h \
     src/colorpropertiesentity.h \
@@ -96,6 +98,7 @@ HEADERS += \
 
 FORMS += \
     src/channelselectentity.ui \
+    src/checkboxentity.ui \
     src/colorbuttonentity.ui \
     src/colorpropertiesentity.ui \
     src/comboboxentity.ui \
