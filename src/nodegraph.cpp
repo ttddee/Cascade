@@ -328,7 +328,7 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
             if(nodeIn)
             // Open connection was released on a NodeInput
             {
-                if(!nodeIn->hasConnection())
+                if(!nodeIn->hasConnection() && openConnection)
                 {
                     establishConnection(nodeIn);
                     return;
