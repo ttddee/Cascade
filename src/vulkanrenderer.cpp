@@ -34,6 +34,7 @@
 #include "vulkanwindow.h"
 #include "fileboxentity.h"
 #include "benchmark.h"
+#include "multithreading.h"
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -693,15 +694,27 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
-    // TODO: Parallelize this
-    OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
+//    startTimer();
+//    // TODO: Parallelize this
+//    OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
 
-    OpenColorIO::PackedImageDesc desc(
+//    OpenColorIO::PackedImageDesc desc(
+//                static_cast<float*>(image.localpixels()),
+//                image.xend(),
+//                image.yend(),
+//                4);
+//    processor->apply(desc);
+//    stopTimerAndPrint("OCIO conversion serial");
+
+    startTimer();
+    parallelApplyColorSpace(
+                ocioConfig,
+                from,
+                to,
                 static_cast<float*>(image.localpixels()),
                 image.xend(),
-                image.yend(),
-                4);
-    processor->apply(desc);
+                image.yend());
+    stopTimerAndPrint("OCIO conversion parallel");
 }
 
 void VulkanRenderer::createComputeDescriptors()
@@ -1330,9 +1343,6 @@ bool VulkanRenderer::writeLinearImage(
         return false;
     }
 
-    // TODO: Parallelize this
-    float* pixels = imgStart;
-    int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
     // TODO: Why is this??????
     int pad = 0;
     if (imgSize.width() % 2 != 0)
@@ -1340,12 +1350,24 @@ bool VulkanRenderer::writeLinearImage(
         pad = 4;
     }
 
+//    startTimer();
+//    int numElements = imgSize.width() * imgSize.height() * 4;
+//    parallelArrayCopy(imgStart, p, numElements);
+//    stopTimerAndPrint("Parallel copy");
+
+//    startTimer();
+    // TODO: Parallelize this
+    float* pixels = imgStart;
+    int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
+
+
     for (int y = 0; y < imgSize.height(); ++y)
     {
         memcpy(p, pixels, lineWidth);
         pixels += imgSize.width() * 4;
         p += imgSize.width() * 4 + pad;
     }
+//    stopTimerAndPrint("Array Copy");
 
     devFuncs->vkUnmapMemory(device, memory);
 

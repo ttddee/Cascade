@@ -73,6 +73,7 @@ HEADERS += \
     src/cssliderbox.h \
     src/fileboxentity.h \
     src/mainwindow.h \
+    src/multithreading.h \
     src/nodebase.h \
     src/nodedefinitions.h \
     src/nodegraph.h \
@@ -143,11 +144,13 @@ win32-msvc* {
     CONFIG(release, debug|release) {
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenImageIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenColorIO
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -ltbb
         LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddocking
     }
     CONFIG(debug, debug|release) {
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenImageIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenColorIO
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -ltbb_debug
         LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddockingd
     }
 
@@ -186,6 +189,7 @@ win32-msvc* {
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/tiff.dll)
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/lzma.dll)
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/yaml-cpp.dll)
+    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/tbb.dll)
     dlls.files += $$files($$DESTDIR/../../external/qtadvanceddocking/build/lib/qtadvanceddocking.dll)
     }
 
@@ -212,6 +216,7 @@ win32-msvc* {
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/tiffd.dll)
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/lzmad.dll)
     dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/yaml-cpp.dll)
+    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/tbb_debug.dll)
     dlls.files += $$files($$DESTDIR/../../external/qtadvanceddocking/build/lib/qtadvanceddockingd.dll)
     }
     dlls.path = $$DESTDIR
