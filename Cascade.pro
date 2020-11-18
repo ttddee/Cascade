@@ -145,6 +145,8 @@ linux-g++ {
     LIBS += -L /usr/lib -lOpenImageIO
     LIBS += -L /usr/lib -lOpenColorIO
     LIBS += -L /usr/lib -lqtadvanceddocking
+    LIBS += -L /usr/lib -lgmic
+    LIBS += -L /usr/lib -ltbb
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD
