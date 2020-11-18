@@ -34,6 +34,18 @@ SOURCES += \
     src/csslider.cpp \
     src/cssliderbox.cpp \
     src/fileboxentity.cpp \
+    src/gmic/Common.cpp \
+    src/gmic/FilterTextTranslator.cpp \
+    src/gmic/FiltersModel.cpp \
+    src/gmic/FiltersModelReader.cpp \
+    src/gmic/FiltersVisibilityMap.cpp \
+    src/gmic/Globals.cpp \
+    src/gmic/GmicStdlib.cpp \
+    src/gmic/HtmlTranslator.cpp \
+    src/gmic/InputOutputState.cpp \
+    src/gmic/ParametersCache.cpp \
+    src/gmic/Utils.cpp \
+    src/gmichelper.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -72,6 +84,19 @@ HEADERS += \
     src/csslider.h \
     src/cssliderbox.h \
     src/fileboxentity.h \
+    src/gmic/Common.h \
+    src/gmic/FilterTextTranslator.h \
+    src/gmic/FiltersModel.h \
+    src/gmic/FiltersModelReader.h \
+    src/gmic/FiltersVisibilityMap.h \
+    src/gmic/Globals.h \
+    src/gmic/GmicDefinitions.h \
+    src/gmic/GmicStdlib.h \
+    src/gmic/HtmlTranslator.h \
+    src/gmic/InputOutputState.h \
+    src/gmic/ParametersCache.h \
+    src/gmic/Utils.h \
+    src/gmichelper.h \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \
@@ -140,18 +165,25 @@ win32-msvc* {
 
     INCLUDEPATH += $$VCPKG_INSTALL_PATH/installed/x64-windows/include
     INCLUDEPATH += ../external/qtadvanceddocking/src
+    INCLUDEPATH += ../external/gmic/include
 
     CONFIG(release, debug|release) {
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenImageIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenColorIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -ltbb
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -llibpng16
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lzlib
         LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddocking
+        LIBS += -L../external/gmic/lib -lgmic
     }
     CONFIG(debug, debug|release) {
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenImageIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenColorIO
         LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -ltbb_debug
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -llibpng16d
+        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lzlibd
         LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddockingd
+        LIBS += -L../external/gmic/debug/lib -lgmic
     }
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug

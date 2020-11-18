@@ -169,6 +169,7 @@ namespace Cascade
         NODE_TYPE_RIVER_STYX,
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
+        NODE_TYPE_GMIC,
         //NODE_TYPE_OFX,
         NODE_TYPE_MAX
     };
@@ -202,6 +203,7 @@ namespace Cascade
         { NODE_TYPE_RIVER_STYX, "River Styx" },
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
+        { NODE_TYPE_GMIC, "G'MIC" }
         //{ NODE_TYPE_OFX, "OFX" }
     };
 
@@ -742,6 +744,25 @@ namespace Cascade
         2
     };
 
+    const NodeInitProperties gmicNodeInitProperties =
+    {
+        NODE_TYPE_GMIC,
+        nodeStrings[NODE_TYPE_GMIC],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_GMIC] }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/noop_comp.spv",
+        2
+    };
+
 //    const NodeInitProperties ofxNodeInitProperties =
 //    {
 //        NODE_TYPE_OFX,
@@ -858,6 +879,10 @@ namespace Cascade
         else if(t == NODE_TYPE_ERODE)
         {
             return erodeNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_GMIC)
+        {
+            return gmicNodeInitProperties;
         }
 //        else if(t == NODE_TYPE_OFX)
 //        {

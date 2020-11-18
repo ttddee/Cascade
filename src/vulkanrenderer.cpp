@@ -647,6 +647,81 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     return true;
 }
 
+bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
+{
+    updateVertexData(gImg._width, gImg._height);
+
+    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
+                                                 window,
+                                                 &device,
+                                                 devFuncs,
+                                                 gImg._width,
+                                                 gImg._height));
+
+    auto imageSize = QSize(gImg._width, gImg._height);
+
+    // Now we can either map and copy the image data directly, or have to go
+    // through a staging buffer to copy and convert into the internal optimal
+    // tiling format.
+    VkFormatProperties props;
+    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
+    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    if (!canSampleLinear && !canSampleOptimal) {
+        qWarning("Neither linear nor optimal image sampling is supported for image");
+        return false;
+    }
+
+    if (loadImageStaging) {
+        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
+        loadImageStaging = VK_NULL_HANDLE;
+    }
+
+    if (loadImageStagingMem) {
+        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
+        loadImageStagingMem = VK_NULL_HANDLE;
+    }
+
+    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
+                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                            window->hostVisibleMemoryIndex()))
+        return false;
+
+    if (!writeGmicToLinearImage(
+                &gImg[0],
+                QSize(gImg._width, gImg._height),
+                loadImageStaging,
+                loadImageStagingMem))
+    {
+        return false;
+    }
+
+    texStagingPending = true;
+
+    VkImageViewCreateInfo viewInfo;
+    memset(&viewInfo, 0, sizeof(viewInfo));
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = imageFromDisk->getImage();
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = globalImageFormat;
+    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
+
+    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
+    if (err != VK_SUCCESS) {
+        qWarning("Failed to create image view for texture: %d", err);
+        return false;
+    }
+
+    loadImageSize = imageSize;
+
+    return true;
+}
+
 QString VulkanRenderer::lookupColorSpace(const int i)
 {
     // 0 = sRGB
@@ -694,19 +769,6 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
-//    startTimer();
-//    // TODO: Parallelize this
-//    OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(from.toLocal8Bit(), to.toLocal8Bit());
-
-//    OpenColorIO::PackedImageDesc desc(
-//                static_cast<float*>(image.localpixels()),
-//                image.xend(),
-//                image.yend(),
-//                4);
-//    processor->apply(desc);
-//    stopTimerAndPrint("OCIO conversion serial");
-
-    startTimer();
     parallelApplyColorSpace(
                 ocioConfig,
                 from,
@@ -714,7 +776,6 @@ void VulkanRenderer::transformColorSpace(const QString& from, const QString& to,
                 static_cast<float*>(image.localpixels()),
                 image.xend(),
                 image.yend());
-    stopTimerAndPrint("OCIO conversion parallel");
 }
 
 void VulkanRenderer::createComputeDescriptors()
@@ -1374,6 +1435,54 @@ bool VulkanRenderer::writeLinearImage(
     return true;
 }
 
+bool VulkanRenderer::writeGmicToLinearImage(
+        float* imgStart,
+        QSize imgSize,
+        VkImage image,
+        VkDeviceMemory memory)
+{
+    VkImageSubresource subres = {
+        VK_IMAGE_ASPECT_COLOR_BIT,
+        0, // mip level
+        0
+    };
+    VkSubresourceLayout layout;
+    devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
+
+    float *p;
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                memory,
+                layout.offset,
+                layout.size,
+                0,
+                reinterpret_cast<void **>(&p));
+    if (err != VK_SUCCESS) {
+        qWarning("Failed to map memory for linear image: %d", err);
+        return false;
+    }
+
+    // TODO: Parallelize this
+    float* pixels = imgStart;
+    //int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
+    // TODO: Why is this??????
+//    int pad = 0;
+//    if (imgSize.width() % 2 != 0)
+//    {
+//        pad = 4;
+//    }
+    int numPixels = imgSize.width() * imgSize.height() * 4;
+    int quarter = numPixels / 4;
+
+    for (int k = 0; k < 4; k++)
+            for (int j = 0; j < quarter; j++)
+                p[j * 4 + k] = *(pixels++);
+
+    devFuncs->vkUnmapMemory(device, memory);
+
+    return true;
+}
+
 void VulkanRenderer::updateVertexData( int w, int h)
 {
     vertexData[0]  = -0.002 * w;
@@ -1957,6 +2066,91 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         node->cachedImage = std::move(computeRenderTarget);
     }
+}
+
+void VulkanRenderer::processGmicNode(
+        NodeBase *node,
+        std::shared_ptr<CsImage> inputImageBack,
+        const QSize targetSize)
+{
+    qDebug("Process GMIC node.");
+
+    int width = targetSize.width();
+    int height = targetSize.height();
+
+    recordComputeCommandBufferCPUCopy(*inputImageBack);
+
+    submitImageSaveCommand();
+
+    devFuncs->vkQueueWaitIdle(compute.computeQueue);
+
+    float *pInput;
+    VkResult err = devFuncs->vkMapMemory(
+                device,
+                outputStagingBufferMemory,
+                0,
+                VK_WHOLE_SIZE,
+                0,
+                reinterpret_cast<void **>(&pInput));
+    if (err != VK_SUCCESS)
+    {
+        qWarning("Failed to map memory for staging buffer: %d", err);
+    }
+
+    gmicList.assign(1);
+
+    gmic_image<float>& gmicImage = gmicList[0];
+    gmicImage.assign(width, height, 1, 4);
+
+    float* pOutput = &gmicImage[0];
+    int numValues = width * height * 4;
+    int quarter = numValues / 4;
+
+    //TODO: Parallelize this
+    for (int y = 0; y < quarter; ++y)
+    {
+        *(pOutput + y) = *(pInput + y * 4);
+        *(pOutput + y + quarter) = *(pInput + y * 4 + 1);
+        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2);
+        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3);
+    }
+
+    gmic_list<char> gmicNames;
+    try
+    {
+        gmic("water[0] 20", gmicList,gmicNames);
+    }
+    catch (gmic_exception &e)
+    {
+        std::fprintf(stderr,"ERROR : %s\n",e.what());
+    }
+
+    //gmic("output test.png", gmicList,gmicNames);
+
+    if(!createTextureFromGmic(gmicImage))
+        qFatal("Failed to create texture from gmic image.");
+
+    // Update the projection size
+    createVertexBuffer();
+
+    // Create render target
+    if (!createComputeRenderTarget(width, height))
+        qFatal("Failed to create compute render target.");
+
+    updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
+
+    recordComputeCommandBufferImageLoad(computeRenderTarget);
+
+    submitComputeCommands();
+
+    qDebug("Moving render target");
+
+    node->cachedImage = std::move(computeRenderTarget);
+
+    //delete[] output;
+
+    devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
+
 }
 
 void VulkanRenderer::processNode(

@@ -30,7 +30,7 @@
 #include <OpenImageIO/color.h>
 #include <OpenColorIO/OpenColorIO.h>
 
-//#include <gmic.h>
+#include <gmic.h>
 
 #include "nodedefinitions.h"
 #include "csimage.h"
@@ -61,6 +61,10 @@ public:
             NodeBase* node,
             std::shared_ptr<CsImage> inputImageBack,
             std::shared_ptr<CsImage> inputImageFront,
+            const QSize targetSize);
+    void processGmicNode(
+            NodeBase *node,
+            std::shared_ptr<CsImage> inputImageBack,
             const QSize targetSize);
     void displayNode(
             NodeBase* node);
@@ -114,6 +118,8 @@ private:
     bool createTextureFromFile(
             const QString &path,
             const int colorSpace);
+    bool createTextureFromGmic(
+            gmic_image<float>& gImg);
     bool createTextureImage(
             const QSize &size,
             VkImage *image,
@@ -122,6 +128,11 @@ private:
             VkImageUsageFlags usage,
             uint32_t memIndex);
     bool writeLinearImage(
+            float* imgStart,
+            QSize imgSize,
+            VkImage image,
+            VkDeviceMemory memory);
+    bool writeGmicToLinearImage(
             float* imgStart,
             QSize imgSize,
             VkImage image,
@@ -285,6 +296,11 @@ private:
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OpenColorIO::ConstConfigRcPtr ocioConfig;
+
+    gmic_image<float> gmicImage;
+    gmic_list<float> gmicList;
+    gmic_list<char> gmicNames;
+    gmic gmicInstance;
 
 };
 

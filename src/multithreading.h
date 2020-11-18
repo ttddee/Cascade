@@ -65,8 +65,6 @@ void parallelApplyColorSpace(
     });
 }
 
-
-
 }
 
 #endif // MULTITHREADING_H

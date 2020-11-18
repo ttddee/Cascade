@@ -155,6 +155,21 @@ void RenderManager::displayNode(NodeBase* node)
         renderer->displayNode(node);
         node->needsUpdate = false;
     }
+    if (node->nodeType == NODE_TYPE_GMIC)
+    {
+        if(node->needsUpdate)
+        {
+            if (node->canBeRendered())
+            {
+                auto inputImage = node->getUpstreamNodeBack()->cachedImage;
+                renderer->processGmicNode(node, inputImage, node->getTargetSize());
+                renderer->displayNode(node);
+                node->needsUpdate = false;
+            }
+        }
+        // TODO: This is inefficient, better to display upon render
+
+    }
     else if (node && node->canBeRendered())
     {
         if (renderNodes(node))
@@ -222,10 +237,10 @@ void RenderManager::renderNode(NodeBase *node)
         }
         else if (inputImageBack)
         {
-//            if (node->nodeType == NODE_TYPE_GMIC)
-//            {
-//                renderer->processGmicNode(node, inputImageBack, node->getTargetSize());
-//            }
+            if (node->nodeType == NODE_TYPE_GMIC)
+            {
+                renderer->processGmicNode(node, inputImageBack, node->getTargetSize());
+            }
 
             {
                 renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());

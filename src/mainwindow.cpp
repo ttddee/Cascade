@@ -28,6 +28,7 @@
 
 #include "vulkanrenderer.h"
 #include "csmessagebox.h"
+#include "gmichelper.h"
 
 using namespace ads;
 
@@ -126,6 +127,10 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
+
+    //--------- Gmic
+    qDebug("Initializing Gmic.");
+    std::unique_ptr<GmicHelper> gmicHelper(new GmicHelper());
 }
 
 void MainWindow::exit()
