@@ -35,6 +35,7 @@
 #include "fileboxentity.h"
 #include "benchmark.h"
 #include "multithreading.h"
+#include "gmichelper.h"
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -2075,6 +2076,11 @@ void VulkanRenderer::processGmicNode(
 {
     qDebug("Process GMIC node.");
 
+    if (!gmicInstance)
+    {
+        gmicInstance = GmicHelper::getInstance().getGmicInstance();
+    }
+
     int width = targetSize.width();
     int height = targetSize.height();
 
@@ -2115,16 +2121,19 @@ void VulkanRenderer::processGmicNode(
         *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3);
     }
 
+    QString command = node->getAllPropertyValues();
+
     gmic_list<char> gmicNames;
+    startTimer();
     try
     {
-        gmic("water[0] 20", gmicList,gmicNames);
+        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
     }
     catch (gmic_exception &e)
     {
         std::fprintf(stderr,"ERROR : %s\n",e.what());
     }
-
+    stopTimerAndPrint("Gmic processing ");
     //gmic("output test.png", gmicList,gmicNames);
 
     if(!createTextureFromGmic(gmicImage))

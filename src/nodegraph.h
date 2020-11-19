@@ -45,7 +45,10 @@ class NodeGraph : public QGraphicsView
 public:
     NodeGraph(QWidget* parent);
 
-    void createNode(const NodeType type);
+    void createNode(
+            const NodeType type,
+            const QString& gType = "",
+            const QString& gHash = "");
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
 

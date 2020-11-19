@@ -1,8 +1,10 @@
 #ifndef GMICHELPER_H
 #define GMICHELPER_H
 
+#include <memory>
+
 #include "gmic/FiltersModel.h"
-//#include "gmic/GmicDefinitions.h"
+#include "gmic.h"
 
 using namespace Cascade;
 
@@ -30,12 +32,24 @@ public:
         const char * previewFactorString() const;
       };
 
-    GmicHelper();
+    static GmicHelper& getInstance();
+
+    GmicHelper(GmicHelper const&) = delete;
+    void operator=(GmicHelper const&) = delete;
+
+    std::shared_ptr<gmic> getGmicInstance();
+    QSet<QString>& getFilterCategories();
+    FiltersModel& getFiltersModel();
+
+    void setUp();
 
 private:
+    GmicHelper() {}
+
     void readFilters();
     void setCurrentFilter(const QString& hash);
 
+    std::shared_ptr<gmic> gmicInstance;
     FiltersModel filtersModel;
     Filter currentFilter;
 };

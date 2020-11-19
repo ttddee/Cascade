@@ -443,6 +443,13 @@ ColorPropertiesEntity QCheckBox {
     font: 12px "Open Sans";
 }
 
+QTextBrowser {
+    font: 12px "Open Sans";
+    color: #f1f1f1;
+    background-color: #1d2024;
+    margin: 0px;
+}
+
 /*-----------Advanced Docking------------*/
 ads--CDockContainerWidget {
     background-color: #181b1e;

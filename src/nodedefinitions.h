@@ -108,7 +108,9 @@ namespace Cascade
         UI_ELEMENT_TYPE_COLOR_PROPERTIES,
         UI_ELEMENT_TYPE_SIZEBOX,
         UI_ELEMENT_TYPE_TEXTBOX,
-        UI_ELEMENT_TYPE_CHECKBOX
+        UI_ELEMENT_TYPE_CHECKBOX,
+        UI_ELEMENT_TYPE_GMIC_PROPERTIES,
+        UI_ELEMENT_TYPE_TEXTBROWSER
     };
 
     ////////////////////////////////////
@@ -123,6 +125,7 @@ namespace Cascade
         NODE_CATEGORY_MERGE,
         NODE_CATEGORY_TRANSFORM,
         NODE_CATEGORY_CHANNEL,
+        NODE_CATEGORY_GMIC,
         NODE_CATEGORY_MAX
     };
 
@@ -137,7 +140,8 @@ namespace Cascade
         { NODE_CATEGORY_FILTER, "Filter" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
-        { NODE_CATEGORY_CHANNEL, "Channel" }
+        { NODE_CATEGORY_CHANNEL, "Channel" },
+        { NODE_CATEGORY_GMIC, "G'MIC" }
     };
 
     ////////////////////////////////////
@@ -748,11 +752,11 @@ namespace Cascade
     {
         NODE_TYPE_GMIC,
         nodeStrings[NODE_TYPE_GMIC],
-        NODE_CATEGORY_FILTER,
+        NODE_CATEGORY_GMIC,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_GMIC] }
+            { UI_ELEMENT_TYPE_GMIC_PROPERTIES, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

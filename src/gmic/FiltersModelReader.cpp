@@ -23,6 +23,7 @@
  *
  */
 #include "FiltersModelReader.h"
+
 #include <QBuffer>
 #include <QDebug>
 #include <QFileInfo>
@@ -31,13 +32,12 @@
 #include <QRegularExpression>
 #include <QSettings>
 #include <QString>
+#include <QRegExp>
+
 #include "Common.h"
 #include "FiltersModel.h"
 #include "Globals.h"
-//#include "LanguageSettings.h"
-//#include "Logger.h"
 #include "Utils.h"
-//#include "gmic_qt.h"
 #include "gmic.h"
 
 FiltersModelReader::FiltersModelReader(FiltersModel & model) : _model(model) {}
@@ -45,15 +45,12 @@ FiltersModelReader::FiltersModelReader(FiltersModel & model) : _model(model) {}
 void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
 {
    qDebug("Gmic: Starting to load filters.");
-  //TIMING;
+
   QBuffer stdlib(&stdlibArray);
   stdlib.open(QBuffer::ReadOnly | QBuffer::Text);
   QList<QString> filterPath;
 
-  //QString language = LanguageSettings::configuredTranslator();
-  //if (language.isEmpty()) {
   QString language = "void";
-  //}
 
   // Use _en locale if no localization for the language is found.
   QByteArray localePrefix = QString("#@gui_%1").arg(language).toLocal8Bit();
@@ -173,6 +170,8 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
                  && !filterRegexpNoLanguage.exactMatch(buffer) //
                  && !filterRegexpLanguage.exactMatch(buffer));
 
+        QString category = filterPath[0].replace(QRegExp("<[^>]*>"), "");
+
         FiltersModel::Filter filter;
         filter.setName(filterName);
         filter.setCommand(filterCommand);
@@ -183,8 +182,12 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
         filter.setParameters(parameters);
         filter.setPath(filterPath);
         filter.setWarningFlag(warning);
+        filter.setCategory(category);
         filter.build();
+
         _model.addFilter(filter);
+
+        _model.addFilterCategory(category);
       } else {
         buffer = readBufferLine(stdlib);
       }
@@ -203,7 +206,6 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
     }
   }
   qDebug("Gmic: Loaded filters.");
-  //TIMING;
 }
 
 bool FiltersModelReader::textIsPrecededBySpacesInSomeLineOfArray(const QByteArray & text, const QByteArray & array)

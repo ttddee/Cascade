@@ -25,19 +25,24 @@
 
 #ifndef GMIC_QT_FILTERSMODEL_H
 #define GMIC_QT_FILTERSMODEL_H
+
+#include <cstddef>
+#include <vector>
+
 #include <QList>
 #include <QMap>
 #include <QString>
-#include <cstddef>
-#include <vector>
-//#include "gmic_qt.h"
+#include <QSet>
+
 #include "GmicDefinitions.h"
 
 using namespace Cascade;
 
-class FiltersModel {
+class FiltersModel
+{
 public:
-  class Filter {
+  class Filter
+  {
   public:
     Filter();
     Filter & setName(const QString & name);
@@ -49,6 +54,7 @@ public:
     Filter & setPath(const QList<QString> & path);
     Filter & setWarningFlag(bool flag);
     Filter & setDefaultInputMode(Gmic::InputMode);
+    Filter & setCategory(QString);
     Filter & build();
 
     const QString & name() const;
@@ -64,6 +70,7 @@ public:
     bool isAccurateIfZoomed() const;
     bool isWarning() const;
     Gmic::InputMode defaultInputMode() const;
+    const QString & category() const;
 
     bool matchKeywords(const QList<QString> & keywords) const;
     bool matchFullPath(const QList<QString> & path) const;
@@ -83,6 +90,7 @@ public:
     bool _isAccurateIfZoomed;
     QString _hash;
     bool _isWarning;
+    QString _category;
   };
 
   FiltersModel() = default;
@@ -90,8 +98,14 @@ public:
 
 public:
   void printFilterNames();
+  QString getFilterCommand(const QString& hash);
+  QString getFilterParameters(const QString& hash);
+  QString getFilterPath(const QString& hash);
+  QString getFilterCategoryFromHash(const QString& hash);
   void clear();
   void addFilter(const Filter & filter);
+  void addFilterCategory(const QString& category);
+  QSet<QString>& getFilterCategories();
   void flush();
   size_t filterCount() const;
   size_t notTestingFilterCount() const;
@@ -122,6 +136,7 @@ public:
 
 private:
   QMap<QString, Filter> _hash2filter;
+  QSet<QString> _filterCategories;
 };
 
 #endif // GMIC_QT_FILTERSMODEL_H

@@ -46,6 +46,27 @@ void FiltersModel::printFilterNames()
     }
 }
 
+QString FiltersModel::getFilterCommand(const QString& hash)
+{
+    return _hash2filter[hash].command();
+}
+
+QString FiltersModel::getFilterParameters(const QString &hash)
+{
+    return _hash2filter[hash].parameters();
+}
+
+QString FiltersModel::getFilterPath(const QString &hash)
+{
+    return _hash2filter[hash].path()[0];
+}
+
+QString FiltersModel::getFilterCategoryFromHash(const QString &hash)
+{
+    auto filter = getFilterFromHash(hash);
+    return filter.category();
+}
+
 void FiltersModel::clear()
 {
   _hash2filter.clear();
@@ -54,6 +75,16 @@ void FiltersModel::clear()
 void FiltersModel::addFilter(const FiltersModel::Filter & filter)
 {
   _hash2filter[filter.hash()] = filter;
+}
+
+void FiltersModel::addFilterCategory(const QString &category)
+{
+    _filterCategories.insert(category);
+}
+
+QSet<QString>& FiltersModel::getFilterCategories()
+{
+    return _filterCategories;
 }
 
 void FiltersModel::flush()
@@ -176,6 +207,12 @@ FiltersModel::Filter & FiltersModel::Filter::setDefaultInputMode(Gmic::InputMode
   return *this;
 }
 
+FiltersModel::Filter & FiltersModel::Filter::setCategory(QString s)
+{
+  _category = s;
+  return *this;
+}
+
 FiltersModel::Filter & FiltersModel::Filter::build()
 {
   //
@@ -259,6 +296,11 @@ bool FiltersModel::Filter::isWarning() const
 Gmic::InputMode FiltersModel::Filter::defaultInputMode() const
 {
   return _defaultInputMode;
+}
+
+const QString & FiltersModel::Filter::category() const
+{
+  return _category;
 }
 
 bool FiltersModel::Filter::matchKeywords(const QList<QString> & keywords) const

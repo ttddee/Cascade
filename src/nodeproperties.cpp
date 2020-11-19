@@ -36,6 +36,8 @@
 #include "sizeboxentity.h"
 #include "textboxentity.h"
 #include "checkboxentity.h"
+#include "gmicpropertiesentity.h"
+#include "textbrowserentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -208,6 +210,27 @@ NodeProperties::NodeProperties(
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
             item->setChecked(parts.at(1).toInt());
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_GMIC_PROPERTIES)
+        {
+            GmicPropertiesEntity* item = new GmicPropertiesEntity(
+                        UI_ELEMENT_TYPE_GMIC_PROPERTIES,
+                        parentNode->getGmicNodeType(),
+                        parentNode->getGmicHash(),
+                        this);
+            auto parts = elem.second.split(",");
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_TEXTBROWSER)
+        {
+            TextBrowserEntity* item = new TextBrowserEntity(
+                        UI_ELEMENT_TYPE_TEXTBOX,
+                        this);
+            item->setText(elem.second);
             layout->addWidget(item);
             widgets.push_back(item);
         }

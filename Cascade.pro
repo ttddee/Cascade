@@ -46,6 +46,7 @@ SOURCES += \
     src/gmic/ParametersCache.cpp \
     src/gmic/Utils.cpp \
     src/gmichelper.cpp \
+    src/gmicpropertiesentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -61,6 +62,7 @@ SOURCES += \
     src/slidernoclick.cpp \
     src/spinboxentity.cpp \
     src/textboxentity.cpp \
+    src/textbrowserentity.cpp \
     src/uientity.cpp \
     src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
@@ -97,6 +99,7 @@ HEADERS += \
     src/gmic/ParametersCache.h \
     src/gmic/Utils.h \
     src/gmichelper.h \
+    src/gmicpropertiesentity.h \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \
@@ -113,6 +116,7 @@ HEADERS += \
     src/slidernoclick.h \
     src/spinboxentity.h \
     src/textboxentity.h \
+    src/textbrowserentity.h \
     src/uicolors.h \
     src/uientity.h \
     src/viewerstatusbar.h \
@@ -130,12 +134,14 @@ FORMS += \
     src/comboboxentity.ui \
     src/cssliderbox.ui \
     src/fileboxentity.ui \
+    src/gmicpropertiesentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \
     src/propertiesheading.ui \
     src/sizeboxentity.ui \
     src/spinboxentity.ui \
     src/textboxentity.ui \
+    src/textbrowserentity.ui \
     src/viewerstatusbar.ui \
     src/writepropertiesentity.ui
 

@@ -6,11 +6,37 @@
 #include "gmic/FiltersModelReader.h"
 #include "gmic/ParametersCache.h"
 
-GmicHelper::GmicHelper()
+GmicHelper& GmicHelper::getInstance()
+{
+    static GmicHelper instance;
+
+    return instance;
+}
+
+void GmicHelper::setUp()
 {
     readFilters();
 
-    std::cout << filtersModel.filterCount() << std::endl;
+    gmicInstance = std::unique_ptr<gmic>(new gmic(
+                                             QString("").toLocal8Bit().constData(),
+                                             GmicStdLib::Array.constData(),
+                                             true,
+                                             0, 0, 0.f));
+}
+
+std::shared_ptr<gmic> GmicHelper::getGmicInstance()
+{
+    return gmicInstance;
+}
+
+QSet<QString>& GmicHelper::getFilterCategories()
+{
+    return filtersModel.getFilterCategories();
+}
+
+FiltersModel& GmicHelper::getFiltersModel()
+{
+    return filtersModel;
 }
 
 void GmicHelper::readFilters()
@@ -22,8 +48,6 @@ void GmicHelper::readFilters()
   }
   FiltersModelReader filterModelReader(filtersModel);
   filterModelReader.parseFiltersDefinitions(GmicStdLib::Array);
-
-  filtersModel.printFilterNames();
 }
 
 void GmicHelper::setCurrentFilter(const QString& hash)

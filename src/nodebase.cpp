@@ -32,7 +32,12 @@
 #include "nodegraph.h"
 #include "connection.h"
 
-NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
+NodeBase::NodeBase(
+        const NodeType type,
+        const NodeGraph* graph,
+        const QString& gType,
+        const QString& gHash,
+        QWidget *parent)
     : QWidget(parent),
       nodeType(type),
       ui(new Ui::NodeBase),
@@ -40,6 +45,9 @@ NodeBase::NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent)
       id(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     ui->setupUi(this);
+
+    setGmicNodeType(gType);
+    setGmicHash(gHash);
 
     this->setUpNode(type);
 
@@ -296,6 +304,26 @@ QSize NodeBase::getTargetSize()
         }
     }
     return QSize(0, 0);
+}
+
+const QString& NodeBase::getGmicNodeType() const
+{
+    return gmicNodeType;
+}
+
+const QString& NodeBase::getGmicHash() const
+{
+    return gmicHash;
+}
+
+void NodeBase::setGmicNodeType(const QString &type)
+{
+    gmicNodeType = type;
+}
+
+void NodeBase::setGmicHash(const QString &hash)
+{
+    gmicHash = hash;
 }
 
 QString NodeBase::getAllPropertyValues()

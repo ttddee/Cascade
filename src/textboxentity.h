@@ -36,11 +36,12 @@ class TextBoxEntity : public UiEntity
 
 public:
     explicit TextBoxEntity(UIElementType et, QWidget *parent = nullptr);
-    ~TextBoxEntity();
 
     void setText(const QString& s);
 
     QString getValuesAsString() override;
+
+    ~TextBoxEntity();
 
 private:
     Ui::TextBoxEntity *ui;

@@ -300,7 +300,7 @@ private:
     gmic_image<float> gmicImage;
     gmic_list<float> gmicList;
     gmic_list<char> gmicNames;
-    gmic gmicInstance;
+    std::shared_ptr<gmic> gmicInstance = nullptr;
 
 };
 

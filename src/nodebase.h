@@ -55,7 +55,12 @@ class NodeBase : public QWidget
     Q_OBJECT
 
 public:
-    explicit NodeBase(const NodeType type, const NodeGraph* graph, QWidget *parent = nullptr);
+    explicit NodeBase(
+            const NodeType type,
+            const NodeGraph* graph,
+            const QString& gType = "",
+            const QString& gHash = "",
+            QWidget *parent = nullptr);
 
     const NodeType nodeType;
 
@@ -95,6 +100,12 @@ public:
 
     bool getHasCustomSize();
     void setHasCustomSize(UiEntity* source);
+
+    const QString& getGmicNodeType() const;
+    const QString& getGmicHash() const;
+
+    void setGmicNodeType(const QString& type);
+    void setGmicHash(const QString& hash);
 
     virtual ~NodeBase();
 
@@ -169,6 +180,9 @@ private:
     const QPen backViewedColorPen = QPen(backColor, 3);
     const QPen alphaViewedColorPen = QPen(alphaColor, 3);
     const QPen outputViewedColorPen = QPen(outputColor, 3);
+
+    QString gmicNodeType = "";
+    QString gmicHash = "";
 
 signals:
     void nodeWasLeftClicked(NodeBase* node);

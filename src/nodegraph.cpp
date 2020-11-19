@@ -56,9 +56,12 @@ NodeGraph::NodeGraph(QWidget* parent)
             wManager, &WindowManager::handleClearPropertiesRequest);
 }
 
-void NodeGraph::createNode(const NodeType type)
+void NodeGraph::createNode(
+        const NodeType type,
+        const QString& gType,
+        const QString& gHash)
 {
-    NodeBase* n = new NodeBase(type, this);
+    NodeBase* n = new NodeBase(type, this, gType, gHash);
     scene->addWidget(n);
     n->move(mapToScene(lastMousePos).x(),
             mapToScene(lastMousePos).y());

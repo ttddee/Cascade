@@ -167,8 +167,10 @@ void RenderManager::displayNode(NodeBase* node)
                 node->needsUpdate = false;
             }
         }
-        // TODO: This is inefficient, better to display upon render
-
+        else
+        {
+            renderer->displayNode(node);
+        }
     }
     else if (node && node->canBeRendered())
     {

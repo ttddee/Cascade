@@ -25,6 +25,7 @@
 #include <QFontDatabase>
 #include <QFile>
 #include <QLoggingCategory>
+#include <QStyleFactory>
 
 Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
 

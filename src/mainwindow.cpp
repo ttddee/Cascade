@@ -56,6 +56,13 @@ MainWindow::MainWindow(QWidget *parent)
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);    
 
+    //--------- Gmic
+    // Must be initialized before NodeGraph
+    qDebug("Initializing Gmic.");
+
+    auto gmicHelper = &GmicHelper::getInstance();
+    gmicHelper->setUp();
+
     nodeGraph = new NodeGraph(this);
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
@@ -127,10 +134,6 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
-
-    //--------- Gmic
-    qDebug("Initializing Gmic.");
-    std::unique_ptr<GmicHelper> gmicHelper(new GmicHelper());
 }
 
 void MainWindow::exit()
