@@ -17,50 +17,42 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef GMICPROPERTIESENTITY_H
-#define GMICPROPERTIESENTITY_H
+#ifndef FOLDERBOXENTITY_H
+#define FOLDERBOXENTITY_H
 
 #include <QWidget>
 
 #include "uientity.h"
-#include "gmichelper.h"
-#include "checkboxentity.h"
 
 class NodeProperties;
 
 namespace Ui {
-class GmicPropertiesEntity;
+class FolderBoxEntity;
 }
 
-class GmicPropertiesEntity : public UiEntity
+class FolderBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit GmicPropertiesEntity(
-            UIElementType et,
-            const QString& gType,
-            const QString& gHash,
-            QWidget *parent = nullptr);
+    explicit FolderBoxEntity(UIElementType et, QWidget *parent = nullptr);
+
+    void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
+
     QString getValuesAsString() override;
 
-    ~GmicPropertiesEntity();
+    ~FolderBoxEntity();
 
 private:
-    Ui::GmicPropertiesEntity *ui;
-    GmicHelper* gmicHelper;
-
-    QString gmicNodeType;
-    QString gmicHash;
-
-    CheckBoxEntity* previewBox;
-
-    std::vector<UiEntity*> propElements;
+    Ui::FolderBoxEntity *ui;
 
 signals:
     void valueChanged();
+
+public slots:
+    void handleFolderButtonClicked();
 };
 
-#endif // GMICPROPERTIESENTITY_H
+#endif // FOLDERBOXENTITY_H

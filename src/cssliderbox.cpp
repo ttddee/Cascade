@@ -26,11 +26,13 @@
 
 #include "nodeproperties.h"
 
-CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent) :
+CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSliderRelease) :
     UiEntity(et, parent),
     ui(new Ui::CsSliderBox)
 {
     ui->setupUi(this);
+
+    this->onlyUpdateOnSliderRelease = onlyUpdateOnSliderRelease;
 
     nameLabel = new QLabel(this);
     nameLabel->setText("None");
@@ -55,8 +57,32 @@ CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent) :
     ui->slider->installEventFilter(this);
     nameLabel->installEventFilter(this);
 
+    if (onlyUpdateOnSliderRelease)
+    {
+        connect(ui->slider, &SliderNoClick::sliderReleased,
+                this, [this](){ setSpinBoxNoSignal(ui->slider->value()); });
+        if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
+        {
+            connect(ui->slider, &SliderNoClick::sliderReleased,
+                    this, [this](){ emit valueChangedDouble(valueBoxDouble->value()); });
+            connect(valueBoxDouble, &QDoubleSpinBox::editingFinished,
+                    this, [this](){ emit valueChangedDouble(valueBoxDouble->value()); });
+            connect(valueBoxDouble, &QDoubleSpinBox::editingFinished,
+                    this, [this](){ setSliderNoSignalDouble(valueBoxDouble->value()); });
+        }
+        else
+        {
+            connect(ui->slider, &SliderNoClick::sliderReleased,
+                    this, [this](){ emit valueChangedInt(valueBoxInt->value()); });
+            connect(valueBoxInt, &QSpinBox::editingFinished,
+                    this, [this](){ emit valueChangedInt(valueBoxInt->value()); });
+            connect(valueBoxInt, &QSpinBox::editingFinished,
+                    this, [this](){ setSliderNoSignalInt(valueBoxInt->value()); });
+        }
+    }
     connect(ui->slider, &SliderNoClick::valueChanged,
             this, &CsSliderBox::setSpinBoxNoSignal);
+
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
     {
         connect(valueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
@@ -96,7 +122,15 @@ void CsSliderBox::setMinMaxStepValue(
 {
     ui->slider->setMinimum(min * 10);
     ui->slider->setMaximum(max * 10);
-    ui->slider->setSingleStep(abs(max - min) * step / 40);
+    if (int s = abs(max - min) * step / 40 < 1)
+    {
+        ui->slider->setSingleStep(1);
+    }
+    else
+    {
+        ui->slider->setSingleStep(s);
+    }
+
     ui->slider->setValue(value * 10);
     valueBoxInt->setMinimum(min);
     valueBoxInt->setMaximum(max);
@@ -127,7 +161,8 @@ void CsSliderBox::setSpinBoxNoSignal(int i)
         valueBoxDouble->setValue(i / 1000.0);
         valueBoxDouble->blockSignals(false);
 
-        emit valueChangedDouble(valueBoxDouble->value());
+        if (!this->onlyUpdateOnSliderRelease)
+            emit valueChangedDouble(valueBoxDouble->value());
     }
     else
     {
@@ -135,7 +170,8 @@ void CsSliderBox::setSpinBoxNoSignal(int i)
         valueBoxInt->setValue(i / 10);
         valueBoxInt->blockSignals(false);
 
-        emit valueChangedInt(valueBoxInt->value());
+        if (!this->onlyUpdateOnSliderRelease)
+            emit valueChangedInt(valueBoxInt->value());
     }
 
 }
@@ -146,7 +182,8 @@ void CsSliderBox::setSliderNoSignalDouble(double d)
     ui->slider->setValue(static_cast<int>(d * 1000));
     ui->slider->blockSignals(false);
 
-    emit valueChangedDouble(valueBoxDouble->value());
+    if (!this->onlyUpdateOnSliderRelease)
+        emit valueChangedDouble(valueBoxDouble->value());
 }
 
 void CsSliderBox::setSliderNoSignalInt(int i)
@@ -155,7 +192,8 @@ void CsSliderBox::setSliderNoSignalInt(int i)
     ui->slider->setValue(i * 10);
     ui->slider->blockSignals(false);
 
-    emit valueChangedInt(valueBoxInt->value());
+    if (!this->onlyUpdateOnSliderRelease)
+        emit valueChangedInt(valueBoxInt->value());
 }
 
 void CsSliderBox::setName(const QString &name)

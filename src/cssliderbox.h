@@ -36,7 +36,7 @@ class CsSliderBox : public UiEntity
     Q_OBJECT
 
 public:
-    explicit CsSliderBox(UIElementType et, QWidget *parent = nullptr);
+    explicit CsSliderBox(UIElementType et, QWidget *parent = nullptr, bool onlyUpdateOnSliderRelease = false);
 
     void setMinMaxStepValue(double, double, double, double);
     void setMinMaxStepValue(int, int, int, int);
@@ -67,6 +67,7 @@ private:
     QPoint lastPos;
 
     float baseValue;
+    bool onlyUpdateOnSliderRelease = false;
 
 signals:
     void valueChangedDouble(double d);

@@ -1412,12 +1412,6 @@ bool VulkanRenderer::writeLinearImage(
         pad = 4;
     }
 
-//    startTimer();
-//    int numElements = imgSize.width() * imgSize.height() * 4;
-//    parallelArrayCopy(imgStart, p, numElements);
-//    stopTimerAndPrint("Parallel copy");
-
-//    startTimer();
     // TODO: Parallelize this
     float* pixels = imgStart;
     int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
@@ -1465,19 +1459,12 @@ bool VulkanRenderer::writeGmicToLinearImage(
 
     // TODO: Parallelize this
     float* pixels = imgStart;
-    //int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
-    // TODO: Why is this??????
-//    int pad = 0;
-//    if (imgSize.width() % 2 != 0)
-//    {
-//        pad = 4;
-//    }
     int numPixels = imgSize.width() * imgSize.height() * 4;
     int quarter = numPixels / 4;
 
     for (int k = 0; k < 4; k++)
             for (int j = 0; j < quarter; j++)
-                p[j * 4 + k] = *(pixels++);
+                p[j * 4 + k] = *(pixels++) / 256.0;
 
     devFuncs->vkUnmapMemory(device, memory);
 
@@ -2115,10 +2102,10 @@ void VulkanRenderer::processGmicNode(
     //TODO: Parallelize this
     for (int y = 0; y < quarter; ++y)
     {
-        *(pOutput + y) = *(pInput + y * 4);
-        *(pOutput + y + quarter) = *(pInput + y * 4 + 1);
-        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2);
-        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3);
+        *(pOutput + y) = *(pInput + y * 4) * 256.0;
+        *(pOutput + y + quarter) = *(pInput + y * 4 + 1) * 256.0;
+        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2) * 256.0;
+        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3) * 256.0;
     }
 
     QString command = node->getAllPropertyValues();
@@ -2134,7 +2121,6 @@ void VulkanRenderer::processGmicNode(
         std::fprintf(stderr,"ERROR : %s\n",e.what());
     }
     stopTimerAndPrint("Gmic processing ");
-    //gmic("output test.png", gmicList,gmicNames);
 
     if(!createTextureFromGmic(gmicImage))
         qFatal("Failed to create texture from gmic image.");
@@ -2143,7 +2129,7 @@ void VulkanRenderer::processGmicNode(
     createVertexBuffer();
 
     // Create render target
-    if (!createComputeRenderTarget(width, height))
+    if (!createComputeRenderTarget(gmicImage._width, gmicImage._height))
         qFatal("Failed to create compute render target.");
 
     updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
@@ -2156,7 +2142,7 @@ void VulkanRenderer::processGmicNode(
 
     node->cachedImage = std::move(computeRenderTarget);
 
-    //delete[] output;
+    gmicList.assign(0);
 
     devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
 

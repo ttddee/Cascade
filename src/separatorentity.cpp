@@ -17,22 +17,22 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef SLIDERNOCLICK_H
-#define SLIDERNOCLICK_H
+#include "separatorentity.h"
+#include "ui_separatorentity.h"
 
-#include <QSlider>
-#include <QObject>
-
-class SliderNoClick : public QSlider
+SeparatorEntity::SeparatorEntity(UIElementType et, QWidget *parent) :
+    UiEntity(et, parent),
+    ui(new Ui::SeparatorEntity)
 {
-    Q_OBJECT
+    ui->setupUi(this);
+}
 
-public:
-    SliderNoClick(QWidget *parent = nullptr);
+QString SeparatorEntity::getValuesAsString()
+{
+    return "";
+}
 
-private:
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
-};
-
-#endif // SLIDERNOCLICK_H
+SeparatorEntity::~SeparatorEntity()
+{
+    delete ui;
+}

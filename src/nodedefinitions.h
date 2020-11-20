@@ -110,7 +110,10 @@ namespace Cascade
         UI_ELEMENT_TYPE_TEXTBOX,
         UI_ELEMENT_TYPE_CHECKBOX,
         UI_ELEMENT_TYPE_GMIC_PROPERTIES,
-        UI_ELEMENT_TYPE_TEXTBROWSER
+        UI_ELEMENT_TYPE_TEXTBROWSER,
+        UI_ELEMENT_TYPE_SEPARATOR,
+        UI_ELEMENT_TYPE_LINEEDIT,
+        UI_ELEMENT_TYPE_FOLDERBOX
     };
 
     ////////////////////////////////////

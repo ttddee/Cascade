@@ -23,15 +23,36 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
 HEADERS += \
         tst_nodebasetests.h \
         tst_testtest.h \
+        ../../src/benchmark.h \
+        ../../src/channelselectentity.h \
+        ../../src/checkboxentity.h \
         ../../src/colorbutton.h \
         ../../src/colorbuttonentity.h \
+        ../../src/colorpropertiesentity.h \
         ../../src/comboboxentity.h \
         ../../src/connection.h \
         ../../src/csimage.h \
-        ../../src/csslider.h \
-        ../../src/fileboxentity.h \
-        ../../src/mainwindow.h \
         ../../src/csmessagebox.h \
+        ../../src/cssettingsbuffer.h \
+        ../../src/csslider.h \
+        ../../src/cssliderbox.h \
+        ../../src/fileboxentity.h \
+        ../../src/gmic/Common.h \
+        ../../src/gmic/FilterTextTranslator.h \
+        ../../src/gmic/FiltersModel.h \
+        ../../src/gmic/FiltersModelReader.h \
+        ../../src/gmic/FiltersVisibilityMap.h \
+        ../../src/gmic/Globals.h \
+        ../../src/gmic/GmicDefinitions.h \
+        ../../src/gmic/GmicStdlib.h \
+        ../../src/gmic/HtmlTranslator.h \
+        ../../src/gmic/InputOutputState.h \
+        ../../src/gmic/ParametersCache.h \
+        ../../src/gmic/Utils.h \
+        ../../src/gmichelper.h \
+        ../../src/gmicpropertiesentity.h \
+        ../../src/mainwindow.h \
+        ../../src/multithreading.h \
         ../../src/nodebase.h \
         ../../src/nodedefinitions.h \
         ../../src/nodegraph.h \
@@ -42,8 +63,11 @@ HEADERS += \
         ../../src/propertiesheading.h \
         ../../src/propertiesview.h \
         ../../src/rendermanager.h \
+        ../../src/sizeboxentity.h \
+        ../../src/slidernoclick.h \
         ../../src/spinboxentity.h \
-        ../../src/spinboxsliderentity.h \
+        ../../src/textboxentity.h \
+        ../../src/textbrowserentity.h \
         ../../src/uicolors.h \
         ../../src/uientity.h \
         ../../src/viewerstatusbar.h \
@@ -56,15 +80,33 @@ HEADERS += \
 
 SOURCES += \
         main.cpp \
+        ../../src/channelselectentity.cpp \
+        ../../src/checkboxentity.cpp \
         ../../src/colorbutton.cpp \
         ../../src/colorbuttonentity.cpp \
+        ../../src/colorpropertiesentity.cpp \
         ../../src/comboboxentity.cpp \
         ../../src/connection.cpp \
         ../../src/csimage.cpp \
-        ../../src/csslider.cpp \
-        ../../src/fileboxentity.cpp \
-        ../../src/mainwindow.cpp \
         ../../src/csmessagebox.cpp \
+        ../../src/cssettingsbuffer.cpp \
+        ../../src/csslider.cpp \
+        ../../src/cssliderbox.cpp \
+        ../../src/fileboxentity.cpp \
+        ../../src/gmic/Common.cpp \
+        ../../src/gmic/FilterTextTranslator.cpp \
+        ../../src/gmic/FiltersModel.cpp \
+        ../../src/gmic/FiltersModelReader.cpp \
+        ../../src/gmic/FiltersVisibilityMap.cpp \
+        ../../src/gmic/Globals.cpp \
+        ../../src/gmic/GmicStdlib.cpp \
+        ../../src/gmic/HtmlTranslator.cpp \
+        ../../src/gmic/InputOutputState.cpp \
+        ../../src/gmic/ParametersCache.cpp \
+        ../../src/gmic/Utils.cpp \
+        ../../src/gmichelper.cpp \
+        ../../src/gmicpropertiesentity.cpp \
+        ../../src/mainwindow.cpp \
         ../../src/nodebase.cpp \
         ../../src/nodegraph.cpp \
         ../../src/nodegraphcontextmenu.cpp \
@@ -74,8 +116,11 @@ SOURCES += \
         ../../src/propertiesheading.cpp \
         ../../src/propertiesview.cpp \
         ../../src/rendermanager.cpp \
+        ../../src/sizeboxentity.cpp \
+        ../../src/slidernoclick.cpp \
         ../../src/spinboxentity.cpp \
-        ../../src/spinboxsliderentity.cpp \
+        ../../src/textboxentity.cpp \
+        ../../src/textbrowserentity.cpp \
         ../../src/uientity.cpp \
         ../../src/viewerstatusbar.cpp \
         ../../src/vulkanrenderer.cpp \
@@ -86,14 +131,21 @@ SOURCES += \
 
 
 FORMS += \
+        ../../src/channelselectentity.ui \
+        ../../src/checkboxentity.ui \
         ../../src/colorbuttonentity.ui \
+        ../../src/colorpropertiesentity.ui \
         ../../src/comboboxentity.ui \
+        ../../src/cssliderbox.ui \
         ../../src/fileboxentity.ui \
+        ../../src/gmicpropertiesentity.ui \
         ../../src/mainwindow.ui \
         ../../src/nodebase.ui \
         ../../src/propertiesheading.ui \
+        ../../src/sizeboxentity.ui \
         ../../src/spinboxentity.ui \
-        ../../src/spinboxsliderentity.ui \
+        ../../src/textboxentity.ui \
+        ../../src/textbrowserentity.ui \
         ../../src/viewerstatusbar.ui \
         ../../src/writepropertiesentity.ui
 
@@ -108,6 +160,21 @@ linux-g++ {
         ../../ \
 
     LIBS += -L /usr/lib -lOpenImageIO
+    LIBS += -L /usr/lib -lOpenColorIO
+    LIBS += -L /usr/lib -lqtadvanceddocking
+    LIBS += -L /usr/lib -lgmic
+    LIBS += -L /usr/lib -ltbb
+
+    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
+    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD
+
+    COPIES += ocio
+    ocio.files += $$files(ocio/config.ocio)
+    ocio.path = $$DESTDIR/ocio
+
+    COPIES += luts
+    luts.files += $$files(ocio/luts/*)
+    luts.path = $$DESTDIR/ocio/luts
 }
 
 win32-msvc* {

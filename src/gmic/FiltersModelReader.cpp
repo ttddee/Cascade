@@ -171,6 +171,8 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
                  && !filterRegexpLanguage.exactMatch(buffer));
 
         QString category = filterPath[0].replace(QRegExp("<[^>]*>"), "");
+        category.replace(QRegExp("&"), "and");
+        filterName.replace(QRegExp("&"), "and");
 
         FiltersModel::Filter filter;
         filter.setName(filterName);

@@ -17,48 +17,43 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "checkboxentity.h"
-#include "ui_checkboxentity.h"
+#include "lineeditentity.h"
+#include "ui_lineeditentity.h"
 
 #include "nodeproperties.h"
 
-CheckBoxEntity::CheckBoxEntity(UIElementType et, QWidget *parent) :
+LineEditEntity::LineEditEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::CheckBoxEntity)
+    ui(new Ui::LineEditEntity)
 {
     ui->setupUi(this);
 
-    connect(ui->checkBox, &QCheckBox::stateChanged,
-            this, &CheckBoxEntity::valueChanged);
+    connect(ui->lineEdit, &QLineEdit::editingFinished,
+            this, &LineEditEntity::valueChanged);
 }
 
-void CheckBoxEntity::setName(const QString &name)
+void LineEditEntity::setName(const QString &name)
 {
-    ui->checkBox->setText(name);
+    ui->label->setText(name);
 }
 
-void CheckBoxEntity::setChecked(bool b)
+void LineEditEntity::setText(const QString &text)
 {
-    ui->checkBox->setChecked(b);
+    ui->lineEdit->setText(text);
 }
 
-bool CheckBoxEntity::isChecked()
+void LineEditEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    return ui->checkBox->isChecked();
-}
-
-void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
-{
-    connect(this, &CheckBoxEntity::valueChanged,
+    connect(this, &LineEditEntity::valueChanged,
             p, [p]{p->handleSomeValueChanged();});
 }
 
-QString CheckBoxEntity::getValuesAsString()
+QString LineEditEntity::getValuesAsString()
 {
-    return QString::number(ui->checkBox->isChecked());
+    return "\"" + ui->lineEdit->text() + "\"";
 }
 
-CheckBoxEntity::~CheckBoxEntity()
+LineEditEntity::~LineEditEntity()
 {
     delete ui;
 }

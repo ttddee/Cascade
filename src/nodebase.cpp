@@ -60,7 +60,10 @@ void NodeBase::setUpNode(const NodeType nodeType)
 
     props = Cascade::getPropertiesForType(nodeType);
 
-    ui->NodeTitleLabel->setText(props.title);
+    QString label = props.title;
+    if (nodeType == NODE_TYPE_GMIC)
+        label.append(" " + getGmicNodeType());
+    ui->NodeTitleLabel->setText(label);
 
     this->createInputs(props);
     this->createOutputs(props);

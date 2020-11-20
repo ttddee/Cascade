@@ -17,50 +17,32 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef GMICPROPERTIESENTITY_H
-#define GMICPROPERTIESENTITY_H
+#ifndef SEPARATORENTITY_H
+#define SEPARATORENTITY_H
 
 #include <QWidget>
 
 #include "uientity.h"
-#include "gmichelper.h"
-#include "checkboxentity.h"
 
 class NodeProperties;
 
 namespace Ui {
-class GmicPropertiesEntity;
+class SeparatorEntity;
 }
 
-class GmicPropertiesEntity : public UiEntity
+class SeparatorEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit GmicPropertiesEntity(
-            UIElementType et,
-            const QString& gType,
-            const QString& gHash,
-            QWidget *parent = nullptr);
+    explicit SeparatorEntity(UIElementType et, QWidget *parent = nullptr);
 
-    void selfConnectToValueChanged(NodeProperties* p);
     QString getValuesAsString() override;
 
-    ~GmicPropertiesEntity();
+    ~SeparatorEntity();
 
 private:
-    Ui::GmicPropertiesEntity *ui;
-    GmicHelper* gmicHelper;
-
-    QString gmicNodeType;
-    QString gmicHash;
-
-    CheckBoxEntity* previewBox;
-
-    std::vector<UiEntity*> propElements;
-
-signals:
-    void valueChanged();
+    Ui::SeparatorEntity *ui;
 };
 
-#endif // GMICPROPERTIESENTITY_H
+#endif // SEPARATORENTITY_H

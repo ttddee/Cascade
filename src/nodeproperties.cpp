@@ -38,6 +38,9 @@
 #include "checkboxentity.h"
 #include "gmicpropertiesentity.h"
 #include "textbrowserentity.h"
+#include "separatorentity.h"
+#include "lineeditentity.h"
+#include "folderboxentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -220,7 +223,6 @@ NodeProperties::NodeProperties(
                         parentNode->getGmicNodeType(),
                         parentNode->getGmicHash(),
                         this);
-            auto parts = elem.second.split(",");
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
@@ -231,6 +233,35 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_TEXTBOX,
                         this);
             item->setText(elem.second);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_SEPARATOR)
+        {
+            SeparatorEntity* item = new SeparatorEntity(
+                        UI_ELEMENT_TYPE_SEPARATOR,
+                        this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_LINEEDIT)
+        {
+            LineEditEntity* item = new LineEditEntity(
+                        UI_ELEMENT_TYPE_LINEEDIT,
+                        this);
+            auto parts = elem.second.split(",");
+            item->setName(parts[0]);
+            item->setText(parts[1]);
+            layout->addWidget(item);
+            widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_FOLDERBOX)
+        {
+            FolderBoxEntity* item = new FolderBoxEntity(
+                        UI_ELEMENT_TYPE_FOLDERBOX,
+                        this);
+            item->setName(elem.second);
+            item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
         }
