@@ -1,5 +1,7 @@
 # Cascade Image Editor
 
+[![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=Cascade&subject=Linux%20build)](https://jenkins.marvao.net/view/job/Cascade)
+
 ![Cascade](screenshots/csc-screen01.jpg)
 
 Cascade is a node-based image editor with GPU-acceleration.

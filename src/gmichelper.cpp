@@ -5,6 +5,7 @@
 #include "gmic/GmicStdlib.h"
 #include "gmic/FiltersModelReader.h"
 #include "gmic/ParametersCache.h"
+#include "gmic.h"
 
 GmicHelper& GmicHelper::getInstance()
 {
