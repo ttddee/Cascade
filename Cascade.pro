@@ -173,6 +173,26 @@ linux-g++ {
     luts.path = $$DESTDIR/ocio/luts
 }
 
+win32-g++ {
+    HOME_DIR = /home/till
+    MXE_SHARED_DIR = /home/till/mxe/usr/x86_64-w64-mingw32.shared
+    MXE_STATIC_DIR = /home/till/mxe/usr/x86_64-w64-mingw32.static
+
+    LIBS += -L $$HOME_DIR/oiio-Release-2.2.8.0/build/lib/ -lOpenImageIO.dll
+    LIBS += -L $$HOME_DIR/OpenColorIO/mingw64/lib/ -lOpenColorIO
+    LIBS += -L $$HOME_DIR/Qt-Advanced-Docking-System/build/lib/ -lqtadvanceddocking
+    LIBS += -L $$HOME_DIR/gmic-mingw64/lib -lgmic.dll
+    LIBS += -L $$MXE_SHARED_DIR/lib -ltbb.dll
+
+    COPIES += ocio
+    ocio.files += $$files(ocio/config.ocio)
+    ocio.path = $$DESTDIR/ocio
+
+    COPIES += luts
+    luts.files += $$files(ocio/luts/*)
+    luts.path = $$DESTDIR/ocio/luts
+}
+
 win32-msvc* {
     VCPKG_INSTALL_PATH = "C:/Users/ryzen/vcpkg"
     QT_INSTALL_PATH = "C:/Qt515/5.15.1"
