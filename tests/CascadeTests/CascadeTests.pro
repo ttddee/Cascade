@@ -37,6 +37,7 @@ HEADERS += \
         ../../src/csslider.h \
         ../../src/cssliderbox.h \
         ../../src/fileboxentity.h \
+        ../../src/folderboxentity.h \
         ../../src/gmic/Common.h \
         ../../src/gmic/FilterTextTranslator.h \
         ../../src/gmic/FiltersModel.h \
@@ -51,6 +52,7 @@ HEADERS += \
         ../../src/gmic/Utils.h \
         ../../src/gmichelper.h \
         ../../src/gmicpropertiesentity.h \
+        ../../src/lineeditentity.h \
         ../../src/mainwindow.h \
         ../../src/multithreading.h \
         ../../src/nodebase.h \
@@ -63,6 +65,7 @@ HEADERS += \
         ../../src/propertiesheading.h \
         ../../src/propertiesview.h \
         ../../src/rendermanager.h \
+        ../../src/separatorentity.h \
         ../../src/sizeboxentity.h \
         ../../src/slidernoclick.h \
         ../../src/spinboxentity.h \
@@ -93,6 +96,7 @@ SOURCES += \
         ../../src/csslider.cpp \
         ../../src/cssliderbox.cpp \
         ../../src/fileboxentity.cpp \
+        ../../src/folderboxentity.cpp \
         ../../src/gmic/Common.cpp \
         ../../src/gmic/FilterTextTranslator.cpp \
         ../../src/gmic/FiltersModel.cpp \
@@ -106,6 +110,7 @@ SOURCES += \
         ../../src/gmic/Utils.cpp \
         ../../src/gmichelper.cpp \
         ../../src/gmicpropertiesentity.cpp \
+        ../../src/lineeditentity.cpp \
         ../../src/mainwindow.cpp \
         ../../src/nodebase.cpp \
         ../../src/nodegraph.cpp \
@@ -116,6 +121,7 @@ SOURCES += \
         ../../src/propertiesheading.cpp \
         ../../src/propertiesview.cpp \
         ../../src/rendermanager.cpp \
+        ../../src/separatorentity.cpp \
         ../../src/sizeboxentity.cpp \
         ../../src/slidernoclick.cpp \
         ../../src/spinboxentity.cpp \
@@ -138,10 +144,13 @@ FORMS += \
         ../../src/comboboxentity.ui \
         ../../src/cssliderbox.ui \
         ../../src/fileboxentity.ui \
+        ../../src/folderboxentity.ui \
         ../../src/gmicpropertiesentity.ui \
+        ../../src/lineeditentity.ui \
         ../../src/mainwindow.ui \
         ../../src/nodebase.ui \
         ../../src/propertiesheading.ui \
+        ../../src/separatorentity.ui \
         ../../src/sizeboxentity.ui \
         ../../src/spinboxentity.ui \
         ../../src/textboxentity.ui \
