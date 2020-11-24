@@ -160,7 +160,7 @@ FORMS += \
 
 linux-g++ {
     SOURCES += \
-        /usr/src/googletest/src/gtest-all.cc \
+        /usr/src/gtest/src/gtest-all.cc \
         /usr/src/gmock/src/gmock-all.cc \
 
     INCLUDEPATH *= \
