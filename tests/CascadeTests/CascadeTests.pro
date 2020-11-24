@@ -165,6 +165,7 @@ linux-g++ {
 
     INCLUDEPATH *= \
         /usr/src/googletest \
+        /usr/src/gtest \
         /usr/src/gmock \
         ../../ \
 
