@@ -38,9 +38,7 @@ class NodeGraph : public QGraphicsView
 {
     Q_OBJECT
 
-#ifdef QT_DEBUG
-    friend class NodeBaseTest;
-#endif
+friend class NodeBaseTest;
 
 public:
     NodeGraph(QWidget* parent);
