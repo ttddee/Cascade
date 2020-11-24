@@ -31,7 +31,6 @@
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <iostream>
-#include "Common.h"
 #include "Globals.h"
 #include "Utils.h"
 #include "gmic.h"
@@ -262,13 +261,13 @@ Gmic::InputOutputState ParametersCache::getInputOutputState(const QString & hash
   if (_inOutPanelStates.contains(hash)) {
     return _inOutPanelStates[hash];
   }
-  return Gmic::InputOutputState(Gmic::UnspecifiedInputMode, Gmic::DefaultOutputMode, Gmic::DefaultPreviewMode);
+  return Gmic::InputOutputState(Gmic::UnspecifiedInputMode, Gmic::UnspecifiedOutputMode, Gmic::UnspecifiedPreviewMode);
 }
 
 void ParametersCache::setInputOutputState(const QString & hash, const Gmic::InputOutputState & state, const Gmic::InputMode defaultInputMode)
 {
-  if ((state == Gmic::InputOutputState(defaultInputMode, Gmic::DefaultOutputMode, Gmic::DefaultPreviewMode)) //
-      || (state == Gmic::InputOutputState(Gmic::UnspecifiedInputMode, Gmic::DefaultOutputMode, Gmic::DefaultPreviewMode))) {
+  if ((state == Gmic::InputOutputState(defaultInputMode, Gmic::UnspecifiedOutputMode, Gmic::UnspecifiedPreviewMode)) //
+      || (state == Gmic::InputOutputState(Gmic::UnspecifiedInputMode, Gmic::UnspecifiedOutputMode, Gmic::UnspecifiedPreviewMode))) {
     _inOutPanelStates.remove(hash);
     return;
   }

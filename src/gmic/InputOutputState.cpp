@@ -43,7 +43,7 @@ void filterObsoleteInputModes(Gmic::InputMode & mode)
 }
 
 
-const InputOutputState InputOutputState::Default(Gmic::DefaultInputMode, Gmic::DefaultOutputMode, Gmic::DefaultPreviewMode);
+const InputOutputState InputOutputState::Default(Gmic::UnspecifiedInputMode, Gmic::UnspecifiedOutputMode, Gmic::UnspecifiedPreviewMode);
 const InputOutputState InputOutputState::Unspecified(Gmic::UnspecifiedInputMode, Gmic::UnspecifiedOutputMode, Gmic::UnspecifiedPreviewMode);
 
 InputOutputState::InputOutputState() : inputMode(UnspecifiedInputMode), outputMode(UnspecifiedOutputMode), previewMode(Gmic::UnspecifiedPreviewMode) {}
@@ -62,7 +62,7 @@ bool InputOutputState::operator!=(const InputOutputState & other) const
 
 bool InputOutputState::isDefault() const
 {
-  return (inputMode == Gmic::DefaultInputMode) && (outputMode == Gmic::DefaultOutputMode) && (previewMode == Gmic::DefaultPreviewMode);
+  return (inputMode == Gmic::UnspecifiedInputMode) && (outputMode == Gmic::UnspecifiedOutputMode) && (previewMode == Gmic::UnspecifiedPreviewMode);
 }
 
 void InputOutputState::toJSONObject(QJsonObject & object) const
@@ -71,10 +71,10 @@ void InputOutputState::toJSONObject(QJsonObject & object) const
   if (inputMode != UnspecifiedInputMode) {
     object.insert("InputLayers", inputMode);
   }
-  if (outputMode != DefaultOutputMode) {
+  if (outputMode != Gmic::UnspecifiedOutputMode) {
     object.insert("OutputMode", outputMode);
   }
-  if (previewMode != DefaultPreviewMode) {
+  if (previewMode != Gmic::UnspecifiedPreviewMode) {
     object.insert("PreviewMode", previewMode);
   }
 }

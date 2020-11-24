@@ -60,7 +60,7 @@ void FolderBoxEntity::handleFolderButtonClicked()
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
     {
-        ui->lineEdit->setText(dialog.selectedFiles()[0]);
+        ui->lineEdit->setText(dialog.selectedFiles().at(0));
     }
 }
 

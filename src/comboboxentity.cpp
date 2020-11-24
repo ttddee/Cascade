@@ -29,7 +29,7 @@ ComboBoxEntity::ComboBoxEntity(UIElementType et, QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, [this]{this->valueChanged();});
+            this, [this]{ emit valueChanged();});
 }
 
 void ComboBoxEntity::setName(const QString &name)

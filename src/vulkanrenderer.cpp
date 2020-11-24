@@ -1078,6 +1078,7 @@ void VulkanRenderer::createComputeQueue()
         }
     }
 
+    // TODO: The following is never used...
     computeQueueFound = false;
 
     // If there is no dedicated compute queue, just find the first queue family that supports compute

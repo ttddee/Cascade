@@ -28,7 +28,6 @@
 #include <QList>
 #include <QString>
 #include <QStringList>
-#include "Common.h"
 #include "Utils.h"
 #include "gmic.h"
 

@@ -94,9 +94,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->selfConnectToValueChanged(static_cast<NodeProperties*>(parent));
             ui->verticalLayout->addWidget(item);
 
-//            connect(item, &CsSliderBox::valueChangedInt,
-//                    this, &GmicPropertiesEntity::valueChanged);
-
             propElements.push_back(item);
         }
         else if (line.contains("=float"))
@@ -121,9 +118,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->selfConnectToValueChanged(static_cast<NodeProperties*>(parent));
             ui->verticalLayout->addWidget(item);
 
-//            connect(item, &CsSliderBox::valueChangedDouble,
-//                    this, &GmicPropertiesEntity::valueChanged);
-
             propElements.push_back(item);
         }
         else if (line.contains("=color"))
@@ -138,9 +132,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->setColor(QColor(value));
             item->selfConnectToValueChanged(static_cast<NodeProperties*>(parent));
             ui->verticalLayout->addWidget(item);
-
-//            connect(item, &ColorButtonEntity::valueChanged,
-//                    this, &GmicPropertiesEntity::valueChanged);
 
             propElements.push_back(item);
         }
@@ -165,7 +156,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=choice"))
+        else if (line.contains("=choice") || line.contains("=_choice"))
         {
             auto title = line.split("=")[0];
             auto elems = line.split(QRegExp("[()]"))[1];
@@ -189,9 +180,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->selfConnectToValueChanged(static_cast<NodeProperties*>(parent));
             ui->verticalLayout->addWidget(item);
 
-//            connect(item, &ComboBoxEntity::valueChanged,
-//                    this, &GmicPropertiesEntity::valueChanged);
-
             propElements.push_back(item);
         }
         else if (line.contains("=_bool"))
@@ -209,9 +197,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->selfConnectToValueChanged(static_cast<NodeProperties*>(parent));
             ui->verticalLayout->addWidget(item);
 
-//            connect(item, &CheckBoxEntity::valueChanged,
-//                    this, &GmicPropertiesEntity::valueChanged);
-
             propElements.push_back(item);
         }
         else if (line.contains("=_text") || line.contains("=text"))
@@ -227,9 +212,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             ui->verticalLayout->addWidget(item);
 
-//            connect(item, &LineEditEntity::valueChanged,
-//                    this, &GmicPropertiesEntity::valueChanged);
-
             propElements.push_back(item);
         }
         else if (line.contains("=_folder"))
@@ -242,9 +224,6 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             item->setName(title);
 
             ui->verticalLayout->addWidget(item);
-
-//            connect(item, &FolderBoxEntity::valueChanged,
-//                    this, &GmicPropertiesEntity::valueChanged);
 
             propElements.push_back(item);
         }

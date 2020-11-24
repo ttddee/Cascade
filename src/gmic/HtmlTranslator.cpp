@@ -27,7 +27,6 @@
 #include <QDebug>
 #include <QRegularExpression>
 #include "CImg.h"
-#include "Common.h"
 
 QTextDocument HtmlTranslator::_document;
 

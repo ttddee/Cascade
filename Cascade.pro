@@ -35,7 +35,6 @@ SOURCES += \
     src/cssliderbox.cpp \
     src/fileboxentity.cpp \
     src/folderboxentity.cpp \
-    src/gmic/Common.cpp \
     src/gmic/FilterTextTranslator.cpp \
     src/gmic/FiltersModel.cpp \
     src/gmic/FiltersModelReader.cpp \
@@ -90,7 +89,6 @@ HEADERS += \
     src/cssliderbox.h \
     src/fileboxentity.h \
     src/folderboxentity.h \
-    src/gmic/Common.h \
     src/gmic/FilterTextTranslator.h \
     src/gmic/FiltersModel.h \
     src/gmic/FiltersModelReader.h \

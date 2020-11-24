@@ -90,7 +90,7 @@ void GmicHelper::Filter::clear()
   defaultParameterValues.clear();
   hash.clear();
   plainTextName.clear();
-  previewFactor = Gmic::DefaultPreviewMode;
-  defaultInputMode = Gmic::DefaultInputMode;
+  previewFactor = Gmic::UnspecifiedPreviewMode;
+  defaultInputMode = Gmic::UnspecifiedInputMode;
   isAFave = false;
 }

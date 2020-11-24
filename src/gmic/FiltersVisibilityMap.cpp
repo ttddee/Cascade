@@ -28,11 +28,8 @@
 #include <QDataStream>
 #include <QDebug>
 #include <QFile>
-#include "Common.h"
 #include "Globals.h"
-//#include "Logger.h"
 #include "Utils.h"
-//#include "gmic_qt.h"
 #include "GmicDefinitions.h"
 
 using namespace Cascade;

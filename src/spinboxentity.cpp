@@ -29,7 +29,7 @@ SpinBoxEntity::SpinBoxEntity(UIElementType et, QWidget *parent) :
     ui->setupUi(this);
 
     connect(ui->spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
-            this, [this]{this->valueChanged();});
+            this, [this]{ emit valueChanged(); });
     connect(ui->resetButton, &QPushButton::clicked,
             this, &SpinBoxEntity::reset);
 }

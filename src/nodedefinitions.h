@@ -135,7 +135,7 @@ namespace Cascade
     ////////////////////////////////////
     // Category names
     ////////////////////////////////////
-    const QMap<NodeCategory, QString> categoryStrings =
+    const static QMap<NodeCategory, QString> categoryStrings =
     {
         { NODE_CATEGORY_IO, "IO" },
         { NODE_CATEGORY_GENERATE, "Generate" },
@@ -184,7 +184,7 @@ namespace Cascade
     ////////////////////////////////////
     // Node names
     ////////////////////////////////////
-    const QMap<NodeType, QString> nodeStrings =
+    const static QMap<NodeType, QString> nodeStrings =
     {
         { NODE_TYPE_CROP, "Crop" },
         { NODE_TYPE_READ, "Read" },
@@ -237,7 +237,7 @@ namespace Cascade
     ////////////////////////////////////
     // Node-specific structs
     ////////////////////////////////////
-    const NodeInitProperties cropNodeInitProperties =
+    const static NodeInitProperties cropNodeInitProperties =
     {
         NODE_TYPE_CROP,
         nodeStrings[NODE_TYPE_CROP],
@@ -260,7 +260,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties readNodeInitProperties =
+    const static NodeInitProperties readNodeInitProperties =
     {
         NODE_TYPE_READ,
         nodeStrings[NODE_TYPE_READ],
@@ -281,7 +281,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties blurNodeInitProperties =
+    const static NodeInitProperties blurNodeInitProperties =
     {
         NODE_TYPE_BLUR,
         nodeStrings[NODE_TYPE_BLUR],
@@ -302,7 +302,7 @@ namespace Cascade
         2
     };
 
-    const NodeInitProperties colorNodeInitProperties =
+    const static NodeInitProperties colorNodeInitProperties =
     {
         NODE_TYPE_COLOR,
         nodeStrings[NODE_TYPE_COLOR],
@@ -324,7 +324,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties resizeNodeInitProperties =
+    const static NodeInitProperties resizeNodeInitProperties =
     {
         NODE_TYPE_RESIZE,
         nodeStrings[NODE_TYPE_RESIZE],
@@ -344,7 +344,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties rotateNodeInitProperties =
+    const static NodeInitProperties rotateNodeInitProperties =
     {
         NODE_TYPE_ROTATE,
         nodeStrings[NODE_TYPE_ROTATE],
@@ -364,7 +364,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties sharpenNodeInitProperties =
+    const static NodeInitProperties sharpenNodeInitProperties =
     {
         NODE_TYPE_SHARPEN,
         nodeStrings[NODE_TYPE_SHARPEN],
@@ -385,7 +385,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties mergeNodeInitProperties =
+    const static NodeInitProperties mergeNodeInitProperties =
     {
         NODE_TYPE_MERGE,
         nodeStrings[NODE_TYPE_MERGE],
@@ -409,7 +409,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties shuffleNodeInitProperties =
+    const static NodeInitProperties shuffleNodeInitProperties =
     {
         NODE_TYPE_SHUFFLE,
         nodeStrings[NODE_TYPE_SHUFFLE],
@@ -432,7 +432,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties pixelateNodeInitProperties =
+    const static NodeInitProperties pixelateNodeInitProperties =
     {
         NODE_TYPE_PIXELATE,
         nodeStrings[NODE_TYPE_PIXELATE],
@@ -452,7 +452,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties solarizeNodeInitProperties =
+    const static NodeInitProperties solarizeNodeInitProperties =
     {
         NODE_TYPE_SOLARIZE,
         nodeStrings[NODE_TYPE_SOLARIZE],
@@ -474,7 +474,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties constantNodeInitProperties =
+    const static NodeInitProperties constantNodeInitProperties =
     {
         NODE_TYPE_CONSTANT,
         nodeStrings[NODE_TYPE_CONSTANT],
@@ -495,7 +495,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties noiseNodeInitProperties =
+    const static NodeInitProperties noiseNodeInitProperties =
     {
         NODE_TYPE_NOISE,
         nodeStrings[NODE_TYPE_NOISE],
@@ -517,7 +517,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties differenceNodeInitProperties =
+    const static NodeInitProperties differenceNodeInitProperties =
     {
         NODE_TYPE_DIFFERENCE,
         nodeStrings[NODE_TYPE_DIFFERENCE],
@@ -539,7 +539,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties premultNodeInitProperties =
+    const static NodeInitProperties premultNodeInitProperties =
     {
         NODE_TYPE_PREMULT,
         nodeStrings[NODE_TYPE_PREMULT],
@@ -558,7 +558,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties unpremultNodeInitProperties =
+    const static NodeInitProperties unpremultNodeInitProperties =
     {
         NODE_TYPE_UNPREMULT,
         nodeStrings[NODE_TYPE_UNPREMULT],
@@ -577,7 +577,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties writeNodeInitProperties =
+    const static NodeInitProperties writeNodeInitProperties =
     {
         NODE_TYPE_WRITE,
         nodeStrings[NODE_TYPE_WRITE],
@@ -598,7 +598,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties invertNodeInitProperties =
+    const static NodeInitProperties invertNodeInitProperties =
     {
         NODE_TYPE_INVERT,
         nodeStrings[NODE_TYPE_INVERT],
@@ -618,7 +618,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties edgeDetectNodeInitProperties =
+    const static NodeInitProperties edgeDetectNodeInitProperties =
     {
         NODE_TYPE_EDGE_DETECT,
         nodeStrings[NODE_TYPE_EDGE_DETECT],
@@ -638,7 +638,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties directionalBlurNodeInitProperties =
+    const static NodeInitProperties directionalBlurNodeInitProperties =
     {
         NODE_TYPE_DIRECTIONAL_BLUR,
         nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR],
@@ -662,7 +662,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties channelCopyNodeInitProperties =
+    const static NodeInitProperties channelCopyNodeInitProperties =
         {
             NODE_TYPE_CHANNEL_COPY,
             nodeStrings[NODE_TYPE_CHANNEL_COPY],
@@ -686,7 +686,7 @@ namespace Cascade
             1
         };
 
-    const NodeInitProperties riverStyxNodeInitProperties =
+    const static NodeInitProperties riverStyxNodeInitProperties =
     {
         NODE_TYPE_RIVER_STYX,
         nodeStrings[NODE_TYPE_RIVER_STYX],
@@ -708,7 +708,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties clampNodeInitProperties =
+    const static NodeInitProperties clampNodeInitProperties =
     {
         NODE_TYPE_CLAMP,
         nodeStrings[NODE_TYPE_CLAMP],
@@ -729,7 +729,7 @@ namespace Cascade
         1
     };
 
-    const NodeInitProperties erodeNodeInitProperties =
+    const static NodeInitProperties erodeNodeInitProperties =
     {
         NODE_TYPE_ERODE,
         nodeStrings[NODE_TYPE_ERODE],
@@ -751,7 +751,7 @@ namespace Cascade
         2
     };
 
-    const NodeInitProperties gmicNodeInitProperties =
+    const static NodeInitProperties gmicNodeInitProperties =
     {
         NODE_TYPE_GMIC,
         nodeStrings[NODE_TYPE_GMIC],
@@ -770,7 +770,7 @@ namespace Cascade
         2
     };
 
-//    const NodeInitProperties ofxNodeInitProperties =
+//    const static NodeInitProperties ofxNodeInitProperties =
 //    {
 //        NODE_TYPE_OFX,
 //        nodeStrings[NODE_TYPE_OFX],
@@ -789,7 +789,7 @@ namespace Cascade
 //        1
 //    };
 
-    static NodeInitProperties getPropertiesForType(const NodeType t)
+    [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)
         {

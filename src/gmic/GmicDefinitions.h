@@ -21,7 +21,6 @@ namespace Gmic
       AllDesc_UNUSED,           /* Removed since 2.8.2 */
       UnspecifiedInputMode = 100
     };
-    static InputMode DefaultInputMode;
 
     enum OutputMode
     {
@@ -31,7 +30,6 @@ namespace Gmic
       NewImage,
       UnspecifiedOutputMode = 100
     };
-    static OutputMode DefaultOutputMode;
 
     enum PreviewMode
     {
@@ -45,7 +43,6 @@ namespace Gmic
       AllOutputs,
       UnspecifiedPreviewMode = 100
     };
-    static PreviewMode DefaultPreviewMode;
 
     enum OutputMessageMode
     {
@@ -59,7 +56,6 @@ namespace Gmic
       DebugLogFile,
       UnspecifiedOutputMessageMode = 100
     };
-    static OutputMessageMode DefaultOutputMessageMode;
 
 }
 }

@@ -155,6 +155,7 @@ void CsSliderBox::selfConnectToValueChanged(NodeProperties* p)
 
 void CsSliderBox::setSpinBoxNoSignal(int i)
 {
+    std::cout << "setspinbox " << std::endl;
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
     {
         valueBoxDouble->blockSignals(true);
