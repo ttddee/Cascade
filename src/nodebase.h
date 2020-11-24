@@ -112,10 +112,8 @@ public:
     bool needsUpdate = true;
 
 private:
-#ifdef QT_DEBUG
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
-#endif
 
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
