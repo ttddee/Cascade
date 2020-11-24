@@ -172,15 +172,20 @@ linux-g++ {
 }
 
 win32-g++ {
-    HOME_DIR = /home/till
-    MXE_SHARED_DIR = /home/till/mxe/usr/x86_64-w64-mingw32.shared
-    MXE_STATIC_DIR = /home/till/mxe/usr/x86_64-w64-mingw32.static
+    DEPENDENCY_ROOT = C:/msys64/mingw64
+    QT_ROOT = C:/msys64/home/till/qt515/5.15.1/mingw81_64
+    TEMP_ROOT = C:/msys64/home/till/temp
 
-    LIBS += -L $$HOME_DIR/oiio-Release-2.2.8.0/build/lib/ -lOpenImageIO.dll
-    LIBS += -L $$HOME_DIR/OpenColorIO/mingw64/lib/ -lOpenColorIO
-    LIBS += -L $$HOME_DIR/Qt-Advanced-Docking-System/build/lib/ -lqtadvanceddocking
-    LIBS += -L $$HOME_DIR/gmic-mingw64/lib -lgmic.dll
-    LIBS += -L $$MXE_SHARED_DIR/lib -ltbb.dll
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO.dll
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO.dll
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibqtadvanceddocking
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic.dll
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb.dll
+
+    INCLUDEPATH += $$DEPENDENCY_ROOT/include
+
+    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
+    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 
     COPIES += ocio
     ocio.files += $$files(ocio/config.ocio)
@@ -189,6 +194,71 @@ win32-g++ {
     COPIES += luts
     luts.files += $$files(ocio/luts/*)
     luts.path = $$DESTDIR/ocio/luts
+
+    COPIES += license
+    license.files += $$files(LICENSE)
+    license.path = $$DESTDIR
+
+    COPIES += platforms
+    platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2d.dll)
+    platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimal.dll)
+    platforms.files += $$files($$QT_ROOT/plugins/platforms/qoffscreen.dll)
+    platforms.files += $$files($$QT_ROOT/plugins/platforms/qwindows.dll)
+    platforms.path = $$DESTDIR/platforms
+
+    COPIES += iconengines
+    iconengines.files += $$files($$QT_ROOT/plugins/iconengines/qsvgicon.dll)
+    iconengines.path = $$DESTDIR/iconengines
+
+    COPIES += styles
+    styles.files += $$files($$QT_ROOT/plugins/styles/qwindowsvistastyle.dll)
+    styles.path = $$DESTDIR/styles
+
+    COPIES += dlls
+    dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
+    dlls.files += $$files($$QT_ROOT/bin/Qt5Widgets.dll)
+    dlls.files += $$files($$QT_ROOT/bin/Qt5Gui.dll)
+    dlls.files += $$files($$QT_ROOT/bin/Qt5Core.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO_Util.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenColorIO.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_filesystem-mt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_system-mt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_thread-mt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_chrono-mt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_date_time-mt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libzlib1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libjpeg62.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/liblibpng16.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libIlmImf-2_5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libImath-2_5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libIex-2_5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libHalf-2_5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libIlmThread-2_5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libtiff-5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/liblzma.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libyaml-cpp.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/tbb.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgmic.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgcc_s_seh-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libstdc++-6.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libtinyxml-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libwinpthread-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libfftw3-3.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libGraphicsMagick++-12.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libGraphicsMagick-3.dll)
+    dlls.files += $$files($$TEMP_ROOT/libopencv_core440.dll)
+    dlls.files += $$files($$TEMP_ROOT/libopencv_videoio440.dll)
+    dlls.files += $$files($$TEMP_ROOT/libopencv_imgproc440.dll)
+    dlls.files += $$files($$TEMP_ROOT/libopencv_imgcodecs440.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgomp-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libcurl-4.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libjpeg-8.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpng16-16.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/zlib1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libharfbuzz-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/qtadvanceddocking.dll)
+    dlls.path = $$DESTDIR
 }
 
 win32-msvc* {
