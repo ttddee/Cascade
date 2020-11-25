@@ -108,21 +108,10 @@ void VulkanRenderer::initResources()
     catch(OpenColorIO::Exception& exception)
     {
         qDebug("OpenColorIO Error: ");
-        qDebug(exception.what());
+        qDebug("%s", exception.what());
     }
 
     emit window->rendererHasBeenCreated();
-}
-
-int VulkanRenderer::getDeviceMemorySize()
-{
-    VkPhysicalDeviceMemoryProperties memoryProperties;
-    window->vulkanInstance()->functions()->vkGetPhysicalDeviceMemoryProperties(
-                window->physicalDevice(), &memoryProperties);
-
-    // TODO: this ^^^
-
-    return 0;
 }
 
 QString VulkanRenderer::getGpuName()
@@ -648,80 +637,80 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     return true;
 }
 
-//bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
-//{
-//    updateVertexData(gImg._width, gImg._height);
+bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
+{
+    updateVertexData(gImg._width, gImg._height);
 
-//    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
-//                                                 window,
-//                                                 &device,
-//                                                 devFuncs,
-//                                                 gImg._width,
-//                                                 gImg._height));
+    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
+                                                 window,
+                                                 &device,
+                                                 devFuncs,
+                                                 gImg._width,
+                                                 gImg._height));
 
-//    auto imageSize = QSize(gImg._width, gImg._height);
+    auto imageSize = QSize(gImg._width, gImg._height);
 
-//    // Now we can either map and copy the image data directly, or have to go
-//    // through a staging buffer to copy and convert into the internal optimal
-//    // tiling format.
-//    VkFormatProperties props;
-//    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
-//    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-//    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-//    if (!canSampleLinear && !canSampleOptimal) {
-//        qWarning("Neither linear nor optimal image sampling is supported for image");
-//        return false;
-//    }
+    // Now we can either map and copy the image data directly, or have to go
+    // through a staging buffer to copy and convert into the internal optimal
+    // tiling format.
+    VkFormatProperties props;
+    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
+    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    if (!canSampleLinear && !canSampleOptimal) {
+        qWarning("Neither linear nor optimal image sampling is supported for image");
+        return false;
+    }
 
-//    if (loadImageStaging) {
-//        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
-//        loadImageStaging = VK_NULL_HANDLE;
-//    }
+    if (loadImageStaging) {
+        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
+        loadImageStaging = VK_NULL_HANDLE;
+    }
 
-//    if (loadImageStagingMem) {
-//        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
-//        loadImageStagingMem = VK_NULL_HANDLE;
-//    }
+    if (loadImageStagingMem) {
+        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
+        loadImageStagingMem = VK_NULL_HANDLE;
+    }
 
-//    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
-//                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-//                            window->hostVisibleMemoryIndex()))
-//        return false;
+    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
+                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+                            window->hostVisibleMemoryIndex()))
+        return false;
 
-//    if (!writeGmicToLinearImage(
-//                &gImg[0],
-//                QSize(gImg._width, gImg._height),
-//                loadImageStaging,
-//                loadImageStagingMem))
-//    {
-//        return false;
-//    }
+    if (!writeGmicToLinearImage(
+                &gImg[0],
+                QSize(gImg._width, gImg._height),
+                loadImageStaging,
+                loadImageStagingMem))
+    {
+        return false;
+    }
 
-//    texStagingPending = true;
+    texStagingPending = true;
 
-//    VkImageViewCreateInfo viewInfo;
-//    memset(&viewInfo, 0, sizeof(viewInfo));
-//    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-//    viewInfo.image = imageFromDisk->getImage();
-//    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-//    viewInfo.format = globalImageFormat;
-//    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-//    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-//    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-//    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-//    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-//    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
+    VkImageViewCreateInfo viewInfo;
+    memset(&viewInfo, 0, sizeof(viewInfo));
+    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+    viewInfo.image = imageFromDisk->getImage();
+    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+    viewInfo.format = globalImageFormat;
+    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
+    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
+    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
+    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
+    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
 
-//    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
-//    if (err != VK_SUCCESS) {
-//        qWarning("Failed to create image view for texture: %d", err);
-//        return false;
-//    }
+    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
+    if (err != VK_SUCCESS) {
+        qWarning("Failed to create image view for texture: %d", err);
+        return false;
+    }
 
-//    loadImageSize = imageSize;
+    loadImageSize = imageSize;
 
-//    return true;
-//}
+    return true;
+}
 
 QString VulkanRenderer::lookupColorSpace(const int i)
 {
@@ -1067,31 +1056,12 @@ void VulkanRenderer::createComputeQueue()
 
     f->vkGetPhysicalDeviceQueueFamilyProperties(physicalDevice, &queueFamilyCount, queueFamilyProperties.data());
 
-    bool computeQueueFound = false;
     for (auto i = 0U; i < queueFamilyProperties.size(); ++i)
     {
-        if ((queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT) && ((queueFamilyProperties[i].queueFlags & VK_QUEUE_GRAPHICS_BIT) == 0))
+        if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT)
         {
             compute.queueFamilyIndex = i;
-            computeQueueFound = true;
             break;
-        }
-    }
-
-    // TODO: The following is never used...
-    computeQueueFound = false;
-
-    // If there is no dedicated compute queue, just find the first queue family that supports compute
-    if (!computeQueueFound)
-    {
-        for (auto i = 0U; i < queueFamilyProperties.size(); ++i)
-        {
-            if (queueFamilyProperties[i].queueFlags & VK_QUEUE_COMPUTE_BIT)
-            {
-                compute.queueFamilyIndex = i;
-                computeQueueFound = true;
-                break;
-            }
         }
     }
 
@@ -1406,6 +1376,7 @@ bool VulkanRenderer::writeLinearImage(
         return false;
     }
 
+    //startTimer();
     // TODO: Why is this??????
     int pad = 0;
     if (imgSize.width() % 2 != 0)
@@ -1416,15 +1387,18 @@ bool VulkanRenderer::writeLinearImage(
     // TODO: Parallelize this
     float* pixels = imgStart;
     int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
-
-
     for (int y = 0; y < imgSize.height(); ++y)
     {
         memcpy(p, pixels, lineWidth);
         pixels += imgSize.width() * 4;
         p += imgSize.width() * 4 + pad;
     }
-//    stopTimerAndPrint("Array Copy");
+    //stopTimerAndPrint("Sequential");
+
+//    startTimer();
+//    float* pixels = imgStart;
+//    parallelArrayCopy(pixels, p, imgSize.width(), imgSize.height());
+//    stopTimerAndPrint("Parallel");
 
     devFuncs->vkUnmapMemory(device, memory);
 
@@ -1819,7 +1793,6 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     if (err != VK_SUCCESS)
     {
         qWarning("Failed to map memory for staging buffer: %d", err);
-        success = false;
     }
 
     int width = inputImage.getWidth();
@@ -1829,13 +1802,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     float* output = new float[numValues];
     float* pOutput = &output[0];
 
-    //TODO: Parallelize this
-    for (int y = 0; y < numValues; ++y)
-    {
-        *pOutput = *pInput;
-        pInput++;
-        pOutput++;
-    }
+    parallelArrayCopy(pInput, pOutput, width, height);
 
     ImageSpec spec(width, height, 4, TypeDesc::FLOAT);
     std::unique_ptr<ImageBuf> saveImage =
@@ -1848,7 +1815,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     if (!success)
     {
         qDebug("Problem saving image.");
-        qDebug(saveImage->geterror().c_str());
+        qDebug("%s", saveImage->geterror().c_str());
     }
 
     delete[] output;
@@ -1993,8 +1960,6 @@ void VulkanRenderer::submitComputeCommands()
 
 void VulkanRenderer::submitImageSaveCommand()
 {
-    // TODO: Merge with function above
-
     // Use a fence to ensure that compute command buffer has finished executing before using it again
     devFuncs->vkWaitForFences(device, 1, &compute.fence, VK_TRUE, UINT64_MAX);
     devFuncs->vkResetFences(device, 1, &compute.fence);
@@ -2064,7 +2029,7 @@ void VulkanRenderer::processGmicNode(
 {
     qDebug("Process GMIC node.");
 
-    //auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
+    auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
 
     int width = targetSize.width();
     int height = targetSize.height();
@@ -2088,59 +2053,59 @@ void VulkanRenderer::processGmicNode(
         qWarning("Failed to map memory for staging buffer: %d", err);
     }
 
-//    gmicList.assign(1);
+    gmicList.assign(1);
 
-//    gmic_image<float>& gmicImage = gmicList[0];
-//    gmicImage.assign(width, height, 1, 4);
+    gmic_image<float>& gmicImage = gmicList[0];
+    gmicImage.assign(width, height, 1, 4);
 
-//    float* pOutput = &gmicImage[0];
-//    int numValues = width * height * 4;
-//    int quarter = numValues / 4;
+    float* pOutput = &gmicImage[0];
+    int numValues = width * height * 4;
+    int quarter = numValues / 4;
 
-//    //TODO: Parallelize this
-//    for (int y = 0; y < quarter; ++y)
-//    {
-//        *(pOutput + y) = *(pInput + y * 4) * 256.0;
-//        *(pOutput + y + quarter) = *(pInput + y * 4 + 1) * 256.0;
-//        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2) * 256.0;
-//        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3) * 256.0;
-//    }
+    //TODO: Parallelize this
+    for (int y = 0; y < quarter; ++y)
+    {
+        *(pOutput + y) = *(pInput + y * 4) * 256.0;
+        *(pOutput + y + quarter) = *(pInput + y * 4 + 1) * 256.0;
+        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2) * 256.0;
+        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3) * 256.0;
+    }
 
-//    QString command = node->getAllPropertyValues();
+    QString command = node->getAllPropertyValues();
 
-//    gmic_list<char> gmicNames;
-//    startTimer();
-//    try
-//    {
-//        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
-//    }
-//    catch (gmic_exception &e)
-//    {
-//        std::fprintf(stderr,"ERROR : %s\n",e.what());
-//    }
-//    stopTimerAndPrint("Gmic processing ");
+    gmic_list<char> gmicNames;
+    startTimer();
+    try
+    {
+        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
+    }
+    catch (gmic_exception &e)
+    {
+        std::fprintf(stderr,"ERROR : %s\n",e.what());
+    }
+    stopTimerAndPrint("Gmic processing ");
 
-//    if(!createTextureFromGmic(gmicImage))
-//        qFatal("Failed to create texture from gmic image.");
+    if(!createTextureFromGmic(gmicImage))
+        qFatal("Failed to create texture from gmic image.");
 
-//    // Update the projection size
-//    createVertexBuffer();
+    // Update the projection size
+    createVertexBuffer();
 
-//    // Create render target
-//    if (!createComputeRenderTarget(gmicImage._width, gmicImage._height))
-//        qFatal("Failed to create compute render target.");
+    // Create render target
+    if (!createComputeRenderTarget(gmicImage._width, gmicImage._height))
+        qFatal("Failed to create compute render target.");
 
-//    updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
+    updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
 
-//    recordComputeCommandBufferImageLoad(computeRenderTarget);
+    recordComputeCommandBufferImageLoad(computeRenderTarget);
 
-//    submitComputeCommands();
+    submitComputeCommands();
 
-//    qDebug("Moving render target");
+    qDebug("Moving render target");
 
-//    node->cachedImage = std::move(computeRenderTarget);
+    node->cachedImage = std::move(computeRenderTarget);
 
-//    gmicList.assign(0);
+    gmicList.assign(0);
 
     devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
 
@@ -2364,7 +2329,7 @@ void VulkanRenderer::scale(float s)
 {
     scaleXY = s;
     window->requestUpdate();
-    window->requestZoomTextUpdate(s);
+    emit window->requestZoomTextUpdate(s);
 }
 
 void VulkanRenderer::releaseSwapChainResources()
@@ -2375,8 +2340,6 @@ void VulkanRenderer::releaseSwapChainResources()
 void VulkanRenderer::releaseResources()
 {
     qDebug("Releasing resources.");
-
-    qDebug("Destroying Renderer.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
@@ -2470,7 +2433,7 @@ void VulkanRenderer::releaseResources()
         computePipeline = VK_NULL_HANDLE;
     }
 
-    for (auto pipeline: pipelines.keys())
+    foreach (auto pipeline, pipelines.keys())
     {
         if (pipelines.value(pipeline)) {
             devFuncs->vkDestroyPipeline(device, pipelines.value(pipeline), nullptr);

@@ -205,7 +205,7 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
 
     foreach(auto& item, uiItems)
     {
-        connect(item, &CsSliderBox::valueChangedDouble,
+        connect(item, &CsSliderBox::valueChanged,
                 this, &ColorPropertiesEntity::handleValueChanged);
     }
     connect(ui->maskCheckBox, &QCheckBox::toggled,

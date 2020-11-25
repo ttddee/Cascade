@@ -171,9 +171,9 @@ private:
     float resizeFactor = 1.0;
 
     const int cornerRadius = 3;
-    const QBrush defaultColorBrush = QBrush("#282d31");
-    const QBrush selectedColorBrush = QBrush("#626971");
-    const QPen defaultColorPen = QPen(QColor("#626971"), 3);
+    const QBrush defaultColorBrush = QBrush(QColor(0x28, 0x2d, 0x31));
+    const QBrush selectedColorBrush = QBrush(QColor(0x62, 0x69, 0x71));
+    const QPen defaultColorPen = QPen(QColor(0x62, 0x69, 0x71), 3);
     const QPen frontViewedColorPen = QPen(frontColor, 3);
     const QPen backViewedColorPen = QPen(backColor, 3);
     const QPen alphaViewedColorPen = QPen(alphaColor, 3);

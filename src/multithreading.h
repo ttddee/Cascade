@@ -14,22 +14,24 @@ using namespace tbb;
 namespace Cascade
 {
 
-//void copyPixel(const float* source, float* dst)
-//{
-//    memcpy(dst, source, 4);
-//}
+void copyRow(const float* source, float* dst, size_t width, size_t i)
+{
+    memcpy(dst + i * width, source + i * width, width * 4);
+}
 
-//void parallelArrayCopy(const float* source, float* dst, size_t n)
-//{
-//    parallel_for(blocked_range<size_t>(0, n),
-//        [=](const tbb::blocked_range<size_t>& r)
-//    {
-//        for(size_t i = r.begin(); i!=r.end(); ++i)
+void parallelArrayCopy(const float* src, float* dst, size_t width, size_t height)
+{
 
-//            copyPixel(source + i, dst + i);
-//    });
+    parallel_for(blocked_range<size_t>(0, height * 4),
+        [=](const tbb::blocked_range<size_t>& r)
+    {
+        for(size_t i = r.begin(); i!=r.end(); ++i)
+        {
+            copyRow(src, dst, width, i);
+        }
+    });
 
-//}
+}
 
 void applyColorToScanline(
         OpenColorIO::ConstProcessorRcPtr processor,

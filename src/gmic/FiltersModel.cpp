@@ -188,7 +188,7 @@ FiltersModel::Filter & FiltersModel::Filter::setPath(const QList<QString> & path
   _path = path;
   _plainPath.clear();
   _translatedPlainPath.clear();
-  for (const QString & str : _path) {
+  foreach (const QString & str, _path) {
     _plainPath.push_back(HtmlTranslator::html2txt(str, true));
     _translatedPlainPath.push_back(HtmlTranslator::html2txt(FilterTextTranslator::translate(str), true));
   }

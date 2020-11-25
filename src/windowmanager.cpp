@@ -184,7 +184,7 @@ void WindowManager::handleViewerStatusBarValueChanged()
     auto node = nodeGraph->getViewedNode();
     if (node)
     {
-        nodeGraph->requestNodeDisplay(node);
+        emit nodeGraph->requestNodeDisplay(node);
     }
 }
 

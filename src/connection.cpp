@@ -40,7 +40,7 @@ Connection::Connection(NodeOutput* source)
       sourceOutput(source)
 {
     // TODO find better way to get cursor position
-    this->setPen(QPen(QColor("#9299a1"), 3));
+    this->setPen(QPen(QColor(0x92, 0x99, 0xa1), 3));
     this->setLine(source->mapToParent(source->pos()).x(),
                   source->mapToParent(source->pos()).y(),
                   source->mapToParent(source->pos()).x(),

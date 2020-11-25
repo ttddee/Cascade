@@ -56,9 +56,10 @@ CsSettingsBuffer::CsSettingsBuffer(
     VkPhysicalDeviceMemoryProperties memProperties;
     f->vkGetPhysicalDeviceMemoryProperties(*physicalDevice, &memProperties);
 
-    uint32_t memTypeIndex;
+    uint32_t memTypeIndex = 0;
 
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++)
+    {
         if ((memRequirements.memoryTypeBits & (1 << i)) &&
             (memProperties.memoryTypes[i].propertyFlags & properties) == properties)
         {

@@ -44,7 +44,7 @@ public:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
-    const QPen normalPen = QPen(QColor("#9299a1"), 2);
+    const QPen normalPen = QPen(QColor(0x92, 0x99, 0xa1), 2);
     const QPen frontConnectedPen = QPen(frontColor, 2);
     const QPen backConnectedPen = QPen(backColor, 2);
     const QPen alphaConnectedPen = QPen(alphaColor, 2);
