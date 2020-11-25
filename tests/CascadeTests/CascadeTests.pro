@@ -21,6 +21,7 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
            "VERSION_BUILD=$$VERSION_BUILD"
 
 HEADERS += \
+        tst_cssliderboxtests.h \
         tst_nodebasetests.h \
         tst_testtest.h \
         ../../src/benchmark.h \

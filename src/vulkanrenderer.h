@@ -30,7 +30,7 @@
 #include <OpenImageIO/color.h>
 #include <OpenColorIO/OpenColorIO.h>
 
-#include <gmic.h>
+//#include <gmic.h>
 
 #include "nodedefinitions.h"
 #include "csimage.h"
@@ -118,8 +118,8 @@ private:
     bool createTextureFromFile(
             const QString &path,
             const int colorSpace);
-    bool createTextureFromGmic(
-            gmic_image<float>& gImg);
+//    bool createTextureFromGmic(
+//            gmic_image<float>& gImg);
     bool createTextureImage(
             const QSize &size,
             VkImage *image,
@@ -242,7 +242,7 @@ private:
     QString imagePath;
 
     VkShaderModule noopShader;
-    VkPipeline noopPipeline;
+    VkPipeline computePipelineNoop;
 
     int concurrentFrameCount;  
 
@@ -297,10 +297,9 @@ private:
 
     OpenColorIO::ConstConfigRcPtr ocioConfig;
 
-    gmic_image<float> gmicImage;
-    gmic_list<float> gmicList;
-    gmic_list<char> gmicNames;
-    std::shared_ptr<gmic> gmicInstance = nullptr;
+//    gmic_image<float> gmicImage;
+//    gmic_list<float> gmicList;
+//    gmic_list<char> gmicNames;
 
 };
 

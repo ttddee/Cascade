@@ -56,30 +56,30 @@ const QString & path_rc(bool create)
   return result;
 }
 
-unsigned int host_app_pid()
-{
-#if defined(_IS_LINUX_)
-  return static_cast<int>(getppid());
-#elif defined(_IS_WINDOWS_)
-  HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
-  PROCESSENTRY32 pe;
-  memset(&pe, 0, sizeof(PROCESSENTRY32));
-  pe.dwSize = sizeof(PROCESSENTRY32);
-  DWORD pid = GetCurrentProcessId();
-  if (Process32First(h, &pe)) {
-    do {
-      if (pe.th32ProcessID == pid) {
-        CloseHandle(h);
-        return static_cast<unsigned int>(pe.th32ParentProcessID);
-      }
-    } while (Process32Next(h, &pe));
-  }
-  CloseHandle(h);
-  return static_cast<unsigned int>(pid); // Process own id if no parent was found
-#else
-  return 0;
-#endif
-}
+//unsigned int host_app_pid()
+//{
+//#if defined(Q_OS_UNIX)
+//  return static_cast<int>(getppid());
+//#elif defined(_IS_WINDOWS_)
+//  HANDLE h = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+//  PROCESSENTRY32 pe;
+//  memset(&pe, 0, sizeof(PROCESSENTRY32));
+//  pe.dwSize = sizeof(PROCESSENTRY32);
+//  DWORD pid = GetCurrentProcessId();
+//  if (Process32First(h, &pe)) {
+//    do {
+//      if (pe.th32ProcessID == pid) {
+//        CloseHandle(h);
+//        return static_cast<unsigned int>(pe.th32ParentProcessID);
+//      }
+//    } while (Process32Next(h, &pe));
+//  }
+//  CloseHandle(h);
+//  return static_cast<unsigned int>(pid); // Process own id if no parent was found
+//#else
+//  return 0;
+//#endif
+//}
 
 const QString & pluginFullName()
 {

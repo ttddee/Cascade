@@ -24,6 +24,7 @@
 
 #include "csmessagebox.h"
 #include "viewerstatusbar.h"
+#include "vulkanrenderer.h"
 
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)

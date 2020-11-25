@@ -40,6 +40,8 @@ public:
     ViewerMode getViewerMode();
     void setViewerMode(const ViewerMode mode);
 
+    ~VulkanWindow();
+
 private:
     void mousePressEvent(QMouseEvent *) override;
     void mouseReleaseEvent(QMouseEvent *) override;

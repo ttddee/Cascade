@@ -18,13 +18,13 @@
 */
 
 #include "cssliderbox.h"
-#include "ui_cssliderbox.h"
-
-#include <iostream>
 
 #include <QMouseEvent>
 
 #include "nodeproperties.h"
+
+template <> void CsSliderBox::setSliderNoSignal<double>(double){};
+template <> void CsSliderBox::setSliderNoSignal<int>(int){};
 
 CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSliderRelease) :
     UiEntity(et, parent),
@@ -68,7 +68,7 @@ CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSli
             connect(valueBoxDouble, &QDoubleSpinBox::editingFinished,
                     this, [this](){ emit valueChangedDouble(valueBoxDouble->value()); });
             connect(valueBoxDouble, &QDoubleSpinBox::editingFinished,
-                    this, [this](){ setSliderNoSignalDouble(valueBoxDouble->value()); });
+                    this, [this](){ setSliderNoSignal(valueBoxDouble->value()); });
         }
         else
         {
@@ -77,79 +77,68 @@ CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSli
             connect(valueBoxInt, &QSpinBox::editingFinished,
                     this, [this](){ emit valueChangedInt(valueBoxInt->value()); });
             connect(valueBoxInt, &QSpinBox::editingFinished,
-                    this, [this](){ setSliderNoSignalInt(valueBoxInt->value()); });
+                    this, [this](){ setSliderNoSignal(valueBoxInt->value()); });
         }
     }
-    connect(ui->slider, &SliderNoClick::valueChanged,
-            this, &CsSliderBox::setSpinBoxNoSignal);
+    //connect(ui->slider, &SliderNoClick::valueChanged,
+            //this, &CsSliderBox::setSpinBoxNoSignal);
 
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
     {
         connect(valueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-                this, &CsSliderBox::setSliderNoSignalDouble);
+                this, [this](){ setSliderNoSignal(valueBoxDouble->value()); });
     }
     else
     {
         connect(valueBoxInt, QOverload<int>::of(&QSpinBox::valueChanged),
-                this, &CsSliderBox::setSliderNoSignalInt);
+                this, [this](){ setSliderNoSignal(valueBoxInt->value()); });
     }
 
 }
 
-void CsSliderBox::setMinMaxStepValue(
-        double min,
-        double max,
-        double step,
-        double value)
-{
-    ui->slider->setMinimum(min * 1000);
-    ui->slider->setMaximum(max * 1000);
-    ui->slider->setSingleStep(abs(max - min) * step * 250);
-    ui->slider->setValue(value * 1000);
-    valueBoxDouble->setMinimum(min);
-    valueBoxDouble->setMaximum(max);
-    valueBoxDouble->setSingleStep(step);
-    valueBoxDouble->setValue(value);
 
-    baseValue = value;
-}
 
-void CsSliderBox::setMinMaxStepValue(
-        int min,
-        int max,
-        int step,
-        int value)
-{
-    ui->slider->setMinimum(min * 10);
-    ui->slider->setMaximum(max * 10);
-    if (int s = abs(max - min) * step / 40 < 1)
-    {
-        ui->slider->setSingleStep(1);
-    }
-    else
-    {
-        ui->slider->setSingleStep(s);
-    }
 
-    ui->slider->setValue(value * 10);
-    valueBoxInt->setMinimum(min);
-    valueBoxInt->setMaximum(max);
-    valueBoxInt->setSingleStep(step);
-    valueBoxInt->setValue(value);
-}
+
+
+//void CsSliderBox::setMinMaxStepValue(
+//        int min,
+//        int max,
+//        int step,
+//        int value)
+//{
+//    ui->slider->setMinimum(min * 10);
+//    ui->slider->setMaximum(max * 10);
+//    if (int s = abs(max - min) * step / 40 < 1)
+//    {
+//        ui->slider->setSingleStep(1);
+//    }
+//    else
+//    {
+//        ui->slider->setSingleStep(s);
+//    }
+
+//    ui->slider->setValue(value * 10);
+//    valueBoxInt->setMinimum(min);
+//    valueBoxInt->setMaximum(max);
+//    valueBoxInt->setSingleStep(step);
+//    valueBoxInt->setValue(value);
+//}
 
 void CsSliderBox::selfConnectToValueChanged(NodeProperties* p)
 {
-    if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
-    {
-        connect(this, &CsSliderBox::valueChangedDouble,
-                p, [p]{p->handleSomeValueChanged();});
-    }
-    else
-    {
-        connect(this, &CsSliderBox::valueChangedInt,
-                p, [p]{p->handleSomeValueChanged();});
-    }
+    connect(this, &CsSliderBox::valueChanged,
+            p, [p]{p->handleSomeValueChanged();});
+//    if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
+//    {
+//        connect(this, &CsSliderBox::valueChangedDouble,
+//                p, [p]{p->handleSomeValueChanged();});
+//    }
+//    else
+//    {
+//        connect(this, &CsSliderBox::valueChangedInt,
+//                p, [p]{p->handleSomeValueChanged();});
+//    }
 
 }
 
@@ -168,34 +157,47 @@ void CsSliderBox::setSpinBoxNoSignal(int i)
     else
     {
         valueBoxInt->blockSignals(true);
-        valueBoxInt->setValue(i / 10);
+        valueBoxInt->setValue(i);
         valueBoxInt->blockSignals(false);
 
         if (!this->onlyUpdateOnSliderRelease)
             emit valueChangedInt(valueBoxInt->value());
     }
-
 }
 
-void CsSliderBox::setSliderNoSignalDouble(double d)
+
+
+template<typename T>
+void CsSliderBox::setSliderNoSignal(T val)
 {
+    if (std::is_same<T , double>::value)
+    {
+        val *= 1000;
+    }
     ui->slider->blockSignals(true);
-    ui->slider->setValue(static_cast<int>(d * 1000));
+    ui->slider->setValue(static_cast<int>(val));
     ui->slider->blockSignals(false);
-
-    if (!this->onlyUpdateOnSliderRelease)
-        emit valueChangedDouble(valueBoxDouble->value());
 }
 
-void CsSliderBox::setSliderNoSignalInt(int i)
-{
-    ui->slider->blockSignals(true);
-    ui->slider->setValue(i * 10);
-    ui->slider->blockSignals(false);
+//void CsSliderBox::setSliderNoSignalDouble(double d)
+//{
+//    ui->slider->blockSignals(true);
+//    ui->slider->setValue(static_cast<int>(d * 1000));
+//    ui->slider->blockSignals(false);
 
-    if (!this->onlyUpdateOnSliderRelease)
-        emit valueChangedInt(valueBoxInt->value());
-}
+//    if (!this->onlyUpdateOnSliderRelease)
+//        emit valueChangedDouble(valueBoxDouble->value());
+//}
+
+//void CsSliderBox::setSliderNoSignalInt(int i)
+//{
+//    ui->slider->blockSignals(true);
+//    ui->slider->setValue(i * 10);
+//    ui->slider->blockSignals(false);
+
+//    if (!this->onlyUpdateOnSliderRelease)
+//        emit valueChangedInt(valueBoxInt->value());
+//}
 
 void CsSliderBox::setName(const QString &name)
 {

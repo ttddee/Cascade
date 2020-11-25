@@ -19,9 +19,15 @@
 #ifndef CSSLIDERBOX_H
 #define CSSLIDERBOX_H
 
+#include "ui_cssliderbox.h"
+
+#include <iostream>
+
 #include <QWidget>
 #include <QLabel>
 #include <QSpinBox>
+
+#include <gtest/gtest_prod.h>
 
 #include "uientity.h"
 
@@ -38,8 +44,41 @@ class CsSliderBox : public UiEntity
 public:
     explicit CsSliderBox(UIElementType et, QWidget *parent = nullptr, bool onlyUpdateOnSliderRelease = false);
 
-    void setMinMaxStepValue(double, double, double, double);
-    void setMinMaxStepValue(int, int, int, int);
+    template<typename T>
+    void setMinMaxStepValue(
+            T min,
+            T max,
+            T step,
+            T value)
+    {
+        if (!std::is_same<T , int>::value)
+        {
+            min *= 100;
+            max *= 100;
+            step *= 100;
+            value *= 100;
+
+            valueBoxDouble->setMinimum(min);
+            valueBoxDouble->setMaximum(max);
+            valueBoxDouble->setSingleStep(step);
+            valueBoxDouble->setValue(value);
+        }
+        else
+        {
+            valueBoxInt->setMinimum(min);
+            valueBoxInt->setMaximum(max);
+            valueBoxInt->setSingleStep(step);
+            valueBoxInt->setValue(value);
+        }
+        ui->slider->setMinimum(min);
+        ui->slider->setMaximum(max);
+        ui->slider->setSingleStep(step);
+        ui->slider->setValue(value);
+
+        baseValue = value;
+    }
+
+    //void setMinMaxStepValue(int, int, int, int);
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
@@ -48,9 +87,15 @@ public:
     ~CsSliderBox();
 
 private:
+    FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesDoubleBox);
+
     void setSpinBoxNoSignal(int i);
-    void setSliderNoSignalDouble(double d);
-    void setSliderNoSignalInt(int i);
+
+    template<typename T>
+    void setSliderNoSignal(T);
+
+//    void setSliderNoSignalDouble(double d);
+//    void setSliderNoSignalInt(int i);
 
     bool eventFilter(QObject* watched, QEvent* event) override;
 
@@ -72,6 +117,7 @@ private:
 signals:
     void valueChangedDouble(double d);
     void valueChangedInt(int i);
+    void valueChanged();
 
 };
 

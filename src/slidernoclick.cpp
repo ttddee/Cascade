@@ -35,7 +35,7 @@ void SliderNoClick::mousePressEvent(QMouseEvent* event)
 
 void SliderNoClick::mouseReleaseEvent(QMouseEvent* event)
 {
-    emit sliderReleased();
+    //emit sliderReleased();
 
     Q_UNUSED(event);
 }

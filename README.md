@@ -1,6 +1,6 @@
 # Cascade Image Editor
 
-[![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=Cascade&subject=Linux%20build)](https://jenkins.marvao.net/view/job/Cascade) [![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=CascadeTests&subject=Tests)](https://jenkins.marvao.net/view/job/CascadeTests)
+[![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=Cascade&subject=Linux%20build)](https://jenkins.marvao.net/view/job/Cascade) [![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=CascadeWin&subject=Windows%20build)](https://jenkins.marvao.net/view/job/CascadeWin) [![Build Status](https://jenkins.marvao.net/buildStatus/icon?job=CascadeTests&subject=Tests)](https://jenkins.marvao.net/view/job/CascadeTests)
 
 ![Cascade](screenshots/csc-screen01.jpg)   
 

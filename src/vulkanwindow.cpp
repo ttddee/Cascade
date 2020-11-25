@@ -130,3 +130,8 @@ void VulkanWindow::wheelEvent(QWheelEvent *e)
     renderer->scale(zoomFactor);
 }
 
+VulkanWindow::~VulkanWindow()
+{
+    qDebug("Destroying VulkanWindow.");
+}
+
