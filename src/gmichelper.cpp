@@ -2,9 +2,9 @@
 
 #include <iostream>
 
-//#include "gmic/GmicStdlib.h"
-//#include "gmic/FiltersModelReader.h"
-//#include "gmic/ParametersCache.h"
+#include "gmic/GmicStdlib.h"
+#include "gmic/FiltersModelReader.h"
+#include "gmic/ParametersCache.h"
 #include "gmic.h"
 
 GmicHelper& GmicHelper::getInstance()
@@ -16,13 +16,13 @@ GmicHelper& GmicHelper::getInstance()
 
 void GmicHelper::setUp()
 {
-    //readFilters();
+    readFilters();
 
-//    gmicInstance = std::unique_ptr<gmic>(new gmic(
-//                                             QString("").toLocal8Bit().constData(),
-//                                             GmicStdLib::Array.constData(),
-//                                             true,
-//                                             0, 0, 0.f));
+    gmicInstance = std::unique_ptr<gmic>(new gmic(
+                                             QString("").toLocal8Bit().constData(),
+                                             GmicStdLib::Array.constData(),
+                                             true,
+                                             0, 0, 0.f));
 }
 
 std::shared_ptr<gmic> GmicHelper::getGmicInstance()
@@ -43,12 +43,12 @@ FiltersModel& GmicHelper::getFiltersModel()
 void GmicHelper::readFilters()
 {
   filtersModel.clear();
-//  if (GmicStdLib::Array.isEmpty())
-//  {
-//      GmicStdLib::loadStdLib();
-//  }
-//  FiltersModelReader filterModelReader(filtersModel);
-//  filterModelReader.parseFiltersDefinitions(GmicStdLib::Array);
+  if (GmicStdLib::Array.isEmpty())
+  {
+      GmicStdLib::loadStdLib();
+  }
+  FiltersModelReader filterModelReader(filtersModel);
+  filterModelReader.parseFiltersDefinitions(GmicStdLib::Array);
 }
 
 void GmicHelper::setCurrentFilter(const QString& hash)
@@ -59,25 +59,25 @@ void GmicHelper::setCurrentFilter(const QString& hash)
     }
     else
     {
-//        if (filtersModel.contains(hash))
-//        {
-//            const FiltersModel::Filter & filter = filtersModel.getFilterFromHash(hash);
-//            currentFilter.command = filter.command();
-//            currentFilter.defaultParameterValues = ParametersCache::getValues(hash);
-//            currentFilter.defaultVisibilityStates = ParametersCache::getVisibilityStates(hash);
-//            currentFilter.defaultInputMode = filter.defaultInputMode();
-//            currentFilter.hash = hash;
-//            currentFilter.isAFave = false;
-//            currentFilter.name = filter.name();
-//            currentFilter.plainTextName = filter.plainText();
-//            currentFilter.parameters = filter.parameters();
-//            currentFilter.previewCommand = filter.previewCommand();
-//            currentFilter.isAccurateIfZoomed = filter.isAccurateIfZoomed();
-//            currentFilter.previewFactor = filter.previewFactor();
-//        } else
-//        {
-//            currentFilter.clear();
-//        }
+        if (filtersModel.contains(hash))
+        {
+            const FiltersModel::Filter & filter = filtersModel.getFilterFromHash(hash);
+            currentFilter.command = filter.command();
+            currentFilter.defaultParameterValues = ParametersCache::getValues(hash);
+            currentFilter.defaultVisibilityStates = ParametersCache::getVisibilityStates(hash);
+            currentFilter.defaultInputMode = filter.defaultInputMode();
+            currentFilter.hash = hash;
+            currentFilter.isAFave = false;
+            currentFilter.name = filter.name();
+            currentFilter.plainTextName = filter.plainText();
+            currentFilter.parameters = filter.parameters();
+            currentFilter.previewCommand = filter.previewCommand();
+            currentFilter.isAccurateIfZoomed = filter.isAccurateIfZoomed();
+            currentFilter.previewFactor = filter.previewFactor();
+        } else
+        {
+            currentFilter.clear();
+        }
     }
 }
 

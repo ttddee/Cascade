@@ -2032,7 +2032,7 @@ void VulkanRenderer::processGmicNode(
 {
     qDebug("Process GMIC node.");
 
-    //auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
+    auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
 
     int width = targetSize.width();
     int height = targetSize.height();
@@ -2080,7 +2080,7 @@ void VulkanRenderer::processGmicNode(
     startTimer();
     try
     {
-        //gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
+        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
     }
     catch (gmic_exception &e)
     {

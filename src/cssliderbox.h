@@ -51,12 +51,12 @@ public:
             T step,
             T value)
     {
-        if (!std::is_same<T , int>::value)
+        if (std::is_same<T , double>::value)
         {
-            min *= 100;
-            max *= 100;
-            step *= 100;
-            value *= 100;
+            ui->slider->setMinimum(min *= 100);
+            ui->slider->setMaximum(max *= 100);
+            ui->slider->setSingleStep(step *= 100);
+            ui->slider->setValue(value *= 100);
 
             valueBoxDouble->setMinimum(min);
             valueBoxDouble->setMaximum(max);
@@ -65,15 +65,16 @@ public:
         }
         else
         {
+            ui->slider->setMinimum(min);
+            ui->slider->setMaximum(max);
+            ui->slider->setSingleStep(step);
+            ui->slider->setValue(value);
+
             valueBoxInt->setMinimum(min);
             valueBoxInt->setMaximum(max);
             valueBoxInt->setSingleStep(step);
             valueBoxInt->setValue(value);
         }
-        ui->slider->setMinimum(min);
-        ui->slider->setMaximum(max);
-        ui->slider->setSingleStep(step);
-        ui->slider->setValue(value);
 
         baseValue = value;
     }
@@ -88,6 +89,7 @@ public:
 
 private:
     FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesDoubleBox);
+    FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesIntBox);
 
     void setSpinBoxNoSignal(int i);
 
