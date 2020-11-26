@@ -199,5 +199,9 @@ void MainWindow::handleDeviceLost()
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    qDebug("Shutting down");
+
+    vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }
 

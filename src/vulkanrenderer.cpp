@@ -61,12 +61,14 @@ VulkanRenderer::VulkanRenderer(VulkanWindow *w)
 
 void VulkanRenderer::initResources()
 {
+    /// Get device and functions
     device = window->device();
     physicalDevice = window->physicalDevice();
-
     devFuncs = window->vulkanInstance()->deviceFunctions(device);
     f = window->vulkanInstance()->functions();
+    /// ----------
 
+    /// Init all the permanent parts of the renderer
     createVertexBuffer();
     createSampler();
     createDescriptorPool();
@@ -74,7 +76,6 @@ void VulkanRenderer::initResources()
     createGraphicsPipelineCache();
     createGraphicsPipelineLayout();
 
-    // Graphics pipelines
     VkShaderModule fragShader = createShaderFromFile(":/shaders/texture_frag.spv");
     createGraphicsPipeline(graphicsPipelineRGB, fragShader);
     fragShader = createShaderFromFile(":/shaders/texture_alpha_frag.spv");
@@ -82,8 +83,9 @@ void VulkanRenderer::initResources()
 
     createComputeDescriptors();
     createComputePipelineLayout();
+    /// ----------
 
-    // Load all the shaders we need
+    /// Load all the shaders we need and create their pipelines
     loadShadersFromDisk();
     // Create Noop pipeline
     computePipelineNoop = createComputePipelineNoop();
@@ -100,6 +102,7 @@ void VulkanRenderer::initResources()
                 devFuncs,
                 f));
 
+    /// Load OCIO config
     try
     {
         const char* file = "ocio/config.ocio";
@@ -2029,7 +2032,7 @@ void VulkanRenderer::processGmicNode(
 {
     qDebug("Process GMIC node.");
 
-    auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
+    //auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
 
     int width = targetSize.width();
     int height = targetSize.height();
@@ -2077,7 +2080,7 @@ void VulkanRenderer::processGmicNode(
     startTimer();
     try
     {
-        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
+        //gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
     }
     catch (gmic_exception &e)
     {
@@ -2337,9 +2340,9 @@ void VulkanRenderer::releaseSwapChainResources()
     qDebug("Releasing swapchain resources.");
 }
 
-void VulkanRenderer::releaseResources()
+void VulkanRenderer::cleanup()
 {
-    qDebug("Releasing resources.");
+    qDebug("Cleaning up Renderer.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
@@ -2462,6 +2465,11 @@ void VulkanRenderer::releaseResources()
         devFuncs->vkFreeCommandBuffers(device, compute.computeCommandPool, 3, &buffers[0]);
         devFuncs->vkDestroyCommandPool(device, compute.computeCommandPool, nullptr);
     }
+}
+
+void VulkanRenderer::releaseResources()
+{
+
 }
 
 VulkanRenderer::~VulkanRenderer()
