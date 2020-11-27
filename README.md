@@ -93,7 +93,7 @@ If all went well you should be able to build the project now.
 
 #### Clone the project
 
-```bash
+``` bash
 git clone --recurse-submodules https://github.com/ttddee/Cascade
 ```
 
@@ -101,9 +101,9 @@ git clone --recurse-submodules https://github.com/ttddee/Cascade
 
 Install the latest Qt including QtCreator from [here](https://www.qt.io/download).
 
-Open a shell and install the follwing packages:
+Open a shell and install the following packages:
 
-```bash
+``` bash
 sudo apt update
 
 sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev
@@ -124,5 +124,11 @@ You can either copy the headers and library to your **/usr** folder, or configur
 Open **Cascade.pro** in QtCreator. Configure **G++** as compiler and **Cascade/build** as your build directory.
 
 If you haven't copied the files for **QtAdvancedDocking** to your **/usr** directory in the last step, you can set a custom path in the **linux-g++** section of the **.pro** file.
+
+For example:
+
+``` qmake
+LIBS += -L /home/user/Cascade/external/qtadvanceddocking -lqtadvanceddocking
+```
 
 Now you should be able to build the project in QtCreator.
