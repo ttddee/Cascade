@@ -1,4 +1,4 @@
-QT       += core gui
+QT       += core gui testlib
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,7 +23,6 @@ DEFINES += "VERSION_MAJOR=$$VERSION_MAJOR"\
 HEADERS += \
         tst_cssliderboxtests.h \
         tst_nodebasetests.h \
-        tst_testtest.h \
         ../../src/benchmark.h \
         ../../src/channelselectentity.h \
         ../../src/checkboxentity.h \

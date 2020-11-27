@@ -33,6 +33,8 @@
 
 class NodeProperties;
 
+#define DOUBLE_MULT 100.0
+
 namespace Ui {
 class CsSliderBox;
 }
@@ -51,35 +53,42 @@ public:
             T step,
             T value)
     {
+        baseValue = value;
+
         if (std::is_same<T , double>::value)
         {
-            ui->slider->setMinimum(min *= 100);
-            ui->slider->setMaximum(max *= 100);
-            ui->slider->setSingleStep(step *= 100);
-            ui->slider->setValue(value *= 100);
-
+            valueBoxDouble->blockSignals(true);
             valueBoxDouble->setMinimum(min);
             valueBoxDouble->setMaximum(max);
             valueBoxDouble->setSingleStep(step);
             valueBoxDouble->setValue(value);
+            valueBoxDouble->blockSignals(false);
+
+            ui->slider->blockSignals(true);
+            ui->slider->setMinimum(min *= DOUBLE_MULT);
+            ui->slider->setMaximum(max *= DOUBLE_MULT);
+            ui->slider->setSingleStep(step *= DOUBLE_MULT);
+            ui->slider->setValue(value *= DOUBLE_MULT);
+            ui->slider->blockSignals(false);
         }
         else
         {
-            ui->slider->setMinimum(min);
-            ui->slider->setMaximum(max);
-            ui->slider->setSingleStep(step);
-            ui->slider->setValue(value);
-
+            valueBoxInt->blockSignals(true);
             valueBoxInt->setMinimum(min);
             valueBoxInt->setMaximum(max);
             valueBoxInt->setSingleStep(step);
             valueBoxInt->setValue(value);
-        }
+            valueBoxInt->blockSignals(false);
 
-        baseValue = value;
+            ui->slider->blockSignals(true);
+            ui->slider->setMinimum(min);
+            ui->slider->setMaximum(max);
+            ui->slider->setSingleStep(step);
+            ui->slider->setValue(value);
+            ui->slider->blockSignals(false);
+        }
     }
 
-    //void setMinMaxStepValue(int, int, int, int);
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
@@ -90,19 +99,54 @@ public:
 private:
     FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesDoubleBox);
     FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesIntBox);
-
-    void setSpinBoxNoSignal(int i);
+    FRIEND_TEST(CsSliderBoxTest, setSliderValue_DoubleSpinBoxHasCorrectValue);
+    FRIEND_TEST(CsSliderBoxTest, setSliderValue_IntSpinBoxHasCorrectValue);
+    FRIEND_TEST(CsSliderBoxTest, setDoubleSpinBoxValue_SliderHasCorrectValue);
+    FRIEND_TEST(CsSliderBoxTest, setIntSpinBoxValue_SliderHasCorrectValue);
+    FRIEND_TEST(CsSliderBoxTest, resetDouble_AllValuesCorrect);
+    FRIEND_TEST(CsSliderBoxTest, resetInt_AllValuesCorrect);
+    FRIEND_TEST(CsSliderBoxTest, getValuesAsString_DoubleValueCorrect);
+    FRIEND_TEST(CsSliderBoxTest, getValuesAsString_IntValueCorrect);
 
     template<typename T>
-    void setSliderNoSignal(T);
+    void setSliderNoSignal(T val)
+    {
+        if (std::is_same<T , double>::value)
+        {
+            val *= DOUBLE_MULT;
+        }
+        ui->slider->blockSignals(true);
+        ui->slider->setValue(static_cast<int>(val));
+        ui->slider->blockSignals(false);
 
-//    void setSliderNoSignalDouble(double d);
-//    void setSliderNoSignalInt(int i);
+        if(!onlyUpdateOnSliderRelease)
+            emit valueChanged();
+    }
+
+    template<typename T>
+    void setSpinBoxNoSignal(T val)
+    {
+        if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
+        {
+            valueBoxDouble->blockSignals(true);
+            valueBoxDouble->setValue(val / DOUBLE_MULT);
+            valueBoxDouble->blockSignals(false);
+        }
+        else
+        {
+            valueBoxInt->blockSignals(true);
+            valueBoxInt->setValue(val);
+            valueBoxInt->blockSignals(false);
+        }
+        if(!onlyUpdateOnSliderRelease)
+            emit valueChanged();
+    }
+
+    void reset();
 
     bool eventFilter(QObject* watched, QEvent* event) override;
 
     void mouseMoveEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
 
     Ui::CsSliderBox *ui;
 
@@ -117,10 +161,11 @@ private:
     bool onlyUpdateOnSliderRelease = false;
 
 signals:
-    void valueChangedDouble(double d);
-    void valueChangedInt(int i);
     void valueChanged();
 
+private slots:
+    void handleSliderValueChanged();
+    void handleSpinBoxValueChanged();
 };
 
 #endif // CSSLIDERBOX_H

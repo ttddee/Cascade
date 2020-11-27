@@ -48,9 +48,9 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
             this, &ViewerStatusBar::requestZoomReset);
     connect(ui->bwCheckBox, &QCheckBox::toggled,
             this, &ViewerStatusBar::handleBwToggled);
-    connect(gammaSlider, &CsSliderBox::valueChangedDouble,
+    connect(gammaSlider, &CsSliderBox::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
-    connect(gainSlider, &CsSliderBox::valueChangedDouble,
+    connect(gainSlider, &CsSliderBox::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
 }
 
