@@ -106,7 +106,7 @@ Open a shell and install the following packages:
 ``` bash
 sudo apt update
 
-sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev
+sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev googletest google-mock
 ```
 
 #### Build submodule
