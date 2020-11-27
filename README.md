@@ -99,14 +99,14 @@ git clone --recurse-submodules https://github.com/ttddee/Cascade
 
 #### Install dependencies
 
-Install the latest Qt including QtCreator from [here](https://www.qt.io/download).
+Install Qt version 5.14 or newer including QtCreator from [here](https://www.qt.io/download).
 
 Open a shell and install the following packages:
 
 ``` bash
 sudo apt update
 
-sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev googletest google-mock
+sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev googletest google-mock cimg-dev
 ```
 
 #### Build submodule
