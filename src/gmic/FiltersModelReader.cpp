@@ -194,7 +194,7 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
   // Remove hidden filters from the model
   for (const QString & path : hiddenPaths) {
     const size_t count = _model.filterCount();
-    QList<QString> pathList = path.split("/", Qt::SkipEmptyParts);
+    QList<QString> pathList = path.split("/");
     _model.removePath(pathList);
     if (_model.filterCount() == count) {
       qDebug("While hiding filter, name or path not found.");

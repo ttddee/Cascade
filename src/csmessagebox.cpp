@@ -25,7 +25,8 @@ CsMessageBox::CsMessageBox(QWidget* parent)
     : QMessageBox(parent)
 {
     this->setMinimumSize(500, 200);
-    this->setTextFormat(Qt::MarkdownText);
+    // Taken out for now because only available in Qt 5.14
+    //this->setTextFormat(Qt::MarkdownText);
 }
 
 CsMessageBox::~CsMessageBox()

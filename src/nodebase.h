@@ -21,6 +21,7 @@
 #define NODEBASE_H
 
 #include <set>
+#include <memory>
 
 #include <QWidget>
 #include <QPen>
