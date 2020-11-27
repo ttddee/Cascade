@@ -23,6 +23,10 @@ void GmicHelper::setUp()
                                              GmicStdLib::Array.constData(),
                                              true,
                                              0, 0, 0.f));
+
+    filtersModel.printFilterNames();
+
+    filtersModel.excludeFilters(excludedFilters);
 }
 
 std::shared_ptr<gmic> GmicHelper::getGmicInstance()

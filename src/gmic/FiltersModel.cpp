@@ -77,6 +77,19 @@ void FiltersModel::addFilter(const FiltersModel::Filter & filter)
   _hash2filter[filter.hash()] = filter;
 }
 
+void FiltersModel::removeFilter(const Filter &filter)
+{
+    _hash2filter.remove(filter.hash());
+}
+
+void FiltersModel::excludeFilters(const std::vector<QString> &exclude)
+{
+    foreach(auto& hash, exclude)
+    {
+        removeFilter(getFilterFromHash(hash));
+    }
+}
+
 void FiltersModel::addFilterCategory(const QString &category)
 {
     _filterCategories.insert(category);

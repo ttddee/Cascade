@@ -142,13 +142,6 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
         }
         QString filterPreviewCommand = preview[0].trimmed();
 
-        //        FiltersTreeFilterItem * filterItem = new FiltersTreeFilterItem(filterName,
-        //                                                                       filterCommand,
-        //                                                                       filterPreviewCommand,
-        //                                                                       previewFactor,
-        //                                                                       accurateIfZoomed);
-        // filterItem->setWarningFlag(warning);
-
         QString start = line;
         start.replace(QRegExp("^\\s*"), "");
         start.replace(QRegExp(" .*"), " :");
@@ -188,7 +181,8 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
 
         _model.addFilter(filter);
 
-        _model.addFilterCategory(category);
+        if (category != "About")
+            _model.addFilterCategory(category);
       } else {
         buffer = readBufferLine(stdlib);
       }

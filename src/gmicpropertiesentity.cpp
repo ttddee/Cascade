@@ -96,7 +96,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=float"))
+        else if (line.contains("=float") || line.contains("=_float"))
         {
             auto title = line.split("=")[0];
             auto values = line.split(QRegExp("[()]"))[1].split(",");
@@ -120,7 +120,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=color"))
+        else if (line.contains("=color") || line.contains("=_color"))
         {
             auto title = line.split("=")[0];
             auto value = line.split(QRegExp("[()]"))[1];
@@ -182,7 +182,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=_bool"))
+        else if (line.contains("=_bool") || line.contains("=bool"))
         {
             auto title = line.split("=")[0];
             auto value = line.split(QRegExp("[()]"))[1];
@@ -199,7 +199,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=_text") || line.contains("=text"))
+        else if (line.contains("=text") || line.contains("=_text"))
         {
             auto title = line.split("=")[0];
             auto text = line.split(QRegExp("\""))[1];

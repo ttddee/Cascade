@@ -89,5 +89,40 @@ If all went well you should be able to build the project now.
 
 ## Linux
 
-Coming soon...
+### Ubuntu (Tested on 20.10)
 
+#### Clone the project
+
+```bash
+git clone --recurse-submodules https://github.com/ttddee/Cascade
+```
+
+#### Install dependencies
+
+Install the latest Qt including QtCreator from [here](https://www.qt.io/download).
+
+Open a shell and install the follwing packages:
+
+```bash
+sudo apt update
+
+sudo apt install libopenimageio-dev libopencolorio-dev libgmic-dev libtbb2 libvulkan-dev
+```
+
+#### Build submodule
+
+Open the project file **Cascade/external/qtadvanceddocking/ads.pro** in QtCreator and configure it for **G++**. 
+
+Specify **Cascade/external/qtadvanceddocking/build** as your build directory.
+
+Now build both **debug** and **release** targets within QtCreator.
+
+You can either copy the headers and library to your **/usr** folder, or configure a custom location in the next step.
+
+#### Configure Cascade.pro
+
+Open **Cascade.pro** in QtCreator. Configure **G++** as compiler and **Cascade/build** as your build directory.
+
+If you haven't copied the files for **QtAdvancedDocking** to your **/usr** directory in the last step, you can set a custom path in the **linux-g++** section of the **.pro** file.
+
+Now you should be able to build the project in QtCreator.

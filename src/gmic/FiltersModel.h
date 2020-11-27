@@ -104,6 +104,8 @@ public:
   QString getFilterCategoryFromHash(const QString& hash);
   void clear();
   void addFilter(const Filter & filter);
+  void removeFilter(const Filter & filter);
+  void excludeFilters(const std::vector<QString>& exclude);
   void addFilterCategory(const QString& category);
   QSet<QString>& getFilterCategories();
   void flush();
