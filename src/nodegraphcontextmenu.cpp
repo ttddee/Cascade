@@ -80,7 +80,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
             std::vector<std::pair<QString, QString>> sortingFilters;
             for (const FiltersModel::Filter& filter : filtersModel)
             {
-                sortingFilters.push_back(std::pair(filter.name(), filter.hash()));
+                sortingFilters.push_back(std::pair<QString, QString>(filter.name(), filter.hash()));
             }
             std::sort(sortingFilters.begin(), sortingFilters.end());
 
