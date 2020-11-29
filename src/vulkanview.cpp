@@ -46,17 +46,17 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     {
         CsMessageBox messageBox;
         messageBox.setWindowTitle("Error");
-        messageBox.setText("**Failed to initialize Vulkan.**\n"
+        messageBox.setText("Failed to initialize Vulkan.\n"
                            "\n"
                            "It could be that your GPU is not supported or your driver needs to be updated.\n"
-                           "You can find a list of supported GPUs at **vulkan.gpuinfo.org**\n"
+                           "You can find a list of supported GPUs at vulkan.gpuinfo.org\n"
                            "\n"
-                           "If you want to help out the developers, please send the file **cascade.log** "
+                           "If you want to help out the developers, please send the file cascade.log "
                            "and the make and model of your GPU to \n"
                            "\n"
-                           "**cascadeapp @ protonmail.com**\n"
+                           "cascadeapp@protonmail.com\n"
                            "\n"
-                           "Or open an issue on: **github.com/ttddee/Cascade**"
+                           "Or open an issue on: github.com/ttddee/Cascade"
                            );
         messageBox.exec();
 
