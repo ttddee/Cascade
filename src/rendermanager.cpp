@@ -24,8 +24,8 @@
 #include <QFile>
 #include <QMessageBox>
 
-#include "uientity.h"
-#include "fileboxentity.h"
+#include "uientities/uientity.h"
+#include "uientities/fileboxentity.h"
 #include "vulkanrenderer.h"
 
 RenderManager& RenderManager::getInstance()

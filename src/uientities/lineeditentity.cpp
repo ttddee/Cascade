@@ -20,8 +20,6 @@
 #include "lineeditentity.h"
 #include "ui_lineeditentity.h"
 
-#include "nodeproperties.h"
-
 LineEditEntity::LineEditEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::LineEditEntity)

@@ -21,20 +21,12 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
-    src/channelselectentity.cpp \
-    src/checkboxentity.cpp \
     src/colorbutton.cpp \
-    src/colorbuttonentity.cpp \
-    src/colorpropertiesentity.cpp \
-    src/comboboxentity.cpp \
     src/connection.cpp \
     src/csimage.cpp \
     src/csmessagebox.cpp \
     src/cssettingsbuffer.cpp \
-    src/csslider.cpp \
     src/cssliderbox.cpp \
-    src/fileboxentity.cpp \
-    src/folderboxentity.cpp \
     src/gmic/FilterTextTranslator.cpp \
     src/gmic/FiltersModel.cpp \
     src/gmic/FiltersModelReader.cpp \
@@ -46,8 +38,6 @@ SOURCES += \
     src/gmic/ParametersCache.cpp \
     src/gmic/Utils.cpp \
     src/gmichelper.cpp \
-    src/gmicpropertiesentity.cpp \
-    src/lineeditentity.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -59,36 +49,37 @@ SOURCES += \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/rendermanager.cpp \
-    src/separatorentity.cpp \
-    src/sizeboxentity.cpp \
     src/slidernoclick.cpp \
-    src/spinboxentity.cpp \
-    src/textboxentity.cpp \
-    src/textbrowserentity.cpp \
-    src/uientity.cpp \
+    src/uientities/channelselectentity.cpp \
+    src/uientities/checkboxentity.cpp \
+    src/uientities/colorbuttonentity.cpp \
+    src/uientities/colorpropertiesentity.cpp \
+    src/uientities/comboboxentity.cpp \
+    src/uientities/fileboxentity.cpp \
+    src/uientities/folderboxentity.cpp \
+    src/uientities/gmicpropertiesentity.cpp \
+    src/uientities/lineeditentity.cpp \
+    src/uientities/separatorentity.cpp \
+    src/uientities/sizeboxentity.cpp \
+    src/uientities/spinboxentity.cpp \
+    src/uientities/textboxentity.cpp \
+    src/uientities/textbrowserentity.cpp \
+    src/uientities/uientity.cpp \
+    src/uientities/writepropertiesentity.cpp \
     src/viewerstatusbar.cpp \
     src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp \
-    src/windowmanager.cpp \
-    src/writepropertiesentity.cpp
+    src/windowmanager.cpp
 
 HEADERS += \
     src/benchmark.h \
-    src/channelselectentity.h \
-    src/checkboxentity.h \
     src/colorbutton.h \
-    src/colorbuttonentity.h \
-    src/colorpropertiesentity.h \
-    src/comboboxentity.h \
     src/connection.h \
     src/csimage.h \
     src/csmessagebox.h \
     src/cssettingsbuffer.h \
-    src/csslider.h \
     src/cssliderbox.h \
-    src/fileboxentity.h \
-    src/folderboxentity.h \
     src/gmic/FilterTextTranslator.h \
     src/gmic/FiltersModel.h \
     src/gmic/FiltersModelReader.h \
@@ -101,8 +92,6 @@ HEADERS += \
     src/gmic/ParametersCache.h \
     src/gmic/Utils.h \
     src/gmichelper.h \
-    src/gmicpropertiesentity.h \
-    src/lineeditentity.h \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \
@@ -115,42 +104,51 @@ HEADERS += \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/rendermanager.h \
-    src/separatorentity.h \
-    src/sizeboxentity.h \
     src/slidernoclick.h \
-    src/spinboxentity.h \
-    src/textboxentity.h \
-    src/textbrowserentity.h \
     src/uicolors.h \
-    src/uientity.h \
+    src/uientities/channelselectentity.h \
+    src/uientities/checkboxentity.h \
+    src/uientities/colorbuttonentity.h \
+    src/uientities/colorpropertiesentity.h \
+    src/uientities/comboboxentity.h \
+    src/uientities/fileboxentity.h \
+    src/uientities/folderboxentity.h \
+    src/uientities/gmicpropertiesentity.h \
+    src/uientities/lineeditentity.h \
+    src/uientities/separatorentity.h \
+    src/uientities/sizeboxentity.h \
+    src/uientities/spinboxentity.h \
+    src/uientities/textboxentity.h \
+    src/uientities/textbrowserentity.h \
+    src/uientities/uientity.h \
+    src/uientities/writepropertiesentity.h \
     src/viewerstatusbar.h \
     src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h \
-    src/windowmanager.h \
-    src/writepropertiesentity.h
+    src/windowmanager.h
 
 FORMS += \
-    src/channelselectentity.ui \
-    src/checkboxentity.ui \
-    src/colorbuttonentity.ui \
-    src/colorpropertiesentity.ui \
-    src/comboboxentity.ui \
     src/cssliderbox.ui \
-    src/fileboxentity.ui \
-    src/folderboxentity.ui \
-    src/gmicpropertiesentity.ui \
-    src/lineeditentity.ui \
     src/mainwindow.ui \
     src/nodebase.ui \
     src/propertiesheading.ui \
-    src/separatorentity.ui \
-    src/sizeboxentity.ui \
-    src/spinboxentity.ui \
-    src/textboxentity.ui \
-    src/textbrowserentity.ui \
-    src/viewerstatusbar.ui \
-    src/writepropertiesentity.ui
+    src/uientities/channelselectentity.ui \
+    src/uientities/checkboxentity.ui \
+    src/uientities/colorbuttonentity.ui \
+    src/uientities/colorpropertiesentity.ui \
+    src/uientities/comboboxentity.ui \
+    src/uientities/fileboxentity.ui \
+    src/uientities/folderboxentity.ui \
+    src/uientities/gmicpropertiesentity.ui \
+    src/uientities/lineeditentity.ui \
+    src/uientities/separatorentity.ui \
+    src/uientities/sizeboxentity.ui \
+    src/uientities/spinboxentity.ui \
+    src/uientities/textboxentity.ui \
+    src/uientities/textbrowserentity.ui \
+    src/uientities/writepropertiesentity.ui \
+    src/viewerstatusbar.ui
 
 linux-g++ {
     LIBS += -L /usr/lib -lOpenImageIO

@@ -22,8 +22,6 @@
 
 #include <iostream>
 
-#include "nodeproperties.h"
-
 ChannelSelectEntity::ChannelSelectEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
     ui(new Ui::ChannelSelectEntity)

@@ -25,11 +25,11 @@
 #include <QLayout>
 
 #include "nodedefinitions.h"
-#include "uientity.h"
 
 using namespace Cascade;
 
 class NodeBase;
+class UiEntity;
 
 class NodeProperties : public QWidget
 {

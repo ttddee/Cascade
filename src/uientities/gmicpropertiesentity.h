@@ -17,51 +17,50 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef FILEBOXENTITY_H
-#define FILEBOXENTITY_H
+#ifndef GMICPROPERTIESENTITY_H
+#define GMICPROPERTIESENTITY_H
 
 #include <QWidget>
-#include <QStringListModel>
 
-#include "nodedefinitions.h"
 #include "uientity.h"
+#include "../gmichelper.h"
+#include "checkboxentity.h"
 
 class NodeProperties;
 
-using namespace Cascade;
-
 namespace Ui {
-class FileBoxEntity;
+class GmicPropertiesEntity;
 }
 
-class FileBoxEntity : public UiEntity
+class GmicPropertiesEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
-
-    QString getCurrentPath();
+    explicit GmicPropertiesEntity(
+            UIElementType et,
+            const QString& gType,
+            const QString& gHash,
+            QWidget *parent = nullptr);
 
     void selfConnectToValueChanged(NodeProperties* p);
-
     QString getValuesAsString() override;
 
-    ~FileBoxEntity();
+    ~GmicPropertiesEntity();
 
 private:
-    void addEntries(const QStringList& entries);
-    void deleteCurrentEntry();
+    Ui::GmicPropertiesEntity *ui;
+    GmicHelper* gmicHelper;
 
-    Ui::FileBoxEntity *ui;
-    QStringListModel* fileListModel;
+    QString gmicNodeType;
+    QString gmicHash;
+
+    CheckBoxEntity* previewBox;
+
+    std::vector<UiEntity*> propElements;
 
 signals:
     void valueChanged();
-
-private slots:
-    void handleLoadButtonClicked();
-    void handleDeleteButtonClicked();
 };
 
-#endif // FILEBOXENTITY_H
+#endif // GMICPROPERTIESENTITY_H

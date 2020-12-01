@@ -32,7 +32,7 @@
 #include <OpenImageIO/color.h>
 
 #include "vulkanwindow.h"
-#include "fileboxentity.h"
+#include "uientities/fileboxentity.h"
 #include "benchmark.h"
 #include "multithreading.h"
 #include "gmichelper.h"

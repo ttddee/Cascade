@@ -24,9 +24,8 @@
 
 #include <QTextStream>
 
-#include "nodeproperties.h"
-#include "propertiesheading.h"
-#include "cssliderbox.h"
+#include "../propertiesheading.h"
+#include "../cssliderbox.h"
 #include "colorbuttonentity.h"
 #include "textbrowserentity.h"
 #include "separatorentity.h"
@@ -182,7 +181,7 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
-        else if (line.contains("=_bool") || line.contains("=bool"))
+        else if (line.contains("=bool") || line.contains("=_bool"))
         {
             auto title = line.split("=")[0];
             auto value = line.split(QRegExp("[()]"))[1];

@@ -29,7 +29,7 @@
 
 #include <gtest/gtest_prod.h>
 
-#include "uientity.h"
+#include "uientities/uientity.h"
 
 class NodeProperties;
 

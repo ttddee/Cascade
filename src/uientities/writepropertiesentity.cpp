@@ -23,8 +23,6 @@
 #include <QFileDialog>
 #include <QMessageBox>
 
-#include "nodeproperties.h"
-
 WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::WritePropertiesEntity)

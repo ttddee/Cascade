@@ -25,8 +25,6 @@
 #include <QFileDialog>
 #include <QItemSelectionModel>
 
-#include "nodeproperties.h"
-
 FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
     ui(new Ui::FileBoxEntity)

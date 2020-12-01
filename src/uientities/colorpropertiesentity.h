@@ -17,50 +17,40 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef GMICPROPERTIESENTITY_H
-#define GMICPROPERTIESENTITY_H
+#ifndef COLORPROPERTIESENTITY_H
+#define COLORPROPERTIESENTITY_H
 
 #include <QWidget>
 
 #include "uientity.h"
-#include "gmichelper.h"
-#include "checkboxentity.h"
-
-class NodeProperties;
+#include "../cssliderbox.h"
 
 namespace Ui {
-class GmicPropertiesEntity;
+class ColorPropertiesEntity;
 }
 
-class GmicPropertiesEntity : public UiEntity
+class ColorPropertiesEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit GmicPropertiesEntity(
-            UIElementType et,
-            const QString& gType,
-            const QString& gHash,
-            QWidget *parent = nullptr);
+    explicit ColorPropertiesEntity(UIElementType et, QWidget *parent = nullptr);
 
     void selfConnectToValueChanged(NodeProperties* p);
     QString getValuesAsString() override;
 
-    ~GmicPropertiesEntity();
+    ~ColorPropertiesEntity();
 
 private:
-    Ui::GmicPropertiesEntity *ui;
-    GmicHelper* gmicHelper;
+    Ui::ColorPropertiesEntity *ui;
 
-    QString gmicNodeType;
-    QString gmicHash;
-
-    CheckBoxEntity* previewBox;
-
-    std::vector<UiEntity*> propElements;
+    std::vector<CsSliderBox*> uiItems;
 
 signals:
     void valueChanged();
+
+public slots:
+    void handleValueChanged();
 };
 
-#endif // GMICPROPERTIESENTITY_H
+#endif // COLORPROPERTIESENTITY_H

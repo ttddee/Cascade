@@ -17,21 +17,27 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef CSSLIDER_H
-#define CSSLIDER_H
+#ifndef UIENTITY_H
+#define UIENTITY_H
 
+#include <QObject>
 #include <QWidget>
-#include <QSlider>
 
-class CsSlider : public QSlider
+#include "../nodedefinitions.h"
+#include "../nodeproperties.h"
+
+using namespace Cascade;
+
+class UiEntity : public QWidget
 {
     Q_OBJECT
 
 public:
-    CsSlider(QWidget* parent = nullptr);
+    explicit UiEntity(UIElementType et, QWidget *parent = nullptr);
 
-protected:
-    void wheelEvent(QWheelEvent*) override;
+    virtual QString getValuesAsString() = 0;
+
+    const UIElementType elementType;
 };
 
-#endif // CSSLIDER_H
+#endif // UIENTITY_H

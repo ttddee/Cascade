@@ -22,8 +22,6 @@
 
 #include <QFileDialog>
 
-#include "nodeproperties.h"
-
 FolderBoxEntity::FolderBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::FolderBoxEntity)

@@ -20,8 +20,6 @@
 #include "colorbuttonentity.h"
 #include "ui_colorbuttonentity.h"
 
-#include "nodeproperties.h"
-
 ColorButtonEntity::ColorButtonEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::ColorButtonEntity)

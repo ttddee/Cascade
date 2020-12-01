@@ -20,8 +20,6 @@
 #include "sizeboxentity.h"
 #include "ui_sizeboxentity.h"
 
-#include "nodeproperties.h"
-
 SizeBoxEntity::SizeBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::SizeBoxEntity)

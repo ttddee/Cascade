@@ -17,48 +17,45 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "checkboxentity.h"
-#include "ui_checkboxentity.h"
+#include "comboboxentity.h"
+#include "ui_comboboxentity.h"
 
-#include "nodeproperties.h"
-
-CheckBoxEntity::CheckBoxEntity(UIElementType et, QWidget *parent) :
+ComboBoxEntity::ComboBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::CheckBoxEntity)
+    ui(new Ui::ComboBoxEntity)
 {
     ui->setupUi(this);
 
-    connect(ui->checkBox, &QCheckBox::stateChanged,
-            this, &CheckBoxEntity::valueChanged);
+    connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, [this]{ emit valueChanged();});
 }
 
-void CheckBoxEntity::setName(const QString &name)
+void ComboBoxEntity::setName(const QString &name)
 {
-    ui->checkBox->setText(name);
+    ui->label->setText(name);
 }
 
-void CheckBoxEntity::setChecked(bool b)
+void ComboBoxEntity::setOptions(const std::vector<QString> options, int index)
 {
-    ui->checkBox->setChecked(b);
+    foreach(auto& o, options)
+    {
+        ui->comboBox->addItem(o);
+    }
+    ui->comboBox->setCurrentIndex(index);
 }
 
-bool CheckBoxEntity::isChecked()
+void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    return ui->checkBox->isChecked();
-}
-
-void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
-{
-    connect(this, &CheckBoxEntity::valueChanged,
+    connect(this, &ComboBoxEntity::valueChanged,
             p, [p]{p->handleSomeValueChanged();});
 }
 
-QString CheckBoxEntity::getValuesAsString()
+QString ComboBoxEntity::getValuesAsString()
 {
-    return QString::number(ui->checkBox->isChecked());
+    return QString::number(ui->comboBox->currentIndex());
 }
 
-CheckBoxEntity::~CheckBoxEntity()
+ComboBoxEntity::~ComboBoxEntity()
 {
     delete ui;
 }

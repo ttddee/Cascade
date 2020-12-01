@@ -31,6 +31,7 @@
 #include "nodeoutput.h"
 #include "nodegraph.h"
 #include "connection.h"
+#include "uientities/uientity.h"
 
 NodeBase::NodeBase(
         const NodeType type,

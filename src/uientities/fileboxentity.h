@@ -17,26 +17,51 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef UIENTITY_H
-#define UIENTITY_H
+#ifndef FILEBOXENTITY_H
+#define FILEBOXENTITY_H
 
-#include <QObject>
 #include <QWidget>
+#include <QStringListModel>
 
-#include "nodedefinitions.h"
+#include "../nodedefinitions.h"
+#include "uientity.h"
+
+class NodeProperties;
 
 using namespace Cascade;
 
-class UiEntity : public QWidget
+namespace Ui {
+class FileBoxEntity;
+}
+
+class FileBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit UiEntity(UIElementType et, QWidget *parent = nullptr);
+    explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
-    virtual QString getValuesAsString() = 0;
+    QString getCurrentPath();
 
-    const UIElementType elementType;
+    void selfConnectToValueChanged(NodeProperties* p);
+
+    QString getValuesAsString() override;
+
+    ~FileBoxEntity();
+
+private:
+    void addEntries(const QStringList& entries);
+    void deleteCurrentEntry();
+
+    Ui::FileBoxEntity *ui;
+    QStringListModel* fileListModel;
+
+signals:
+    void valueChanged();
+
+private slots:
+    void handleLoadButtonClicked();
+    void handleDeleteButtonClicked();
 };
 
-#endif // UIENTITY_H
+#endif // FILEBOXENTITY_H
