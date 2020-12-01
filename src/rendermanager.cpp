@@ -107,7 +107,10 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         {
             if (!node->getUpstreamNodeFront())
             {
-                nodeToDisplay = node->getUpstreamNodeBack();
+                if (node->getUpstreamNodeBack())
+                {
+                    nodeToDisplay = node->getUpstreamNodeBack();
+                }
             }
         }
         displayNode(nodeToDisplay);

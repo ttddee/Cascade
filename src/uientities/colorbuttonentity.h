@@ -45,7 +45,7 @@ public:
 
     void selfConnectToValueChanged(NodeProperties*);
 
-    QString getValuesAsString();
+    QString getValuesAsString() override;
 
     ~ColorButtonEntity();
 

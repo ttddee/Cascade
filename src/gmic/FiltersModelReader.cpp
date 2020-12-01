@@ -181,7 +181,7 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
 
         _model.addFilter(filter);
 
-        if (category != "About")
+        if (category != "About" && category != "Layers")
             _model.addFilterCategory(category);
       } else {
         buffer = readBufferLine(stdlib);

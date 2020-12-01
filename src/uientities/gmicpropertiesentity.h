@@ -65,7 +65,8 @@ private:
     const std::set<QString> hiddenElements =
     {
         "Preview Type",
-        "Output Each Piece on a Different Layer"
+        "Output Each Piece on a Different Layer",
+        "Output as Separate Layers"
     };
 
 signals:

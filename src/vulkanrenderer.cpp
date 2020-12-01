@@ -2093,9 +2093,9 @@ void VulkanRenderer::processGmicNode(
 
     std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
 
-    if (gmicImage._spectrum == 1)
+    if (gmicImage._spectrum != 4)
     {
-        //gmicInstance->run("to_gray append c", gmicList, gmicNames);
+        gmicInstance->run("resize 100%,100%,100%,4", gmicList, gmicNames);
     }
 
     std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
