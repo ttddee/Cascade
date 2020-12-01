@@ -19,7 +19,7 @@
 #ifndef CSSLIDERBOX_H
 #define CSSLIDERBOX_H
 
-#include "ui_cssliderbox.h"
+#include "ui_cssliderboxentity.h"
 
 #include <iostream>
 
