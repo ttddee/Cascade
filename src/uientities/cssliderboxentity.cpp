@@ -17,13 +17,13 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "cssliderbox.h"
+#include "cssliderboxentity.h"
 
 #include <QMouseEvent>
 
-#include "nodeproperties.h"
+#include "../nodeproperties.h"
 
-CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSliderRelease) :
+CsSliderBoxEntity::CsSliderBoxEntity(UIElementType et, QWidget *parent, bool onlyUpdateOnSliderRelease) :
     UiEntity(et, parent),
     ui(new Ui::CsSliderBox)
 {
@@ -78,28 +78,33 @@ CsSliderBox::CsSliderBox(UIElementType et, QWidget *parent, bool onlyUpdateOnSli
 //        }
 //    }
     connect(ui->slider, &SliderNoClick::valueChanged,
-            this, &CsSliderBox::handleSliderValueChanged);
+            this, &CsSliderBoxEntity::handleSliderValueChanged);
 
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         connect(valueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-                this, &CsSliderBox::handleSpinBoxValueChanged);
+                this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
     else
         connect(valueBoxInt, QOverload<int>::of(&QSpinBox::valueChanged),
-                this, &CsSliderBox::handleSpinBoxValueChanged);
+                this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
 }
 
-void CsSliderBox::selfConnectToValueChanged(NodeProperties* p)
+void CsSliderBoxEntity::selfConnectToValueChanged(NodeProperties* p)
 {
-    connect(this, &CsSliderBox::valueChanged,
+    connect(this, &CsSliderBoxEntity::valueChanged,
             p, [p]{p->handleSomeValueChanged();});
 }
 
-void CsSliderBox::setName(const QString &name)
+const QString CsSliderBoxEntity::name()
+{
+    return nameLabel->text();
+}
+
+void CsSliderBoxEntity::setName(const QString &name)
 {
     nameLabel->setText(name);
 }
 
-QString CsSliderBox::getValuesAsString()
+QString CsSliderBoxEntity::getValuesAsString()
 {
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         return QString::number(ui->slider->value() / DOUBLE_MULT);
@@ -107,12 +112,12 @@ QString CsSliderBox::getValuesAsString()
         return QString::number(ui->slider->value());
 }
 
-void CsSliderBox::handleSliderValueChanged()
+void CsSliderBoxEntity::handleSliderValueChanged()
 {
     setSpinBoxNoSignal(ui->slider->value());
 }
 
-void CsSliderBox::handleSpinBoxValueChanged()
+void CsSliderBoxEntity::handleSpinBoxValueChanged()
 {
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         setSliderNoSignal(valueBoxDouble->value());
@@ -120,7 +125,7 @@ void CsSliderBox::handleSpinBoxValueChanged()
         setSliderNoSignal(valueBoxInt->value());
 }
 
-void CsSliderBox::reset()
+void CsSliderBoxEntity::reset()
 {
     if (elementType == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         valueBoxDouble->setValue(baseValue);
@@ -128,7 +133,7 @@ void CsSliderBox::reset()
         valueBoxInt->setValue(baseValue);
 }
 
-bool CsSliderBox::eventFilter(QObject *watched, QEvent *event)
+bool CsSliderBoxEntity::eventFilter(QObject *watched, QEvent *event)
 {
     if(event->type() == QEvent::MouseButtonPress)
     {
@@ -162,7 +167,7 @@ bool CsSliderBox::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
-void CsSliderBox::mouseMoveEvent(QMouseEvent* event)
+void CsSliderBoxEntity::mouseMoveEvent(QMouseEvent* event)
 {
     if(isDragging)
     {
@@ -182,7 +187,7 @@ void CsSliderBox::mouseMoveEvent(QMouseEvent* event)
     Q_UNUSED(event);
 }
 
-CsSliderBox::~CsSliderBox()
+CsSliderBoxEntity::~CsSliderBoxEntity()
 {
     delete ui;
 }

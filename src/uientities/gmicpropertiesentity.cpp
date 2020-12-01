@@ -25,7 +25,7 @@
 #include <QTextStream>
 
 #include "../propertiesheading.h"
-#include "../cssliderbox.h"
+#include "cssliderboxentity.h"
 #include "colorbuttonentity.h"
 #include "textbrowserentity.h"
 #include "separatorentity.h"
@@ -70,6 +70,10 @@ GmicPropertiesEntity::GmicPropertiesEntity(
         {
             line.remove(QRegExp("\\(s\\)"));
         }
+        if (line.contains("(px)"))
+        {
+            line.remove(QRegExp("\\(px\\)"));
+        }
 
         if (line.contains("=int") || line.contains("=_int"))
         {
@@ -79,8 +83,8 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             auto min = values[1];
             auto max = values[2];
 
-            CsSliderBox* item =
-                    new CsSliderBox(
+            CsSliderBoxEntity* item =
+                    new CsSliderBoxEntity(
                         UI_ELEMENT_TYPE_SLIDER_BOX_INT,
                         this,
                         true);
@@ -103,8 +107,8 @@ GmicPropertiesEntity::GmicPropertiesEntity(
             auto min = values[1];
             auto max = values[2];
 
-            CsSliderBox* item =
-                    new CsSliderBox(
+            CsSliderBoxEntity* item =
+                    new CsSliderBoxEntity(
                         UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                         this,
                         true);
@@ -136,15 +140,19 @@ GmicPropertiesEntity::GmicPropertiesEntity(
         }
         else if (line.contains("=note") && !line.contains("{"))
         {
-            auto text = line.split("\"")[1];
+            // TODO: Generalize this a little more
+            if (!line.contains("has been inspired"))
+            {
+                auto text = line.split("\"")[1];
 
-            TextBrowserEntity* item = new TextBrowserEntity(
-                        UI_ELEMENT_TYPE_TEXTBROWSER,
-                        this);
-            item->setText(text);
-            ui->verticalLayout->addWidget(item);
+                TextBrowserEntity* item = new TextBrowserEntity(
+                            UI_ELEMENT_TYPE_TEXTBROWSER,
+                            this);
+                item->setText(text);
+                ui->verticalLayout->addWidget(item);
 
-            propElements.push_back(item);
+                propElements.push_back(item);
+            }
         }
         else if (line.contains("=separator"))
         {
@@ -158,11 +166,27 @@ GmicPropertiesEntity::GmicPropertiesEntity(
         else if (line.contains("=choice") || line.contains("=_choice"))
         {
             auto title = line.split("=")[0];
-            auto elems = line.split(QRegExp("[()]"))[1];
+
+            QString elems;
+            if (line.contains("{"))
+            {
+                elems = line.split(QRegExp("[{}]"))[1];
+            }
+            else
+            {
+                elems = line.split(QRegExp("[()]"))[1];
+            }
             elems.remove(QRegExp("\""));
             auto values = elems.split(",");
-            auto index = values[0];
-            values.removeAt(0);
+
+            // Check if first value contains index
+            QString index = "0";
+            QRegExp ex("\\d*");
+            if (ex.exactMatch(values[0]))
+            {
+                index = values[0];
+                values.removeAt(0);
+            }
 
             ComboBoxEntity* item = new ComboBoxEntity(
                         UI_ELEMENT_TYPE_COMBOBOX,
@@ -226,6 +250,18 @@ GmicPropertiesEntity::GmicPropertiesEntity(
 
             propElements.push_back(item);
         }
+        else if (line.contains("=point") || line.contains("=_point"))
+        {
+            hasPreviewSplitProperty = true;
+        }
+    }
+
+    foreach (auto& elem, propElements)
+    {
+        if (hiddenElements.find(elem->name()) != hiddenElements.end())
+        {
+            elem->setHidden(true);
+        }
     }
 
     SeparatorEntity* item = new SeparatorEntity(
@@ -281,6 +317,10 @@ QString GmicPropertiesEntity::getValuesAsString()
     }
     output.chop(1);
     //output.append("2,0,50,50");
+    if (hasPreviewSplitProperty)
+    {
+        output.append(",50,50");
+    }
     std::cout << output.toStdString() << std::endl;
     return output;
 }

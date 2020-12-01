@@ -28,7 +28,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    gammaSlider = new CsSliderBox(
+    gammaSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     gammaSlider->setName("Gamma");
@@ -36,7 +36,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     gammaSlider->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
     ui->horizontalLayout->insertWidget(12, gammaSlider);
 
-    gainSlider = new CsSliderBox(
+    gainSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     gainSlider->setName("Gain");
@@ -48,9 +48,9 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
             this, &ViewerStatusBar::requestZoomReset);
     connect(ui->bwCheckBox, &QCheckBox::toggled,
             this, &ViewerStatusBar::handleBwToggled);
-    connect(gammaSlider, &CsSliderBox::valueChanged,
+    connect(gammaSlider, &CsSliderBoxEntity::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
-    connect(gainSlider, &CsSliderBox::valueChanged,
+    connect(gainSlider, &CsSliderBoxEntity::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
 }
 

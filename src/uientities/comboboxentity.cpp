@@ -30,6 +30,11 @@ ComboBoxEntity::ComboBoxEntity(UIElementType et, QWidget *parent) :
             this, [this]{ emit valueChanged();});
 }
 
+const QString ComboBoxEntity::name()
+{
+    return ui->label->text();
+}
+
 void ComboBoxEntity::setName(const QString &name)
 {
     ui->label->setText(name);

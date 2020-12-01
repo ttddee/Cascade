@@ -32,6 +32,11 @@ SpinBoxEntity::SpinBoxEntity(UIElementType et, QWidget *parent) :
             this, &SpinBoxEntity::reset);
 }
 
+const QString SpinBoxEntity::name()
+{
+    return ui->nameLabel->text();
+}
+
 void SpinBoxEntity::setName(const QString &name)
 {
     ui->nameLabel->setText(name);

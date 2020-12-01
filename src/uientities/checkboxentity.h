@@ -37,6 +37,7 @@ class CheckBoxEntity : public UiEntity
 public:
     explicit CheckBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString& name);
 
     void setChecked(bool b);

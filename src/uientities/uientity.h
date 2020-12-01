@@ -37,6 +37,8 @@ public:
 
     virtual QString getValuesAsString() = 0;
 
+    virtual const QString name();
+
     const UIElementType elementType;
 };
 

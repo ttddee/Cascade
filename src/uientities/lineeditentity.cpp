@@ -30,6 +30,11 @@ LineEditEntity::LineEditEntity(UIElementType et, QWidget *parent) :
             this, &LineEditEntity::valueChanged);
 }
 
+const QString LineEditEntity::name()
+{
+    return ui->label->text();
+}
+
 void LineEditEntity::setName(const QString &name)
 {
     ui->label->setText(name);

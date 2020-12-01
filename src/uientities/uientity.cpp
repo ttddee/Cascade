@@ -26,3 +26,8 @@ UiEntity::UiEntity(UIElementType et, QWidget *parent)
 
 }
 
+const QString UiEntity::name()
+{
+    return "";
+}
+

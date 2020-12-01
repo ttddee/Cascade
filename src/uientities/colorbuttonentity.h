@@ -37,6 +37,7 @@ class ColorButtonEntity : public UiEntity
 public:
     explicit ColorButtonEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString&);
 
     QColor getColor();

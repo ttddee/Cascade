@@ -29,7 +29,7 @@
 
 #include <gtest/gtest_prod.h>
 
-#include "uientities/uientity.h"
+#include "uientity.h"
 
 class NodeProperties;
 
@@ -39,12 +39,12 @@ namespace Ui {
 class CsSliderBox;
 }
 
-class CsSliderBox : public UiEntity
+class CsSliderBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
-    explicit CsSliderBox(UIElementType et, QWidget *parent = nullptr, bool onlyUpdateOnSliderRelease = false);
+    explicit CsSliderBoxEntity(UIElementType et, QWidget *parent = nullptr, bool onlyUpdateOnSliderRelease = false);
 
     template<typename T>
     void setMinMaxStepValue(
@@ -89,12 +89,13 @@ public:
         }
     }
 
+    const QString name() override;
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
     QString getValuesAsString() override;
 
-    ~CsSliderBox();
+    ~CsSliderBoxEntity();
 
 private:
     FRIEND_TEST(CsSliderBoxTest, setMinMaxStepValue_SetValuesDoubleBox);

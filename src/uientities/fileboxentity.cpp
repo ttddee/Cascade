@@ -37,6 +37,10 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     ui->fileListView->setModel(fileListModel);
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
+#ifdef QT_DEBUG
+    addEntries(QStringList("/home/till/Cascade/images/bay.jpg"));
+#endif
+
     connect(ui->loadButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleLoadButtonClicked);
     connect(ui->deleteButton, &QPushButton::clicked,

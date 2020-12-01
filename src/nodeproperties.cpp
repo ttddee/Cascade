@@ -24,7 +24,7 @@
 #include <QLabel>
 
 #include "nodebase.h"
-#include "cssliderbox.h"
+#include "uientities/cssliderboxentity.h"
 #include "uientities/fileboxentity.h"
 #include "propertiesheading.h"
 #include "uientities/colorbuttonentity.h"
@@ -145,8 +145,8 @@ NodeProperties::NodeProperties(
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         {
-            CsSliderBox* item =
-                    new CsSliderBox(
+            CsSliderBoxEntity* item =
+                    new CsSliderBoxEntity(
                         UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                         this);
             auto parts = elem.second.split(",");
@@ -162,8 +162,8 @@ NodeProperties::NodeProperties(
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_INT)
         {
-            CsSliderBox* item =
-                    new CsSliderBox(
+            CsSliderBoxEntity* item =
+                    new CsSliderBoxEntity(
                         UI_ELEMENT_TYPE_SLIDER_BOX_INT,
                         this);
             auto parts = elem.second.split(",");

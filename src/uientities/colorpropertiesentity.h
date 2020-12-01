@@ -23,7 +23,7 @@
 #include <QWidget>
 
 #include "uientity.h"
-#include "../cssliderbox.h"
+#include "cssliderboxentity.h"
 
 namespace Ui {
 class ColorPropertiesEntity;
@@ -44,7 +44,7 @@ public:
 private:
     Ui::ColorPropertiesEntity *ui;
 
-    std::vector<CsSliderBox*> uiItems;
+    std::vector<CsSliderBoxEntity*> uiItems;
 
 signals:
     void valueChanged();

@@ -20,6 +20,8 @@
 #ifndef GMICPROPERTIESENTITY_H
 #define GMICPROPERTIESENTITY_H
 
+#include <set>
+
 #include <QWidget>
 
 #include "uientity.h"
@@ -55,9 +57,16 @@ private:
     QString gmicNodeType;
     QString gmicHash;
 
+    bool hasPreviewSplitProperty = false;
+
     CheckBoxEntity* previewBox;
 
     std::vector<UiEntity*> propElements;
+    const std::set<QString> hiddenElements =
+    {
+        "Preview Type",
+        "Output Each Piece on a Different Layer"
+    };
 
 signals:
     void valueChanged();

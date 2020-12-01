@@ -39,7 +39,9 @@ class SpinBoxEntity : public UiEntity
 public:
     explicit SpinBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString& name);
+
     void setMinMaxStepValue(int, int, int, int);
     void selfConnectToValueChanged(NodeProperties* p);
 

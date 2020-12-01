@@ -37,6 +37,7 @@ class FolderBoxEntity : public UiEntity
 public:
     explicit FolderBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);

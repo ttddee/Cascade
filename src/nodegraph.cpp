@@ -80,6 +80,7 @@ void NodeGraph::createNode(
         connect(n, &NodeBase::nodeRequestFileSave,
                 this, &NodeGraph::handleFileSaveRequest);
     }
+    viewNode(n);
 }
 
 void NodeGraph::deleteNode(NodeBase *node)

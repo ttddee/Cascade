@@ -40,6 +40,11 @@ void ColorButtonEntity::setColor(QColor c)
     ui->colorButton->setColor(c);
 }
 
+const QString ColorButtonEntity::name()
+{
+    return ui->label->text();
+}
+
 void ColorButtonEntity::setName(const QString &s)
 {
     ui->label->setText(s);
@@ -58,7 +63,8 @@ QString ColorButtonEntity::getValuesAsString()
     s.append(QString::number(getColor().green()));
     s.append(",");
     s.append(QString::number(getColor().blue()));
-    // Omitting alpha
+    s.append(",");
+    s.append(QString::number(getColor().alpha()));
 
     return s;
 }

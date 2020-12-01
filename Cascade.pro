@@ -26,7 +26,6 @@ SOURCES += \
     src/csimage.cpp \
     src/csmessagebox.cpp \
     src/cssettingsbuffer.cpp \
-    src/cssliderbox.cpp \
     src/gmic/FilterTextTranslator.cpp \
     src/gmic/FiltersModel.cpp \
     src/gmic/FiltersModelReader.cpp \
@@ -55,6 +54,7 @@ SOURCES += \
     src/uientities/colorbuttonentity.cpp \
     src/uientities/colorpropertiesentity.cpp \
     src/uientities/comboboxentity.cpp \
+    src/uientities/cssliderboxentity.cpp \
     src/uientities/fileboxentity.cpp \
     src/uientities/folderboxentity.cpp \
     src/uientities/gmicpropertiesentity.cpp \
@@ -79,7 +79,6 @@ HEADERS += \
     src/csimage.h \
     src/csmessagebox.h \
     src/cssettingsbuffer.h \
-    src/cssliderbox.h \
     src/gmic/FilterTextTranslator.h \
     src/gmic/FiltersModel.h \
     src/gmic/FiltersModelReader.h \
@@ -111,6 +110,7 @@ HEADERS += \
     src/uientities/colorbuttonentity.h \
     src/uientities/colorpropertiesentity.h \
     src/uientities/comboboxentity.h \
+    src/uientities/cssliderboxentity.h \
     src/uientities/fileboxentity.h \
     src/uientities/folderboxentity.h \
     src/uientities/gmicpropertiesentity.h \
@@ -129,7 +129,6 @@ HEADERS += \
     src/windowmanager.h
 
 FORMS += \
-    src/cssliderbox.ui \
     src/mainwindow.ui \
     src/nodebase.ui \
     src/propertiesheading.ui \
@@ -138,6 +137,7 @@ FORMS += \
     src/uientities/colorbuttonentity.ui \
     src/uientities/colorpropertiesentity.ui \
     src/uientities/comboboxentity.ui \
+    src/uientities/cssliderboxentity.ui \
     src/uientities/fileboxentity.ui \
     src/uientities/folderboxentity.ui \
     src/uientities/gmicpropertiesentity.ui \

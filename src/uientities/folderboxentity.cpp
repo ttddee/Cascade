@@ -34,6 +34,11 @@ FolderBoxEntity::FolderBoxEntity(UIElementType et, QWidget *parent) :
             this, &FolderBoxEntity::handleFolderButtonClicked);
 }
 
+const QString FolderBoxEntity::name()
+{
+    return ui->label->text();
+}
+
 void FolderBoxEntity::setName(const QString &name)
 {
     ui->label->setText(name);

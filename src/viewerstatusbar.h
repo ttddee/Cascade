@@ -22,7 +22,7 @@
 
 #include <QWidget>
 
-#include "cssliderbox.h"
+#include "uientities/cssliderboxentity.h"
 
 namespace Ui {
 class ViewerStatusBar;
@@ -49,8 +49,8 @@ private:
 
     bool bw = false;
 
-    CsSliderBox* gammaSlider;
-    CsSliderBox* gainSlider;
+    CsSliderBoxEntity* gammaSlider;
+    CsSliderBoxEntity* gainSlider;
 
 signals:
     void requestZoomReset();

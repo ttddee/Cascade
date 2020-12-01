@@ -24,7 +24,7 @@ void GmicHelper::setUp()
                                              true,
                                              0, 0, 0.f));
 
-    filtersModel.printFilterNames();
+    //filtersModel.printFilterNames();
 
     filtersModel.excludeFilters(excludedFilters);
 }

@@ -39,6 +39,7 @@ class ComboBoxEntity : public UiEntity
 public:
     explicit ComboBoxEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString& name);
 
     void setOptions(const std::vector<QString> options, int index);

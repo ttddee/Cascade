@@ -1435,14 +1435,17 @@ bool VulkanRenderer::writeGmicToLinearImage(
         return false;
     }
 
+    std::cout << "Size: " << imgSize.width() << " x " << imgSize.height() << std::endl;
+    //startTimer();
     // TODO: Parallelize this
     float* pixels = imgStart;
-    int numPixels = imgSize.width() * imgSize.height() * 4;
-    int quarter = numPixels / 4;
+    int quarter = imgSize.width() * imgSize.height();
 
     for (int k = 0; k < 4; k++)
             for (int j = 0; j < quarter; j++)
                 p[j * 4 + k] = *(pixels++) / 256.0;
+
+    //stopTimerAndPrint("Copy to GPU");
 
     devFuncs->vkUnmapMemory(device, memory);
 
@@ -2087,6 +2090,15 @@ void VulkanRenderer::processGmicNode(
         std::fprintf(stderr,"ERROR : %s\n",e.what());
     }
     stopTimerAndPrint("Gmic processing ");
+
+    std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
+
+    if (gmicImage._spectrum == 1)
+    {
+        //gmicInstance->run("to_gray append c", gmicList, gmicNames);
+    }
+
+    std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
 
     if(!createTextureFromGmic(gmicImage))
         qFatal("Failed to create texture from gmic image.");

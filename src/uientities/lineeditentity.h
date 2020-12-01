@@ -37,6 +37,7 @@ class LineEditEntity : public UiEntity
 public:
     explicit LineEditEntity(UIElementType et, QWidget *parent = nullptr);
 
+    const QString name() override;
     void setName(const QString& name);
     void setText(const QString& text);
 

@@ -166,6 +166,10 @@ void RenderManager::displayNode(NodeBase* node)
                 renderer->displayNode(node);
                 node->needsUpdate = false;
             }
+            else
+            {
+                renderer->doClearScreen();
+            }
         }
         else
         {

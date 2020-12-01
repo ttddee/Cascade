@@ -289,14 +289,14 @@ QPushButton#Alpha:hover {
     background-color: #01c0e9;
 }
 
-CsSliderBox QSlider::groove:horizontal {
+CsSliderBoxEntity QSlider::groove:horizontal {
     border: 1px solid #626971;
     background: #1d2024;
     height: 20px;
     border-radius: 3px;
     margin: 0 0 0 0;
 }
-CsSliderBox QSlider::sub-page:horizontal {
+CsSliderBoxEntity QSlider::sub-page:horizontal {
     border: 0px solid #626971;
     background: #233443;
     height:20px;
@@ -306,25 +306,25 @@ CsSliderBox QSlider::sub-page:horizontal {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
-CsSliderBox QSlider::handle:horizontal {
+CsSliderBoxEntity QSlider::handle:horizontal {
     border: 0px;
     height: 0px;
     width: 0px;
 }
-CsSliderBox QLabel {
+CsSliderBoxEntity QLabel {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #f1f1f1;
     margin: 2px;
 }
-CsSliderBox QDoubleSpinBox {
+CsSliderBoxEntity QDoubleSpinBox {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #f1f1f1;
     border: none;
     selection-background-color: #626971;
 }
-CsSliderBox QSpinBox {
+CsSliderBoxEntity QSpinBox {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #f1f1f1;

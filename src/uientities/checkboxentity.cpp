@@ -30,6 +30,11 @@ CheckBoxEntity::CheckBoxEntity(UIElementType et, QWidget *parent) :
             this, &CheckBoxEntity::valueChanged);
 }
 
+const QString CheckBoxEntity::name()
+{
+    return ui->checkBox->text();
+}
+
 void CheckBoxEntity::setName(const QString &name)
 {
     ui->checkBox->setText(name);
