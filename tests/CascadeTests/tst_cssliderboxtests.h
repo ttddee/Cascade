@@ -6,7 +6,7 @@
 #include <gtest/gtest.h>
 #include <gmock/gmock.h>
 
-#include "../../src/cssliderbox.h"
+#include "../../src/uientities/cssliderboxentity.h"
 
 using namespace testing;
 
@@ -15,16 +15,16 @@ class CsSliderBoxTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        sliderBoxDouble = std::unique_ptr<CsSliderBox>(new CsSliderBox(UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE));
-        sliderBoxInt = std::unique_ptr<CsSliderBox>(new CsSliderBox(UI_ELEMENT_TYPE_SLIDER_BOX_INT));
+        sliderBoxDouble = std::unique_ptr<CsSliderBoxEntity>(new CsSliderBoxEntity(UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE));
+        sliderBoxInt = std::unique_ptr<CsSliderBoxEntity>(new CsSliderBoxEntity(UI_ELEMENT_TYPE_SLIDER_BOX_INT));
     }
     void TearDown() override
     {
 
     }
 
-    std::unique_ptr<CsSliderBox> sliderBoxDouble;
-    std::unique_ptr<CsSliderBox> sliderBoxInt;
+    std::unique_ptr<CsSliderBoxEntity> sliderBoxDouble;
+    std::unique_ptr<CsSliderBoxEntity> sliderBoxInt;
 };
 
 TEST_F(CsSliderBoxTest, setMinMaxStepValue_SetValuesDoubleBox)
