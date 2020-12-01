@@ -330,6 +330,16 @@ void NodeBase::setGmicHash(const QString &hash)
     gmicHash = hash;
 }
 
+NodeInput* NodeBase::getOpenInput()
+{
+    foreach(auto in, nodeInputs)
+    {
+        if (!in->hasConnection())
+            return in;
+    }
+    return nullptr;
+}
+
 QString NodeBase::getAllPropertyValues()
 {
     QString vals;

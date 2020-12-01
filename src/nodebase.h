@@ -105,6 +105,8 @@ public:
     const QString& getGmicNodeType() const;
     const QString& getGmicHash() const;
 
+    NodeInput* getOpenInput();
+
     void setGmicNodeType(const QString& type);
     void setGmicHash(const QString& hash);
 

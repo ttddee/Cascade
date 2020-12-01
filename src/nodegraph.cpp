@@ -334,15 +334,10 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
         NodeBase* node = qobject_cast<NodeBase*>(getWidgetFromGraphicsitem(item));
         if(node)
         {
-            auto nodeIn = node->getNodeInputAtPosition(event->screenPos().toPoint());
-            if(nodeIn)
-            // Open connection was released on a NodeInput
+            if (auto in = node->getOpenInput())
             {
-                if(!nodeIn->hasConnection() && openConnection)
-                {
-                    establishConnection(nodeIn);
-                    return;
-                }
+                if (openConnection)
+                    establishConnection(in);
             }
         }
         destroyOpenConnection();
