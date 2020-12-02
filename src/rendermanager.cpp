@@ -148,38 +148,7 @@ void RenderManager::handleClearScreenRequest()
 
 void RenderManager::displayNode(NodeBase* node)
 {
-    if (node->nodeType == NODE_TYPE_READ)
-    {
-        if(node->needsUpdate)
-        {
-            renderer->processReadNode(node);
-        }
-        // TODO: This is inefficient, better to display upon render
-        renderer->displayNode(node);
-        node->needsUpdate = false;
-    }
-    if (node->nodeType == NODE_TYPE_GMIC)
-    {
-        if(node->needsUpdate)
-        {
-            if (node->canBeRendered())
-            {
-                auto inputImage = node->getUpstreamNodeBack()->cachedImage;
-                renderer->processGmicNode(node, inputImage, node->getTargetSize());
-                renderer->displayNode(node);
-                node->needsUpdate = false;
-            }
-            else
-            {
-                renderer->doClearScreen();
-            }
-        }
-        else
-        {
-            renderer->displayNode(node);
-        }
-    }
-    else if (node && node->canBeRendered())
+    if (node && node->canBeRendered())
     {
         if (renderNodes(node))
         {
@@ -250,7 +219,7 @@ void RenderManager::renderNode(NodeBase *node)
             {
                 renderer->processGmicNode(node, inputImageBack, node->getTargetSize());
             }
-
+            else
             {
                 renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
             }

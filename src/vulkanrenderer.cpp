@@ -1435,16 +1435,28 @@ bool VulkanRenderer::writeGmicToLinearImage(
         return false;
     }
 
-    std::cout << "Size: " << imgSize.width() << " x " << imgSize.height() << std::endl;
     //startTimer();
-    // TODO: Parallelize this
     float* pixels = imgStart;
     int quarter = imgSize.width() * imgSize.height();
 
-    for (int k = 0; k < 4; k++)
-            for (int j = 0; j < quarter; j++)
-                p[j * 4 + k] = *(pixels++) / 256.0;
+    int pad = 0;
+    if (imgSize.width() % 2 != 0)
+    {
+        pad = 4;
+    }
 
+    for (int k = 0; k < imgSize.height(); k++)
+    {
+        for (int j = 0; j < imgSize.width(); j++)
+        {
+            *(p) = *(pixels++) / 256.0;
+            *(p + 1) = *(pixels + quarter) / 256.0;
+            *(p + 2) = *(pixels + quarter * 2) / 256.0;
+            *(p + 3) = *(pixels + quarter * 3) / 256.0;
+            p+=4;
+        }
+        p += pad;
+    }
     //stopTimerAndPrint("Copy to GPU");
 
     devFuncs->vkUnmapMemory(device, memory);
