@@ -26,6 +26,24 @@ SOURCES += \
     src/csimage.cpp \
     src/csmessagebox.cpp \
     src/cssettingsbuffer.cpp \
+    src/docking/DockAreaTabBar.cpp \
+    src/docking/DockAreaTitleBar.cpp \
+    src/docking/DockAreaWidget.cpp \
+    src/docking/DockComponentsFactory.cpp \
+    src/docking/DockContainerWidget.cpp \
+    src/docking/DockFocusController.cpp \
+    src/docking/DockManager.cpp \
+    src/docking/DockOverlay.cpp \
+    src/docking/DockSplitter.cpp \
+    src/docking/DockWidget.cpp \
+    src/docking/DockWidgetTab.cpp \
+    src/docking/DockingStateReader.cpp \
+    src/docking/ElidingLabel.cpp \
+    src/docking/FloatingDockContainer.cpp \
+    src/docking/FloatingDragPreview.cpp \
+    src/docking/IconProvider.cpp \
+    src/docking/ads_globals.cpp \
+    src/docking/linux/FloatingWidgetTitleBar.cpp \
     src/gmic/FilterTextTranslator.cpp \
     src/gmic/FiltersModel.cpp \
     src/gmic/FiltersModelReader.cpp \
@@ -79,6 +97,25 @@ HEADERS += \
     src/csimage.h \
     src/csmessagebox.h \
     src/cssettingsbuffer.h \
+    src/docking/DockAreaTabBar.h \
+    src/docking/DockAreaTitleBar.h \
+    src/docking/DockAreaTitleBar_p.h \
+    src/docking/DockAreaWidget.h \
+    src/docking/DockComponentsFactory.h \
+    src/docking/DockContainerWidget.h \
+    src/docking/DockFocusController.h \
+    src/docking/DockManager.h \
+    src/docking/DockOverlay.h \
+    src/docking/DockSplitter.h \
+    src/docking/DockWidget.h \
+    src/docking/DockWidgetTab.h \
+    src/docking/DockingStateReader.h \
+    src/docking/ElidingLabel.h \
+    src/docking/FloatingDockContainer.h \
+    src/docking/FloatingDragPreview.h \
+    src/docking/IconProvider.h \
+    src/docking/ads_globals.h \
+    src/docking/linux/FloatingWidgetTitleBar.h \
     src/gmic/FilterTextTranslator.h \
     src/gmic/FiltersModel.h \
     src/gmic/FiltersModelReader.h \
@@ -153,7 +190,6 @@ FORMS += \
 linux-g++ {
     LIBS += -L /usr/lib -lOpenImageIO
     LIBS += -L /usr/lib -lOpenColorIO
-    LIBS += -L /usr/lib -lqtadvanceddocking
     LIBS += -L /usr/lib -lgmic
     LIBS += -L /usr/lib -ltbb
 
@@ -410,6 +446,7 @@ win32-msvc* {
 }
 
 RESOURCES += \
+    ads.qrc \
     resources.qrc
 
 DISTFILES += \

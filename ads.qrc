@@ -1,0 +1,18 @@
+<RCC>
+    <qresource prefix="/ads">
+        <file>design/advanceddocking/close-button-disabled.svg</file>
+        <file>design/advanceddocking/close-button-focused.svg</file>
+        <file>design/advanceddocking/close-button.svg</file>
+        <file>design/advanceddocking/detach-button-disabled.svg</file>
+        <file>design/advanceddocking/detach-button.svg</file>
+        <file>design/advanceddocking/maximize-button-focused.svg</file>
+        <file>design/advanceddocking/maximize-button.svg</file>
+        <file>design/advanceddocking/restore-button-focused.svg</file>
+        <file>design/advanceddocking/restore-button.svg</file>
+        <file>design/advanceddocking/tabs-menu-button.svg</file>
+        <file>style/docking/default_linux.css</file>
+        <file>style/docking/default.css</file>
+        <file>style/docking/focus_highlighting_linux.css</file>
+        <file>style/docking/focus_highlighting.css</file>
+    </qresource>
+</RCC>
