@@ -212,7 +212,6 @@ win32-g++ {
 
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO.dll
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO.dll
-    LIBS += -L$$DEPENDENCY_ROOT/lib -llibqtadvanceddocking
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic.dll
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb.dll
 
@@ -291,7 +290,6 @@ win32-g++ {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpng16-16.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/zlib1.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libharfbuzz-0.dll)
-    dlls.files += $$files($$DEPENDENCY_ROOT/bin/qtadvanceddocking.dll)
     dlls.path = $$DESTDIR
 }
 
