@@ -24,9 +24,9 @@
 #include <QWidgetAction>
 #include <QSettings>
 
-#include "../external/qtadvanceddocking/src/DockManager.h"
-#include "../external/qtadvanceddocking/src/DockAreaWidget.h"
-#include "../external/qtadvanceddocking/src/DockWidget.h"
+#include "docking/DockManager.h"
+#include "docking/DockAreaWidget.h"
+#include "docking/DockWidget.h"
 
 #include "windowmanager.h"
 #include "rendermanager.h"
