@@ -135,6 +135,7 @@ private:
     bool writeGmicToLinearImage(
             float* imgStart,
             QSize imgSize,
+            int channels,
             VkImage image,
             VkDeviceMemory memory);
 

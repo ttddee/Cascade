@@ -683,6 +683,7 @@ bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
     if (!writeGmicToLinearImage(
                 &gImg[0],
                 QSize(gImg._width, gImg._height),
+                gImg._spectrum,
                 loadImageStaging,
                 loadImageStagingMem))
     {
@@ -1411,6 +1412,7 @@ bool VulkanRenderer::writeLinearImage(
 bool VulkanRenderer::writeGmicToLinearImage(
         float* imgStart,
         QSize imgSize,
+        int channels,
         VkImage image,
         VkDeviceMemory memory)
 {
@@ -1445,18 +1447,36 @@ bool VulkanRenderer::writeGmicToLinearImage(
         pad = 4;
     }
 
-    for (int k = 0; k < imgSize.height(); k++)
+    if (channels == 3)
     {
-        for (int j = 0; j < imgSize.width(); j++)
+        for (int k = 0; k < imgSize.height(); k++)
         {
-            *(p) = *(pixels++) / 256.0;
-            *(p + 1) = *(pixels + quarter) / 256.0;
-            *(p + 2) = *(pixels + quarter * 2) / 256.0;
-            *(p + 3) = *(pixels + quarter * 3) / 256.0;
-            p+=4;
+            for (int j = 0; j < imgSize.width(); j++)
+            {
+                *(p) = *(pixels++) / 256.0;
+                *(p + 1) = *(pixels + quarter) / 256.0;
+                *(p + 2) = *(pixels + quarter * 2) / 256.0;
+                p+=4;
+            }
+            p += pad;
         }
-        p += pad;
     }
+    else
+    {
+        for (int k = 0; k < imgSize.height(); k++)
+        {
+            for (int j = 0; j < imgSize.width(); j++)
+            {
+                *(p) = *(pixels++) / 256.0;
+                *(p + 1) = *(pixels + quarter) / 256.0;
+                *(p + 2) = *(pixels + quarter * 2) / 256.0;
+                *(p + 3) = *(pixels + quarter * 3) / 256.0;
+                p+=4;
+            }
+            p += pad;
+        }
+    }
+
     //stopTimerAndPrint("Copy to GPU");
 
     devFuncs->vkUnmapMemory(device, memory);
@@ -2105,7 +2125,7 @@ void VulkanRenderer::processGmicNode(
 
     std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
 
-    if (gmicImage._spectrum != 4)
+    if (gmicImage._spectrum == 1)
     {
         gmicInstance->run("resize 100%,100%,100%,4", gmicList, gmicNames);
     }
