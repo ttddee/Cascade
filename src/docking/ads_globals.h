@@ -47,7 +47,7 @@ QT_FORWARD_DECLARE_CLASS(QAbstractButton)
 #ifdef ADS_SHARED_EXPORT
 #define ADS_EXPORT Q_DECL_EXPORT
 #else
-#define ADS_EXPORT Q_DECL_IMPORT
+#define ADS_EXPORT
 #endif
 #else
 #define ADS_EXPORT
