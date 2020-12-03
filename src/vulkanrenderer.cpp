@@ -569,7 +569,9 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
 
     std::cout << "Converting color space." << std::endl;
 
-    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
+    // TODO: Temp until we have OCIO 2.0
+    *cpuImage = ImageBufAlgo::colorconvert(*cpuImage, "sRGB", "linear", false);
+    //transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
 
     std::cout << "Updating vertex data." << std::endl;
 
@@ -769,6 +771,8 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
+
+
     // TODO: Use function below
     OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(
                 from.toLocal8Bit(), to.toLocal8Bit());
@@ -1863,7 +1867,9 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
+    *saveImage = ImageBufAlgo::colorconvert(*saveImage, "linear", "sRGB", false);
+
+    //transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
 
