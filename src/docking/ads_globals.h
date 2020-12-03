@@ -43,6 +43,7 @@
 
 QT_FORWARD_DECLARE_CLASS(QAbstractButton)
 
+// TODO: Clean this up
 #ifndef ADS_STATIC
 #ifdef ADS_SHARED_EXPORT
 #define ADS_EXPORT Q_DECL_EXPORT

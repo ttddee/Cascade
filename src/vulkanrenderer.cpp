@@ -562,10 +562,16 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
         std::string channelnames[] = { "R", "G", "B", "A" };
 
+        std::cout << "Adding alpha channel to loaded image." << std::endl;
+
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
+    std::cout << "Converting color space." << std::endl;
+
     transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
+
+    std::cout << "Updating vertex data." << std::endl;
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
