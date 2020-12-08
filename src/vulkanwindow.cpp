@@ -24,7 +24,7 @@
 #include <QMouseEvent>
 #include <QLabel>
 
-#include "vulkanrenderer.h"
+#include "renderer/vulkanrenderer.h"
 
 QVulkanWindowRenderer *VulkanWindow::createRenderer()
 {
