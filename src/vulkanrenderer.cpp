@@ -771,26 +771,13 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
-
-
-    // TODO: Use function below
-    OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(
-                from.toLocal8Bit(), to.toLocal8Bit());
-
-    OpenColorIO::PackedImageDesc desc(
+    parallelApplyColorSpace(
+                ocioConfig,
+                from,
+                to,
                 static_cast<float*>(image.localpixels()),
                 image.xend(),
-                image.yend(),
-                4);
-    processor->apply(desc);
-
-//    parallelApplyColorSpace(
-//                ocioConfig,
-//                from,
-//                to,
-//                static_cast<float*>(image.localpixels()),
-//                image.xend(),
-//                image.yend());
+                image.yend());
 }
 
 void VulkanRenderer::createComputeDescriptors()
