@@ -35,6 +35,8 @@ public:
 
     VulkanWindow* getVulkanWindow();
 
+    ~VulkanView();
+
 private:
     QWidget* vulkanWrapper;
     VulkanWindow* vulkanWindow;

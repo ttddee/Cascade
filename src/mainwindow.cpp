@@ -26,7 +26,7 @@
 #include <QComboBox>
 #include <QDir>
 
-#include "vulkanrenderer.h"
+#include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
 #include "gmichelper.h"
 

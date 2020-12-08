@@ -23,9 +23,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/colorbutton.cpp \
     src/connection.cpp \
-    src/csimage.cpp \
     src/csmessagebox.cpp \
-    src/cssettingsbuffer.cpp \
     src/docking/DockAreaTabBar.cpp \
     src/docking/DockAreaTitleBar.cpp \
     src/docking/DockAreaWidget.cpp \
@@ -65,6 +63,9 @@ SOURCES += \
     src/nodeproperties.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
+    src/renderer/csimage.cpp \
+    src/renderer/cssettingsbuffer.cpp \
+    src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/slidernoclick.cpp \
     src/uientities/channelselectentity.cpp \
@@ -85,7 +86,6 @@ SOURCES += \
     src/uientities/uientity.cpp \
     src/uientities/writepropertiesentity.cpp \
     src/viewerstatusbar.cpp \
-    src/vulkanrenderer.cpp \
     src/vulkanview.cpp \
     src/vulkanwindow.cpp \
     src/windowmanager.cpp
@@ -94,9 +94,7 @@ HEADERS += \
     src/benchmark.h \
     src/colorbutton.h \
     src/connection.h \
-    src/csimage.h \
     src/csmessagebox.h \
-    src/cssettingsbuffer.h \
     src/docking/DockAreaTabBar.h \
     src/docking/DockAreaTitleBar.h \
     src/docking/DockAreaTitleBar_p.h \
@@ -139,6 +137,9 @@ HEADERS += \
     src/nodeproperties.h \
     src/propertiesheading.h \
     src/propertiesview.h \
+    src/renderer/csimage.h \
+    src/renderer/cssettingsbuffer.h \
+    src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
     src/slidernoclick.h \
     src/uicolors.h \
@@ -160,7 +161,6 @@ HEADERS += \
     src/uientities/uientity.h \
     src/uientities/writepropertiesentity.h \
     src/viewerstatusbar.h \
-    src/vulkanrenderer.h \
     src/vulkanview.h \
     src/vulkanwindow.h \
     src/windowmanager.h

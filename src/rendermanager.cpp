@@ -26,7 +26,7 @@
 
 #include "uientities/uientity.h"
 #include "uientities/fileboxentity.h"
-#include "vulkanrenderer.h"
+#include "renderer/vulkanrenderer.h"
 
 RenderManager& RenderManager::getInstance()
 {

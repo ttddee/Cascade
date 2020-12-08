@@ -133,5 +133,6 @@ void VulkanWindow::wheelEvent(QWheelEvent *e)
 VulkanWindow::~VulkanWindow()
 {
     qDebug("Destroying VulkanWindow.");
+    //getRenderer()->cleanup();
 }
 

@@ -32,11 +32,11 @@
 
 #include <gmic.h>
 
-#include "nodedefinitions.h"
-#include "csimage.h"
-#include "nodebase.h"
-#include "windowmanager.h"
+#include "../nodedefinitions.h"
+#include "../nodebase.h"
+#include "../windowmanager.h"
 #include "cssettingsbuffer.h"
+#include "csimage.h"
 
 using namespace Cascade;
 using namespace OIIO;
@@ -91,12 +91,6 @@ public:
     ~VulkanRenderer();
 
 private:
-    VulkanWindow *window;
-    VkDevice device;
-    VkPhysicalDevice physicalDevice;
-    QVulkanDeviceFunctions *devFuncs;
-    QVulkanFunctions *f;
-
     // Initialize
     void createVertexBuffer();
     void createSampler();
@@ -212,6 +206,12 @@ private:
             uint32_t typeFilter,
             VkMemoryPropertyFlags properties);
 
+    VulkanWindow *window;
+    VkDevice device;
+    VkPhysicalDevice physicalDevice;
+    QVulkanDeviceFunctions *devFuncs;
+    QVulkanFunctions *f;
+
     VkBuffer vertexBuffer                       = VK_NULL_HANDLE;
     VkDeviceMemory vertexBufferMemory           = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
@@ -262,7 +262,7 @@ private:
     // TODO: Replace this with proper render states
     bool clearScreen = true;
 
-    VkFormat globalImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+    const VkFormat globalImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
     DisplayMode displayMode = DISPLAY_MODE_RGB;
 
     // Compute resources
@@ -270,7 +270,7 @@ private:
     {
         VkQueue                     computeQueue;
         VkCommandPool               computeCommandPool;
-        VkCommandBuffer             commandBufferGeneric;   // Command buffer for all shaders except IO
+        VkCommandBuffer             commandBufferGeneric;     // Command buffer for all shaders except IO
         VkCommandBuffer             commandBufferImageLoad;   // Command buffer for loading images from disk
         VkCommandBuffer             commandBufferImageSave;   // Command buffer for writing images to disk
         VkFence                     fence;

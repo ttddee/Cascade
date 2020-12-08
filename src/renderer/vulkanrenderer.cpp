@@ -31,11 +31,11 @@
 #include <OpenImageIO/imagebufalgo.h>
 #include <OpenImageIO/color.h>
 
-#include "vulkanwindow.h"
-#include "uientities/fileboxentity.h"
-#include "benchmark.h"
-#include "multithreading.h"
-#include "gmichelper.h"
+#include "../vulkanwindow.h"
+#include "../uientities/fileboxentity.h"
+#include "../benchmark.h"
+#include "../multithreading.h"
+#include "../gmichelper.h"
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -66,7 +66,6 @@ void VulkanRenderer::initResources()
     physicalDevice = window->physicalDevice();
     devFuncs = window->vulkanInstance()->deviceFunctions(device);
     f = window->vulkanInstance()->functions();
-    /// ----------
 
     /// Init all the permanent parts of the renderer
     createVertexBuffer();
@@ -83,7 +82,6 @@ void VulkanRenderer::initResources()
 
     createComputeDescriptors();
     createComputePipelineLayout();
-    /// ----------
 
     /// Load all the shaders we need and create their pipelines
     loadShadersFromDisk();
@@ -2390,8 +2388,17 @@ void VulkanRenderer::cleanup()
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     settingsBuffer = nullptr;
-    computeRenderTarget = nullptr;
-    imageFromDisk = nullptr;
+
+    if (computeRenderTarget)
+    {
+        computeRenderTarget->destroy();
+        computeRenderTarget = nullptr;
+    }
+    if (imageFromDisk)
+    {
+        imageFromDisk->destroy();
+        imageFromDisk = nullptr;
+    }
 
     if (queryPool) {
         devFuncs->vkDestroyQueryPool(device, queryPool, nullptr);
@@ -2504,7 +2511,6 @@ void VulkanRenderer::cleanup()
             compute.commandBufferImageSave,
             compute.commandBufferGeneric
         };
-
         devFuncs->vkFreeCommandBuffers(device, compute.computeCommandPool, 3, &buffers[0]);
         devFuncs->vkDestroyCommandPool(device, compute.computeCommandPool, nullptr);
     }

@@ -30,7 +30,7 @@
 
 #include "nodedefinitions.h"
 #include "nodeproperties.h"
-#include "csimage.h"
+#include "renderer/csimage.h"
 #include "windowmanager.h"
 #include "uicolors.h"
 

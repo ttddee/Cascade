@@ -82,3 +82,8 @@ VulkanWindow* VulkanView::getVulkanWindow()
 {
     return vulkanWindow;
 }
+
+VulkanView::~VulkanView()
+{
+
+}
