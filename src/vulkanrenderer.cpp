@@ -562,18 +562,10 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
         std::string channelnames[] = { "R", "G", "B", "A" };
 
-        std::cout << "Adding alpha channel to loaded image." << std::endl;
-
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    std::cout << "Converting color space." << std::endl;
-
-    // TODO: Temp until we have OCIO 2.0
-    *cpuImage = ImageBufAlgo::colorconvert(*cpuImage, "sRGB", "linear", false);
-    //transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
-
-    std::cout << "Updating vertex data." << std::endl;
+    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
@@ -1492,7 +1484,7 @@ bool VulkanRenderer::writeGmicToLinearImage(
     return true;
 }
 
-void VulkanRenderer::updateVertexData( int w, int h)
+void VulkanRenderer::updateVertexData(const int w, const int h)
 {
     vertexData[0]  = -0.002 * w;
     vertexData[5]  = -0.002 * w;
@@ -1600,14 +1592,6 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
                                 &barrier[0]);
     }
 
-    // Push constants for fragment stage
-    devFuncs->vkCmdPushConstants(
-                compute.commandBufferGeneric,
-                graphicsPipelineLayout,
-                VK_SHADER_STAGE_FRAGMENT_BIT,
-                0,
-                sizeof(viewerPushConstants),
-                viewerPushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 compute.commandBufferGeneric,
                 VK_PIPELINE_BIND_POINT_COMPUTE,
@@ -1854,9 +1838,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    *saveImage = ImageBufAlgo::colorconvert(*saveImage, "linear", "sRGB", false);
-
-    //transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
+    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
 
@@ -1942,6 +1924,13 @@ void VulkanRenderer::createRenderPass()
     else
         pl = graphicsPipelineRGB;
 
+    devFuncs->vkCmdPushConstants(
+                cb,
+                graphicsPipelineLayout,
+                VK_SHADER_STAGE_FRAGMENT_BIT,
+                0,
+                sizeof(viewerPushConstants),
+                viewerPushConstants.data());
     devFuncs->vkCmdBindPipeline(
                 cb,
                 VK_PIPELINE_BIND_POINT_GRAPHICS,
@@ -1986,7 +1975,7 @@ void VulkanRenderer::submitComputeCommands()
     devFuncs->vkWaitForFences(device, 1, &compute.fence, VK_TRUE, UINT64_MAX);
     devFuncs->vkResetFences(device, 1, &compute.fence);
 
-    //Do the copy on the compute queue
+    // Do the copy on the compute queue
     if (texStagingPending)
     {
         texStagingPending = false;
@@ -2528,5 +2517,5 @@ void VulkanRenderer::releaseResources()
 
 VulkanRenderer::~VulkanRenderer()
 {
-    qDebug("destroying Renderer.");
+    qDebug("Destroying Renderer.");
 }

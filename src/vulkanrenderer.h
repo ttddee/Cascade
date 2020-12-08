@@ -185,8 +185,8 @@ private:
     void createRenderPass();
 
     void updateVertexData(
-            int,
-            int);
+            const int w,
+            const int h);
 
     QString lookupColorSpace(
             const int i);
@@ -212,26 +212,30 @@ private:
             uint32_t typeFilter,
             VkMemoryPropertyFlags properties);
 
-    VkBuffer vertexBuffer = VK_NULL_HANDLE;
-    VkDeviceMemory vertexBufferMemory = VK_NULL_HANDLE;
+    VkBuffer vertexBuffer                       = VK_NULL_HANDLE;
+    VkDeviceMemory vertexBufferMemory           = VK_NULL_HANDLE;
     VkDescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    VkDescriptorPool descriptorPool = VK_NULL_HANDLE;
+    VkDescriptorPool descriptorPool             = VK_NULL_HANDLE;
     VkDescriptorSetLayout graphicsDescriptorSetLayout = VK_NULL_HANDLE;
     VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    VkPipelineCache pipelineCache = VK_NULL_HANDLE;
-    VkPipelineLayout graphicsPipelineLayout = VK_NULL_HANDLE;
-    VkPipeline graphicsPipelineRGB = VK_NULL_HANDLE;
-    VkPipeline graphicsPipelineAlpha = VK_NULL_HANDLE;
-    VkQueryPool queryPool = VK_NULL_HANDLE;
+    VkPipelineCache pipelineCache               = VK_NULL_HANDLE;
+    VkPipelineLayout graphicsPipelineLayout     = VK_NULL_HANDLE;
+    VkPipeline graphicsPipelineRGB              = VK_NULL_HANDLE;
+    VkPipeline graphicsPipelineAlpha            = VK_NULL_HANDLE;
+    VkQueryPool queryPool                       = VK_NULL_HANDLE;
 
-    VkSampler sampler = VK_NULL_HANDLE;
+    VkSampler sampler                           = VK_NULL_HANDLE;
 
-    bool texLayoutPending = false;
+    VkImage loadImageStaging                    = VK_NULL_HANDLE;
+    VkDeviceMemory loadImageStagingMem          = VK_NULL_HANDLE;
 
-    VkImage loadImageStaging = VK_NULL_HANDLE;
-    VkDeviceMemory loadImageStagingMem = VK_NULL_HANDLE;
+    VkBuffer outputStagingBuffer                = VK_NULL_HANDLE;
+    VkDeviceMemory outputStagingBufferMemory    = VK_NULL_HANDLE;
+
+    VkShaderModule noopShader                   = VK_NULL_HANDLE;
+    VkPipeline computePipelineNoop              = VK_NULL_HANDLE;
 
     bool texStagingPending = false;
 
@@ -242,13 +246,7 @@ private:
     std::unique_ptr<ImageBuf> cpuImage;
     QString imagePath;
 
-    VkShaderModule noopShader;
-    VkPipeline computePipelineNoop;
-
     int concurrentFrameCount;  
-
-    VkBuffer outputStagingBuffer;
-    VkDeviceMemory outputStagingBufferMemory;
 
     QSize outputImageSize;
 
@@ -291,7 +289,6 @@ private:
     QMap<NodeType, VkShaderModule>  shaders;
     QMap<NodeType, VkPipeline>      pipelines;
 
-    std::vector<float> computePushConstants = { 1.0f };
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
 
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
