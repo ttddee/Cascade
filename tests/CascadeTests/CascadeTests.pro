@@ -26,9 +26,9 @@ HEADERS += \
         ../../src/benchmark.h \
         ../../src/colorbutton.h \
         ../../src/connection.h \
-        ../../src/csimage.h \
+        ../../src/renderer/csimage.h \
         ../../src/csmessagebox.h \
-        ../../src/cssettingsbuffer.h \
+        ../../src/renderer/cssettingsbuffer.h \
         ../../src/gmic/FilterTextTranslator.h \
         ../../src/gmic/FiltersModel.h \
         ../../src/gmic/FiltersModelReader.h \
@@ -73,7 +73,7 @@ HEADERS += \
         ../../src/uientities/uientity.h \
         ../../src/uientities/writepropertiesentity.h \
         ../../src/viewerstatusbar.h \
-        ../../src/vulkanrenderer.h \
+        ../../src/renderer/vulkanrenderer.h \
         ../../src/vulkanview.h \
         ../../src/vulkanwindow.h \
         ../../src/windowmanager.h
@@ -83,9 +83,9 @@ SOURCES += \
         main.cpp \
         ../../src/colorbutton.cpp \
         ../../src/connection.cpp \
-        ../../src/csimage.cpp \
+        ../../src/renderer/csimage.cpp \
         ../../src/csmessagebox.cpp \
-        ../../src/cssettingsbuffer.cpp \
+        ../../src/renderer/cssettingsbuffer.cpp \
         ../../src/gmic/FilterTextTranslator.cpp \
         ../../src/gmic/FiltersModel.cpp \
         ../../src/gmic/FiltersModelReader.cpp \
@@ -126,7 +126,7 @@ SOURCES += \
         ../../src/uientities/uientity.cpp \
         ../../src/uientities/writepropertiesentity.cpp \
         ../../src/viewerstatusbar.cpp \
-        ../../src/vulkanrenderer.cpp \
+        ../../src/renderer/vulkanrenderer.cpp \
         ../../src/vulkanview.cpp \
         ../../src/vulkanwindow.cpp \
         ../../src/windowmanager.cpp
