@@ -31,11 +31,13 @@
 #include "Utils.h"
 #include "gmic.h"
 
+#include "../log.h"
+
 QByteArray GmicStdLib::Array;
 
 void GmicStdLib::loadStdLib()
 {
-    qDebug("Starting to load stdlib.");
+    CS_LOG_INFO("Starting to load stdlib.");
     QFile stdlib("gmic/update293.gmic");
     if (!stdlib.open(QFile::ReadOnly)) {
         gmic_image<char> stdlib_h = gmic::decompress_stdlib();
@@ -46,5 +48,5 @@ void GmicStdLib::loadStdLib()
     {
       Array = stdlib.readAll();
     }
-    qDebug("Done loading stdlib.");
+    CS_LOG_INFO("Done loading stdlib.");
 }

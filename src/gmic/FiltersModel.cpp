@@ -33,6 +33,8 @@
 #include "FilterTextTranslator.h"
 #include "HtmlTranslator.h"
 
+#include "../log.h"
+
 using namespace Cascade;
 
 const size_t FiltersModel::NoIndex = std::numeric_limits<size_t>::max();
@@ -102,10 +104,10 @@ QSet<QString>& FiltersModel::getFilterCategories()
 
 void FiltersModel::flush()
 {
-  qDebug() << "Filters\n=======";
-  for (const Filter & filter : (*this)) {
-    qDebug() << "[" << filter.path() << "]" << filter.name();
-  }
+  //CS_LOG_INFO() << "Filters\n=======";
+  //for (const Filter & filter : (*this)) {
+    //CS_LOG_INFO() << "[" << filter.path() << "]" << filter.name();
+  //}
 }
 
 size_t FiltersModel::filterCount() const

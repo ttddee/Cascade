@@ -25,10 +25,11 @@
 #include <QLabel>
 
 #include "renderer/vulkanrenderer.h"
+#include "log.h"
 
 QVulkanWindowRenderer *VulkanWindow::createRenderer()
 {
-    qDebug("Creating renderer");
+    CS_LOG_INFO("Creating renderer");
 
     // Make sure we keep our GPU resources when window loses focus
     this->setFlags(QVulkanWindow::PersistentResources);
@@ -43,7 +44,7 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
         {
              if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
              {
-                 qDebug("Found discrete GPU.");
+                 CS_LOG_INFO("Found discrete GPU.");
                  this->setPhysicalDeviceIndex(i);
                  discreteAvailable = true;
 
@@ -51,7 +52,7 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
              }
              else if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
              {
-                 qDebug("Found integrated GPU.");
+                 CS_LOG_INFO("Found integrated GPU.");
              }
         }
         if(!discreteAvailable)
@@ -132,7 +133,7 @@ void VulkanWindow::wheelEvent(QWheelEvent *e)
 
 VulkanWindow::~VulkanWindow()
 {
-    qDebug("Destroying VulkanWindow.");
+    CS_LOG_INFO("Destroying VulkanWindow.");
     //getRenderer()->cleanup();
 }
 

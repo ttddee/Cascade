@@ -190,13 +190,13 @@ bool xcb_dump_props(WId window, const char *type)
 {
 	QVector<xcb_atom_t> atoms;
 	xcb_get_prop_list(window, type, atoms, XCB_ATOM_ATOM);
-	qDebug() << "\n\n!!!" << type << "  -  " << atoms.length();
+	CS_LOG_INFO() << "\n\n!!!" << type << "  -  " << atoms.length();
 	xcb_connection_t *connection = QX11Info::connection();
 	for (auto atom : atoms)
 	{
 		auto foo = xcb_get_atom_name(connection, atom);
 		auto bar = xcb_get_atom_name_reply(connection, foo, nullptr);
-		qDebug() << "\t" << xcb_get_atom_name_name(bar);
+		CS_LOG_INFO() << "\t" << xcb_get_atom_name_name(bar);
 		free(bar);
 	}
 	return true;

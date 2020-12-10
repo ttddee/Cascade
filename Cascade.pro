@@ -53,6 +53,7 @@ SOURCES += \
     src/gmic/ParametersCache.cpp \
     src/gmic/Utils.cpp \
     src/gmichelper.cpp \
+    src/log.cpp \
     src/main.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
@@ -126,6 +127,7 @@ HEADERS += \
     src/gmic/ParametersCache.h \
     src/gmic/Utils.h \
     src/gmichelper.h \
+    src/log.h \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \

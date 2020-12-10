@@ -1180,7 +1180,7 @@ void DockContainerWidgetPrivate::dumpRecursive(int level, QWidget* widget)
 	if (Splitter)
 	{
 #ifdef ADS_DEBUG_PRINT
-		qDebug("%sSplitter %s v: %s c: %s",
+		CS_LOG_INFO("%sSplitter %s v: %s c: %s",
 			(const char*)buf,
 			(Splitter->orientation() == Qt::Vertical) ? "--" : "|",
 			 Splitter->isHidden() ? " " : "v",
@@ -1203,7 +1203,7 @@ void DockContainerWidgetPrivate::dumpRecursive(int level, QWidget* widget)
 			return;
 		}
 #ifdef ADS_DEBUG_PRINT
-		qDebug("%sDockArea", (const char*)buf);
+		CS_LOG_INFO("%sDockArea", (const char*)buf);
 		std::cout << (const char*)buf
 			<< (DockArea->isHidden() ? " " : "v")
 			<< (DockArea->openDockWidgetsCount() > 0 ? " " : "c")
@@ -1734,10 +1734,10 @@ void CDockContainerWidget::createRootSplitter()
 void CDockContainerWidget::dumpLayout()
 {
 #if (ADS_DEBUG_LEVEL > 0)
-	qDebug("\n\nDumping layout --------------------------");
+	CS_LOG_INFO("\n\nDumping layout --------------------------");
 	std::cout << "\n\nDumping layout --------------------------" << std::endl;
 	d->dumpRecursive(0, d->RootSplitter);
-	qDebug("--------------------------\n\n");
+	CS_LOG_INFO("--------------------------\n\n");
 	std::cout << "--------------------------\n\n" << std::endl;
 #endif
 }

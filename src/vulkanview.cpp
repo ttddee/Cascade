@@ -25,11 +25,12 @@
 #include "csmessagebox.h"
 #include "viewerstatusbar.h"
 #include "renderer/vulkanrenderer.h"
+#include "log.h"
 
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)
 {
-    qDebug("Creating Vulkan instance");
+    CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
     instance.setLayers(QByteArrayList()

@@ -100,7 +100,7 @@ private:
     void createGraphicsPipelineLayout();
     void createGraphicsPipeline(
             VkPipeline& pl,
-            const VkShaderModule& fragShaderModule);
+            VkShaderModule& fragShaderModule);
 
     void loadShadersFromDisk();
     void createComputePipelines();

@@ -38,12 +38,13 @@
 #include "Globals.h"
 #include "Utils.h"
 #include "gmic.h"
+#include "../log.h"
 
 FiltersModelReader::FiltersModelReader(FiltersModel & model) : _model(model) {}
 
 void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
 {
-   qDebug("Gmic: Starting to load filters.");
+   CS_LOG_INFO("Gmic: Starting to load filters.");
 
   QBuffer stdlib(&stdlibArray);
   stdlib.open(QBuffer::ReadOnly | QBuffer::Text);
@@ -197,10 +198,10 @@ void FiltersModelReader::parseFiltersDefinitions(QByteArray & stdlibArray)
     QList<QString> pathList = path.split("/");
     _model.removePath(pathList);
     if (_model.filterCount() == count) {
-      qDebug("While hiding filter, name or path not found.");
+      CS_LOG_INFO("While hiding filter, name or path not found.");
     }
   }
-  qDebug("Gmic: Loaded filters.");
+  CS_LOG_INFO("Gmic: Loaded filters.");
 }
 
 bool FiltersModelReader::textIsPrecededBySpacesInSomeLineOfArray(const QByteArray & text, const QByteArray & array)

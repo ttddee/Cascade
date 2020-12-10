@@ -1116,7 +1116,7 @@ bool CFloatingDockContainer::event(QEvent *e)
 	}
 
 #if (ADS_DEBUG_LEVEL > 0)
-	qDebug() << QTime::currentTime() << "CFloatingDockContainer::event " << e->type();
+	CS_LOG_INFO() << QTime::currentTime() << "CFloatingDockContainer::event " << e->type();
 #endif
 	return QWidget::event(e);
 }

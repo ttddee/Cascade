@@ -24,49 +24,18 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QFile>
-#include <QLoggingCategory>
-#include <QStyleFactory>
 
-Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
-
-void messageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
-{
-    QString txt;
-    switch (type) {
-    case QtDebugMsg:
-        txt = QString("Debug: %1").arg(msg);
-        break;
-    case QtWarningMsg:
-        txt = QString("Warning: %1").arg(msg);
-    break;
-    case QtCriticalMsg:
-        txt = QString("Critical: %1").arg(msg);
-    break;
-    case QtFatalMsg:
-        txt = QString("Fatal: %1").arg(msg);
-    break;
-    case QtInfoMsg:
-        txt = QString("Info: %1").arg(msg);
-    break;
-    }
-    QFile outFile("cascade.log");
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    QTextStream ts(&outFile);
-    ts << txt << "\n";
-}
+#include "log.h"
 
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);
 
-    QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
-
     QString title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
 
-    // Log output to file
-    QFile::remove("cascade.log");
-    qInstallMessageHandler(messageHandler);
-    qDebug(title.toLatin1());
+    Log::Init();
+
+    CS_LOG_INFO(title);
 
     // Load font
     int fontId = QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Regular.ttf");
@@ -77,7 +46,7 @@ int main(int argc, char *argv[])
     }
     else
     {
-        qDebug("Problem loading font.");
+        CS_LOG_WARNING("Problem loading font.");
     }
 
     // Load style sheet

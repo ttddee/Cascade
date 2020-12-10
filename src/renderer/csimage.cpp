@@ -19,6 +19,8 @@
 
 #include "csimage.h"
 
+#include "../log.h"
+
 CsImage::CsImage(
         VulkanWindow* win,
         const VkDevice* d,
@@ -86,7 +88,8 @@ CsImage::CsImage(
         memReq.size,
         memIndex
     };
-    qDebug("allocating %u bytes for texture image", uint32_t(memReq.size));
+    CS_LOG_INFO("Allocating texture image: ");
+    CS_LOG_INFO(QString::number(uint32_t(memReq.size)) + " bytes");
 
     err = devFuncs->vkAllocateMemory(
                 *device,
@@ -166,7 +169,7 @@ int CsImage::getHeight() const
 
 void CsImage::destroy()
 {
-    qDebug("Destroying image.");
+    CS_LOG_INFO("Destroying image.");
 
     if (view) {
         devFuncs->vkDestroyImageView(*device, view, nullptr);

@@ -37,6 +37,8 @@
 #include "../multithreading.h"
 #include "../gmichelper.h"
 
+#include "../log.h"
+
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
     // x, y, z, u, v
@@ -108,8 +110,7 @@ void VulkanRenderer::initResources()
     }
     catch(OpenColorIO::Exception& exception)
     {
-        qDebug("OpenColorIO Error: ");
-        qDebug("%s", exception.what());
+        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
     }
 
     emit window->rendererHasBeenCreated();
@@ -328,7 +329,7 @@ void VulkanRenderer::fillSettingsBuffer(NodeBase* node)
 }
 
 void VulkanRenderer::createGraphicsPipeline(
-        VkPipeline& pl, const VkShaderModule& fragShaderModule)
+        VkPipeline& pl, VkShaderModule& fragShaderModule)
 {
     // Vertex shader never changes
     VkShaderModule vertShaderModule = createShaderFromFile(":/shaders/texture_vert.spv");
@@ -467,16 +468,24 @@ void VulkanRenderer::createGraphicsPipeline(
         qFatal("Failed to create graphics pipeline: %d", err);
 
     if (vertShaderModule)
+    {
         devFuncs->vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        vertShaderModule = VK_NULL_HANDLE;
+    }
     if (fragShaderModule)
+    {
         devFuncs->vkDestroyShaderModule(device, fragShaderModule, nullptr);
+        fragShaderModule = VK_NULL_HANDLE;
+    }
 }
 
 VkShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
 {
     QFile file(name);
-    if (!file.open(QIODevice::ReadOnly)) {
-        qWarning("Failed to read shader %s", qPrintable(name));
+    if (!file.open(QIODevice::ReadOnly))
+    {
+        CS_LOG_WARNING("Failed to read shader:");
+        CS_LOG_WARNING(qPrintable(name));
         return VK_NULL_HANDLE;
     }
     QByteArray blob = file.readAll();
@@ -489,8 +498,10 @@ VkShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
     shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
     VkShaderModule shaderModule;
     VkResult err = devFuncs->vkCreateShaderModule(window->device(), &shaderInfo, nullptr, &shaderModule);
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to create shader module: %d", err);
+    if (err != VK_SUCCESS)
+    {
+        CS_LOG_WARNING("Failed to create shader module: ");
+        CS_LOG_WARNING(QString(err));
         return VK_NULL_HANDLE;
     }
 
@@ -584,7 +595,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     if (!canSampleLinear && !canSampleOptimal) {
-        qWarning("Neither linear nor optimal image sampling is supported for image");
+        CS_LOG_WARNING("Neither linear nor optimal image sampling is supported for image");
         return false;
     }
 
@@ -629,7 +640,8 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
 
     VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
     if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
+        CS_LOG_WARNING("Failed to create image view for texture: ");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -659,7 +671,7 @@ bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
     const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
     if (!canSampleLinear && !canSampleOptimal) {
-        qWarning("Neither linear nor optimal image sampling is supported for image");
+        CS_LOG_WARNING("Neither linear nor optimal image sampling is supported for image");
         return false;
     }
 
@@ -705,7 +717,8 @@ bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
 
     VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
     if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
+        CS_LOG_WARNING("Failed to create image view for texture:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -1310,7 +1323,8 @@ bool VulkanRenderer::createTextureImage(
 
     VkResult err = devFuncs->vkCreateImage(device, &imageInfo, nullptr, image);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to create linear image for texture: %d", err);
+        CS_LOG_WARNING("Failed to create linear image for texture:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -1334,17 +1348,20 @@ bool VulkanRenderer::createTextureImage(
         memReq.size,
         memIndex
     };
-    qDebug("allocating %u bytes for texture image", uint32_t(memReq.size));
+    CS_LOG_INFO("Allocating texture image:");
+    CS_LOG_INFO(QString::number(uint32_t(memReq.size)) + " bytes");
 
     err = devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, mem);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to allocate memory for linear image: %d", err);
+        CS_LOG_WARNING("Failed to allocate memory for image:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
     err = devFuncs->vkBindImageMemory(device, *image, *mem, 0);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to bind linear image memory: %d", err);
+        CS_LOG_WARNING("Failed to bind memory for image:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -1374,7 +1391,8 @@ bool VulkanRenderer::writeLinearImage(
                 0,
                 reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS) {
-        qWarning("Failed to map memory for linear image: %d", err);
+        CS_LOG_WARNING("Failed to map memory for linear image:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -1431,7 +1449,8 @@ bool VulkanRenderer::writeGmicToLinearImage(
                 0,
                 reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS) {
-        qWarning("Failed to map memory for linear image: %d", err);
+        CS_LOG_WARNING("Failed to map memory for image:");
+        CS_LOG_WARNING(QString(err));
         return false;
     }
 
@@ -1496,7 +1515,7 @@ void VulkanRenderer::updateVertexData(const int w, const int h)
 
 void VulkanRenderer::initSwapChainResources()
 {
-    qDebug("initSwapChainResources");
+    CS_LOG_INFO("Initializing swapchain resources.");
 
     // Projection matrix
     projection = window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
@@ -1701,7 +1720,7 @@ uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, VkMemoryPropertyFla
 void VulkanRenderer::recordComputeCommandBufferCPUCopy(
         CsImage& inputImage)
 {
-    qDebug("Beginning CPU copy.");
+    CS_LOG_INFO("Copying image GPU-->CPU.");
 
     // This is for outputting an image to the CPU
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
@@ -1820,7 +1839,8 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
                 reinterpret_cast<void **>(&pInput));
     if (err != VK_SUCCESS)
     {
-        qWarning("Failed to map memory for staging buffer: %d", err);
+        CS_LOG_WARNING("Failed to map memory for staging buffer:");
+        CS_LOG_WARNING(QString(err));
     }
 
     int width = inputImage.getWidth();
@@ -1842,8 +1862,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
 
     if (!success)
     {
-        qDebug("Problem saving image.");
-        qDebug("%s", saveImage->geterror().c_str());
+        CS_LOG_INFO("Problem saving image." + QString::fromStdString(saveImage->geterror()));
     }
 
     delete[] output;
@@ -1855,7 +1874,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
 
 void VulkanRenderer::createRenderPass()
 {
-    qDebug("Create Render Pass.");
+    CS_LOG_INFO("Creating Render Pass.");
 
     VkCommandBuffer cb = window->currentCommandBuffer();
 
@@ -1870,8 +1889,6 @@ void VulkanRenderer::createRenderPass()
     memset(clearValues, 0, sizeof(clearValues));
     clearValues[0].color = clearColor;
     clearValues[1].depthStencil = clearDS;
-
-    qDebug("Beginning render pass.");
 
     VkRenderPassBeginInfo rpBeginInfo;
     memset(&rpBeginInfo, 0, sizeof(rpBeginInfo));
@@ -2051,7 +2068,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         submitComputeCommands();
 
-        qDebug("Moving render target");
+        CS_LOG_INFO("Moving render target.");
 
         node->cachedImage = std::move(computeRenderTarget);
     }
@@ -2062,7 +2079,7 @@ void VulkanRenderer::processGmicNode(
         std::shared_ptr<CsImage> inputImageBack,
         const QSize targetSize)
 {
-    qDebug("Process GMIC node.");
+    CS_LOG_INFO("Processing GMIC node.");
 
     auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
 
@@ -2085,7 +2102,8 @@ void VulkanRenderer::processGmicNode(
                 reinterpret_cast<void **>(&pInput));
     if (err != VK_SUCCESS)
     {
-        qWarning("Failed to map memory for staging buffer: %d", err);
+        CS_LOG_WARNING("Failed to map memory for staging buffer:");
+        CS_LOG_WARNING(QString(err));
     }
 
     gmicList.assign(1);
@@ -2145,7 +2163,7 @@ void VulkanRenderer::processGmicNode(
 
     submitComputeCommands();
 
-    qDebug("Moving render target");
+    CS_LOG_INFO("Moving render target");
 
     node->cachedImage = std::move(computeRenderTarget);
 
@@ -2319,7 +2337,7 @@ std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
 
 void VulkanRenderer::startNextFrame()
 {
-    qDebug("startNextFrame");
+    CS_LOG_INFO("Starting next frame.");
 
     if (clearScreen)
     {
@@ -2378,12 +2396,12 @@ void VulkanRenderer::scale(float s)
 
 void VulkanRenderer::releaseSwapChainResources()
 {
-    qDebug("Releasing swapchain resources.");
+    CS_LOG_INFO("Releasing swapchain resources.");
 }
 
 void VulkanRenderer::cleanup()
 {
-    qDebug("Cleaning up Renderer.");
+    CS_LOG_INFO("Cleaning up renderer.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
@@ -2523,5 +2541,5 @@ void VulkanRenderer::releaseResources()
 
 VulkanRenderer::~VulkanRenderer()
 {
-    qDebug("Destroying Renderer.");
+    CS_LOG_INFO("Destroying Renderer.");
 }

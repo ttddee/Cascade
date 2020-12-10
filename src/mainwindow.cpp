@@ -29,6 +29,7 @@
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
 #include "gmichelper.h"
+#include "log.h"
 
 using namespace ads;
 
@@ -58,7 +59,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //--------- Gmic
     // Must be initialized before NodeGraph
-    qDebug("Initializing Gmic.");
+    CS_LOG_INFO("Initializing Gmic.");
 
     auto gmicHelper = &GmicHelper::getInstance();
     gmicHelper->setUp();
@@ -200,7 +201,7 @@ MainWindow::~MainWindow()
 {
     delete ui;
 
-    qDebug("Shutting down");
+    CS_LOG_INFO("Shutting down");
 
     vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }
