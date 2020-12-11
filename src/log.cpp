@@ -35,7 +35,7 @@ namespace Cascade
     {
         if (type == QtDebugMsg)
         {
-            QString txt = QString("VULKAN: %1").arg(msg);
+            QString txt = QString("[VULKAN] %1").arg(msg);
             writeToFile(txt);
         }
     }
@@ -54,31 +54,31 @@ namespace Cascade
 
     void Log::debug(const QString &s)
     {
-        QString txt = QString("DEBUG: %1").arg(s);
+        QString txt = QString("[DEBUG] %1").arg(s);
         writeToFile(txt);
     }
 
     void Log::info(const QString &s)
     {
-        QString txt = QString("INFO: %1").arg(s);
+        QString txt = QString("[INFO] %1").arg(s);
         writeToFile(txt);
     }
 
     void Log::warning(const QString &s)
     {
-        QString txt = QString("WARNING: %1").arg(s);
+        QString txt = QString("[WARNING] %1").arg(s);
         writeToFile(txt);
     }
 
     void Log::critical(const QString &s)
     {
-        QString txt = QString("CRITICAL: %1").arg(s);
+        QString txt = QString("[CRITICAL] %1").arg(s);
         writeToFile(txt);
     }
 
     void Log::fatal(const QString &s)
     {
-        QString txt = QString("FATAL: %1").arg(s);
+        QString txt = QString("[FATAL] %1").arg(s);
         writeToFile(txt);
     }
 

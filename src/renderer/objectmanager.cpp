@@ -17,32 +17,19 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef BENCHMARK_H
-#define BENCHMARK_H
-
-#include <chrono>
-#include <string>
-#include <iostream>
+#include "objectmanager.h"
 
 namespace Cascade
 {
+    VulkanWindow* ObjectManager::window;
+    QVulkanDeviceFunctions* ObjectManager::devFuncs;
+    VkDevice* ObjectManager::device;
 
-static std::chrono::steady_clock::time_point timerBegin;
-static std::chrono::steady_clock::time_point timerEnd;
-
-void startTimer()
-{
-    timerBegin = std::chrono::steady_clock::now();
-}
-
-void stopTimerAndPrint(const std::string& s)
-{
-    timerEnd = std::chrono::steady_clock::now();
-
-    std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count() << "[milliseconds]" << std::endl;
-    //std::cout << s + " " << std::chrono::duration_cast<std::chrono::microseconds>(timerEnd - timerBegin).count() << "[microseconds]" << std::endl;
-}
+    void ObjectManager::init(VulkanWindow* w, QVulkanDeviceFunctions* df, VkDevice* d)
+    {
+        window = w;
+        devFuncs = df;
+        device = d;
+    }
 
 }
-
-#endif // BENCHMARK_H
