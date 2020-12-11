@@ -37,16 +37,18 @@ namespace Cascade
             return logger;
         }
 
-        void debug(const QString& s);
-        void info(const QString& s);
-        void warning(const QString& s);
-        void critical(const QString& s);
-        void fatal(const QString& s);
+        static void messageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg);
 
-        void console(const QString& s);
+        static void debug(const QString& s);
+        static void info(const QString& s);
+        static void warning(const QString& s);
+        static void critical(const QString& s);
+        static void fatal(const QString& s);
+
+        static void console(const QString& s);
 
     private:
-        void writeToFile(const QString& s);
+        static void writeToFile(const QString& s);
 
         static std::shared_ptr<Log> logger;
 

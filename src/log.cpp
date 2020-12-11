@@ -31,6 +31,15 @@ namespace Cascade
     std::shared_ptr<Log> Log::logger;
     QFile Log::outFile;
 
+    void Log::messageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+    {
+        if (type == QtDebugMsg)
+        {
+            QString txt = QString("VULKAN: %1").arg(msg);
+            writeToFile(txt);
+        }
+    }
+
     void Log::Init()
     {
         QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
@@ -39,6 +48,8 @@ namespace Cascade
 
         outFile.setFileName("cascade.log");
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+
+        qInstallMessageHandler(messageHandler);
     }
 
     void Log::debug(const QString &s)
