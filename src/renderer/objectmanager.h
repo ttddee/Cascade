@@ -21,6 +21,7 @@
 #define OBJECTMANAGER_H
 
 #include "../vulkanwindow.h"
+#include "csimage.h"
 
 namespace Cascade
 {
@@ -29,10 +30,16 @@ namespace Cascade
     public:
         static void init(VulkanWindow* w, QVulkanDeviceFunctions* df, VkDevice* d);
 
+        static std::shared_ptr<CsImage> createImage(int width, int height);
+
+        static void cleanup();
+
     private:
         static VulkanWindow* window;
         static QVulkanDeviceFunctions *devFuncs;
         static VkDevice* device;
+
+        static std::vector<std::shared_ptr<CsImage>> images;
     };
 }
 

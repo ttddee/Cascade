@@ -170,6 +170,7 @@ int CsImage::getHeight() const
 void CsImage::destroy()
 {
     CS_LOG_INFO("Destroying image.");
+    CS_LOG_CONSOLE("Destroying image.");
 
     if (view) {
         devFuncs->vkDestroyImageView(*device, view, nullptr);

@@ -31,8 +31,6 @@
 #include "gmichelper.h"
 #include "log.h"
 
-using namespace ads;
-
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -49,10 +47,10 @@ MainWindow::MainWindow(QWidget *parent)
     // Disable the default style sheet
     dockManager->setStyleSheet("");
 
-    viewerStatusBar = new ViewerStatusBar();
+    viewerStatusBar = new ViewerStatusBar(this);
 
     vulkanView = new VulkanView(viewerStatusBar);
-    CDockWidget* vulkanViewDockWidget = new CDockWidget("Viewer");
+    vulkanViewDockWidget = new CDockWidget("Viewer");
     vulkanViewDockWidget->setWidget(vulkanView);
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);    
@@ -67,7 +65,7 @@ MainWindow::MainWindow(QWidget *parent)
     nodeGraph = new NodeGraph(this);
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    CDockWidget* nodeGraphDockWidget = new CDockWidget("Node Graph");
+    nodeGraphDockWidget = new CDockWidget("Node Graph");
     nodeGraphDockWidget->setWidget(nodeGraph);
     dockManager->addDockWidget(
                 DockWidgetArea::BottomDockWidgetArea,
@@ -76,7 +74,7 @@ MainWindow::MainWindow(QWidget *parent)
 
 
     propertiesView = new PropertiesView();
-    CDockWidget* propertiesViewDockWidget = new CDockWidget("Properties");
+    propertiesViewDockWidget = new CDockWidget("Properties");
     propertiesViewDockWidget->setWidget(propertiesView);
     propertiesViewDockWidget->resize(700, 700);
     dockManager->addDockWidget(
@@ -107,7 +105,7 @@ MainWindow::MainWindow(QWidget *parent)
     //ui->menuView->addAction(restoreDefaultLayoutAction);
 
     connect(exitAction, &QAction::triggered,
-            this, &MainWindow::exit);
+            QApplication::instance(), QCoreApplication::quit, Qt::QueuedConnection);
     connect(saveLayoutAction, &QAction::triggered,
             this, &MainWindow::saveUserLayout);
     connect(restoreLayoutAction, &QAction::triggered,
@@ -135,11 +133,6 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
-}
-
-void MainWindow::exit()
-{
-    QApplication::quit();
 }
 
 void MainWindow::saveUserLayout()
@@ -199,9 +192,10 @@ void MainWindow::handleDeviceLost()
 
 MainWindow::~MainWindow()
 {
-    delete ui;
-
     CS_LOG_INFO("Shutting down");
+    CS_LOG_CONSOLE("Shutting down");
+
+    delete ui;
 
     vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }

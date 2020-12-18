@@ -19,17 +19,36 @@
 
 #include "objectmanager.h"
 
+#include "../log.h"
+
 namespace Cascade
 {
     VulkanWindow* ObjectManager::window;
     QVulkanDeviceFunctions* ObjectManager::devFuncs;
     VkDevice* ObjectManager::device;
 
+    std::vector<std::shared_ptr<CsImage>> ObjectManager::images;
+
     void ObjectManager::init(VulkanWindow* w, QVulkanDeviceFunctions* df, VkDevice* d)
     {
         window = w;
         devFuncs = df;
         device = d;
+    }
+
+    std::shared_ptr<CsImage> ObjectManager::createImage(int width, int height)
+    {
+        auto image = std::shared_ptr<CsImage>(new CsImage(window, device, devFuncs, width, height));
+
+        images.push_back(image);
+
+        return image;
+    }
+
+    void ObjectManager::cleanup()
+    {
+        CS_LOG_CONSOLE("ObjectManager is cleaning up");
+        CS_LOG_CONSOLE("Number of images to destroy: " + QString::number(images.size()));
     }
 
 }

@@ -39,6 +39,8 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
 QT_END_NAMESPACE
 
+using namespace ads;
+
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
@@ -49,7 +51,6 @@ public:
     ~MainWindow();
 
 private:
-    void exit();
     void saveUserLayout();
     void restoreUserLayout();
     void restoreDefaultLayout();
@@ -68,6 +69,10 @@ private:
     QAction* saveLayoutAction;
     QAction* restoreLayoutAction;
     QAction* restoreDefaultLayoutAction;
+
+    CDockWidget* vulkanViewDockWidget;
+    CDockWidget* nodeGraphDockWidget;
+    CDockWidget* propertiesViewDockWidget;
 
 public slots:
     void handleRendererHasBeenCreated();

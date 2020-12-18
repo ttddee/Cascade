@@ -36,7 +36,6 @@
 #include "../benchmark.h"
 #include "../multithreading.h"
 #include "../gmichelper.h"
-
 #include "../log.h"
 
 // Use a triangle strip to get a quad.
@@ -525,7 +524,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     // Previous image will be destroyed, so we wait here
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    computeRenderTarget = std::unique_ptr<CsImage>(
+    computeRenderTarget = std::shared_ptr<CsImage>(
                 new CsImage(window, &device, devFuncs, width, height));
 
     emit window->renderTargetHasBeenCreated(width, height);
@@ -578,7 +577,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
-    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
+    imageFromDisk = std::shared_ptr<CsImage>(new CsImage(
                                                  window,
                                                  &device,
                                                  devFuncs,
@@ -654,7 +653,7 @@ bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
 {
     updateVertexData(gImg._width, gImg._height);
 
-    imageFromDisk = std::unique_ptr<CsImage>(new CsImage(
+    imageFromDisk = std::shared_ptr<CsImage>(new CsImage(
                                                  window,
                                                  &device,
                                                  devFuncs,
@@ -2402,6 +2401,7 @@ void VulkanRenderer::releaseSwapChainResources()
 void VulkanRenderer::cleanup()
 {
     CS_LOG_INFO("Cleaning up renderer.");
+    CS_LOG_CONSOLE("Cleaning up renderer.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
@@ -2531,6 +2531,12 @@ void VulkanRenderer::cleanup()
         };
         devFuncs->vkFreeCommandBuffers(device, compute.computeCommandPool, 3, &buffers[0]);
         devFuncs->vkDestroyCommandPool(device, compute.computeCommandPool, nullptr);
+    }
+
+    if (device)
+    {
+        devFuncs->vkDestroyDevice(device, nullptr);
+        device = nullptr;
     }
 }
 

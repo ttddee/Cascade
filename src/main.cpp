@@ -61,5 +61,6 @@ int main(int argc, char *argv[])
 
     w.setWindowTitle(title);
     w.show();
+
     return a.exec();
 }
