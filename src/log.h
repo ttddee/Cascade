@@ -24,6 +24,7 @@
 
 #include <QString>
 #include <QFile>
+#include <QTextStream>
 
 namespace Cascade
 {
@@ -53,6 +54,7 @@ namespace Cascade
         static std::shared_ptr<Log> logger;
 
         static QFile outFile;
+        static QTextStream stream;
     };
 }
 

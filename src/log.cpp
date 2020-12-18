@@ -30,6 +30,7 @@ namespace Cascade
 
     std::shared_ptr<Log> Log::logger;
     QFile Log::outFile;
+    QTextStream Log::stream;
 
     void Log::messageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
     {
@@ -48,6 +49,7 @@ namespace Cascade
 
         outFile.setFileName("cascade.log");
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+        stream.setDevice(&outFile);
 
         qInstallMessageHandler(messageHandler);
     }
@@ -89,7 +91,6 @@ namespace Cascade
 
     void Log::writeToFile(const QString &s)
     {
-        QTextStream stream(&outFile);
         stream << s << "\n";
     }
 }
