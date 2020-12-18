@@ -838,9 +838,9 @@ void CFloatingDockContainer::hideEvent(QHideEvent *event)
     }
 
     d->Hiding = true;
-	for (auto DockArea : d->DockContainer->openedDockAreas())
+    foreach (auto& DockArea, d->DockContainer->openedDockAreas())
 	{
-		for (auto DockWidget : DockArea->openedDockWidgets())
+        foreach (auto& DockWidget, DockArea->openedDockWidgets())
 		{
 			DockWidget->toggleView(false);
 		}

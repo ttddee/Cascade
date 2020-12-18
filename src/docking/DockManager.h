@@ -517,7 +517,7 @@ public slots:
 	 * This function only has an effect, if the flag CDockManager::FocusStyling
 	 * is enabled
 	 */
-	void setDockWidgetFocused(CDockWidget* DockWidget);
+    void setDockWidgetFocused(ads::CDockWidget* DockWidget);
 
 signals:
 	/**

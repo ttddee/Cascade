@@ -453,11 +453,15 @@ void CDockAreaWidget::removeDockWidget(CDockWidget* DockWidget)
   	auto NextOpenDockWidget = (DockWidget == CurrentDockWidget) ? nextOpenDockWidget(DockWidget) : nullptr;
 
 	d->ContentsLayout->removeWidget(DockWidget);
-	auto TabWidget = DockWidget->tabWidget();
-	TabWidget->hide();
-	d->tabBar()->removeTab(TabWidget);
-	TabWidget->setParent(DockWidget);
-	DockWidget->setDockArea(nullptr);
+    if (DockWidget)
+    {
+        auto TabWidget = DockWidget->tabWidget();
+        TabWidget->hide();
+        d->tabBar()->removeTab(TabWidget);
+        TabWidget->setParent(DockWidget);
+        DockWidget->setDockArea(nullptr);
+    }
+
 	CDockContainerWidget* DockContainer = dockContainer();
 	if (NextOpenDockWidget)
 	{
@@ -835,7 +839,7 @@ CDockWidget::DockWidgetFeatures CDockAreaWidget::features(eBitwiseOperator Mode)
 	if (BitwiseAnd == Mode)
 	{
 		CDockWidget::DockWidgetFeatures Features(CDockWidget::AllDockWidgetFeatures);
-		for (const auto DockWidget : dockWidgets())
+        foreach (const auto& DockWidget, dockWidgets())
 		{
 			Features &= DockWidget->features();
 		}
@@ -844,7 +848,7 @@ CDockWidget::DockWidgetFeatures CDockAreaWidget::features(eBitwiseOperator Mode)
 	else
 	{
 		CDockWidget::DockWidgetFeatures Features(CDockWidget::NoDockWidgetFeatures);
-		for (const auto DockWidget : dockWidgets())
+        foreach (const auto& DockWidget, dockWidgets())
 		{
 			Features |= DockWidget->features();
 		}
@@ -934,7 +938,7 @@ void CDockAreaWidget::closeArea()
 	}
     else
 	{
-        for (auto DockWidget : openedDockWidgets())
+        foreach (auto& DockWidget, openedDockWidgets())
         {
             if (DockWidget->features().testFlag(CDockWidget::DockWidgetDeleteOnClose) && DockWidget->features().testFlag(CDockWidget::DockWidgetForceCloseWithArea))
                 DockWidget->closeDockWidgetInternal();
@@ -967,7 +971,8 @@ bool CDockAreaWidget::isCentralWidgetArea() const
         return false;
     }
 
-    return dockManager()->centralWidget() == dockWidgets()[0];
+    auto widgets = dockWidgets();
+    return dockManager()->centralWidget() == widgets[0];
 }
 
 

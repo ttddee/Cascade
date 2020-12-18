@@ -644,7 +644,7 @@ void CDockOverlayCross::updateOverlayIcons()
 		return;
 	}
 
-	for (auto Widget : d->DropIndicatorWidgets)
+    foreach (auto& Widget, d->DropIndicatorWidgets)
 	{
 		d->updateDropIndicatorIcon(Widget);
 	}

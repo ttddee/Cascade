@@ -84,7 +84,7 @@ void FiltersVisibilityMap::save()
   buffer.open(QIODevice::WriteOnly);
   qint32 count = _hiddenFilters.size();
   buffer.write(QString("%1\n").arg(count).toLatin1());
-  for (const QString & str : _hiddenFilters) {
+  foreach (const QString& str, _hiddenFilters) {
     buffer.write((str + QChar('\n')).toLatin1());
   }
 

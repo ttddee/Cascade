@@ -24,10 +24,10 @@
 
 namespace Cascade
 {
-    const QColor frontColor = QColor("#dc4c46"); // Red
-    const QColor backColor = QColor("#9bcf43"); // Green
-    const QColor alphaColor = QColor("#00b6dd"); // Blue
-    const QColor outputColor = QColor("#9bcf43"); // Green
+    static const QColor frontColor = QColor("#dc4c46"); // Red
+    static const QColor backColor = QColor("#9bcf43"); // Green
+    static const QColor alphaColor = QColor("#00b6dd"); // Blue
+    static const QColor outputColor = QColor("#9bcf43"); // Green
 }
 
 #endif // UICOLORS_H

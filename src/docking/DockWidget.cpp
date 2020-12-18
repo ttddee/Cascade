@@ -530,11 +530,15 @@ void CDockWidget::toggleViewInternal(bool Open)
 	CDockWidget* TopLevelDockWidgetAfter = DockContainer
 		? DockContainer->topLevelDockWidget() : nullptr;
 	CDockWidget::emitTopLevelEventForWidget(TopLevelDockWidgetAfter, true);
-	CFloatingDockContainer* FloatingContainer = DockContainer->floatingWidget();
-	if (FloatingContainer)
-	{
-		FloatingContainer->updateWindowTitle();
-	}
+
+    if (DockContainer)
+    {
+        CFloatingDockContainer* FloatingContainer = DockContainer->floatingWidget();
+        if (FloatingContainer)
+        {
+            FloatingContainer->updateWindowTitle();
+        }
+    }
 
 	if (!Open)
 	{

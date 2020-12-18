@@ -139,7 +139,7 @@ struct DockManagerPrivate
 	void hideFloatingWidgets()
 	{
 		// Hide updates of floating widgets from user
-		for (auto FloatingWidget : FloatingWidgets)
+        foreach (auto& FloatingWidget, FloatingWidgets)
 		{
 			FloatingWidget->hide();
 		}
@@ -147,7 +147,7 @@ struct DockManagerPrivate
 
 	void markDockWidgetsDirty()
 	{
-		for (auto DockWidget : DockWidgetsMap)
+        foreach (auto& DockWidget, DockWidgetsMap)
 		{
 			DockWidget->setProperty("dirty", true);
 		}
@@ -338,7 +338,7 @@ void DockManagerPrivate::restoreDockWidgetsOpenState()
     // function are invisible to the user now and have no assigned dock area
     // They do not belong to any dock container, until the user toggles the
     // toggle view action the next time
-    for (auto DockWidget : DockWidgetsMap)
+    foreach (auto& DockWidget, DockWidgetsMap)
     {
     	if (DockWidget->property(internal::DirtyProperty).toBool())
     	{
@@ -360,7 +360,7 @@ void DockManagerPrivate::restoreDockAreasIndices()
     // The dock areas because the previous toggleView() action has changed
     // the dock area index
     int Count = 0;
-    for (auto DockContainer : Containers)
+    foreach (auto& DockContainer, Containers)
     {
     	Count++;
     	for (int i = 0; i < DockContainer->dockAreaCount(); ++i)
@@ -395,7 +395,7 @@ void DockManagerPrivate::emitTopLevelEvents()
 {
     // Finally we need to send the topLevelChanged() signals for all dock
     // widgets if top level changed
-    for (auto DockContainer : Containers)
+    foreach (auto& DockContainer, Containers)
     {
     	CDockWidget* TopLevelDockWidget = DockContainer->topLevelDockWidget();
     	if (TopLevelDockWidget)
@@ -407,7 +407,7 @@ void DockManagerPrivate::emitTopLevelEvents()
 			for (int i = 0; i < DockContainer->dockAreaCount(); ++i)
 			{
 				auto DockArea = DockContainer->dockArea(i);
-				for (auto DockWidget : DockArea->dockWidgets())
+                foreach (auto& DockWidget, DockArea->dockWidgets())
 				{
 					DockWidget->emitTopLevelChanged(false);
 				}
@@ -662,7 +662,7 @@ QByteArray CDockManager::saveState(int version) const
 		{
 			s.writeAttribute("CentralWidget", d->CentralWidget->objectName());
 		}
-		for (auto Container : d->Containers)
+        foreach (auto& Container, d->Containers)
 		{
 			Container->saveState(s);
 		}
@@ -746,7 +746,7 @@ void CDockManager::showEvent(QShowEvent *event)
 		return;
 	}
 
-	for (auto FloatingWidget : d->UninitializedFloatingWidgets)
+    foreach (auto& FloatingWidget, d->UninitializedFloatingWidgets)
 	{
 		FloatingWidget->show();
 	}
@@ -776,7 +776,8 @@ CDockAreaWidget* CDockManager::addDockWidgetTab(DockWidgetArea area,
 	}
 	else if (!openedDockAreas().isEmpty())
 	{
-		return addDockWidget(area, Dockwidget, openedDockAreas().last());
+        auto areas = openedDockAreas();
+        return addDockWidget(area, Dockwidget, areas.last());
 	}
 	else
 	{
@@ -835,7 +836,7 @@ void CDockManager::removePerspective(const QString& Name)
 void CDockManager::removePerspectives(const QStringList& Names)
 {
 	int Count = 0;
-	for (auto Name : Names)
+    for (const auto& Name : Names)
 	{
 		Count += d->Perspectives.remove(Name);
 	}

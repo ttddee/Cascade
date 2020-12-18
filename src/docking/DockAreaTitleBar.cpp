@@ -392,7 +392,7 @@ void CDockAreaTitleBar::updateDockWidgetActionsButtons()
 	CDockWidget* DockWidget = d->TabBar->currentTab()->dockWidget();
 	if (!d->DockWidgetActionsButtons.isEmpty())
 	{
-		for (auto Button : d->DockWidgetActionsButtons)
+        foreach (auto& Button, d->DockWidgetActionsButtons)
 		{
 			d->Layout->removeWidget(Button);
 			delete Button;

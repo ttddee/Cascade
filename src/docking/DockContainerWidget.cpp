@@ -258,7 +258,7 @@ public:
 		}
 
 		VisibleDockAreaCount = 0;
-		for (auto DockArea : DockAreas)
+        foreach (auto& DockArea, DockAreas)
 		{
 			VisibleDockAreaCount += DockArea->isHidden() ? 0 : 1;
 		}
@@ -568,7 +568,6 @@ void DockContainerWidgetPrivate::dropIntoSection(CFloatingDockContainer* Floatin
 	}
 	else
 	{
-		QList<int> NewSplitterSizes;
 		QSplitter* NewSplitter = newSplitter(InsertParam.orientation());
 		int TargetAreaSize = (InsertParam.orientation() == Qt::Horizontal) ? TargetArea->width() : TargetArea->height();
 		bool AdjustSplitterSizes = true;
@@ -692,7 +691,6 @@ void DockContainerWidgetPrivate::moveToNewSection(QWidget* Widget, CDockAreaWidg
 	}
 	else
 	{
-		auto Sizes = TargetAreaSplitter->sizes();
 		int TargetAreaSize = (InsertParam.orientation() == Qt::Horizontal) ? TargetArea->width() : TargetArea->height();
 		QSplitter* NewSplitter = newSplitter(InsertParam.orientation());
 		NewSplitter->addWidget(TargetArea);
@@ -856,7 +854,7 @@ void DockContainerWidgetPrivate::saveChildNodesState(QXmlStreamWriter& s, QWidge
 			}
 
 			s.writeStartElement("Sizes");
-			for (auto Size : Splitter->sizes())
+            foreach (auto& Size, Splitter->sizes())
 			{
 				s.writeCharacters(QString::number(Size) + " ");
 			}
@@ -1473,7 +1471,7 @@ emitAndExit:
 //============================================================================
 CDockAreaWidget* CDockContainerWidget::dockAreaAt(const QPoint& GlobalPos) const
 {
-	for (const auto& DockArea : d->DockAreas)
+    foreach (const auto& DockArea, d->DockAreas)
 	{
 		if (DockArea->isVisible() && DockArea->rect().contains(DockArea->mapFromGlobal(GlobalPos)))
 		{
@@ -1510,7 +1508,7 @@ int CDockContainerWidget::dockAreaCount() const
 int CDockContainerWidget::visibleDockAreaCount() const
 {
 	int Result = 0;
-	for (auto DockArea : d->DockAreas)
+    foreach (auto& DockArea, d->DockAreas)
 	{
 		Result += DockArea->isHidden() ? 0 : 1;
 	}
@@ -1614,7 +1612,7 @@ void CDockContainerWidget::dropWidget(QWidget* Widget, DockWidgetArea DropArea, 
 QList<CDockAreaWidget*> CDockContainerWidget::openedDockAreas() const
 {
 	QList<CDockAreaWidget*> Result;
-	for (auto DockArea : d->DockAreas)
+    foreach (auto& DockArea, d->DockAreas)
 	{
 		if (!DockArea->isHidden())
 		{
@@ -1800,7 +1798,7 @@ CDockAreaWidget* CDockContainerWidget::topLevelDockArea() const
 QList<CDockWidget*> CDockContainerWidget::dockWidgets() const
 {
 	QList<CDockWidget*> Result;
-	for (const auto DockArea : d->DockAreas)
+    foreach (const auto& DockArea, d->DockAreas)
 	{
 		Result.append(DockArea->dockWidgets());
 	}
@@ -1820,7 +1818,7 @@ void CDockContainerWidget::updateSplitterHandles(QSplitter* splitter)
 CDockWidget::DockWidgetFeatures CDockContainerWidget::features() const
 {
 	CDockWidget::DockWidgetFeatures Features(CDockWidget::AllDockWidgetFeatures);
-	for (const auto DockArea : d->DockAreas)
+    foreach (const auto& DockArea, d->DockAreas)
 	{
 		Features &= DockArea->features();
 	}
@@ -1839,7 +1837,7 @@ CFloatingDockContainer* CDockContainerWidget::floatingWidget() const
 //============================================================================
 void CDockContainerWidget::closeOtherAreas(CDockAreaWidget* KeepOpenArea)
 {
-	for (const auto DockArea : d->DockAreas)
+    foreach (const auto& DockArea, d->DockAreas)
 	{
 		if (DockArea == KeepOpenArea)
 		{
