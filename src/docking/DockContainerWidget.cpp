@@ -1305,11 +1305,11 @@ CDockContainerWidget::CDockContainerWidget(CDockManager* DockManager, QWidget *p
 //============================================================================
 CDockContainerWidget::~CDockContainerWidget()
 {
-	if (d->DockManager)
-	{
-		d->DockManager->removeDockContainer(this);
-	}
-	delete d;
+    if (d->DockManager)
+    {
+        d->DockManager->removeDockContainer(this);
+    }
+    delete d;
 }
 
 

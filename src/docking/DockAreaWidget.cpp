@@ -387,8 +387,8 @@ CDockAreaWidget::CDockAreaWidget(CDockManager* DockManager, CDockContainerWidget
 CDockAreaWidget::~CDockAreaWidget()
 {
     ADS_PRINT("~CDockAreaWidget()");
-	delete d->ContentsLayout;
-	delete d;
+    delete d->ContentsLayout;
+    delete d;
 }
 
 

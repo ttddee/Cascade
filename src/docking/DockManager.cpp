@@ -479,6 +479,15 @@ CDockManager::CDockManager(QWidget *parent) :
 	CDockContainerWidget(this, parent),
 	d(new DockManagerPrivate(this))
 {
+    CDockManager::setConfigFlag(CDockManager::OpaqueSplitterResize, false);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
+    CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
+    CDockManager::setConfigFlag(CDockManager::EqualSplitOnInsertion, true);
+
+    // Disable the default style sheet
+    this->setStyleSheet("");
+
 	createRootSplitter();
 	QMainWindow* MainWindow = qobject_cast<QMainWindow*>(parent);
 	if (MainWindow)
@@ -505,12 +514,12 @@ CDockManager::CDockManager(QWidget *parent) :
 //============================================================================
 CDockManager::~CDockManager()
 {
-	auto FloatingWidgets = d->FloatingWidgets;
-	for (auto FloatingWidget : FloatingWidgets)
-	{
-		delete FloatingWidget;
-	}
-	delete d;
+    auto FloatingWidgets = d->FloatingWidgets;
+    for (auto FloatingWidget : FloatingWidgets)
+    {
+        delete FloatingWidget;
+    }
+    delete d;
 }
 
 //============================================================================

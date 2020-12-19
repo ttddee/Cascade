@@ -69,7 +69,7 @@ CDockSplitter::CDockSplitter(Qt::Orientation orientation, QWidget *parent)
 CDockSplitter::~CDockSplitter()
 {
     ADS_PRINT("~CDockSplitter");
-	delete d;
+    delete d;
 }
 
 

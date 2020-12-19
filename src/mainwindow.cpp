@@ -37,15 +37,7 @@ MainWindow::MainWindow(QWidget *parent)
 {
     ui->setupUi(this);
 
-    CDockManager::setConfigFlag(CDockManager::OpaqueSplitterResize, false);
-    CDockManager::setConfigFlag(CDockManager::DockAreaHasCloseButton, false);
-    CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
-    CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
-    CDockManager::setConfigFlag(CDockManager::EqualSplitOnInsertion, true);
-
     dockManager = new CDockManager(this);
-    // Disable the default style sheet
-    dockManager->setStyleSheet("");
 
     viewerStatusBar = new ViewerStatusBar(this);
 
@@ -53,7 +45,7 @@ MainWindow::MainWindow(QWidget *parent)
     vulkanViewDockWidget = new CDockWidget("Viewer");
     vulkanViewDockWidget->setWidget(vulkanView);
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
-    centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);    
+    centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);
 
     //--------- Gmic
     // Must be initialized before NodeGraph
