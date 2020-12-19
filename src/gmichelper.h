@@ -216,6 +216,7 @@ private:
         "b0739daec6286bd65a4d3d4da446fcc5", // Import RGB-565 File
         "3b47397b1187060b81c5cba087f52407", // Intarsia
         "93316966b105ec015f49d4c97d020bf3", // Solve Maze
+        "4c13d28b61003475ed2ca7a11c0a1f1a", // Light Rays
     };
 };
 
