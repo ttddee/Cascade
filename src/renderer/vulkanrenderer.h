@@ -40,7 +40,7 @@
 
 using namespace Cascade;
 using namespace OIIO;
-using namespace OpenColorIO;
+namespace OCIO = OCIO_NAMESPACE;
 
 class VulkanWindow;
 

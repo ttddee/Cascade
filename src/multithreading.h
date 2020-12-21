@@ -7,7 +7,7 @@
 #include <OpenImageIO/imagebuf.h>
 #include <tbb/tbb.h>
 
-using namespace OpenColorIO;
+namespace OCIO = OCIO_NAMESPACE;
 using namespace OIIO;
 using namespace tbb;
 
