@@ -55,7 +55,6 @@ void parallelApplyColorSpace(
         int width,
         int height)
 {
-    std::cout << "Creating OCIO processor." << std::endl;
     OpenColorIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(
                 sourceColor.toLocal8Bit(), dstColor.toLocal8Bit());
 

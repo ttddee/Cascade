@@ -214,13 +214,13 @@ linux-g++ {
 
 win32-g++ {
     DEPENDENCY_ROOT = C:/msys64/mingw64
-    QT_ROOT = C:/msys64/home/till/qt515/5.15.1/mingw81_64
+    QT_ROOT = C:/Qt515/5.15.1/mingw81_64
     TEMP_ROOT = C:/msys64/home/till/temp
 
-    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO.dll
-    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO.dll
-    LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic.dll
-    LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb.dll
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic
+    LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
 
@@ -297,6 +297,10 @@ win32-g++ {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpng16-16.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/zlib1.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libharfbuzz-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/avcodec-58.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/avformat-58.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/avutil-56.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libField3D-1.dll)
     dlls.path = $$DESTDIR
 }
 
