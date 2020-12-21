@@ -25,7 +25,11 @@
 #ifndef GMIC_QT_GMICSTDLIB_H
 #define GMIC_QT_GMICSTDLIB_H
 
+#include <memory>
+
 #include <QByteArray>
+
+#include "gmic.h"
 
 class GmicStdLib {
 public:

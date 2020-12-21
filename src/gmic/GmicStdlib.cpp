@@ -29,7 +29,6 @@
 #include <QString>
 #include <QStringList>
 #include "Utils.h"
-#include "gmic.h"
 
 #include "../log.h"
 
@@ -41,6 +40,8 @@ void GmicStdLib::loadStdLib()
     QFile stdlib("gmic/update293.gmic");
     if (!stdlib.open(QFile::ReadOnly)) {
         gmic_image<char> stdlib_h = gmic::decompress_stdlib();
+        // Need to set this so we don't get a double free
+        stdlib_h._is_shared = true;
         Array = QByteArray::fromRawData(stdlib_h, stdlib_h._width * stdlib_h._height);
         Array[Array.size() - 1] = '\n';
     }
