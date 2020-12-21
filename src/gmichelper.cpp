@@ -18,11 +18,12 @@ void GmicHelper::setUp()
 {
     readFilters();
 
-    gmicInstance = std::unique_ptr<gmic>(new gmic(
-                                             QString("").toLocal8Bit().constData(),
-                                             GmicStdLib::Array.constData(),
-                                             true,
-                                             0, 0, 0.f));
+    gmicInstance = std::shared_ptr<gmic>(new gmic(
+                                          QString("").toLocal8Bit().constData(),
+                                          GmicStdLib::Array.constData(),
+                                          true,
+                                          0, 0, 0.f));
+
 
     //filtersModel.printFilterNames();
 
@@ -53,36 +54,6 @@ void GmicHelper::readFilters()
   }
   FiltersModelReader filterModelReader(filtersModel);
   filterModelReader.parseFiltersDefinitions(GmicStdLib::Array);
-}
-
-void GmicHelper::setCurrentFilter(const QString& hash)
-{
-    if (hash.isEmpty())
-    {
-        currentFilter.clear();
-    }
-    else
-    {
-        if (filtersModel.contains(hash))
-        {
-            const FiltersModel::Filter & filter = filtersModel.getFilterFromHash(hash);
-            currentFilter.command = filter.command();
-            currentFilter.defaultParameterValues = ParametersCache::getValues(hash);
-            currentFilter.defaultVisibilityStates = ParametersCache::getVisibilityStates(hash);
-            currentFilter.defaultInputMode = filter.defaultInputMode();
-            currentFilter.hash = hash;
-            currentFilter.isAFave = false;
-            currentFilter.name = filter.name();
-            currentFilter.plainTextName = filter.plainText();
-            currentFilter.parameters = filter.parameters();
-            currentFilter.previewCommand = filter.previewCommand();
-            currentFilter.isAccurateIfZoomed = filter.isAccurateIfZoomed();
-            currentFilter.previewFactor = filter.previewFactor();
-        } else
-        {
-            currentFilter.clear();
-        }
-    }
 }
 
 void GmicHelper::Filter::clear()

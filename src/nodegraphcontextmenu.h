@@ -29,6 +29,8 @@ class NodeGraphContextMenu : public QMenu
 public:
     NodeGraphContextMenu(NodeGraph* parent);
 
+    ~NodeGraphContextMenu();
+
 private:
     std::vector<QAction*> actions;
 };

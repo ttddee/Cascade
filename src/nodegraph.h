@@ -41,7 +41,7 @@ class NodeGraph : public QGraphicsView
 friend class NodeBaseTest;
 
 public:
-    NodeGraph(QWidget* parent);
+    NodeGraph(QWidget* parent = nullptr);
 
     void createNode(
             const NodeType type,

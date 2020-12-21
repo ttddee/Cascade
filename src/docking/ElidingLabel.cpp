@@ -102,7 +102,7 @@ CElidingLabel::CElidingLabel(const QString& text, QWidget* parent, Qt::WindowFla
 //============================================================================
 CElidingLabel::~CElidingLabel()
 {
-	delete d;
+    delete d;
 }
 
 

@@ -2080,7 +2080,7 @@ void VulkanRenderer::processGmicNode(
 {
     CS_LOG_INFO("Processing GMIC node.");
 
-    auto gmicInstance = GmicHelper::getInstance().getGmicInstance();
+    gmicInstance = GmicHelper::getInstance().getGmicInstance();
 
     int width = targetSize.width();
     int height = targetSize.height();
@@ -2105,6 +2105,7 @@ void VulkanRenderer::processGmicNode(
         CS_LOG_WARNING(QString(err));
     }
 
+    gmic_list<float> gmicList;
     gmicList.assign(1);
 
     gmic_image<float>& gmicImage = gmicList[0];
@@ -2126,7 +2127,7 @@ void VulkanRenderer::processGmicNode(
     QString command = node->getAllPropertyValues();
 
     gmic_list<char> gmicNames;
-    startTimer();
+    //startTimer();
     try
     {
         gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
@@ -2135,7 +2136,7 @@ void VulkanRenderer::processGmicNode(
     {
         std::fprintf(stderr,"ERROR : %s\n",e.what());
     }
-    stopTimerAndPrint("Gmic processing ");
+    //stopTimerAndPrint("Gmic processing ");
 
     std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
 
@@ -2166,7 +2167,7 @@ void VulkanRenderer::processGmicNode(
 
     node->cachedImage = std::move(computeRenderTarget);
 
-    gmicList.assign(0);
+    //gmicList.assign(0);
 
     devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
 

@@ -146,7 +146,7 @@ CDockAreaTabBar::CDockAreaTabBar(CDockAreaWidget* parent) :
 //============================================================================
 CDockAreaTabBar::~CDockAreaTabBar()
 {
-	delete d;
+    delete d;
 }
 
 

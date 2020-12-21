@@ -286,7 +286,7 @@ CFloatingDragPreview::CFloatingDragPreview(CDockAreaWidget* Content)
 //============================================================================
 CFloatingDragPreview::~CFloatingDragPreview()
 {
-	delete d;
+    delete d;
 }
 
 

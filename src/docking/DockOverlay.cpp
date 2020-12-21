@@ -351,7 +351,7 @@ CDockOverlay::CDockOverlay(QWidget* parent, eMode Mode) :
 //============================================================================
 CDockOverlay::~CDockOverlay()
 {
-	delete d;
+    delete d;
 }
 
 

@@ -47,11 +47,10 @@ private:
     GmicHelper() {}
 
     void readFilters();
-    void setCurrentFilter(const QString& hash);
 
-    std::shared_ptr<gmic> gmicInstance;
     FiltersModel filtersModel;
     Filter currentFilter;
+    std::shared_ptr<gmic> gmicInstance;
 
     const std::vector<QString> excludedFilters =
     {

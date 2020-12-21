@@ -341,7 +341,7 @@ CDockWidgetTab::CDockWidgetTab(CDockWidget* DockWidget, QWidget *parent) :
 CDockWidgetTab::~CDockWidgetTab()
 {
     ADS_PRINT("~CDockWidgetTab()");
-	delete d;
+    delete d;
 }
 
 

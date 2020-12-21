@@ -604,10 +604,13 @@ void CDockAreaWidget::setCurrentIndex(int index)
 
 	auto cw = d->ContentsLayout->currentWidget();
 	auto nw = d->ContentsLayout->widget(index);
-	if (cw == nw && !nw->isHidden())
-	{
-		return;
-	}
+    if (cw && nw)
+    {
+        if (cw == nw && !nw->isHidden())
+        {
+            return;
+        }
+    }
 
     emit currentChanging(index);
     TabBar->setCurrentIndex(index);

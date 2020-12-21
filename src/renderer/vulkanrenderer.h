@@ -295,9 +295,10 @@ private:
 
     OCIO::ConstConfigRcPtr ocioConfig;
 
-    gmic_image<float> gmicImage;
-    gmic_list<float> gmicList;
-    gmic_list<char> gmicNames;
+    std::shared_ptr<gmic> gmicInstance;
+    //gmic_image<float> gmicImage;
+    //gmic_list<float> gmicList;
+    //gmic_list<char> gmicNames;
 
 };
 

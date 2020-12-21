@@ -212,7 +212,7 @@ CDockFocusController::CDockFocusController(CDockManager* DockManager) :
 //============================================================================
 CDockFocusController::~CDockFocusController()
 {
-	delete d;
+    delete d;
 }
 
 

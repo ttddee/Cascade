@@ -698,12 +698,12 @@ CFloatingDockContainer::CFloatingDockContainer(CDockWidget *DockWidget) :
 //============================================================================
 CFloatingDockContainer::~CFloatingDockContainer()
 {
-	ADS_PRINT("~CFloatingDockContainer");
-	if (d->DockManager)
-	{
-		d->DockManager->removeFloatingWidget(this);
-	}
-	delete d;
+    ADS_PRINT("~CFloatingDockContainer");
+    if (d->DockManager)
+    {
+        d->DockManager->removeFloatingWidget(this);
+    }
+    delete d;
 }
 
 //============================================================================

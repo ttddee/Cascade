@@ -45,7 +45,7 @@ CIconProvider::CIconProvider() :
 //============================================================================
 CIconProvider::~CIconProvider()
 {
-	delete d;
+    delete d;
 }
 
 

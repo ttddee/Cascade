@@ -39,10 +39,10 @@ MainWindow::MainWindow(QWidget *parent)
 
     dockManager = new CDockManager(this);
 
-    viewerStatusBar = new ViewerStatusBar(this);
+    viewerStatusBar = new ViewerStatusBar();
 
     vulkanView = new VulkanView(viewerStatusBar);
-    vulkanViewDockWidget = new CDockWidget("Viewer");
+    CDockWidget* vulkanViewDockWidget = new CDockWidget("Viewer");
     vulkanViewDockWidget->setWidget(vulkanView);
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);
@@ -54,19 +54,18 @@ MainWindow::MainWindow(QWidget *parent)
     auto gmicHelper = &GmicHelper::getInstance();
     gmicHelper->setUp();
 
-    nodeGraph = new NodeGraph(this);
+    nodeGraph = new NodeGraph();
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    nodeGraphDockWidget = new CDockWidget("Node Graph");
+    CDockWidget* nodeGraphDockWidget = new CDockWidget("Node Graph");
     nodeGraphDockWidget->setWidget(nodeGraph);
     dockManager->addDockWidget(
                 DockWidgetArea::BottomDockWidgetArea,
                 nodeGraphDockWidget,
                 centralDockArea);
 
-
     propertiesView = new PropertiesView();
-    propertiesViewDockWidget = new CDockWidget("Properties");
+    CDockWidget* propertiesViewDockWidget = new CDockWidget("Properties");
     propertiesViewDockWidget->setWidget(propertiesView);
     propertiesViewDockWidget->resize(700, 700);
     dockManager->addDockWidget(

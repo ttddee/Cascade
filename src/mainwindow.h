@@ -70,10 +70,6 @@ private:
     QAction* restoreLayoutAction;
     QAction* restoreDefaultLayoutAction;
 
-    CDockWidget* vulkanViewDockWidget;
-    CDockWidget* nodeGraphDockWidget;
-    CDockWidget* propertiesViewDockWidget;
-
 public slots:
     void handleRendererHasBeenCreated();
     void handleNoGPUFound();

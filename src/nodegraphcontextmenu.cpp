@@ -117,3 +117,11 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         }
     }
 }
+
+NodeGraphContextMenu::~NodeGraphContextMenu()
+{
+    foreach (auto& action, actions)
+    {
+        delete action;
+    }
+}
