@@ -25,7 +25,7 @@
 
 #include "HtmlTranslator.h"
 #include <QDebug>
-#include <QRegularExpression>
+#include <QRegExp>
 #include "CImg.h"
 
 QTextDocument HtmlTranslator::_document;
@@ -42,7 +42,7 @@ QString HtmlTranslator::html2txt(const QString & str, bool force)
 
 bool HtmlTranslator::hasHtmlEntities(const QString & str)
 {
-  return str.contains(QRegularExpression("&[a-zA-Z]+;")) || str.contains(QRegularExpression("&#x?[0-9A-Fa-f]+;")) || str.contains(QRegularExpression("<[a-zA-Z]*>"));
+  return str.contains(QRegExp("&[a-zA-Z]+;")) || str.contains(QRegExp("&#x?[0-9A-Fa-f]+;")) || str.contains(QRegExp("<[a-zA-Z]*>"));
 }
 
 QString HtmlTranslator::fromUtf8Escapes(const QString & str)

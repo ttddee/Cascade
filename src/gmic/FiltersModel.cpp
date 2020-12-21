@@ -30,7 +30,6 @@
 
 #include <QCryptographicHash>
 #include <QDebug>
-#include "FilterTextTranslator.h"
 #include "HtmlTranslator.h"
 
 #include "../log.h"
@@ -164,7 +163,7 @@ FiltersModel::Filter & FiltersModel::Filter::setName(const QString & name)
 {
   _name = name;
   _plainText = HtmlTranslator::html2txt(name, true);
-  _translatedPlainText = HtmlTranslator::html2txt(FilterTextTranslator::translate(name));
+  _translatedPlainText = HtmlTranslator::html2txt(name);
   return *this;
 }
 
@@ -205,7 +204,7 @@ FiltersModel::Filter & FiltersModel::Filter::setPath(const QList<QString> & path
   _translatedPlainPath.clear();
   foreach (const QString & str, _path) {
     _plainPath.push_back(HtmlTranslator::html2txt(str, true));
-    _translatedPlainPath.push_back(HtmlTranslator::html2txt(FilterTextTranslator::translate(str), true));
+    _translatedPlainPath.push_back(HtmlTranslator::html2txt(str, true));
   }
   return *this;
 }

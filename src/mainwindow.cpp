@@ -75,7 +75,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     //--------- Main Menu
 
-    QAction* exitAction = new QAction("Exit");
+    exitAction = new QAction("Exit");
     ui->menuFile->addAction(exitAction);
 
     ui->menuView->addAction(nodeGraphDockWidget->toggleViewAction());
@@ -187,6 +187,11 @@ MainWindow::~MainWindow()
     CS_LOG_CONSOLE("Shutting down");
 
     delete ui;
+
+    delete exitAction;
+    delete saveLayoutAction;
+    delete restoreLayoutAction;
+    delete restoreDefaultLayoutAction;
 
     vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }

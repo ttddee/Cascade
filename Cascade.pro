@@ -45,7 +45,6 @@ SOURCES += \
     src/docking/IconProvider.cpp \
     src/docking/ads_globals.cpp \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
-    src/gmic/FilterTextTranslator.cpp \
     src/gmic/FiltersModel.cpp \
     src/gmic/FiltersModelReader.cpp \
     src/gmic/FiltersVisibilityMap.cpp \
@@ -119,7 +118,6 @@ HEADERS += \
     src/docking/IconProvider.h \
     src/docking/ads_globals.h \
     src/docking/linux/FloatingWidgetTitleBar.h \
-    src/gmic/FilterTextTranslator.h \
     src/gmic/FiltersModel.h \
     src/gmic/FiltersModelReader.h \
     src/gmic/FiltersVisibilityMap.h \

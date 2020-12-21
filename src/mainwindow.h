@@ -66,6 +66,7 @@ private:
 
     ads::CDockManager* dockManager;
 
+    QAction* exitAction;
     QAction* saveLayoutAction;
     QAction* restoreLayoutAction;
     QAction* restoreDefaultLayoutAction;

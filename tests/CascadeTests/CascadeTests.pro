@@ -29,7 +29,6 @@ HEADERS += \
         ../../src/renderer/csimage.h \
         ../../src/csmessagebox.h \
         ../../src/renderer/cssettingsbuffer.h \
-        ../../src/gmic/FilterTextTranslator.h \
         ../../src/gmic/FiltersModel.h \
         ../../src/gmic/FiltersModelReader.h \
         ../../src/gmic/FiltersVisibilityMap.h \
@@ -87,7 +86,6 @@ SOURCES += \
         ../../src/renderer/csimage.cpp \
         ../../src/csmessagebox.cpp \
         ../../src/renderer/cssettingsbuffer.cpp \
-        ../../src/gmic/FilterTextTranslator.cpp \
         ../../src/gmic/FiltersModel.cpp \
         ../../src/gmic/FiltersModelReader.cpp \
         ../../src/gmic/FiltersVisibilityMap.cpp \

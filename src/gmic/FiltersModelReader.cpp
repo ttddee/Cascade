@@ -29,7 +29,6 @@
 #include <QFileInfo>
 #include <QList>
 #include <QLocale>
-#include <QRegularExpression>
 #include <QSettings>
 #include <QString>
 #include <QRegExp>
