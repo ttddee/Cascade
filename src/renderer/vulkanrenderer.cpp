@@ -105,9 +105,9 @@ void VulkanRenderer::initResources()
     try
     {
         const char* file = "ocio/config.ocio";
-        ocioConfig = OpenColorIO::Config::CreateFromFile(file);
+        ocioConfig = OCIO::Config::CreateFromFile(file);
     }
-    catch(OpenColorIO::Exception& exception)
+    catch(OCIO::Exception& exception)
     {
         CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
     }

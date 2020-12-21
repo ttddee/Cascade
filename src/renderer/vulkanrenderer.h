@@ -293,7 +293,7 @@ private:
 
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
-    OpenColorIO::ConstConfigRcPtr ocioConfig;
+    OCIO::ConstConfigRcPtr ocioConfig;
 
     gmic_image<float> gmicImage;
     gmic_list<float> gmicList;
