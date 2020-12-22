@@ -299,6 +299,9 @@ win32-g++ {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/avformat-58.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/avutil-56.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libField3D-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgif-7.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libhdf5-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libheif-1.dll)
     dlls.path = $$DESTDIR
 }
 
