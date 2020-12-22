@@ -45,13 +45,13 @@ git clone https://github.com/ttddee/Cascade
 
 Install the following with your package manager of choice:
 
-- Qt >= 5.10
-- OpenImageIO
-- Gmic
-- CImg
-- Vulkan Headers
-- GTest
-- Intel TBB
+- **Qt** >= 5.10
+- **OpenImageIO**
+- **Gmic**
+- **CImg**
+- **Vulkan Headers**
+- **GTest**
+- **Intel TBB**
 
 The easiest is building the project in QtCreator. Open the project file **Cascade.pro** and you should be good to go.
 

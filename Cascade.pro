@@ -212,7 +212,7 @@ linux-g++ {
 
 win32-g++ {
     DEPENDENCY_ROOT = C:/msys64/mingw64
-    QT_ROOT = C:/Qt515/5.15.1/mingw81_64
+    QT_ROOT = C:/Qt/5.15.2/mingw81_64
     TEMP_ROOT = C:/msys64/home/till/temp
 
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO
