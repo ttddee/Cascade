@@ -302,6 +302,11 @@ win32-g++ {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgif-7.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libhdf5-0.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libheif-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_core450.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_videoio450.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_imgproc450.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_imgcodecs450.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libbrotlidec.dll)
     dlls.path = $$DESTDIR
 }
 
