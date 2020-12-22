@@ -3,11 +3,11 @@
 
 #include <QString>
 
-#include <OpenColorIO/OpenColorIO.h>
+//#include <OpenColorIO/OpenColorIO.h>
 #include <OpenImageIO/imagebuf.h>
 #include <tbb/tbb.h>
 
-namespace OCIO = OCIO_NAMESPACE;
+//namespace OCIO = OCIO_NAMESPACE;
 using namespace OIIO;
 using namespace tbb;
 
@@ -33,39 +33,39 @@ void parallelArrayCopy(const float* src, float* dst, size_t width, size_t height
 
 }
 
-void applyColorToScanline(
-        OCIO::ConstProcessorRcPtr processor,
-        float* pStart,
-        int idx,
-        int lineWidth)
-{
-    OCIO::PackedImageDesc desc(
-                pStart + idx * lineWidth * 4,
-                lineWidth,
-                1,
-                4);
-    processor->apply(desc);
-}
+//void applyColorToScanline(
+//        OCIO::ConstProcessorRcPtr processor,
+//        float* pStart,
+//        int idx,
+//        int lineWidth)
+//{
+//    OCIO::PackedImageDesc desc(
+//                pStart + idx * lineWidth * 4,
+//                lineWidth,
+//                1,
+//                4);
+//    processor->apply(desc);
+//}
 
-void parallelApplyColorSpace(
-        OCIO::ConstConfigRcPtr ocioConfig,
-        const QString& sourceColor,
-        const QString& dstColor,
-        float* pStart,
-        int width,
-        int height)
-{
-    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(
-                sourceColor.toLocal8Bit(), dstColor.toLocal8Bit());
+//void parallelApplyColorSpace(
+//        OCIO::ConstConfigRcPtr ocioConfig,
+//        const QString& sourceColor,
+//        const QString& dstColor,
+//        float* pStart,
+//        int width,
+//        int height)
+//{
+//    OCIO::ConstProcessorRcPtr processor = ocioConfig->getProcessor(
+//                sourceColor.toLocal8Bit(), dstColor.toLocal8Bit());
 
-    parallel_for(blocked_range<size_t>(0, height),
-        [=](const tbb::blocked_range<size_t>& r)
-    {
-        for(size_t i = r.begin(); i!=r.end(); ++i)
+//    parallel_for(blocked_range<size_t>(0, height),
+//        [=](const tbb::blocked_range<size_t>& r)
+//    {
+//        for(size_t i = r.begin(); i!=r.end(); ++i)
 
-            applyColorToScanline(processor, pStart, i, width);
-    });
-}
+//            applyColorToScanline(processor, pStart, i, width);
+//    });
+//}
 
 }
 

@@ -28,7 +28,7 @@
 #include <OpenImageIO/imagebuf.h>
 #include <OpenImageIO/imagebufalgo.h>
 #include <OpenImageIO/color.h>
-#include <OpenColorIO/OpenColorIO.h>
+//#include <OpenColorIO/OpenColorIO.h>
 
 #include <gmic.h>
 
@@ -40,7 +40,7 @@
 
 using namespace Cascade;
 using namespace OIIO;
-namespace OCIO = OCIO_NAMESPACE;
+//namespace OCIO = OCIO_NAMESPACE;
 
 class VulkanWindow;
 
@@ -293,7 +293,7 @@ private:
 
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
-    OCIO::ConstConfigRcPtr ocioConfig;
+    //OCIO::ConstConfigRcPtr ocioConfig;
 
     std::shared_ptr<gmic> gmicInstance;
     //gmic_image<float> gmicImage;

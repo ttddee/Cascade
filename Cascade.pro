@@ -194,20 +194,20 @@ FORMS += \
 
 linux-g++ {
     LIBS += -L /usr/lib -lOpenImageIO
-    LIBS += -L /usr/lib -lOpenColorIO
+    #LIBS += -L /usr/lib -lOpenColorIO
     LIBS += -L /usr/lib -lgmic
     LIBS += -L /usr/lib -ltbb
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD
 
-    COPIES += ocio
-    ocio.files += $$files(ocio/config.ocio)
-    ocio.path = $$DESTDIR/ocio
+#    COPIES += ocio
+#    ocio.files += $$files(ocio/config.ocio)
+#    ocio.path = $$DESTDIR/ocio
 
-    COPIES += luts
-    luts.files += $$files(ocio/luts/*)
-    luts.path = $$DESTDIR/ocio/luts
+#    COPIES += luts
+#    luts.files += $$files(ocio/luts/*)
+#    luts.path = $$DESTDIR/ocio/luts
 }
 
 win32-g++ {
@@ -225,13 +225,13 @@ win32-g++ {
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 
-    COPIES += ocio
-    ocio.files += $$files(ocio/config.ocio)
-    ocio.path = $$DESTDIR/ocio
+#    COPIES += ocio
+#    ocio.files += $$files(ocio/config.ocio)
+#    ocio.path = $$DESTDIR/ocio
 
-    COPIES += luts
-    luts.files += $$files(ocio/luts/*)
-    luts.path = $$DESTDIR/ocio/luts
+#    COPIES += luts
+#    luts.files += $$files(ocio/luts/*)
+#    luts.path = $$DESTDIR/ocio/luts
 
     COPIES += license
     license.files += $$files(LICENSE)
@@ -259,7 +259,7 @@ win32-g++ {
     dlls.files += $$files($$QT_ROOT/bin/Qt5Core.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO_Util.dll)
-    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenColorIO.dll)
+    #dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenColorIO.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_filesystem-mt.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_system-mt.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_thread-mt.dll)

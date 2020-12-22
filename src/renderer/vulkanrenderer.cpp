@@ -102,15 +102,15 @@ void VulkanRenderer::initResources()
                 f));
 
     /// Load OCIO config
-    try
-    {
-        const char* file = "ocio/config.ocio";
-        ocioConfig = OCIO::Config::CreateFromFile(file);
-    }
-    catch(OCIO::Exception& exception)
-    {
-        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
-    }
+//    try
+//    {
+//        const char* file = "ocio/config.ocio";
+//        ocioConfig = OCIO::Config::CreateFromFile(file);
+//    }
+//    catch(OCIO::Exception& exception)
+//    {
+//        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
+//    }
 
     emit window->rendererHasBeenCreated();
 }
@@ -573,7 +573,8 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
+    //transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
+    transformColorSpace("sRGB", "linear", *cpuImage);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
@@ -773,13 +774,14 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
-    parallelApplyColorSpace(
-                ocioConfig,
-                from,
-                to,
-                static_cast<float*>(image.localpixels()),
-                image.xend(),
-                image.yend());
+    image = ImageBufAlgo::colorconvert(image, from.toStdString(), to.toStdString(), true);
+//    parallelApplyColorSpace(
+//                ocioConfig,
+//                from,
+//                to,
+//                static_cast<float*>(image.localpixels()),
+//                image.xend(),
+//                image.yend());
 }
 
 void VulkanRenderer::createComputeDescriptors()
@@ -1855,7 +1857,8 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
+    //transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
+    transformColorSpace("linear", "sRGB", *saveImage);
 
     success = saveImage->write(path.toStdString());
 
@@ -2044,7 +2047,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 {
     auto parts = node->getAllPropertyValues().split(",");
     QString path = parts[0];
-    int colorSpace = parts[1].toInt();
+    int colorSpace = 1; // parts[1].toInt();
 
     if(path != "")
     {
@@ -2420,87 +2423,104 @@ void VulkanRenderer::cleanup()
     }
 
     if (queryPool) {
+        CS_LOG_INFO("Destroying queryPool");
         devFuncs->vkDestroyQueryPool(device, queryPool, nullptr);
         queryPool = VK_NULL_HANDLE;
     }
 
     if (sampler) {
+        CS_LOG_INFO("Destroying sampler");
         devFuncs->vkDestroySampler(device, sampler, nullptr);
         sampler = VK_NULL_HANDLE;
     }
 
     if (loadImageStaging) {
+        CS_LOG_INFO("Destroying loadImageStaging");
         devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
         loadImageStaging = VK_NULL_HANDLE;
     }
 
     if (loadImageStagingMem) {
+        CS_LOG_INFO("Destroying loadImageStagingMem");
         devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
         loadImageStagingMem = VK_NULL_HANDLE;
     }
 
     if (graphicsPipelineAlpha) {
+        CS_LOG_INFO("Destroying graphicsPipelineAlpha");
         devFuncs->vkDestroyPipeline(device, graphicsPipelineAlpha, nullptr);
         graphicsPipelineAlpha = VK_NULL_HANDLE;
     }
 
     if (graphicsPipelineRGB) {
+        CS_LOG_INFO("Destroying graphicsPipelineRGB");
         devFuncs->vkDestroyPipeline(device, graphicsPipelineRGB, nullptr);
         graphicsPipelineRGB = VK_NULL_HANDLE;
     }
 
     if (graphicsPipelineLayout) {
+        CS_LOG_INFO("Destroying graphicsPipelineLayout");
         devFuncs->vkDestroyPipelineLayout(device, graphicsPipelineLayout, nullptr);
         graphicsPipelineLayout = VK_NULL_HANDLE;
     }
 
     if (pipelineCache) {
+        CS_LOG_INFO("Destroying pipelineCache");
         devFuncs->vkDestroyPipelineCache(device, pipelineCache, nullptr);
         pipelineCache = VK_NULL_HANDLE;
     }
 
     if (graphicsDescriptorSetLayout) {
+        CS_LOG_INFO("Destroying graphicsDescriptorSetLayout");
         devFuncs->vkDestroyDescriptorSetLayout(device, graphicsDescriptorSetLayout, nullptr);
         graphicsDescriptorSetLayout = VK_NULL_HANDLE;
     }
 
     if (descriptorPool) {
+        CS_LOG_INFO("Destroying descriptorPool");
         devFuncs->vkDestroyDescriptorPool(device, descriptorPool, nullptr);
         descriptorPool = VK_NULL_HANDLE;
     }
 
     if (outputStagingBuffer) {
+        CS_LOG_INFO("Destroying outputStagingBuffer");
         devFuncs->vkDestroyBuffer(device, outputStagingBuffer, nullptr);
         outputStagingBuffer = VK_NULL_HANDLE;
     }
 
     if (outputStagingBufferMemory) {
+        CS_LOG_INFO("Destroying outputStagingBufferMemory");
         devFuncs->vkFreeMemory(device, outputStagingBufferMemory, nullptr);
         outputStagingBufferMemory = VK_NULL_HANDLE;
     }
 
     if (vertexBuffer) {
+        CS_LOG_INFO("Destroying vertexBuffer");
         devFuncs->vkDestroyBuffer(device, vertexBuffer, nullptr);
         vertexBuffer = VK_NULL_HANDLE;
     }
 
     if (vertexBufferMemory) {
+        CS_LOG_INFO("Destroying vertexBufferMemory");
         devFuncs->vkFreeMemory(device, vertexBufferMemory, nullptr);
         vertexBufferMemory = VK_NULL_HANDLE;
     }
 
     if (computeDescriptorSetLayoutGeneric) {
+        CS_LOG_INFO("Destroying computeDescriptorSetLayoutGeneric");
         devFuncs->vkDestroyDescriptorSetLayout(device, computeDescriptorSetLayoutGeneric, nullptr);
         computeDescriptorSetLayoutGeneric = VK_NULL_HANDLE;
     }
 
     // Destroy compute pipelines
     if (computePipelineNoop) {
+        CS_LOG_INFO("Destroying computePipelineNoop");
         devFuncs->vkDestroyPipeline(device, computePipelineNoop, nullptr);
         computePipelineNoop = VK_NULL_HANDLE;
     }
 
     if (computePipeline) {
+        CS_LOG_INFO("Destroying computePipeline");
         devFuncs->vkDestroyPipeline(device, computePipeline, nullptr);
         computePipeline = VK_NULL_HANDLE;
     }
@@ -2508,22 +2528,26 @@ void VulkanRenderer::cleanup()
     foreach (auto pipeline, pipelines.keys())
     {
         if (pipelines.value(pipeline)) {
+            CS_LOG_INFO("Destroying some pipeline");
             devFuncs->vkDestroyPipeline(device, pipelines.value(pipeline), nullptr);
         }
     }
 
     if (computePipelineLayoutGeneric) {
+        CS_LOG_INFO("Destroying computePipelineLayoutGeneric");
         devFuncs->vkDestroyPipelineLayout(device, computePipelineLayoutGeneric, nullptr);
         computePipelineLayoutGeneric = VK_NULL_HANDLE;
     }
 
     if (compute.fence) {
+        CS_LOG_INFO("Destroying fence");
         devFuncs->vkDestroyFence(device, compute.fence, nullptr);
         compute.fence = VK_NULL_HANDLE;
     }
 
     if (compute.computeCommandPool)
     {
+        CS_LOG_INFO("Destroying commandBuffers");
         VkCommandBuffer buffers[3]=
         {
             compute.commandBufferImageLoad,
@@ -2534,11 +2558,6 @@ void VulkanRenderer::cleanup()
         devFuncs->vkDestroyCommandPool(device, compute.computeCommandPool, nullptr);
     }
 
-    if (device)
-    {
-        devFuncs->vkDestroyDevice(device, nullptr);
-        device = nullptr;
-    }
 }
 
 void VulkanRenderer::releaseResources()
