@@ -212,7 +212,7 @@ linux-g++ {
 
 win32-g++ {
     DEPENDENCY_ROOT = C:/msys64/mingw64
-    QT_ROOT = C:/Qt/5.15.2/mingw81_64
+    QT_ROOT = C:\msys64\home\till\qt515\5.15.1\mingw81_64
     TEMP_ROOT = C:/msys64/home/till/temp
 
     LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenImageIO
@@ -259,7 +259,7 @@ win32-g++ {
     dlls.files += $$files($$QT_ROOT/bin/Qt5Core.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenImageIO_Util.dll)
-    #dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenColorIO.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libOpenColorIO.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_filesystem-mt.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_system-mt.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libboost_thread-mt.dll)
@@ -307,157 +307,82 @@ win32-g++ {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_imgproc450.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencv_imgcodecs450.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libbrotlidec.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopenblas.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libcrypto-1_1-x64.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libidn2-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libnghttp2-14.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpsl-5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libssh2-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libssl-1_1-x64.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libzstd.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopenjp2-7.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopenvdb.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libPtex.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpugixml.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libraw-20.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libsquish.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/swscale-5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libwebp-7.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libfreetype-6.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libaom.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libcelt0-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libdav1d.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgsm.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libiconv-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libbluray-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgnutls-30.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libbz2-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/liblzma-5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libmodeplug-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/librtmp-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libsrt-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libxml2-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libmfx.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libmp3lame-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencore-amrnb-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopencore-amrwb-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libspeex-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libopus-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libtheoradec-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libtheoraenc-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libvorbisenc-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libvorbis-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libwavpack-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libvpx-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libwebpmux-3.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libx264-159.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/swresample-3.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libde265-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libblosc.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/liblcms2-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libjasper-4.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libhogweed-6.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgmp-10.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libnettle-8.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libtasn1-6.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libp11-kit-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libbrotlicommon.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libogg-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgraphite2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libglib-2.0-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libiconv-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libx265.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgsm.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/xvidcore.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libszip.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libintl-8.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libffi-7.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpcre-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libgfortran-5.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libquadmath-0.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libltdl-7.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libmodplug-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libsrt.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libmfx-1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libunistring-2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/liblz4.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/libvulkan-1.dll)
     dlls.path = $$DESTDIR
-}
-
-win32-msvc* {
-    VCPKG_INSTALL_PATH = "C:/Users/ryzen/vcpkg"
-    QT_INSTALL_PATH = "C:/Qt515/5.15.1"
-    MSVC_INSTALL_PATH = "C:/Program Files (x86)/Microsoft Visual Studio/2019/Community/VC/Tools/MSVC/14.27.29110/bin/Hostx64/x64"
-
-    INCLUDEPATH += $$VCPKG_INSTALL_PATH/installed/x64-windows/include
-    INCLUDEPATH += ../external/qtadvanceddocking/src
-    INCLUDEPATH += ../external/gmic/include
-
-    CONFIG(release, debug|release) {
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenImageIO
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lOpenColorIO
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -ltbb
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -llibpng16
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/lib -lzlib
-        LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddocking
-        LIBS += -L../external/gmic/lib -lgmic
-    }
-    CONFIG(debug, debug|release) {
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenImageIO
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lOpenColorIO
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -ltbb_debug
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -llibpng16d
-        LIBS += -L$$VCPKG_INSTALL_PATH/installed/x64-windows/debug/lib -lzlibd
-        LIBS += -L../external/qtadvanceddocking/build/lib -lqtadvanceddockingd
-        LIBS += -L../external/gmic/debug/lib -lgmic
-    }
-
-    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
-    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-
-    COPIES += dlls
-    dlls.files += $$files($$MSVC_INSTALL_PATH/vcruntime140.dll)
-    dlls.files += $$files($$MSVC_INSTALL_PATH/vcruntime140_1.dll)
-    dlls.files += $$files($$MSVC_INSTALL_PATH/msvcp140.dll)
-    dlls.files += $$files($$MSVC_INSTALL_PATH/concrt140.dll)
-    dlls.files += $$files($$MSVC_INSTALL_PATH/msvcp140_1.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/opengl32sw.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Svg.dll)
-
-    CONFIG(release, debug|release) {
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/OpenImageIO.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/OpenImageIO_Util.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/OpenColorIO.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Widgets.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Gui.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Core.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/boost_filesystem-vc142-mt-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/boost_system-vc142-mt-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/boost_thread-vc142-mt-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/boost_chrono-vc142-mt-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/boost_date_time-vc142-mt-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/zlib1.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/jpeg62.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/libpng16.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/IlmImf-2_5.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/Imath-2_5.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/Iex-2_5.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/Half-2_5.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/IlmThread-2_5.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/tiff.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/lzma.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/yaml-cpp.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/bin/tbb.dll)
-    dlls.files += $$files($$DESTDIR/../../external/qtadvanceddocking/build/lib/qtadvanceddocking.dll)
-    }
-
-    CONFIG(debug, debug|release) {
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/OpenImageIO.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/OpenImageIO_Util.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/OpenColorIO.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Widgetsd.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Guid.dll)
-    dlls.files += $$files($$QT_INSTALL_PATH/msvc2019_64/bin/Qt5Cored.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/boost_filesystem-vc142-mt-gd-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/boost_system-vc142-mt-gd-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/boost_thread-vc142-mt-gd-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/boost_chrono-vc142-mt-gd-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/boost_date_time-vc142-mt-gd-x64-1_74.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/zlibd1.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/jpeg62.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/libpng16d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/IlmImf-2_5_d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/Imath-2_5_d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/Iex-2_5_d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/Half-2_5_d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/IlmThread-2_5_d.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/tiffd.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/lzmad.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/yaml-cpp.dll)
-    dlls.files += $$files($$VCPKG_INSTALL_PATH/installed/x64-windows/debug/bin/tbb_debug.dll)
-    dlls.files += $$files($$DESTDIR/../../external/qtadvanceddocking/build/lib/qtadvanceddockingd.dll)
-    }
-    dlls.path = $$DESTDIR
-
-    CONFIG(release, debug|release) {
-    COPIES += platforms
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qdirect2d.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qminimal.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qoffscreen.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qwebgl.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qwindows.dll)
-    platforms.path = $$DESTDIR/platforms
-
-    COPIES += iconengines
-    iconengines.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/iconengines/qsvgicon.dll)
-    iconengines.path = $$DESTDIR/iconengines
-
-    COPIES += styles
-    styles.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/styles/qwindowsvistastyle.dll)
-    styles.path = $$DESTDIR/styles
-    }
-
-    CONFIG(debug, debug|release) {
-    COPIES += platforms
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qdirect2dd.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qminimald.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qoffscreend.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qwebgld.dll)
-    platforms.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/platforms/qwindowsd.dll)
-    platforms.path = $$DESTDIR/platforms
-
-    COPIES += iconengines
-    iconengines.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/iconengines/qsvgicond.dll)
-    iconengines.path = $$DESTDIR\iconengines
-
-    COPIES += styles
-    styles.files += $$files($$QT_INSTALL_PATH/msvc2019_64/plugins/styles/qwindowsvistastyled.dll)
-    styles.path = $$DESTDIR/styles
-    }
-
-    COPIES += ocio
-    ocio.files += $$files($$DESTDIR/../../ocio/config.ocio)
-    ocio.path = $$DESTDIR/ocio
-
-    COPIES += luts
-    luts.files += $$files($$DESTDIR/../../ocio/luts/*)
-    luts.path = $$DESTDIR/ocio/luts
-
-    COPIES += license
-    license.files += $$files($$DESTDIR/../../LICENSE)
-    license.path = $$DESTDIR
-
-    #COPIES += plugins
-    #plugins.files += $$files($$DESTDIR/../../plugins/ofx)
-    #plugins.path = $$DESTDIR/plugins
-
-    INSTALLS += plugins
 }
 
 RESOURCES += \
