@@ -1383,6 +1383,9 @@ bool VulkanRenderer::writeLinearImage(
     VkSubresourceLayout layout;
     devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
 
+    CS_LOG_INFO("RowPitch: ");
+    CS_LOG_INFO(QString::number(layout.rowPitch));
+
     float *p;
     VkResult err = devFuncs->vkMapMemory(
                 device,
@@ -1398,12 +1401,7 @@ bool VulkanRenderer::writeLinearImage(
     }
 
     //startTimer();
-    // TODO: Why is this??????
-    int pad = 0;
-    if (imgSize.width() % 2 != 0)
-    {
-        pad = 4;
-    }
+    int pad = (layout.rowPitch - imgSize.width() * 16) / 4;
 
     // TODO: Parallelize this
     float* pixels = imgStart;
@@ -1459,11 +1457,7 @@ bool VulkanRenderer::writeGmicToLinearImage(
     float* pixels = imgStart;
     int quarter = imgSize.width() * imgSize.height();
 
-    int pad = 0;
-    if (imgSize.width() % 2 != 0)
-    {
-        pad = 4;
-    }
+    int pad = (layout.rowPitch - imgSize.width() * 16) / 4;
 
     if (channels == 3)
     {
@@ -1471,9 +1465,10 @@ bool VulkanRenderer::writeGmicToLinearImage(
         {
             for (int j = 0; j < imgSize.width(); j++)
             {
-                *(p) = *(pixels++) / 256.0;
+                *(p) = *(pixels) / 256.0;
                 *(p + 1) = *(pixels + quarter) / 256.0;
                 *(p + 2) = *(pixels + quarter * 2) / 256.0;
+                pixels++;
                 p+=4;
             }
             p += pad;
@@ -1485,10 +1480,11 @@ bool VulkanRenderer::writeGmicToLinearImage(
         {
             for (int j = 0; j < imgSize.width(); j++)
             {
-                *(p) = *(pixels++) / 256.0;
+                *(p) = *(pixels) / 256.0;
                 *(p + 1) = *(pixels + quarter) / 256.0;
                 *(p + 2) = *(pixels + quarter * 2) / 256.0;
                 *(p + 3) = *(pixels + quarter * 3) / 256.0;
+                pixels++;
                 p+=4;
             }
             p += pad;
