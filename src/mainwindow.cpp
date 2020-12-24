@@ -95,6 +95,9 @@ MainWindow::MainWindow(QWidget *parent)
     restoreDefaultLayoutAction = new QAction("Restore Default Layout");
     //ui->menuView->addAction(restoreDefaultLayoutAction);
 
+    shortcutsAction = new QAction("Shortcuts");
+    ui->menuHelp->addAction(shortcutsAction);
+
     connect(exitAction, &QAction::triggered,
             QApplication::instance(), QCoreApplication::quit, Qt::QueuedConnection);
     connect(saveLayoutAction, &QAction::triggered,
@@ -103,6 +106,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::restoreUserLayout);
     connect(restoreDefaultLayoutAction, &QAction::triggered,
             this, &MainWindow::restoreDefaultLayout);
+    connect(shortcutsAction, &QAction::triggered,
+            this, &MainWindow::displayShortcuts);
 
     //--------- End Main Menu
 
@@ -181,6 +186,27 @@ void MainWindow::handleDeviceLost()
     QApplication::quit();
 }
 
+void MainWindow::displayShortcuts()
+{
+    CsMessageBox messageBox;
+    messageBox.setMinimumSize(600, 400);
+    messageBox.setWindowTitle("Shortcuts");
+    messageBox.setText("\n"
+                       "F1 - View selected node front input\n"
+                       "\n"
+                       "F2 - View selected node back input\n"
+                       "\n"
+                       "F3 - View selected node alpha input\n"
+                       "\n"
+                       "F4 - Toggle between selected node RGB output and alpha output\n"
+                       "\n"
+                       "Delete - Delete selected node\n"
+                       "\n"
+                       "Ctrl + Left Click - Reset slider to default\n"
+                       );
+    messageBox.exec();
+}
+
 MainWindow::~MainWindow()
 {
     CS_LOG_INFO("Shutting down");
@@ -192,6 +218,7 @@ MainWindow::~MainWindow()
     delete saveLayoutAction;
     delete restoreLayoutAction;
     delete restoreDefaultLayoutAction;
+    delete shortcutsAction;
 
     vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }

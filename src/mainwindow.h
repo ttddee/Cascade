@@ -54,6 +54,7 @@ private:
     void saveUserLayout();
     void restoreUserLayout();
     void restoreDefaultLayout();
+    void displayShortcuts();
 
     Ui::MainWindow *ui;
     VulkanView* vulkanView;
@@ -70,6 +71,7 @@ private:
     QAction* saveLayoutAction;
     QAction* restoreLayoutAction;
     QAction* restoreDefaultLayoutAction;
+    QAction* shortcutsAction;
 
 public slots:
     void handleRendererHasBeenCreated();

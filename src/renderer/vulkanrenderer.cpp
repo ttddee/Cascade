@@ -1383,9 +1383,6 @@ bool VulkanRenderer::writeLinearImage(
     VkSubresourceLayout layout;
     devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
 
-    CS_LOG_INFO("RowPitch: ");
-    CS_LOG_INFO(QString::number(layout.rowPitch));
-
     float *p;
     VkResult err = devFuncs->vkMapMemory(
                 device,
