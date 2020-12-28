@@ -578,14 +578,14 @@ void CDockAreaTitleBar::contextMenuEvent(QContextMenuEvent* ev)
 		return;
 	}
 
-	QMenu Menu(this);
-	auto Action = Menu.addAction(tr("Detach Group"), this, SLOT(onUndockButtonClicked()));
-	Action->setEnabled(d->DockArea->features().testFlag(CDockWidget::DockWidgetFloatable));
-	Menu.addSeparator();
-	Action = Menu.addAction(tr("Close Group"), this, SLOT(onCloseButtonClicked()));
-	Action->setEnabled(d->DockArea->features().testFlag(CDockWidget::DockWidgetClosable));
-	Menu.addAction(tr("Close Other Groups"), d->DockArea, SLOT(closeOtherAreas()));
-	Menu.exec(ev->globalPos());
+//	QMenu Menu(this);
+//	auto Action = Menu.addAction(tr("Detach Group"), this, SLOT(onUndockButtonClicked()));
+//	Action->setEnabled(d->DockArea->features().testFlag(CDockWidget::DockWidgetFloatable));
+//	Menu.addSeparator();
+//	Action = Menu.addAction(tr("Close Group"), this, SLOT(onCloseButtonClicked()));
+//	Action->setEnabled(d->DockArea->features().testFlag(CDockWidget::DockWidgetClosable));
+//	Menu.addAction(tr("Close Other Groups"), d->DockArea, SLOT(closeOtherAreas()));
+//	Menu.exec(ev->globalPos());
 }
 
 
