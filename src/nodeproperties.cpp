@@ -42,6 +42,7 @@
 #include "uientities/lineeditentity.h"
 #include "uientities/folderboxentity.h"
 #include "uientities/uientity.h"
+#include "uientities/resizepropertiesentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -265,6 +266,20 @@ NodeProperties::NodeProperties(
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_RESIZE_PROPERTIES)
+        {
+            ResizePropertiesEntity* item = new ResizePropertiesEntity(
+                        UI_ELEMENT_TYPE_SIZEBOX,
+                        this);
+            item->selfConnectToValueChanged(this);
+            item->setParentNode(parentNode);
+            layout->addWidget(item);
+            widgets.push_back(item);
+            parentNode->setHasCustomSize(item);
+
+            connect(parentNode, &NodeBase::nodeRequestUpdate,
+                    item, &ResizePropertiesEntity::handleNodeRequestUpdate);
         }
     }
 }

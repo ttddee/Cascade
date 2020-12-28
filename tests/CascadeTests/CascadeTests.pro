@@ -65,6 +65,7 @@ HEADERS += \
         ../../src/uientities/folderboxentity.h \
         ../../src/uientities/gmicpropertiesentity.h \
         ../../src/uientities/lineeditentity.h \
+        ../../src/uientities/resizepropertiesentity.h \
         ../../src/uientities/separatorentity.h \
         ../../src/uientities/sizeboxentity.h \
         ../../src/uientities/spinboxentity.h \
@@ -76,7 +77,8 @@ HEADERS += \
         ../../src/renderer/vulkanrenderer.h \
         ../../src/vulkanview.h \
         ../../src/vulkanwindow.h \
-        ../../src/windowmanager.h
+        ../../src/windowmanager.h \
+        tst_resizepropertiesentitytests.h
 
 
 SOURCES += \
@@ -118,6 +120,7 @@ SOURCES += \
         ../../src/uientities/folderboxentity.cpp \
         ../../src/uientities/gmicpropertiesentity.cpp \
         ../../src/uientities/lineeditentity.cpp \
+        ../../src/uientities/resizepropertiesentity.cpp \
         ../../src/uientities/separatorentity.cpp \
         ../../src/uientities/sizeboxentity.cpp \
         ../../src/uientities/spinboxentity.cpp \
@@ -146,6 +149,7 @@ FORMS += \
         ../../src/uientities/folderboxentity.ui \
         ../../src/uientities/gmicpropertiesentity.ui \
         ../../src/uientities/lineeditentity.ui \
+        ../../src/uientities/resizepropertiesentity.ui \
         ../../src/uientities/separatorentity.ui \
         ../../src/uientities/sizeboxentity.ui \
         ../../src/uientities/spinboxentity.ui \

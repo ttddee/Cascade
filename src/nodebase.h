@@ -106,6 +106,7 @@ public:
     const QString& getGmicHash() const;
 
     NodeInput* getOpenInput();
+    QSize getInputSize();
 
     void setGmicNodeType(const QString& type);
     void setGmicHash(const QString& hash);
@@ -127,7 +128,6 @@ private:
 
     void updateCropSizes();
     void updateRotation();
-    void updateResizeFactor();
 
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
@@ -170,8 +170,6 @@ private:
     int bottomCrop = 0;
 
     int rotation = 0;
-
-    float resizeFactor = 1.0;
 
     const int cornerRadius = 3;
     const QBrush defaultColorBrush = QBrush(QColor(0x28, 0x2d, 0x31));

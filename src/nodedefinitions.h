@@ -113,7 +113,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_TEXTBROWSER,
         UI_ELEMENT_TYPE_SEPARATOR,
         UI_ELEMENT_TYPE_LINEEDIT,
-        UI_ELEMENT_TYPE_FOLDERBOX
+        UI_ELEMENT_TYPE_FOLDERBOX,
+        UI_ELEMENT_TYPE_RESIZE_PROPERTIES
     };
 
     ////////////////////////////////////
@@ -333,7 +334,8 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RESIZE] },
-            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Factor,0.1,2.0,0.01,1.0" }
+            { UI_ELEMENT_TYPE_RESIZE_PROPERTIES, "" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Filter,Bicubic,Lanczos,Bilinear,0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

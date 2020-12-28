@@ -1,5 +1,6 @@
 #include "tst_nodebasetests.h"
 #include "tst_cssliderboxtests.h"
+#include "tst_resizepropertiesentitytests.h"
 
 #include <QApplication>
 

@@ -210,10 +210,6 @@ void NodeBase::requestUpdate()
     {
         updateRotation();
     }
-    else if (nodeType == NODE_TYPE_RESIZE)
-    {
-        updateResizeFactor();
-    }
 
     needsUpdate = true;
     invalidateAllDownstreamNodes();
@@ -237,8 +233,28 @@ void NodeBase::setHasCustomSize(UiEntity* source)
     sizeSource = source;
 }
 
+QSize NodeBase::getInputSize()
+{
+    auto upstreamNode = getUpstreamNodeBack();
+
+    QSize size(0, 0);
+    if (upstreamNode)
+    {
+        auto upstreamImage = upstreamNode->cachedImage;
+
+        if (upstreamImage)
+        {
+            size.setWidth(upstreamImage->getWidth());
+            size.setHeight(upstreamImage->getHeight());
+        }
+    }
+    return size;
+}
+
 QSize NodeBase::getTargetSize()
 {
+    QSize size(0, 0);
+
     if (hasCustomSize)
     {
         auto s = getCustomSize();
@@ -252,62 +268,30 @@ QSize NodeBase::getTargetSize()
         }
     }
 
-    auto upstreamNode = getUpstreamNodeBack();
+    size = getInputSize();
 
-    if (upstreamNode)
+    if (nodeType == NODE_TYPE_CROP)
     {
-        auto upstreamImage = upstreamNode->cachedImage;
-
-        if (upstreamImage)
+        // Crop
+        size.setWidth(size.width() - leftCrop - rightCrop);
+        size.setHeight(size.height() - topCrop - bottomCrop);
+        if(size.width() < 0)
         {
-            int w = upstreamImage->getWidth();
-            int h = upstreamImage->getHeight();
-
-            if (nodeType == NODE_TYPE_CROP)
-            {
-                // Crop
-                w = w - leftCrop - rightCrop;
-                h = h - topCrop - bottomCrop;
-                if(w < 0)
-                {
-                    w = 0;
-                }
-                if (h < 0)
-                {
-                    h = 0;
-                }
-            }
-
-            // TODO: this
-            // Rotation
-//            if (rotation < 90 || (rotation > 180 && rotation < 270))
-//            {
-//                w = abs((w * cos(rotation) + (h * sin(rotation))));
-//                h = abs((w * sin(rotation) + (h * cos(rotation))));
-//            }
-//            else
-//            {
-//                int temp = w;
-//                w = h;
-//                h = temp;
-
-//                w = abs((w * cos(-rotation) + (h * sin(-rotation))));
-//                h = abs((w * sin(-rotation) + (h * cos(-rotation))));
-//            }
-
-//            std::cout << "new size: " << w << " x " << h << std::endl;
-
-            if (nodeType == NODE_TYPE_RESIZE)
-            {
-                // Resize
-                w = static_cast<int>(w * resizeFactor);
-                h = static_cast<int>(h * resizeFactor);
-            }
-
-            return QSize(w, h);
+            size.setWidth(0);
+        }
+        if (size.height() < 0)
+        {
+            size.setHeight(0);
         }
     }
-    return QSize(0, 0);
+    if (nodeType == NODE_TYPE_RESIZE)
+    {
+        // Resize
+        auto vals = getAllPropertyValues().split(",");
+        size.setWidth(vals[0].toInt());
+        size.setHeight(vals[1].toInt());
+    }
+    return size;
 }
 
 const QString& NodeBase::getGmicNodeType() const
@@ -523,12 +507,6 @@ void NodeBase::updateRotation()
 {
     auto vals = getAllPropertyValues().split(",");
     rotation = vals[0].toInt();
-}
-
-void NodeBase::updateResizeFactor()
-{
-    auto vals = getAllPropertyValues().split(",");
-    resizeFactor = vals[0].toFloat();
 }
 
 void NodeBase::mousePressEvent(QMouseEvent *event)

@@ -316,7 +316,6 @@ QString GmicPropertiesEntity::getValuesAsString()
         }
     }
     output.chop(1);
-    //output.append("2,0,50,50");
     if (hasPreviewSplitProperty)
     {
         output.append(",50,50");
