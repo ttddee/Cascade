@@ -27,7 +27,6 @@ void GmicHelper::setUp()
 
     //filtersModel.printFilterNames();
 
-    filtersModel.excludeFilters(excludedFilters);
 }
 
 std::shared_ptr<gmic> GmicHelper::getGmicInstance()
