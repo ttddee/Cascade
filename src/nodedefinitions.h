@@ -178,6 +178,7 @@ namespace Cascade
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
         NODE_TYPE_GMIC,
+        NODE_TYPE_CHROMAKEY,
         //NODE_TYPE_OFX,
         NODE_TYPE_MAX
     };
@@ -211,7 +212,8 @@ namespace Cascade
         { NODE_TYPE_RIVER_STYX, "River Styx" },
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
-        { NODE_TYPE_GMIC, "G'MIC" }
+        { NODE_TYPE_GMIC, "G'MIC" },
+        { NODE_TYPE_CHROMAKEY, "Chroma Key" }
         //{ NODE_TYPE_OFX, "OFX" }
     };
 
@@ -769,7 +771,29 @@ namespace Cascade
         ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/noop_comp.spv",
-        2
+        1
+    };
+
+    const static NodeInitProperties chromaKeyNodeInitProperties =
+    {
+        NODE_TYPE_CHROMAKEY,
+        nodeStrings[NODE_TYPE_CHROMAKEY],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMAKEY] },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range A,0.0,1.0,0.01,0.05" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range B,0.0,1.0,0.01,0.25" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/chromakey_comp.spv",
+        1
     };
 
 //    const static NodeInitProperties ofxNodeInitProperties =
@@ -892,6 +916,10 @@ namespace Cascade
         else if(t == NODE_TYPE_GMIC)
         {
             return gmicNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_CHROMAKEY)
+        {
+            return chromaKeyNodeInitProperties;
         }
 //        else if(t == NODE_TYPE_OFX)
 //        {

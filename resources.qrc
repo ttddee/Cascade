@@ -55,5 +55,6 @@
         <file>shaders/riverstyx_comp.spv</file>
         <file>shaders/clamp_comp.spv</file>
         <file>shaders/erodedilate_comp.spv</file>
+        <file>shaders/chromakey_comp.spv</file>
     </qresource>
 </RCC>

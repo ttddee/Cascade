@@ -441,10 +441,10 @@ void VulkanRenderer::createGraphicsPipeline(
     att.colorWriteMask = 0xF;
     att.blendEnable = VK_TRUE;
     att.srcColorBlendFactor = VK_BLEND_FACTOR_ONE;
-    att.dstColorBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    att.dstColorBlendFactor = VK_BLEND_FACTOR_ONE;
     att.colorBlendOp = VK_BLEND_OP_ADD;
     att.srcAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
-    att.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    att.dstAlphaBlendFactor = VK_BLEND_FACTOR_ONE;
     att.alphaBlendOp = VK_BLEND_OP_ADD;
     cb.attachmentCount = 1;
     cb.pAttachments = &att;

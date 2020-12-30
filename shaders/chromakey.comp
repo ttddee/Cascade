@@ -1,0 +1,59 @@
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputImage;
+layout (binding = 1, rgba32f) uniform readonly image2D mask;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float keyR;
+    layout(offset = 4) float keyG;
+    layout(offset = 8) float keyB;
+    layout(offset = 16) float rangeA;
+    layout(offset = 20) float rangeB;
+} sb;
+
+vec4 keyColor = vec4(sb.keyR / 256, sb.keyG / 256, sb.keyB / 256, 1);
+
+vec2 alphaRange = vec2(sb.rangeA, sb.rangeB);
+
+mat4 yuvMatrix = mat4(0.257,  0.439, -0.148, 0.0,
+                      0.504, -0.368, -0.291, 0.0,
+                      0.098, -0.071,  0.439, 0.0,
+                      0.0625, 0.500,  0.500, 1.0 );
+
+vec4 rgbToYUV(const vec4 pixel)
+{
+    return pixel * yuvMatrix;
+}
+
+float colorDistance(const vec3 yuv, const vec3 keyYuv, const vec2 tol)
+{
+    float tmp = sqrt(pow(keyYuv.g - yuv.g, 2.0) + pow(keyYuv.b - yuv.b, 2.0));
+    
+    if (tmp < tol.x)
+        return 0.0;
+   	else if (tmp < tol.y)
+        return (tmp - tol.x)/(tol.y - tol.x);
+   	else
+        return 1.0;
+}
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;
+
+    vec4 keyYUV = rgbToYUV(keyColor);
+    vec4 yuv = rgbToYUV(rgba);
+
+    float alpha = 1.0 - colorDistance(yuv.rgb, keyYUV.rgb, alphaRange);
+
+    alpha = min(1.0, alpha);
+    alpha = max(0.0, alpha);
+
+    imageStore(resultImage, pixelCoords, vec4(rgba.rgb, alpha));
+
+}
