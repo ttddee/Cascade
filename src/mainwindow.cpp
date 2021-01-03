@@ -25,6 +25,10 @@
 #include <QMessageBox>
 #include <QComboBox>
 #include <QDir>
+#include <QFileDialog>
+#include <QJsonDocument>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
@@ -75,6 +79,22 @@ MainWindow::MainWindow(QWidget *parent)
 
     //--------- Main Menu
 
+    newProjectAction = new QAction("New Project");
+    ui->menuFile->addAction(newProjectAction);
+
+    ui->menuFile->addSeparator();
+
+    openProjectAction = new QAction("Open Project");
+    ui->menuFile->addAction(openProjectAction);
+
+    saveProjectAction = new QAction("Save Project");
+    ui->menuFile->addAction(saveProjectAction);
+
+    saveProjectAsAction = new QAction("Save Project As");
+    ui->menuFile->addAction(saveProjectAsAction);
+
+    ui->menuFile->addSeparator();
+
     exitAction = new QAction("Exit");
     ui->menuFile->addAction(exitAction);
 
@@ -98,6 +118,8 @@ MainWindow::MainWindow(QWidget *parent)
     shortcutsAction = new QAction("Shortcuts");
     ui->menuHelp->addAction(shortcutsAction);
 
+    connect(saveProjectAsAction, &QAction::triggered,
+            this, &MainWindow::saveProjectAs);
     connect(exitAction, &QAction::triggered,
             QApplication::instance(), QCoreApplication::quit, Qt::QueuedConnection);
     connect(saveLayoutAction, &QAction::triggered,
@@ -129,6 +151,43 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
+}
+
+void MainWindow::saveProjectAs()
+{
+    // get path
+//    QString path;
+
+//    QFileDialog dialog(nullptr);
+//    dialog.setViewMode(QFileDialog::Detail);
+//    auto f = dialog.getExistingDirectory();
+//    if (f.isEmpty())
+//    {
+//        return;
+//    }
+//    else
+//    {
+//        path = f;
+//    }
+
+//    // check path
+//    QFile jsonFile = QFile(path);
+//    if (jsonFile.exists())
+//    {
+//        // file exists
+//    }
+
+    // get json from nodegraph
+    QJsonDocument project;
+    QJsonArray arr;
+    nodeGraph->getNodeGraphAsJson(arr);
+    project.setArray(arr);
+
+
+    // save to disk
+    QFile jsonFile("test.csc");
+    jsonFile.open(QFile::WriteOnly);
+    jsonFile.write(project.toJson());
 }
 
 void MainWindow::saveUserLayout()
@@ -214,6 +273,10 @@ MainWindow::~MainWindow()
 
     delete ui;
 
+    delete newProjectAction;
+    delete openProjectAction;
+    delete saveProjectAction;
+    delete saveProjectAsAction;
     delete exitAction;
     delete saveLayoutAction;
     delete restoreLayoutAction;

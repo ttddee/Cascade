@@ -55,6 +55,8 @@ public:
 
     float getViewScale() const;
 
+    void getNodeGraphAsJson(QJsonArray& graph);
+
 protected:
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;

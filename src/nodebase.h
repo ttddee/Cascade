@@ -73,13 +73,12 @@ public:
 
     bool getIsViewed() const;
 
-    QString getID() const;
-
     NodeInput* getNodeInputAtPosition(const QPoint pos);
 
     NodeProperties* getProperties();
     QString getAllPropertyValues();
     QSize getTargetSize();
+    void addNodeToJsonObject(QJsonObject& nodeList);
 
     NodeInput* getRgbaBackIn();
     NodeInput* getRgbaFrontIn();
@@ -134,6 +133,8 @@ private:
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
+
+    QString getID() const;
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;

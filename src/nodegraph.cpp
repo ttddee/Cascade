@@ -24,6 +24,8 @@
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QGraphicsProxyWidget>
+#include <QJsonObject>
+#include <QJsonArray>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -277,6 +279,16 @@ void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
     auto sourceOut = c->sourceOutput;
     createOpenConnection(sourceOut);
     deleteConnection(c);
+}
+
+void NodeGraph::getNodeGraphAsJson(QJsonArray& graph)
+{
+    QJsonObject nodesJson;
+    foreach (const auto& node, nodes)
+    {
+        node->addNodeToJsonObject(nodesJson);
+    }
+    graph << nodesJson;
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)

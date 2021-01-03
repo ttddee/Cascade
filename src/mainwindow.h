@@ -51,6 +51,7 @@ public:
     ~MainWindow();
 
 private:
+    void saveProjectAs();
     void saveUserLayout();
     void restoreUserLayout();
     void restoreDefaultLayout();
@@ -67,6 +68,10 @@ private:
 
     ads::CDockManager* dockManager;
 
+    QAction* newProjectAction;
+    QAction* openProjectAction;
+    QAction* saveProjectAction;
+    QAction* saveProjectAsAction;
     QAction* exitAction;
     QAction* saveLayoutAction;
     QAction* restoreLayoutAction;

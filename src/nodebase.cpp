@@ -26,6 +26,8 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QUuid>
+#include <QJsonObject>
+#include <QJsonValue>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -292,6 +294,19 @@ QSize NodeBase::getTargetSize()
         size.setHeight(vals[1].toInt());
     }
     return size;
+}
+
+void NodeBase::addNodeToJsonObject(QJsonObject& nodeList)
+{
+    QJsonValue value =
+            nodeStrings[nodeType]
+            + ","
+            + QString::number(this->pos().x())
+            + ","
+            + QString::number(this->pos().y())
+            + ","
+            + getAllPropertyValues();
+    nodeList.insert(this->getID(), value);
 }
 
 const QString& NodeBase::getGmicNodeType() const
