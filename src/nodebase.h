@@ -117,6 +117,7 @@ public:
 private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
+    FRIEND_TEST(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes);
 
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);

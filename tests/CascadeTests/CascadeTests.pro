@@ -26,9 +26,26 @@ HEADERS += \
         ../../src/benchmark.h \
         ../../src/colorbutton.h \
         ../../src/connection.h \
-        ../../src/renderer/csimage.h \
         ../../src/csmessagebox.h \
-        ../../src/renderer/cssettingsbuffer.h \
+        ../../src/docking/DockAreaTabBar.h \
+        ../../src/docking/DockAreaTitleBar.h \
+        ../../src/docking/DockAreaTitleBar_p.h \
+        ../../src/docking/DockAreaWidget.h \
+        ../../src/docking/DockComponentsFactory.h \
+        ../../src/docking/DockContainerWidget.h \
+        ../../src/docking/DockFocusController.h \
+        ../../src/docking/DockManager.h \
+        ../../src/docking/DockOverlay.h \
+        ../../src/docking/DockSplitter.h \
+        ../../src/docking/DockWidget.h \
+        ../../src/docking/DockWidgetTab.h \
+        ../../src/docking/DockingStateReader.h \
+        ../../src/docking/ElidingLabel.h \
+        ../../src/docking/FloatingDockContainer.h \
+        ../../src/docking/FloatingDragPreview.h \
+        ../../src/docking/IconProvider.h \
+        ../../src/docking/ads_globals.h \
+        ../../src/docking/linux/FloatingWidgetTitleBar.h \
         ../../src/gmic/FiltersModel.h \
         ../../src/gmic/FiltersModelReader.h \
         ../../src/gmic/FiltersVisibilityMap.h \
@@ -52,6 +69,10 @@ HEADERS += \
         ../../src/nodeproperties.h \
         ../../src/propertiesheading.h \
         ../../src/propertiesview.h \
+        ../../src/renderer/csimage.h \
+        ../../src/renderer/cssettingsbuffer.h \
+        ../../src/renderer/objectmanager.h \
+        ../../src/renderer/vulkanrenderer.h \
         ../../src/rendermanager.h \
         ../../src/slidernoclick.h \
         ../../src/uicolors.h \
@@ -74,7 +95,6 @@ HEADERS += \
         ../../src/uientities/uientity.h \
         ../../src/uientities/writepropertiesentity.h \
         ../../src/viewerstatusbar.h \
-        ../../src/renderer/vulkanrenderer.h \
         ../../src/vulkanview.h \
         ../../src/vulkanwindow.h \
         ../../src/windowmanager.h \
@@ -85,9 +105,25 @@ SOURCES += \
         main.cpp \
         ../../src/colorbutton.cpp \
         ../../src/connection.cpp \
-        ../../src/renderer/csimage.cpp \
         ../../src/csmessagebox.cpp \
-        ../../src/renderer/cssettingsbuffer.cpp \
+        ../../src/docking/DockAreaTabBar.cpp \
+        ../../src/docking/DockAreaTitleBar.cpp \
+        ../../src/docking/DockAreaWidget.cpp \
+        ../../src/docking/DockComponentsFactory.cpp \
+        ../../src/docking/DockContainerWidget.cpp \
+        ../../src/docking/DockFocusController.cpp \
+        ../../src/docking/DockManager.cpp \
+        ../../src/docking/DockOverlay.cpp \
+        ../../src/docking/DockSplitter.cpp \
+        ../../src/docking/DockWidget.cpp \
+        ../../src/docking/DockWidgetTab.cpp \
+        ../../src/docking/DockingStateReader.cpp \
+        ../../src/docking/ElidingLabel.cpp \
+        ../../src/docking/FloatingDockContainer.cpp \
+        ../../src/docking/FloatingDragPreview.cpp \
+        ../../src/docking/IconProvider.cpp \
+        ../../src/docking/ads_globals.cpp \
+        ../../src/docking/linux/FloatingWidgetTitleBar.cpp \
         ../../src/gmic/FiltersModel.cpp \
         ../../src/gmic/FiltersModelReader.cpp \
         ../../src/gmic/FiltersVisibilityMap.cpp \
@@ -108,6 +144,10 @@ SOURCES += \
         ../../src/nodeproperties.cpp \
         ../../src/propertiesheading.cpp \
         ../../src/propertiesview.cpp \
+        ../../src/renderer/csimage.cpp \
+        ../../src/renderer/cssettingsbuffer.cpp \
+        ../../src/renderer/objectmanager.cpp \
+        ../../src/renderer/vulkanrenderer.cpp \
         ../../src/rendermanager.cpp \
         ../../src/slidernoclick.cpp \
         ../../src/uientities/channelselectentity.cpp \
@@ -129,7 +169,6 @@ SOURCES += \
         ../../src/uientities/uientity.cpp \
         ../../src/uientities/writepropertiesentity.cpp \
         ../../src/viewerstatusbar.cpp \
-        ../../src/renderer/vulkanrenderer.cpp \
         ../../src/vulkanview.cpp \
         ../../src/vulkanwindow.cpp \
         ../../src/windowmanager.cpp
@@ -158,6 +197,10 @@ FORMS += \
         ../../src/uientities/writepropertiesentity.ui \
         ../../src/viewerstatusbar.ui
 
+RESOURCES += \
+    ../../ads.qrc \
+    ../../resources.qrc
+
 linux-g++ {
     SOURCES += \
         /usr/src/gtest/src/gtest-all.cc \
@@ -171,7 +214,6 @@ linux-g++ {
 
     LIBS += -L /usr/lib -lOpenImageIO
     LIBS += -L /usr/lib -lOpenColorIO
-    LIBS += -L /usr/lib -lqtadvanceddocking
     LIBS += -L /usr/lib -lgmic
     LIBS += -L /usr/lib -ltbb
 
