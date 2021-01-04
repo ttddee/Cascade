@@ -26,6 +26,7 @@
 #include <QColor>
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
+#include <QJsonObject>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -103,6 +104,11 @@ void Connection::updatePosition()
                   + sourceOutput->visualWidth / 2,
                   targetInput->parentNode->mapToParent(targetInput->pos()).y()
                   + sourceOutput->visualHeight / 2);
+}
+
+void Connection::addConnectionToJsonObject(QJsonObject &connectionList)
+{
+    connectionList.insert(sourceOutput->parentNode->getID(), targetInput->getID());
 }
 
 void Connection::updatePosition(const QPoint end)

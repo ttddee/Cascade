@@ -44,6 +44,8 @@ public:
 
     NodeInputType getInputType();
 
+    QString getID() const;
+
     NodeBase* getUpstreamNode();
 
     NodeBase* parentNode = nullptr;
@@ -52,6 +54,8 @@ public:
 
 private:
     const NodeInputType inputType;
+
+    const QString id;
 
 
 signals:

@@ -38,8 +38,10 @@ public:
     void updatePosition();
     void updatePosition(const QPoint end);
 
-    NodeInput* targetInput = nullptr;
+    void addConnectionToJsonObject(QJsonObject& connectionList);
+
     NodeOutput* sourceOutput = nullptr;
+    NodeInput* targetInput = nullptr;
 
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;

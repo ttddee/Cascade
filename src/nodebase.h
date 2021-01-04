@@ -110,6 +110,8 @@ public:
     void setGmicNodeType(const QString& type);
     void setGmicHash(const QString& hash);
 
+    QString getID() const;
+
     virtual ~NodeBase();
 
     bool needsUpdate = true;
@@ -134,8 +136,6 @@ private:
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
-
-    QString getID() const;
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;

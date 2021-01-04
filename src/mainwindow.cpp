@@ -35,6 +35,8 @@
 #include "gmichelper.h"
 #include "log.h"
 
+using namespace ads;
+
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
@@ -156,36 +158,43 @@ MainWindow::MainWindow(QWidget *parent)
 void MainWindow::saveProjectAs()
 {
     // get path
-//    QString path;
+    QString path;
 
-//    QFileDialog dialog(nullptr);
-//    dialog.setViewMode(QFileDialog::Detail);
-//    auto f = dialog.getExistingDirectory();
-//    if (f.isEmpty())
-//    {
-//        return;
-//    }
-//    else
-//    {
-//        path = f;
-//    }
+    QFileDialog dialog(nullptr);
+    dialog.setViewMode(QFileDialog::Detail);
+    dialog.setNameFilter(tr("CSC Project (*.csc)"));
+    dialog.setDefaultSuffix("csc");
+    auto f = dialog.getSaveFileName();
+    CS_LOG_CONSOLE(f);
+    if (f.isEmpty())
+    {
+        return;
+    }
+    else
+    {
+        path = f;
+    }
 
-//    // check path
-//    QFile jsonFile = QFile(path);
-//    if (jsonFile.exists())
-//    {
-//        // file exists
-//    }
+    // check path
+    QFile jsonFile = QFile(path);
+    if (jsonFile.exists())
+    {
+        // file exists
+    }
 
     // get json from nodegraph
     QJsonDocument project;
     QJsonArray arr;
+    QJsonObject info;
+    info.insert("Version",
+                QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
+    arr << info;
     nodeGraph->getNodeGraphAsJson(arr);
     project.setArray(arr);
 
 
     // save to disk
-    QFile jsonFile("test.csc");
+    //QFile jsonFile("test.csc");
     jsonFile.open(QFile::WriteOnly);
     jsonFile.write(project.toJson());
 }

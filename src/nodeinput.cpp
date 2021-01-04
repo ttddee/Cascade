@@ -22,10 +22,12 @@
 #include <iostream>
 
 #include <QMouseEvent>
+#include <QUuid>
 
 NodeInput::NodeInput(NodeInputType t, QWidget *parent)
     : QPushButton (parent),
-      inputType(t)
+      inputType(t),
+      id(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     parentNode = static_cast<NodeBase*>(parent);
     this->resize(12, 25);
@@ -79,6 +81,11 @@ void NodeInput::removeInConnection()
 {
     inConnection = nullptr;
     parentNode->requestUpdate();
+}
+
+QString NodeInput::getID() const
+{
+    return id;
 }
 
 void NodeInput::mousePressEvent(QMouseEvent *event)

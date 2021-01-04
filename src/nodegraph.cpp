@@ -289,6 +289,13 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& graph)
         node->addNodeToJsonObject(nodesJson);
     }
     graph << nodesJson;
+
+    QJsonObject connectionsJson;
+    foreach (const auto& connection, connections)
+    {
+        connection->addConnectionToJsonObject(connectionsJson);
+    }
+    graph << connectionsJson;
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)
