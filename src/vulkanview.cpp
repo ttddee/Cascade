@@ -61,7 +61,8 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
                            );
         messageBox.exec();
 
-        qFatal("Failed to create Vulkan instance. Error code: %d", instance.errorCode());
+        CS_LOG_FATAL("Failed to create Vulkan instance. Error code: ");
+        CS_LOG_FATAL(QString::number(instance.errorCode()));
     }
 
     // Create a VulkanWindow
