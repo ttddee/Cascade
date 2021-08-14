@@ -59,11 +59,9 @@ NodeGraph::NodeGraph(QWidget* parent)
 }
 
 void NodeGraph::createNode(
-        const NodeType type,
-        const QString& gType,
-        const QString& gHash)
+        const NodeType type)
 {
-    NodeBase* n = new NodeBase(type, this, gType, gHash);
+    NodeBase* n = new NodeBase(type, this);
     scene->addWidget(n);
     n->move(mapToScene(lastMousePos).x(),
             mapToScene(lastMousePos).y());
@@ -118,9 +116,9 @@ float NodeGraph::getViewScale() const
     return viewScale;
 }
 
-void NodeGraph::showContextMenu(const QPoint &pos)
+void NodeGraph::showContextMenu()
 {
-    contextMenu->exec(mapToGlobal(pos));
+    contextMenu->exec(QCursor::pos());
 }
 
 QGraphicsItem* NodeGraph::getObjectUnderCursor()
@@ -309,7 +307,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
     }
     if (event->button() == Qt::RightButton)
     {
-        showContextMenu(event->pos());
+        showContextMenu();
     }
     else if (event->button() == Qt::MiddleButton)
     {

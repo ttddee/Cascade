@@ -499,7 +499,7 @@ VkShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
     if (err != VK_SUCCESS)
     {
         CS_LOG_WARNING("Failed to create shader module: ");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return VK_NULL_HANDLE;
     }
 
@@ -640,7 +640,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to create image view for texture: ");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return false;
     }
 
@@ -1247,7 +1247,7 @@ bool VulkanRenderer::createTextureImage(
     VkResult err = devFuncs->vkCreateImage(device, &imageInfo, nullptr, image);
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to create linear image for texture:");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return false;
     }
 
@@ -1277,14 +1277,14 @@ bool VulkanRenderer::createTextureImage(
     err = devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, mem);
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to allocate memory for image:");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return false;
     }
 
     err = devFuncs->vkBindImageMemory(device, *image, *mem, 0);
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to bind memory for image:");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return false;
     }
 
@@ -1315,7 +1315,7 @@ bool VulkanRenderer::writeLinearImage(
                 reinterpret_cast<void **>(&p));
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to map memory for linear image:");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
         return false;
     }
 
@@ -1682,7 +1682,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     if (err != VK_SUCCESS)
     {
         CS_LOG_WARNING("Failed to map memory for staging buffer:");
-        CS_LOG_WARNING(QString(err));
+        CS_LOG_WARNING(QString::number(err));
     }
 
     int width = inputImage.getWidth();

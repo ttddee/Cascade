@@ -34,12 +34,11 @@
 #include "nodegraph.h"
 #include "connection.h"
 #include "uientities/uientity.h"
+#include "log.h"
 
 NodeBase::NodeBase(
         const NodeType type,
         const NodeGraph* graph,
-        const QString& gType,
-        const QString& gHash,
         QWidget *parent)
     : QWidget(parent),
       nodeType(type),

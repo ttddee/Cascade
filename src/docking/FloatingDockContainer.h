@@ -194,7 +194,7 @@ protected: // reimplements QWidget
 	/**
 	 * Native event filter for handling WM_MOVING messages on Windows
 	 */
-	virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
+    virtual bool nativeEvent(const QByteArray &eventType, void *message, long *result) override;
 #endif
 
 

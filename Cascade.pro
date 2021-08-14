@@ -1,6 +1,6 @@
-QT       += core gui
+QT       += core gui widgets
 
-greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
+#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 CONFIG += c++17
 
@@ -202,6 +202,7 @@ win32-msvc* {
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
+    INCLUDEPATH += C:\VulkanSDK\1.2.154.1\Include
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release

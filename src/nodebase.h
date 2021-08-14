@@ -59,8 +59,6 @@ public:
     explicit NodeBase(
             const NodeType type,
             const NodeGraph* graph,
-            const QString& gType = "",
-            const QString& gHash = "",
             QWidget *parent = nullptr);
 
     const NodeType nodeType;

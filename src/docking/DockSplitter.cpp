@@ -31,6 +31,7 @@
 
 #include <QDebug>
 #include <QChildEvent>
+#include <QVariant>
 
 #include "DockAreaWidget.h"
 
@@ -52,7 +53,7 @@ CDockSplitter::CDockSplitter(QWidget *parent)
 	: QSplitter(parent),
 	  d(new DockSplitterPrivate(this))
 {
-	setProperty("ads-splitter", true);
+    setProperty("ads-splitter", QVariant(true));
 	setChildrenCollapsible(false);
 }
 

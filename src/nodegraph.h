@@ -44,9 +44,7 @@ public:
     NodeGraph(QWidget* parent = nullptr);
 
     void createNode(
-            const NodeType type,
-            const QString& gType = "",
-            const QString& gHash = "");
+            const NodeType type);
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
 
@@ -64,7 +62,7 @@ protected:
     void wheelEvent(QWheelEvent*) override;
 
 private:
-    void showContextMenu(const QPoint& pos);
+    void showContextMenu();
 
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
