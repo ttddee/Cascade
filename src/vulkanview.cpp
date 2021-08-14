@@ -74,7 +74,7 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     // Create Vulkan window container and put in layout
     vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->setMargin(0);
+    //layout->setMargin(0);
     layout->addWidget(vulkanWrapper);
     layout->addWidget(statusBar);
     this->setLayout(layout);
