@@ -101,14 +101,8 @@ public:
     bool getHasCustomSize();
     void setHasCustomSize(UiEntity* source);
 
-    const QString& getGmicNodeType() const;
-    const QString& getGmicHash() const;
-
     NodeInput* getOpenInput();
     QSize getInputSize();
-
-    void setGmicNodeType(const QString& type);
-    void setGmicHash(const QString& hash);
 
     QString getID() const;
 
@@ -181,9 +175,6 @@ private:
     const QPen backViewedColorPen = QPen(backColor, 3);
     const QPen alphaViewedColorPen = QPen(alphaColor, 3);
     const QPen outputViewedColorPen = QPen(outputColor, 3);
-
-    QString gmicNodeType = "";
-    QString gmicHash = "";
 
 signals:
     void nodeWasLeftClicked(NodeBase* node);

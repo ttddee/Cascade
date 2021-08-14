@@ -109,7 +109,6 @@ namespace Cascade
         UI_ELEMENT_TYPE_SIZEBOX,
         UI_ELEMENT_TYPE_TEXTBOX,
         UI_ELEMENT_TYPE_CHECKBOX,
-        UI_ELEMENT_TYPE_GMIC_PROPERTIES,
         UI_ELEMENT_TYPE_TEXTBROWSER,
         UI_ELEMENT_TYPE_SEPARATOR,
         UI_ELEMENT_TYPE_LINEEDIT,
@@ -129,7 +128,6 @@ namespace Cascade
         NODE_CATEGORY_MERGE,
         NODE_CATEGORY_TRANSFORM,
         NODE_CATEGORY_CHANNEL,
-        NODE_CATEGORY_GMIC,
         NODE_CATEGORY_MAX
     };
 
@@ -144,8 +142,7 @@ namespace Cascade
         { NODE_CATEGORY_FILTER, "Filter" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
-        { NODE_CATEGORY_CHANNEL, "Channel" },
-        { NODE_CATEGORY_GMIC, "G'MIC" }
+        { NODE_CATEGORY_CHANNEL, "Channel" }
     };
 
     ////////////////////////////////////
@@ -177,7 +174,6 @@ namespace Cascade
         NODE_TYPE_RIVER_STYX,
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
-        NODE_TYPE_GMIC,
         NODE_TYPE_CHROMAKEY,
         //NODE_TYPE_OFX,
         NODE_TYPE_MAX
@@ -212,7 +208,6 @@ namespace Cascade
         { NODE_TYPE_RIVER_STYX, "River Styx" },
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
-        { NODE_TYPE_GMIC, "G'MIC" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" }
         //{ NODE_TYPE_OFX, "OFX" }
     };
@@ -755,25 +750,6 @@ namespace Cascade
         2
     };
 
-    const static NodeInitProperties gmicNodeInitProperties =
-    {
-        NODE_TYPE_GMIC,
-        nodeStrings[NODE_TYPE_GMIC],
-        NODE_CATEGORY_GMIC,
-        { NODE_INPUT_TYPE_RGB_BACK },
-        { NODE_OUTPUT_TYPE_RGB },
-        {
-            { UI_ELEMENT_TYPE_GMIC_PROPERTIES, "" }
-        },
-        FRONT_INPUT_ALWAYS_CLEAR,
-        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
-        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/noop_comp.spv",
-        1
-    };
-
     const static NodeInitProperties chromaKeyNodeInitProperties =
     {
         NODE_TYPE_CHROMAKEY,
@@ -913,18 +889,10 @@ namespace Cascade
         {
             return erodeNodeInitProperties;
         }
-        else if(t == NODE_TYPE_GMIC)
-        {
-            return gmicNodeInitProperties;
-        }
         else if(t == NODE_TYPE_CHROMAKEY)
         {
             return chromaKeyNodeInitProperties;
         }
-//        else if(t == NODE_TYPE_OFX)
-//        {
-//            return ofxNodeInitProperties;
-//        }
         throw std::runtime_error("Node type not found.");
     }
 }

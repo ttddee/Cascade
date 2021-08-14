@@ -215,14 +215,7 @@ void RenderManager::renderNode(NodeBase *node)
         }
         else if (inputImageBack)
         {
-            if (node->nodeType == NODE_TYPE_GMIC)
-            {
-                renderer->processGmicNode(node, inputImageBack, node->getTargetSize());
-            }
-            else
-            {
-                renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
-            }
+            renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
         }
     }
     node->needsUpdate = false;

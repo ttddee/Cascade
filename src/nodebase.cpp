@@ -49,9 +49,6 @@ NodeBase::NodeBase(
 {
     ui->setupUi(this);
 
-    setGmicNodeType(gType);
-    setGmicHash(gHash);
-
     this->setUpNode(type);
 
     wManager = &WindowManager::getInstance();
@@ -64,8 +61,6 @@ void NodeBase::setUpNode(const NodeType nodeType)
     props = Cascade::getPropertiesForType(nodeType);
 
     QString label = props.title;
-    if (nodeType == NODE_TYPE_GMIC)
-        label.append(" " + getGmicNodeType());
     ui->NodeTitleLabel->setText(label);
 
     this->createInputs(props);
@@ -307,26 +302,6 @@ void NodeBase::addNodeToJsonObject(QJsonObject& nodeList)
             + ","
             + getAllPropertyValues();
     nodeList.insert(this->getID(), value);
-}
-
-const QString& NodeBase::getGmicNodeType() const
-{
-    return gmicNodeType;
-}
-
-const QString& NodeBase::getGmicHash() const
-{
-    return gmicHash;
-}
-
-void NodeBase::setGmicNodeType(const QString &type)
-{
-    gmicNodeType = type;
-}
-
-void NodeBase::setGmicHash(const QString &hash)
-{
-    gmicHash = hash;
 }
 
 NodeInput* NodeBase::getOpenInput()

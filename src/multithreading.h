@@ -5,11 +5,11 @@
 
 //#include <OpenColorIO/OpenColorIO.h>
 #include <OpenImageIO/imagebuf.h>
-#include <tbb/tbb.h>
+//#include <tbb/tbb.h>
 
 //namespace OCIO = OCIO_NAMESPACE;
 using namespace OIIO;
-using namespace tbb;
+//using namespace tbb;
 
 namespace Cascade
 {
@@ -22,14 +22,14 @@ void copyRow(const float* source, float* dst, size_t width, size_t i)
 void parallelArrayCopy(const float* src, float* dst, size_t width, size_t height)
 {
 
-    parallel_for(blocked_range<size_t>(0, height * 4),
-        [=](const tbb::blocked_range<size_t>& r)
-    {
-        for(size_t i = r.begin(); i!=r.end(); ++i)
-        {
-            copyRow(src, dst, width, i);
-        }
-    });
+//    parallel_for(blocked_range<size_t>(0, height * 4),
+//        [=](const tbb::blocked_range<size_t>& r)
+//    {
+//        for(size_t i = r.begin(); i!=r.end(); ++i)
+//        {
+//            copyRow(src, dst, width, i);
+//        }
+//    });
 
 }
 

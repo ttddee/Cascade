@@ -35,7 +35,6 @@
 #include "../uientities/fileboxentity.h"
 #include "../benchmark.h"
 #include "../multithreading.h"
-#include "../gmichelper.h"
 #include "../log.h"
 
 // Use a triangle strip to get a quad.
@@ -641,83 +640,6 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
     if (err != VK_SUCCESS) {
         CS_LOG_WARNING("Failed to create image view for texture: ");
-        CS_LOG_WARNING(QString(err));
-        return false;
-    }
-
-    loadImageSize = imageSize;
-
-    return true;
-}
-
-bool VulkanRenderer::createTextureFromGmic(gmic_image<float>& gImg)
-{
-    updateVertexData(gImg._width, gImg._height);
-
-    imageFromDisk = std::shared_ptr<CsImage>(new CsImage(
-                                                 window,
-                                                 &device,
-                                                 devFuncs,
-                                                 gImg._width,
-                                                 gImg._height));
-
-    auto imageSize = QSize(gImg._width, gImg._height);
-
-    // Now we can either map and copy the image data directly, or have to go
-    // through a staging buffer to copy and convert into the internal optimal
-    // tiling format.
-    VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
-    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    if (!canSampleLinear && !canSampleOptimal) {
-        CS_LOG_WARNING("Neither linear nor optimal image sampling is supported for image");
-        return false;
-    }
-
-    if (loadImageStaging) {
-        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
-        loadImageStaging = VK_NULL_HANDLE;
-    }
-
-    if (loadImageStagingMem) {
-        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
-        loadImageStagingMem = VK_NULL_HANDLE;
-    }
-
-    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
-                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
-                            window->hostVisibleMemoryIndex()))
-        return false;
-
-    if (!writeGmicToLinearImage(
-                &gImg[0],
-                QSize(gImg._width, gImg._height),
-                gImg._spectrum,
-                loadImageStaging,
-                loadImageStagingMem))
-    {
-        return false;
-    }
-
-    texStagingPending = true;
-
-    VkImageViewCreateInfo viewInfo;
-    memset(&viewInfo, 0, sizeof(viewInfo));
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = imageFromDisk->getImage();
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = globalImageFormat;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
-
-    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to create image view for texture:");
         CS_LOG_WARNING(QString(err));
         return false;
     }
@@ -1421,80 +1343,6 @@ bool VulkanRenderer::writeLinearImage(
     return true;
 }
 
-bool VulkanRenderer::writeGmicToLinearImage(
-        float* imgStart,
-        QSize imgSize,
-        int channels,
-        VkImage image,
-        VkDeviceMemory memory)
-{
-    VkImageSubresource subres = {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0, // mip level
-        0
-    };
-    VkSubresourceLayout layout;
-    devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
-
-    float *p;
-    VkResult err = devFuncs->vkMapMemory(
-                device,
-                memory,
-                layout.offset,
-                layout.size,
-                0,
-                reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to map memory for image:");
-        CS_LOG_WARNING(QString(err));
-        return false;
-    }
-
-    //startTimer();
-    float* pixels = imgStart;
-    int quarter = imgSize.width() * imgSize.height();
-
-    int pad = (layout.rowPitch - imgSize.width() * 16) / 4;
-
-    if (channels == 3)
-    {
-        for (int k = 0; k < imgSize.height(); k++)
-        {
-            for (int j = 0; j < imgSize.width(); j++)
-            {
-                *(p) = *(pixels) / 256.0;
-                *(p + 1) = *(pixels + quarter) / 256.0;
-                *(p + 2) = *(pixels + quarter * 2) / 256.0;
-                pixels++;
-                p+=4;
-            }
-            p += pad;
-        }
-    }
-    else
-    {
-        for (int k = 0; k < imgSize.height(); k++)
-        {
-            for (int j = 0; j < imgSize.width(); j++)
-            {
-                *(p) = *(pixels) / 256.0;
-                *(p + 1) = *(pixels + quarter) / 256.0;
-                *(p + 2) = *(pixels + quarter * 2) / 256.0;
-                *(p + 3) = *(pixels + quarter * 3) / 256.0;
-                pixels++;
-                p+=4;
-            }
-            p += pad;
-        }
-    }
-
-    //stopTimerAndPrint("Copy to GPU");
-
-    devFuncs->vkUnmapMemory(device, memory);
-
-    return true;
-}
-
 void VulkanRenderer::updateVertexData(const int w, const int h)
 {
     vertexData[0]  = -0.002 * w;
@@ -2067,106 +1915,6 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         node->cachedImage = std::move(computeRenderTarget);
     }
-}
-
-void VulkanRenderer::processGmicNode(
-        NodeBase *node,
-        std::shared_ptr<CsImage> inputImageBack,
-        const QSize targetSize)
-{
-    CS_LOG_INFO("Processing GMIC node.");
-
-    gmicInstance = GmicHelper::getInstance().getGmicInstance();
-
-    int width = targetSize.width();
-    int height = targetSize.height();
-
-    recordComputeCommandBufferCPUCopy(*inputImageBack);
-
-    submitImageSaveCommand();
-
-    devFuncs->vkQueueWaitIdle(compute.computeQueue);
-
-    float *pInput;
-    VkResult err = devFuncs->vkMapMemory(
-                device,
-                outputStagingBufferMemory,
-                0,
-                VK_WHOLE_SIZE,
-                0,
-                reinterpret_cast<void **>(&pInput));
-    if (err != VK_SUCCESS)
-    {
-        CS_LOG_WARNING("Failed to map memory for staging buffer:");
-        CS_LOG_WARNING(QString(err));
-    }
-
-    gmic_list<float> gmicList;
-    gmicList.assign(1);
-
-    gmic_image<float>& gmicImage = gmicList[0];
-    gmicImage.assign(width, height, 1, 4);
-
-    float* pOutput = &gmicImage[0];
-    int numValues = width * height * 4;
-    int quarter = numValues / 4;
-
-    //TODO: Parallelize this
-    for (int y = 0; y < quarter; ++y)
-    {
-        *(pOutput + y) = *(pInput + y * 4) * 256.0;
-        *(pOutput + y + quarter) = *(pInput + y * 4 + 1) * 256.0;
-        *(pOutput + y + quarter * 2) = *(pInput + y * 4 + 2) * 256.0;
-        *(pOutput + y + quarter * 3) = *(pInput + y * 4 + 3) * 256.0;
-    }
-
-    QString command = node->getAllPropertyValues();
-
-    gmic_list<char> gmicNames;
-    //startTimer();
-    try
-    {
-        gmicInstance->run(command.toLocal8Bit(), gmicList, gmicNames);
-    }
-    catch (gmic_exception &e)
-    {
-        std::fprintf(stderr,"ERROR : %s\n",e.what());
-    }
-    //stopTimerAndPrint("Gmic processing ");
-
-    std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
-
-    if (gmicImage._spectrum == 1)
-    {
-        gmicInstance->run("resize 100%,100%,100%,4", gmicList, gmicNames);
-    }
-
-    std::cout << "gmic image dimensions: " << gmicImage._width << "x" << gmicImage._height << "x" << gmicImage._spectrum << std::endl;
-
-    if(!createTextureFromGmic(gmicImage))
-        qFatal("Failed to create texture from gmic image.");
-
-    // Update the projection size
-    createVertexBuffer();
-
-    // Create render target
-    if (!createComputeRenderTarget(gmicImage._width, gmicImage._height))
-        qFatal("Failed to create compute render target.");
-
-    updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
-
-    recordComputeCommandBufferImageLoad(computeRenderTarget);
-
-    submitComputeCommands();
-
-    CS_LOG_INFO("Moving render target");
-
-    node->cachedImage = std::move(computeRenderTarget);
-
-    //gmicList.assign(0);
-
-    devFuncs->vkUnmapMemory(device, outputStagingBufferMemory);
-
 }
 
 void VulkanRenderer::processNode(

@@ -36,7 +36,6 @@
 #include "uientities/sizeboxentity.h"
 #include "uientities/textboxentity.h"
 #include "uientities/checkboxentity.h"
-#include "uientities/gmicpropertiesentity.h"
 #include "uientities/textbrowserentity.h"
 #include "uientities/separatorentity.h"
 #include "uientities/lineeditentity.h"
@@ -215,17 +214,6 @@ NodeProperties::NodeProperties(
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
             item->setChecked(parts.at(1).toInt());
-            layout->addWidget(item);
-            widgets.push_back(item);
-        }
-        else if (elem.first == UI_ELEMENT_TYPE_GMIC_PROPERTIES)
-        {
-            GmicPropertiesEntity* item = new GmicPropertiesEntity(
-                        UI_ELEMENT_TYPE_GMIC_PROPERTIES,
-                        parentNode->getGmicNodeType(),
-                        parentNode->getGmicHash(),
-                        this);
-            item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
         }

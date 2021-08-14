@@ -32,7 +32,6 @@
 
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
-#include "gmichelper.h"
 #include "log.h"
 
 using namespace ads;
@@ -52,13 +51,6 @@ MainWindow::MainWindow(QWidget *parent)
     vulkanViewDockWidget->setWidget(vulkanView);
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);
-
-    //--------- Gmic
-    // Must be initialized before NodeGraph
-    CS_LOG_INFO("Initializing Gmic.");
-
-    auto gmicHelper = &GmicHelper::getInstance();
-    gmicHelper->setUp();
 
     nodeGraph = new NodeGraph();
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
