@@ -5,7 +5,6 @@ QT       += core gui widgets
 CONFIG += c++17
 
 QMAKE_CXXFLAGS_RELEASE -= -O2
-QMAKE_CXXFLAGS_RELEASE += -O3
 
 #------------------------------- Versioning
 
@@ -201,11 +200,11 @@ win32-msvc* {
     LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO_Util
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic
-    #LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb
+    LIBS += -L$$DEPENDENCY_ROOT/lib -ltbb
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
     INCLUDEPATH += $$EXTERNAL_ROOT/OpenImageIO/include
-    INCLUDEPATH += C:/VulkanSDK/1.2.154.1/Include
+    INCLUDEPATH += C:/VulkanSDK/1.2.189.1/Include
 
     COPIES += dlls
     dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO.dll)
@@ -231,6 +230,7 @@ win32-msvc* {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/openjp2.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/raw_r.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/jasper.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/tbb.dll)
 
     COPIES += platforms
 
