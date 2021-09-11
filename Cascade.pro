@@ -207,41 +207,7 @@ win32-msvc* {
     INCLUDEPATH += $$EXTERNAL_ROOT/OpenImageIO/include
     INCLUDEPATH += C:/VulkanSDK/1.2.154.1/Include
 
-    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
-    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-
-#    COPIES += ocio
-#    ocio.files += $$files(ocio/config.ocio)
-#    ocio.path = $$DESTDIR/ocio
-
-#    COPIES += luts
-#    luts.files += $$files(ocio/luts/*)
-#    luts.path = $$DESTDIR/ocio/luts
-
-    COPIES += license
-    license.files += $$files(LICENSE)
-    license.path = $$DESTDIR
-
-    COPIES += platforms
-    platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2d.dll)
-    platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimald.dll)
-    platforms.files += $$files($$QT_ROOT/plugins/platforms/qoffscreend.dll)
-    platforms.files += $$files($$QT_ROOT/plugins/platforms/qwindowsd.dll)
-    platforms.path = $$DESTDIR/platforms
-
-    COPIES += iconengines
-    iconengines.files += $$files($$QT_ROOT/plugins/iconengines/qsvgicon.dll)
-    iconengines.path = $$DESTDIR/iconengines
-
-    COPIES += styles
-    styles.files += $$files($$QT_ROOT/plugins/styles/qwindowsvistastyle.dll)
-    styles.path = $$DESTDIR/styles
-
     COPIES += dlls
-    dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
-    dlls.files += $$files($$QT_ROOT/bin/Qt5Widgetsd.dll)
-    dlls.files += $$files($$QT_ROOT/bin/Qt5Guid.dll)
-    dlls.files += $$files($$QT_ROOT/bin/Qt5Cored.dll)
     dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO.dll)
     dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO_Util.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenColorIO.dll)
@@ -265,7 +231,64 @@ win32-msvc* {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/openjp2.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/raw_r.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/jasper.dll)
+
+    COPIES += platforms
+
+    CONFIG(debug, debug|release)
+    {
+        DESTDIR = $$OUT_PWD/debug
+
+        # Debug DLLs
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Svgd.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Widgetsd.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Guid.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Cored.dll)
+
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2dd.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimald.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qoffscreend.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qwindowsd.dll)
+    }
+    CONFIG(release, debug|release)
+    {
+        DESTDIR = $$OUT_PWD/release
+
+        # release DLLs
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Widgets.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Gui.dll)
+        dlls.files += $$files($$QT_ROOT/bin/Qt5Core.dll)
+
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2d.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimal.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qoffscreen.dll)
+        platforms.files += $$files($$QT_ROOT/plugins/platforms/qwindows.dll)
+    }
+
     dlls.path = $$DESTDIR
+    platforms.path = $$DESTDIR/platforms
+
+#    COPIES += ocio
+#    ocio.files += $$files(ocio/config.ocio)
+#    ocio.path = $$DESTDIR/ocio
+
+#    COPIES += luts
+#    luts.files += $$files(ocio/luts/*)
+#    luts.path = $$DESTDIR/ocio/luts
+
+    COPIES += license
+    license.files += $$files(LICENSE)
+    license.path = $$DESTDIR
+
+    COPIES += iconengines
+    iconengines.files += $$files($$QT_ROOT/plugins/iconengines/qsvgicon.dll)
+    iconengines.path = $$DESTDIR/iconengines
+
+    COPIES += styles
+    styles.files += $$files($$QT_ROOT/plugins/styles/qwindowsvistastyle.dll)
+    styles.path = $$DESTDIR/styles
+
+
 }
 
 RESOURCES += \
