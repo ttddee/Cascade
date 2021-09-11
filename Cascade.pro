@@ -192,17 +192,20 @@ linux-g++ {
 }
 
 win32-msvc* {
-    DEPENDENCY_ROOT = C:/Users/ryzen/vcpkg/installed/x64-windows/
+    DEPENDENCY_ROOT = C:\Users\ryzen\vcpkg\installed\x64-windows
+    EXTERNAL_ROOT = C:\Users\ryzen\Cascade\external
     QT_ROOT = C:\Qt515\5.15.1\msvc2019_64
     #TEMP_ROOT = C:/msys64/home/till/temp
 
-    LIBS += -L$$DEPENDENCY_ROOT/lib -lOpenImageIO
+    LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO
+    LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO_Util
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibOpenColorIO
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibgmic
     #LIBS += -L$$DEPENDENCY_ROOT/lib -llibtbb
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
-    INCLUDEPATH += C:\VulkanSDK\1.2.154.1\Include
+    INCLUDEPATH += $$EXTERNAL_ROOT/OpenImageIO/include
+    INCLUDEPATH += C:/VulkanSDK/1.2.154.1/Include
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -239,8 +242,8 @@ win32-msvc* {
     dlls.files += $$files($$QT_ROOT/bin/Qt5Widgetsd.dll)
     dlls.files += $$files($$QT_ROOT/bin/Qt5Guid.dll)
     dlls.files += $$files($$QT_ROOT/bin/Qt5Cored.dll)
-    dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO.dll)
-    dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO_Util.dll)
+    dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO.dll)
+    dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO_Util.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenColorIO.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_filesystem-vc142-mt-x64-1_74.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_system-vc142-mt-x64-1_74.dll)
@@ -258,6 +261,10 @@ win32-msvc* {
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/lzma.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/zlib1.dll)
     dlls.files += $$files($$DEPENDENCY_ROOT/bin/libpng16.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/heif.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/openjp2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/raw_r.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/bin/jasper.dll)
     dlls.path = $$DESTDIR
 }
 

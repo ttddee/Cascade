@@ -39,7 +39,9 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         while (i.hasNext())
         {
             i.next();
-            categories[i.key()] = this->addMenu(categoryStrings[i.key()]);
+            auto submenu = this->addMenu(categoryStrings[i.key()]);
+            categories[i.key()] = submenu;
+            submenu->setFixedWidth(150);
         }
     }
 

@@ -175,7 +175,6 @@ namespace Cascade
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
         NODE_TYPE_CHROMAKEY,
-        //NODE_TYPE_OFX,
         NODE_TYPE_MAX
     };
 
@@ -209,7 +208,6 @@ namespace Cascade
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" }
-        //{ NODE_TYPE_OFX, "OFX" }
     };
 
     ////////////////////////////////////

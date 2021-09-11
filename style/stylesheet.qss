@@ -392,7 +392,7 @@ QMenu {
     border-color: #626971;
     border-style: solid;
     border-width: 1px;
-    padding: 3px;
+    padding: 1px;
 }
 QMenu::separator {
     height: 1px;

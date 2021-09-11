@@ -450,6 +450,9 @@ bool NodeBase::canBeRendered()
     if (nodeType == NODE_TYPE_READ)
     {
         auto vals = getAllPropertyValues();
+        CS_LOG_CONSOLE("Number of vals:");
+        CS_LOG_CONSOLE(QString::number(vals.size()));
+        CS_LOG_CONSOLE(vals);
         if (vals.size() == 0)
         {
             return false;

@@ -554,10 +554,14 @@ void VulkanRenderer::createImageMemoryBarrier(
 
 bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
 {
+    CS_LOG_CONSOLE(path);
+
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
     bool ok = cpuImage->read(0, 0, 0, 4, true, TypeDesc::FLOAT);
     if (!ok)
     {
+        CS_LOG_WARNING("There was a problem reading the image from disk.");
+        CS_LOG_WARNING(QString::fromStdString(cpuImage->geterror()));
         std::cout << "There was a problem reading the image." << std::endl;
         std::cout << cpuImage->geterror() << std::endl;
     }
@@ -619,6 +623,8 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
                 loadImageStaging,
                 loadImageStagingMem))
     {
+        CS_LOG_WARNING("Failed to write linear image");
+        CS_LOG_CONSOLE("Failed to write linear image");
         return false;
     }
 
@@ -1896,7 +1902,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         // Create texture
         if (!createTextureFromFile(imagePath, colorSpace))
-            qFatal("Failed to create texture");
+            CS_LOG_WARNING("Failed to create texture");
 
         // Update the projection size
         createVertexBuffer();
