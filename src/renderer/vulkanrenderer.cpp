@@ -1987,6 +1987,7 @@ void VulkanRenderer::processNode(
     {
         for (int i = 1; i <= numShaderPasses; ++i)
         {
+            // TODO: Shorten this
             if (currentShaderPass == 1)
             {
                 // First pass of multipass shader
@@ -2156,7 +2157,10 @@ void VulkanRenderer::cleanup()
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
-    settingsBuffer = nullptr;
+    if (settingsBuffer)
+    {
+        settingsBuffer = nullptr;
+    }
 
     if (computeRenderTarget)
     {

@@ -46,7 +46,7 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
             this, &WritePropertiesEntity::updateFileNameLabel);
 
 #ifdef QT_DEBUG
-    setFolder("/tmp");
+    //setFolder("/tmp");
 #endif
 }
 

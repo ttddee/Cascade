@@ -152,11 +152,17 @@ void MainWindow::saveProjectAs()
     // get path
     QString path;
 
-    QFileDialog dialog(nullptr);
+    QFileDialog dialog(this);
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setNameFilter(tr("CSC Project (*.csc)"));
     dialog.setDefaultSuffix("csc");
-    auto f = dialog.getSaveFileName();
+    dialog.setAcceptMode(QFileDialog::AcceptSave);
+    QString f;
+    if (dialog.exec())
+    {
+        auto list = dialog.selectedFiles();
+        f = list[0];
+    }
     CS_LOG_CONSOLE(f);
     if (f.isEmpty())
     {
