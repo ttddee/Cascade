@@ -56,6 +56,8 @@ NodeGraph::NodeGraph(QWidget* parent)
             rManager, &RenderManager::handleClearScreenRequest);
     connect(this, &NodeGraph::requestClearProperties,
             wManager, &WindowManager::handleClearPropertiesRequest);
+
+    //createNode(NODE_TYPE_READ);
 }
 
 void NodeGraph::createNode(
