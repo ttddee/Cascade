@@ -17,7 +17,7 @@ Cascade is free software. If you want to try it out, the latest binaries for Win
 
 The release has been tested on Windows 10 and NVIDIA GPUs.
 
-If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM).
+If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM) or create an issue here on Github.
 
 ## Shortcuts
 
