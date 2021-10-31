@@ -1909,7 +1909,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         // Create render target
         if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
-            qFatal("Failed to create compute render target.");
+            CS_LOG_WARNING("Failed to create compute render target.");
 
         updateComputeDescriptors(imageFromDisk, nullptr, computeRenderTarget);
 
@@ -2037,7 +2037,7 @@ void VulkanRenderer::processNode(
 
 void VulkanRenderer::displayNode(NodeBase *node)
 {
-    // Should probably use something like cmdBlitImage
+    // TODO: Should probably use something like cmdBlitImage
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
     if(auto image = node->cachedImage)
@@ -2153,7 +2153,6 @@ void VulkanRenderer::releaseSwapChainResources()
 void VulkanRenderer::cleanup()
 {
     CS_LOG_INFO("Cleaning up renderer.");
-    CS_LOG_CONSOLE("Cleaning up renderer.");
 
     devFuncs->vkQueueWaitIdle(compute.computeQueue);
 

@@ -25,6 +25,8 @@
 #include <QString>
 #include <QStringList>
 
+#include "../log.h"
+
 CsSettingsBuffer::CsSettingsBuffer(
         VkDevice* dev,
         VkPhysicalDevice* physicalDevice,
@@ -88,13 +90,12 @@ CsSettingsBuffer::CsSettingsBuffer(
                     reinterpret_cast<void **>(&pBufferStart));
     if (err != VK_SUCCESS)
         {
-            qWarning("Failed to map memory for staging buffer: %d", err);
+            CS_LOG_WARNING("Failed to map memory for staging buffer.");
         }
 }
 
 void CsSettingsBuffer::fillBuffer(const QString &s)
 {
-    std::cout << s.toStdString() << std::endl;
     auto parts = s.split(",");
 
     float* pBuffer = pBufferStart;
