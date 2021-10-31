@@ -191,13 +191,11 @@ linux-g++ {
 }
 
 win32-msvc* {
-    DEPENDENCY_ROOT = C:\Users\ryzen\vcpkg\installed\x64-windows
-    EXTERNAL_ROOT = C:\Users\ryzen\Cascade\external
-    QT_ROOT = C:\Qt515\5.15.1\msvc2019_64
+    DEPENDENCY_ROOT = vcpkg_installed/x64-windows
+    LIB_ROOT = ../vcpkg_installed/x64-windows
+    QT_ROOT = C:/Qt515/5.15.0/msvc2019_64
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
-    INCLUDEPATH += $$EXTERNAL_ROOT/OpenImageIO/include
-    INCLUDEPATH += C:/VulkanSDK/1.2.189.1/Include
 
     COPIES += dlls
     COPIES += platforms
@@ -206,9 +204,9 @@ win32-msvc* {
         DESTDIR = $$OUT_PWD/debug
 
         # Debug Libs
-        LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO_d
-        LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO_Util_d
-        LIBS += -L$$DEPENDENCY_ROOT/debug/lib -ltbb_debug
+        LIBS += -L$$LIB_ROOT/debug/lib -lOpenImageIO_d
+        LIBS += -L$$LIB_ROOT/debug/lib -lOpenImageIO_Util_d
+        LIBS += -L$$LIB_ROOT/debug/lib -ltbb_debug
 
         # Debug DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svgd.dll)
@@ -216,27 +214,35 @@ win32-msvc* {
         dlls.files += $$files($$QT_ROOT/bin/Qt5Guid.dll)
         dlls.files += $$files($$QT_ROOT/bin/Qt5Cored.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/tbb_debug.dll)
-        dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO_d.dll)
-        dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO_Util_d.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_filesystem-vc142-mt-gd-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_system-vc142-mt-gd-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_thread-vc142-mt-gd-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_chrono-vc142-mt-gd-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_date_time-vc142-mt-gd-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/jasper.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/raw_r.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenImageIO_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenImageIO_Util_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_filesystem-vc142-mt-gd-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_system-vc142-mt-gd-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_thread-vc142-mt-gd-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_chrono-vc142-mt-gd-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_date_time-vc142-mt-gd-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/jasperd.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/raw_rd.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/openjp2.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/heif.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libpng16d.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/zlib1.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/zlibd1.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/lzmad.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/tiffd.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/IlmImf-2_5.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/Imath-2_5.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/Iex-2_5.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/Half-2_5.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/IlmThread-2_5.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/IlmImf-2_5_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/Imath-2_5_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/Iex-2_5_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/Half-2_5_d.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/IlmThread-2_5_d.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/jpeg62.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/gif.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenColorIO_2_0.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/squishd.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libde265.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libx265.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/lcms2.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/yaml-cppd.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libexpatd.dll)
 
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2dd.dll)
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimald.dll)
@@ -247,9 +253,9 @@ win32-msvc* {
         DESTDIR = $$OUT_PWD/release
 
         # Release Libs
-        LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO
-        LIBS += -L$$EXTERNAL_ROOT/OpenImageIO -lOpenImageIO_Util
-        LIBS += -L$$DEPENDENCY_ROOT/lib -ltbb
+        LIBS += -L$$LIB_ROOT/lib -lOpenImageIO
+        LIBS += -L$$LIB_ROOT/lib -lOpenImageIO_Util
+        LIBS += -L$$LIB_ROOT/lib -ltbb
 
         # Release DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
@@ -257,13 +263,13 @@ win32-msvc* {
         dlls.files += $$files($$QT_ROOT/bin/Qt5Gui.dll)
         dlls.files += $$files($$QT_ROOT/bin/Qt5Core.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/tbb.dll)
-        dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO.dll)
-        dlls.files += $$files($$EXTERNAL_ROOT/OpenImageIO/bin/OpenImageIO_Util.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_filesystem-vc142-mt-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_system-vc142-mt-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_thread-vc142-mt-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_chrono-vc142-mt-x64-1_74.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_date_time-vc142-mt-x64-1_74.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO_Util.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_filesystem-vc142-mt-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_system-vc142-mt-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_thread-vc142-mt-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_chrono-vc142-mt-x64-1_77.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_date_time-vc142-mt-x64-1_77.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/jasper.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/raw_r.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/openjp2.dll)
@@ -278,6 +284,14 @@ win32-msvc* {
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/Half-2_5.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/IlmThread-2_5.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/jpeg62.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/gif.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenColorIO_2_0.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/squish.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/libde265.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/libx265.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/lcms2.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/yaml-cpp.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/libexpat.dll)
 
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2d.dll)
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimal.dll)

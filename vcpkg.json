@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
+  "name": "cascade",
+  "version": "0.1.7",
+  "dependencies": [
+    {
+	  "name": "openimageio",
+      "default-features": false,
+	  "features": [ "gif", "libraw", "opencolorio" ]
+    },
+	"vulkan-headers",
+	"tbb",
+	"gtest"
+  ]
+}
