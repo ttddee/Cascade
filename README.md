@@ -4,23 +4,20 @@
 
 Cascade is a node-based image editor with GPU-acceleration.
 
-This is still an early prototype.
-
-## Download
-
-
-Cascade is free software. If you want to try it out, the latest binaries for Windows are [here](https://github.com/ttddee/Cascade/releases).
-
-The release has been tested on Windows 10 and NVIDIA GPUs.
-
-If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM).
-
 ## Features
 
 - Non-destructive node-based editing workflow
 - All image processing is done on the GPU
 - 32 bit linear color pipeline
 - Support for the most common color spaces and file formats
+
+## Download
+
+Cascade is free software. If you want to try it out, the latest binaries for Windows are [here](https://github.com/ttddee/Cascade/releases).
+
+The release has been tested on Windows 10 and NVIDIA GPUs.
+
+If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM).
 
 ## Shortcuts
 
@@ -31,4 +28,45 @@ If you want to get involved or have questions, please join our [Discord](https:/
 - **Delete** - Delete selected node
 
 - **Ctrl + Left Click** - Reset slider to default
+
+## Build
+
+To build the project on Windows, you will only have to install Qt manually. The rest is handled by vcpkg. 
+
+Windows versions are compiled with MSVC 2019 64bit.
+
+Install [Qt](https://www.qt.io/download) using the official installer. At the moment we are using version **5.15.0**, installed into `C:\Qt515`.
+
+It's easiest to use Qt Creator as IDE, but feel free to use Visual Studio if you want.
+
+Open a command prompt and clone the Cascade repo:
+
+```git clone https://github.com/ttddee/Cascade```
+
+Enter the project directory and install vcpkg:
+
+``` 
+cd Cascade
+
+git clone https://github.com/microsoft/vcpkg
+
+.\vcpkg\bootstrap-vcpkg.bat
+```
+
+Now you can install all other dependencies using the command below:
+
+```.\vcpkg install --triplet=x64-windows```
+
+It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
+
+## Tech
+
+Cascade is written in C++ and runs on Windows and Linux. You will need a [Vulkan-compatible GPU](https://vulkan.gpuinfo.org/).
+
+The GUI was created in [Qt](https://www.qt.io/) and all rendering is done on the GPU through [Vulkan](https://www.vulkan.org/) with GLSL as shading language.
+
+For IO and color space conversion we are using [OpenImageIO](https://github.com/OpenImageIO/oiio)/[OpenColorIO](https://opencolorio.org/).
+
+Multithreaded computations on the CPU are done with [TBB](https://github.com/oneapi-src/oneTBB).
+
 
