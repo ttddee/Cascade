@@ -19,16 +19,6 @@ The release has been tested on Windows 10 and NVIDIA GPUs.
 
 If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM) or create an issue here on Github.
 
-## Shortcuts
-
-- **F1** - View selected node front input
-- **F2** - View selected node back input
-- **F3** - View selected node alpha input
-- **F4** - Toggle between selected node RGB output and alpha output
-- **Delete** - Delete selected node
-
-- **Ctrl + Left Click** - Reset slider to default
-
 ## Build
 
 To build the project on Windows, you will only have to install Qt manually. The rest is handled by vcpkg. 
@@ -58,6 +48,16 @@ Now you can install all other dependencies using the command below:
 ```.\vcpkg install --triplet=x64-windows```
 
 It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
+
+## Shortcuts
+
+- **F1** - View selected node front input
+- **F2** - View selected node back input
+- **F3** - View selected node alpha input
+- **F4** - Toggle between selected node RGB output and alpha output
+- **Delete** - Delete selected node
+
+- **Ctrl + Left Click** - Reset slider to default
 
 ## Tech
 
