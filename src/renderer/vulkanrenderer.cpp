@@ -100,16 +100,16 @@ void VulkanRenderer::initResources()
                 devFuncs,
                 f));
 
-    /// Load OCIO config
-//    try
-//    {
-//        const char* file = "ocio/config.ocio";
-//        ocioConfig = OCIO::Config::CreateFromFile(file);
-//    }
-//    catch(OCIO::Exception& exception)
-//    {
-//        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
-//    }
+    // Load OCIO config
+    try
+    {
+        const char* file = "ocio/config.ocio";
+        ocioConfig = OCIO::Config::CreateFromFile(file);
+    }
+    catch(OCIO::Exception& exception)
+    {
+        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
+    }
 
     emit window->rendererHasBeenCreated();
 }
@@ -562,8 +562,6 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     {
         CS_LOG_WARNING("There was a problem reading the image from disk.");
         CS_LOG_WARNING(QString::fromStdString(cpuImage->geterror()));
-        std::cout << "There was a problem reading the image." << std::endl;
-        std::cout << cpuImage->geterror() << std::endl;
     }
 
     // Add alpha channel if it doesn't exist
@@ -576,8 +574,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    //transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
-    transformColorSpace("sRGB", "linear", *cpuImage);
+    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
@@ -702,14 +699,13 @@ QString VulkanRenderer::lookupColorSpace(const int i)
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
-    image = ImageBufAlgo::colorconvert(image, from.toStdString(), to.toStdString(), true);
-//    parallelApplyColorSpace(
-//                ocioConfig,
-//                from,
-//                to,
-//                static_cast<float*>(image.localpixels()),
-//                image.xend(),
-//                image.yend());
+    parallelApplyColorSpace(
+                ocioConfig,
+                from,
+                to,
+                static_cast<float*>(image.localpixels()),
+                image.xend(),
+                image.yend());
 }
 
 void VulkanRenderer::createComputeDescriptors()
@@ -1894,7 +1890,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 {
     auto parts = node->getAllPropertyValues().split(",");
     QString path = parts[0];
-    int colorSpace = 1; // parts[1].toInt();
+    int colorSpace = parts[1].toInt();
 
     if(path != "")
     {
