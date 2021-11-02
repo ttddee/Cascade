@@ -1700,8 +1700,7 @@ bool VulkanRenderer::saveImageToDisk(CsImage& inputImage, const QString &path, c
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    //transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
-    transformColorSpace("linear", "sRGB", *saveImage);
+    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
 

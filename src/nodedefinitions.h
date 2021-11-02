@@ -585,8 +585,8 @@ namespace Cascade
         { },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] },
-            { UI_ELEMENT_TYPE_WRITE_PROPERTIES, "" }
-            //{ UI_ELEMENT_TYPE_COMBOBOX, "Color Space:,sRGB,Linear,rec709,Cineon,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
+            { UI_ELEMENT_TYPE_WRITE_PROPERTIES, "" },
+            { UI_ELEMENT_TYPE_COMBOBOX, "Color Space:,sRGB,Linear,rec709,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
