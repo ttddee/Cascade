@@ -44,68 +44,29 @@
       <number>3</number>
      </property>
      <item>
-      <widget class="QLabel" name="label">
-       <property name="maximumSize">
-        <size>
-         <width>15</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>R</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QCheckBox" name="redBox">
        <property name="text">
-        <string/>
+        <string>Red</string>
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_2">
-       <property name="maximumSize">
-        <size>
-         <width>15</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>G</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="greenBox">
        <property name="text">
-        <string/>
+        <string>Green</string>
        </property>
        <property name="checked">
         <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-     <item>
-      <widget class="QLabel" name="label_3">
-       <property name="maximumSize">
-        <size>
-         <width>15</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>B</string>
        </property>
       </widget>
      </item>
      <item>
       <widget class="QCheckBox" name="blueBox">
        <property name="text">
-        <string/>
+        <string>Blue</string>
        </property>
        <property name="checked">
         <bool>true</bool>
@@ -113,22 +74,9 @@
       </widget>
      </item>
      <item>
-      <widget class="QLabel" name="alphaLabel">
-       <property name="maximumSize">
-        <size>
-         <width>15</width>
-         <height>16777215</height>
-        </size>
-       </property>
-       <property name="text">
-        <string>A</string>
-       </property>
-      </widget>
-     </item>
-     <item>
       <widget class="QCheckBox" name="alphaBox">
        <property name="text">
-        <string/>
+        <string>Alpha</string>
        </property>
       </widget>
      </item>

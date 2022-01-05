@@ -26,6 +26,7 @@ PropertiesView::PropertiesView(QWidget *parent)
 {
     layout = new QVBoxLayout();
     this->setLayout(layout);
+    this->setAttribute(Qt::WA_StyledBackground);
 }
 
 void PropertiesView::clear()

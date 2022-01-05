@@ -52,6 +52,7 @@ MainWindow::MainWindow(QWidget *parent)
     auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);
 
+
     nodeGraph = new NodeGraph();
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);

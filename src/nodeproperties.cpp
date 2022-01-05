@@ -55,6 +55,7 @@ NodeProperties::NodeProperties(
 
     layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignTop);
+    layout->setContentsMargins(QMargins(0,0,0,0));
     this->setLayout(layout);
 
     foreach (auto& elem, props.uiElements)
@@ -62,7 +63,7 @@ NodeProperties::NodeProperties(
         if(elem.first == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
         {
             PropertiesHeading* item = new PropertiesHeading(
-                        elem.second,
+                        elem.second.toUpper(),
                         this);
             layout->addWidget(item);
         }

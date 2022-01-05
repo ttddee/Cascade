@@ -30,6 +30,8 @@
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)
 {
+    this->setAttribute(Qt::WA_StyledBackground);
+
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
@@ -76,6 +78,8 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     QVBoxLayout* layout = new QVBoxLayout();
     layout->addWidget(vulkanWrapper);
     layout->addWidget(statusBar);
+    layout->setContentsMargins(QMargins(0, 0, 0, 0));
+    layout->setSpacing(0);
     this->setLayout(layout);
 }
 

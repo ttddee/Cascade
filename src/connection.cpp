@@ -27,6 +27,7 @@
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
 #include <QJsonObject>
+#include <QPainter>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -41,7 +42,7 @@ Connection::Connection(NodeOutput* source)
       sourceOutput(source)
 {
     // TODO find better way to get cursor position
-    this->setPen(QPen(QColor(0x92, 0x99, 0xa1), 3));
+    this->setPen(normalPen);
     this->setLine(source->mapToParent(source->pos()).x(),
                   source->mapToParent(source->pos()).y(),
                   source->mapToParent(source->pos()).x(),
@@ -86,11 +87,6 @@ QPainterPath Connection::shape() const
              << line().p2() + offset1;
     ret.addPolygon(nPolygon);
     return ret;
-}
-
-QPoint Connection::getStartPosition()
-{
-    return sourceOutput->mapToParent(line().p1().toPoint());
 }
 
 void Connection::updatePosition()

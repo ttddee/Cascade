@@ -40,16 +40,6 @@
         <file>shaders/invert_comp.spv</file>
         <file>shaders/read_comp.spv</file>
         <file>shaders/sobel_comp.spv</file>
-        <file alias="/ads/images/close-button-disabled.svg">design/advanceddocking/close-button-disabled.svg</file>
-        <file alias="/ads/images/close-button-focused.svg">design/advanceddocking/close-button-focused.svg</file>
-        <file alias="/ads/images/detach-button.svg">design/advanceddocking/detach-button.svg</file>
-        <file alias="/ads/images/detach-button-disabled.svg">design/advanceddocking/detach-button-disabled.svg</file>
-        <file alias="/ads/images/maximize-button.svg">design/advanceddocking/maximize-button.svg</file>
-        <file alias="/ads/images/maximize-button-focused.svg">design/advanceddocking/maximize-button-focused.svg</file>
-        <file alias="/ads/images/restore-button.svg">design/advanceddocking/restore-button.svg</file>
-        <file alias="/ads/images/restore-button-focused.svg">design/advanceddocking/restore-button-focused.svg</file>
-        <file alias="/ads/images/tabs-menu-button.svg">design/advanceddocking/tabs-menu-button.svg</file>
-        <file alias="/ads/images/close-button.svg">design/advanceddocking/close-button.svg</file>
         <file>shaders/directionalblur_comp.spv</file>
         <file>shaders/channelcopy_comp.spv</file>
         <file>shaders/riverstyx_comp.spv</file>

@@ -47,6 +47,12 @@
       <number>0</number>
      </property>
      <widget class="QWidget" name="master">
+      <property name="minimumSize">
+       <size>
+        <width>0</width>
+        <height>0</height>
+       </size>
+      </property>
       <property name="maximumSize">
        <size>
         <width>16777215</width>
@@ -82,7 +88,7 @@
        </size>
       </property>
       <attribute name="title">
-       <string>Low</string>
+       <string>Shadows</string>
       </attribute>
       <layout class="QVBoxLayout" name="shadowsLayout">
        <property name="spacing">
@@ -104,7 +110,7 @@
      </widget>
      <widget class="QWidget" name="midtones">
       <attribute name="title">
-       <string>Mid</string>
+       <string>Midtones</string>
       </attribute>
       <layout class="QVBoxLayout" name="midtonesLayout">
        <property name="spacing">
@@ -126,7 +132,7 @@
      </widget>
      <widget class="QWidget" name="highlights">
       <attribute name="title">
-       <string>High</string>
+       <string>Highlights</string>
       </attribute>
       <layout class="QVBoxLayout" name="highlightsLayout">
        <property name="spacing">

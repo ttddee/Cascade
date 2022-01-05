@@ -40,7 +40,6 @@ ChannelSelectEntity::ChannelSelectEntity(UIElementType et, QWidget *parent)
 
 void ChannelSelectEntity::hideAlphaChannel()
 {
-    ui->alphaLabel->setHidden(true);
     ui->alphaBox->setHidden(true);
 }
 

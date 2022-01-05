@@ -40,8 +40,8 @@ public:
     std::vector<Connection*> getConnections();
 
     NodeBase* parentNode = nullptr;
-    const int visualWidth = 12;
-    const int visualHeight = 25;
+    const int visualWidth = 10;
+    const int visualHeight = 18;
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;

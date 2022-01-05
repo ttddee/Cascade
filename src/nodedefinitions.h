@@ -185,7 +185,7 @@ namespace Cascade
     const static QMap<NodeType, QString> nodeStrings =
     {
         { NODE_TYPE_CROP, "Crop" },
-        { NODE_TYPE_READ, "Read" },
+        { NODE_TYPE_READ, "Read Image" },
         { NODE_TYPE_BLUR, "Blur" },
         { NODE_TYPE_COLOR, "Color" },
         { NODE_TYPE_RESIZE, "Resize" },
@@ -200,7 +200,7 @@ namespace Cascade
         { NODE_TYPE_DIFFERENCE, "Difference Key" },
         { NODE_TYPE_PREMULT, "Premult" },
         { NODE_TYPE_UNPREMULT, "Unpremult" },
-        { NODE_TYPE_WRITE, "Write" },
+        { NODE_TYPE_WRITE, "Write Image" },
         { NODE_TYPE_INVERT, "Invert" },
         { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
         { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
@@ -209,7 +209,7 @@ namespace Cascade
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" },
-        { NODE_TYPE_MUTE, "Mute" }
+        { NODE_TYPE_MUTE, "Mute Channel" }
     };
 
     ////////////////////////////////////
@@ -482,7 +482,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] },
-            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:" },
             { UI_ELEMENT_TYPE_SIZEBOX, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,

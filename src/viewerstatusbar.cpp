@@ -28,6 +28,8 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
 {
     ui->setupUi(this);
 
+    this->setAttribute(Qt::WA_StyledBackground);
+
     gammaSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);

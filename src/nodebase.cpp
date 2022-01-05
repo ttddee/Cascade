@@ -59,7 +59,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
 
     props = Cascade::getPropertiesForType(nodeType);
 
-    QString label = props.title;
+    QString label = props.title.toUpper();
     ui->NodeTitleLabel->setText(label);
 
     this->createInputs(props);
@@ -73,20 +73,29 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     for (size_t i = 0; i < props.nodeInputs.size(); i++)
     {
         auto nodeIn = new NodeInput(props.nodeInputs[i], this);
-        nodeIn->move(-2, 15 + 35 * i);
+        nodeIn->move(-2, 32 + 28 * i);
         nodeInputs.push_back(nodeIn);
+
+        QLabel *label;
+        label = new QLabel(this);
+        label->setObjectName("NodeIOLabel");
+        label->move(nodeIn->pos() + QPoint(15, -7));
+        label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
         {
             this->rgbaBackIn = nodeIn;
+            label->setText("RGB Back");
         }
         else if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_FRONT)
         {
             this->rgbaFrontIn = nodeIn;
+            label->setText("RGB Front");
         }
         else if (props.nodeInputs[i] == NODE_INPUT_TYPE_ALPHA)
         {
             this->rgbaFrontIn = nodeIn;
+            label->setText("Alpha");
         }
 
         connect(nodeIn, &NodeInput::connectedNodeInputClicked,
@@ -99,12 +108,18 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     for (size_t i = 0; i < props.nodeOutputs.size(); i++)
     {
         auto nodeOut = new NodeOutput(this);
-        nodeOut->move(110, 15);
+        nodeOut->move(112, 32);
         nodeOutputs.push_back(nodeOut);
+
+        QLabel *label;
+        label = new QLabel(this);
+        label->setObjectName("NodeIOLabel");
+        label->move(nodeOut->pos() + QPoint(-25, -7));
+        label->setText("Out");
+        label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
         if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
         {
-            //nodeOut->setObjectName("RGBOut");
             this->rgbaOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
@@ -387,47 +402,17 @@ void NodeBase::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing);
-    QRect rect = this->rect();
-    painter.setBrush(defaultColorBrush);
-    painter.setPen(defaultColorPen);
-    painter.drawRoundedRect(rect, cornerRadius, cornerRadius);
 
-    auto mode = wManager->getViewerMode();
+    QRect rect = this->rect();
+    QPainterPath path;
+    path.addRoundedRect(rect, cornerRadius, cornerRadius);
+    painter.fillPath(path, defaultColorBrush);
 
     if (isSelected)
     {
-        painter.setBrush(selectedColorBrush);
-        painter.setPen(Qt::NoPen);
-        painter.drawRoundedRect(rect, cornerRadius, cornerRadius);
+        painter.fillPath(path, selectedColorBrush);
     }
-    if (isViewed)
-    {
-        rect.setTopLeft(rect.topLeft() + QPoint(1, 1));
-        rect.setBottomRight(rect.bottomRight() + QPoint(-1, -1));
 
-        if (mode == VIEWER_MODE_FRONT_RGB)
-        {
-            painter.setPen(frontViewedColorPen);
-        }
-        else if (mode == VIEWER_MODE_BACK_RGB)
-        {
-            painter.setPen(backViewedColorPen);
-        }
-        else if (mode == VIEWER_MODE_INPUT_ALPHA)
-        {
-            painter.setPen(alphaViewedColorPen);
-        }
-        else if (mode == VIEWER_MODE_OUTPUT_RGB)
-        {
-            painter.setPen(outputViewedColorPen);
-        }
-        else if (mode == VIEWER_MODE_OUTPUT_ALPHA)
-        {
-            painter.setPen(alphaViewedColorPen);
-        }
-
-        painter.drawRoundedRect(rect, cornerRadius - 2, cornerRadius - 2);
-    }
     Q_UNUSED(event);
 }
 

@@ -79,7 +79,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (keyEvent->key() == Qt::Key_F1)
         {
             currentViewerMode = VIEWER_MODE_FRONT_RGB;
-            viewerStatusBar->setViewerModeText("Front RGB");
+            viewerStatusBar->setViewerModeText("RGB Front");
             vulkanWindow->setViewerMode(currentViewerMode);
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
             viewOutputAlpha = false;
@@ -87,7 +87,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         else if (keyEvent->key() == Qt::Key_F2)
         {
             currentViewerMode = VIEWER_MODE_BACK_RGB;
-            viewerStatusBar->setViewerModeText("Back RGB");
+            viewerStatusBar->setViewerModeText("RGB Back");
             vulkanWindow->setViewerMode(currentViewerMode);
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
             viewOutputAlpha = false;
@@ -95,7 +95,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         else if (keyEvent->key() == Qt::Key_F3)
         {
             currentViewerMode = VIEWER_MODE_INPUT_ALPHA;
-            viewerStatusBar->setViewerModeText("Input Mask");
+            viewerStatusBar->setViewerModeText("Alpha Input");
             vulkanWindow->setViewerMode(currentViewerMode);
             nodeGraph->viewNode(nodeGraph->getSelectedNode());
             viewOutputAlpha = false;
@@ -109,13 +109,13 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
             if (!viewOutputAlpha)
             {
                 currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
-                viewerStatusBar->setViewerModeText("Output RGB");
+                viewerStatusBar->setViewerModeText("RGB Output");
                 viewOutputAlpha = true;
             }
             else
             {
                 currentViewerMode = VIEWER_MODE_OUTPUT_ALPHA;
-                viewerStatusBar->setViewerModeText("Output Alpha");
+                viewerStatusBar->setViewerModeText("Alpha Output");
                 viewOutputAlpha = false;
             }
 

@@ -33,7 +33,6 @@ class Connection : public QObject, public QGraphicsLineItem
 public:
     explicit Connection(NodeOutput* source);
     QPainterPath shape() const override;
-    QPoint getStartPosition();
 
     void updatePosition();
     void updatePosition(const QPoint end);
@@ -46,10 +45,10 @@ public:
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
-    const QPen normalPen = QPen(QColor(0x92, 0x99, 0xa1), 2);
-    const QPen frontConnectedPen = QPen(frontColor, 2);
-    const QPen backConnectedPen = QPen(backColor, 2);
-    const QPen alphaConnectedPen = QPen(alphaColor, 2);
+    const QPen normalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
+    const QPen frontConnectedPen = QPen(frontColor, 1);
+    const QPen backConnectedPen = QPen(backColor, 1);
+    const QPen alphaConnectedPen = QPen(alphaColor, 1);
 
 };
 

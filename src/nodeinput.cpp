@@ -30,7 +30,7 @@ NodeInput::NodeInput(NodeInputType t, QWidget *parent)
       id(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     parentNode = static_cast<NodeBase*>(parent);
-    this->resize(12, 25);
+    this->resize(10, 18);
 
     if (t == NODE_INPUT_TYPE_RGB_FRONT)
         setObjectName("Front");

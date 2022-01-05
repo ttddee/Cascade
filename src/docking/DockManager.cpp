@@ -484,6 +484,7 @@ CDockManager::CDockManager(QWidget *parent) :
     CDockManager::setConfigFlag(CDockManager::DockAreaHasTabsMenuButton, false);
     CDockManager::setConfigFlag(CDockManager::DockAreaHasUndockButton, false);
     CDockManager::setConfigFlag(CDockManager::EqualSplitOnInsertion, true);
+    CDockManager::setConfigFlag(CDockManager::ActiveTabHasCloseButton, false);
 
     // Disable the default style sheet
     this->setStyleSheet("");
