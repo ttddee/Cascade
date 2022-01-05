@@ -206,7 +206,7 @@ win32-msvc* {
         # Debug Libs
         LIBS += -L$$LIB_ROOT/debug/lib -lOpenImageIO_d
         LIBS += -L$$LIB_ROOT/debug/lib -lOpenImageIO_Util_d
-        LIBS += -L$$LIB_ROOT/debug/lib -lOpenColorIO_2_0
+        LIBS += -L$$LIB_ROOT/debug/lib -lOpenColorIO
         LIBS += -L$$LIB_ROOT/debug/lib -ltbb_debug
 
         # Debug DLLs
@@ -217,7 +217,7 @@ win32-msvc* {
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/tbb_debug.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenImageIO_d.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenImageIO_Util_d.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenColorIO_2_0.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/OpenColorIO_2_1.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_filesystem-vc142-mt-gd-x64-1_77.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_system-vc142-mt-gd-x64-1_77.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/boost_thread-vc142-mt-gd-x64-1_77.dll)
@@ -257,7 +257,7 @@ win32-msvc* {
         # Release Libs
         LIBS += -L$$LIB_ROOT/lib -lOpenImageIO
         LIBS += -L$$LIB_ROOT/lib -lOpenImageIO_Util
-        LIBS += -L$$LIB_ROOT/lib -lOpenColorIO_2_0
+        LIBS += -L$$LIB_ROOT/lib -lOpenColorIO
         LIBS += -L$$LIB_ROOT/lib -ltbb
 
         # Release DLLs
@@ -268,7 +268,7 @@ win32-msvc* {
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/tbb.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenImageIO_Util.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenColorIO_2_0.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/bin/OpenColorIO_2_1.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_filesystem-vc142-mt-x64-1_77.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_system-vc142-mt-x64-1_77.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/bin/boost_thread-vc142-mt-x64-1_77.dll)

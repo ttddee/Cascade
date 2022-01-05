@@ -11,5 +11,9 @@
 	"vulkan-headers",
 	"tbb",
 	"gtest"
+  ],
+  "builtin-baseline": "0d0547a3d816b5092abece5abbdc85d23c88d9c9",
+  "overrides": [
+	{ "name": "openimageio", "version": "2.3.10.1" }
   ]
 }
