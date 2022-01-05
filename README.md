@@ -45,7 +45,7 @@ git clone https://github.com/microsoft/vcpkg
 
 Now you can install all other dependencies using the command below:
 
-```.\vcpkg\vcpkg install --triplet=x64-windows```
+```.\vcpkg\vcpkg --feature-flags="versions" install --triplet=x64-windows```
 
 It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
 
