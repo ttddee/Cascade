@@ -206,7 +206,7 @@ void MainWindow::handleOpenProjectAction()
 
 void MainWindow::handleSaveProjectAction()
 {
-
+    saveProjectAs();
 }
 
 void MainWindow::handleSaveProjectAsAction()
@@ -221,7 +221,7 @@ void MainWindow::handleExitAction()
 
 void MainWindow::handleShortcutsAction()
 {
-
+    displayShortcuts();
 }
 
 MainWindow::~MainWindow()

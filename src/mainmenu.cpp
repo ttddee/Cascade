@@ -41,7 +41,8 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     exitAction = new QAction("Exit" , fileMenu);
     fileMenu->addAction(exitAction);
     connect(exitAction, &QAction::triggered,
-            mainWindow, &MainWindow::handleExitAction);
+            mainWindow, &MainWindow::handleExitAction,
+            Qt::QueuedConnection);
 
     // View Menu
 
