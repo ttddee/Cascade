@@ -167,12 +167,8 @@ private:
 
     const int cornerRadius = 6;
     const QBrush defaultColorBrush = QBrush(QColor(24, 27, 30));
-    const QBrush selectedColorBrush = QBrush(QColor(29, 32, 36));
+    const QBrush selectedColorBrush = QBrush(QColor(37, 74, 115));
     const QPen defaultColorPen = QPen(QColor(0x62, 0x69, 0x71), 3);
-    const QPen frontViewedColorPen = QPen(frontColor, 3);
-    const QPen backViewedColorPen = QPen(backColor, 3);
-    const QPen alphaViewedColorPen = QPen(alphaColor, 3);
-    const QPen outputViewedColorPen = QPen(outputColor, 3);
 
 signals:
     void nodeWasLeftClicked(NodeBase* node);

@@ -410,6 +410,7 @@ void NodeBase::paintEvent(QPaintEvent *event)
 
     if (isSelected)
     {
+        painter.setClipRect(0, 0, 120, 23, Qt::ReplaceClip);
         painter.fillPath(path, selectedColorBrush);
     }
 
