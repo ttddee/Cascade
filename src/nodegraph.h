@@ -1,7 +1,7 @@
 /*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -44,7 +44,8 @@ public:
     NodeGraph(QWidget* parent = nullptr);
 
     void createNode(
-            const NodeType type);
+            const NodeType type,
+            const QPoint pos);
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
 
@@ -54,6 +55,8 @@ public:
     float getViewScale() const;
 
     void getNodeGraphAsJson(QJsonArray& graph);
+
+    QPoint lastMousePos;
 
 protected:
     void mousePressEvent(QMouseEvent*) override;
@@ -85,7 +88,6 @@ private:
 
     bool leftMouseIsDragging = false;
     bool middleMouseIsDragging = false;
-    QPoint lastMousePos;
 
     float viewScale = 1.0f;
 

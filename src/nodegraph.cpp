@@ -1,7 +1,7 @@
 /*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -29,6 +29,7 @@
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
+#include "log.h"
 
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
@@ -56,18 +57,20 @@ NodeGraph::NodeGraph(QWidget* parent)
             rManager, &RenderManager::handleClearScreenRequest);
     connect(this, &NodeGraph::requestClearProperties,
             wManager, &WindowManager::handleClearPropertiesRequest);
-
-    //createNode(NODE_TYPE_READ);
 }
 
 void NodeGraph::createNode(
-        const NodeType type)
+        const NodeType type,
+        const QPoint pos)
 {
     NodeBase* n = new NodeBase(type, this);
     scene->addWidget(n);
-    n->move(mapToScene(lastMousePos).x(),
-            mapToScene(lastMousePos).y());
+    n->move(pos);
     nodes.push_back(n);
+
+    CS_LOG_CONSOLE("POS:");
+    CS_LOG_CONSOLE(QString::number(pos.x()));
+    CS_LOG_CONSOLE(QString::number(pos.y()));
 
     connect(n, &NodeBase::nodeWasLeftClicked,
                 this, &NodeGraph::handleNodeLeftClicked);

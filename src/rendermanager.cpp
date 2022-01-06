@@ -1,7 +1,7 @@
 ﻿/*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by

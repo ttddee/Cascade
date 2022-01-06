@@ -1,7 +1,7 @@
 /*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -56,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
     nodeGraph = new NodeGraph();
     nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    CDockWidget* nodeGraphDockWidget = new CDockWidget("Node Graph");
+    nodeGraphDockWidget = new CDockWidget("Node Graph");
     nodeGraphDockWidget->setWidget(nodeGraph);
     dockManager->addDockWidget(
                 DockWidgetArea::BottomDockWidgetArea,
@@ -64,7 +64,7 @@ MainWindow::MainWindow(QWidget *parent)
                 centralDockArea);
 
     propertiesView = new PropertiesView();
-    CDockWidget* propertiesViewDockWidget = new CDockWidget("Properties");
+    propertiesViewDockWidget = new CDockWidget("Properties");
     propertiesViewDockWidget->setWidget(propertiesView);
     propertiesViewDockWidget->resize(700, 700);
     dockManager->addDockWidget(
@@ -72,61 +72,8 @@ MainWindow::MainWindow(QWidget *parent)
                 propertiesViewDockWidget,
                 centralDockArea);
 
-    //--------- Main Menu
-
-    newProjectAction = new QAction("New Project");
-    ui->menuFile->addAction(newProjectAction);
-
-    ui->menuFile->addSeparator();
-
-    openProjectAction = new QAction("Open Project");
-    ui->menuFile->addAction(openProjectAction);
-
-    saveProjectAction = new QAction("Save Project");
-    ui->menuFile->addAction(saveProjectAction);
-
-    saveProjectAsAction = new QAction("Save Project As");
-    ui->menuFile->addAction(saveProjectAsAction);
-
-    ui->menuFile->addSeparator();
-
-    exitAction = new QAction("Exit");
-    ui->menuFile->addAction(exitAction);
-
-    ui->menuView->addAction(nodeGraphDockWidget->toggleViewAction());
-    ui->menuView->addAction(propertiesViewDockWidget->toggleViewAction());
-
-    ui->menuView->addSeparator();
-
-    // Disabled for now until this is figured out:
-    // https://github.com/githubuser0xFFFF/Qt-Advanced-Docking-System/issues/272
-    saveLayoutAction = new QAction("Save Window Layout");
-    //ui->menuView->addAction(saveLayoutAction);
-    restoreLayoutAction = new QAction("Restore Saved Layout");
-    //ui->menuView->addAction(restoreLayoutAction);
-
-    //ui->menuView->addSeparator();
-
-    restoreDefaultLayoutAction = new QAction("Restore Default Layout");
-    //ui->menuView->addAction(restoreDefaultLayoutAction);
-
-    shortcutsAction = new QAction("Shortcuts");
-    ui->menuHelp->addAction(shortcutsAction);
-
-    connect(saveProjectAsAction, &QAction::triggered,
-            this, &MainWindow::saveProjectAs);
-    connect(exitAction, &QAction::triggered,
-            QApplication::instance(), QCoreApplication::quit, Qt::QueuedConnection);
-    connect(saveLayoutAction, &QAction::triggered,
-            this, &MainWindow::saveUserLayout);
-    connect(restoreLayoutAction, &QAction::triggered,
-            this, &MainWindow::restoreUserLayout);
-    connect(restoreDefaultLayoutAction, &QAction::triggered,
-            this, &MainWindow::restoreDefaultLayout);
-    connect(shortcutsAction, &QAction::triggered,
-            this, &MainWindow::displayShortcuts);
-
-    //--------- End Main Menu
+    mainMenu = new MainMenu(this);
+    this->setMenuBar(mainMenu);
 
     windowManager = &WindowManager::getInstance();
     windowManager->setUp(
@@ -198,33 +145,6 @@ void MainWindow::saveProjectAs()
     jsonFile.write(project.toJson());
 }
 
-void MainWindow::saveUserLayout()
-{
-    QSettings settings(
-                QSettings::IniFormat,
-                QSettings::SystemScope,
-                "settings",
-                "user");
-    dockManager->addPerspective("custom");
-    dockManager->savePerspectives(settings);
-}
-
-void MainWindow::restoreUserLayout()
-{
-    QSettings settings(
-                QSettings::IniFormat,
-                QSettings::SystemScope,
-                "settings",
-                "user");
-    dockManager->loadPerspectives(settings);
-    dockManager->openPerspective("custom");
-}
-
-void MainWindow::restoreDefaultLayout()
-{
-
-}
-
 void MainWindow::handleRendererHasBeenCreated()
 {
     // We are waiting for the renderer to be fully
@@ -274,22 +194,42 @@ void MainWindow::displayShortcuts()
     messageBox.exec();
 }
 
+void MainWindow::handleNewProjectAction()
+{
+    CS_LOG_CONSOLE("Beep");
+}
+
+void MainWindow::handleOpenProjectAction()
+{
+
+}
+
+void MainWindow::handleSaveProjectAction()
+{
+
+}
+
+void MainWindow::handleSaveProjectAsAction()
+{
+
+}
+
+void MainWindow::handleExitAction()
+{
+
+}
+
+void MainWindow::handleShortcutsAction()
+{
+
+}
+
 MainWindow::~MainWindow()
 {
     CS_LOG_INFO("Shutting down");
     CS_LOG_CONSOLE("Shutting down");
 
     delete ui;
-
-    delete newProjectAction;
-    delete openProjectAction;
-    delete saveProjectAction;
-    delete saveProjectAsAction;
-    delete exitAction;
-    delete saveLayoutAction;
-    delete restoreLayoutAction;
-    delete restoreDefaultLayoutAction;
-    delete shortcutsAction;
 
     vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }

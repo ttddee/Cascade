@@ -1,7 +1,7 @@
 /*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -23,6 +23,7 @@
 
 #include "nodedefinitions.h"
 #include "nodegraph.h"
+#include "log.h"
 
 using namespace Cascade;
 
@@ -60,7 +61,9 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     a,
                     &QAction::triggered,
                     parent,
-                    [parent, t]{ parent->createNode(t); });
+                    [parent, t]{ parent->createNode(t,
+                                                    QPoint(parent->mapToScene(parent->lastMousePos).x(),
+                                                           parent->mapToScene(parent->lastMousePos).y())); });
     }
 }
 

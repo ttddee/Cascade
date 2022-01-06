@@ -48,6 +48,7 @@ SOURCES += \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
     src/log.cpp \
     src/main.cpp \
+    src/mainmenu.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
     src/nodegraph.cpp \
@@ -110,6 +111,7 @@ HEADERS += \
     src/docking/ads_globals.h \
     src/docking/linux/FloatingWidgetTitleBar.h \
     src/log.h \
+    src/mainmenu.h \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \

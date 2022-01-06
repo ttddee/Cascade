@@ -1,7 +1,7 @@
 /*
  *  Cascade Image Editor
  *
- *  Copyright (C) 2020 The Cascade developers
+ *  Copyright (C) 2022 Till Dechent and contributors
  *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU General Public License as published by
@@ -34,6 +34,7 @@
 #include "nodegraph.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
+#include "mainmenu.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -46,13 +47,13 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
 
+    ads::CDockWidget* nodeGraphDockWidget;
+    ads::CDockWidget* propertiesViewDockWidget;
+
     ~MainWindow();
 
 private:
     void saveProjectAs();
-    void saveUserLayout();
-    void restoreUserLayout();
-    void restoreDefaultLayout();
     void displayShortcuts();
 
     Ui::MainWindow *ui;
@@ -66,20 +67,20 @@ private:
 
     ads::CDockManager* dockManager;
 
-    QAction* newProjectAction;
-    QAction* openProjectAction;
-    QAction* saveProjectAction;
-    QAction* saveProjectAsAction;
-    QAction* exitAction;
-    QAction* saveLayoutAction;
-    QAction* restoreLayoutAction;
-    QAction* restoreDefaultLayoutAction;
-    QAction* shortcutsAction;
+    MainMenu* mainMenu;
 
 public slots:
     void handleRendererHasBeenCreated();
     void handleNoGPUFound();
     void handleDeviceLost();
+
+    // Main Menu
+    void handleNewProjectAction();
+    void handleOpenProjectAction();
+    void handleSaveProjectAction();
+    void handleSaveProjectAsAction();
+    void handleExitAction();
+    void handleShortcutsAction();
 
 };
 #endif // MAINWINDOW_H
