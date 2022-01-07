@@ -68,10 +68,6 @@ void NodeGraph::createNode(
     n->move(pos);
     nodes.push_back(n);
 
-    CS_LOG_CONSOLE("POS:");
-    CS_LOG_CONSOLE(QString::number(pos.x()));
-    CS_LOG_CONSOLE(QString::number(pos.y()));
-
     connect(n, &NodeBase::nodeWasLeftClicked,
                 this, &NodeGraph::handleNodeLeftClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
@@ -86,6 +82,8 @@ void NodeGraph::createNode(
                 this, &NodeGraph::handleFileSaveRequest);
     }
     viewNode(n);
+
+    emit projectIsDirty();
 }
 
 void NodeGraph::deleteNode(NodeBase *node)
@@ -114,6 +112,8 @@ void NodeGraph::deleteNode(NodeBase *node)
     delete node;
 
     selectedNode = nullptr;
+
+    emit projectIsDirty();
 }
 
 float NodeGraph::getViewScale() const
@@ -251,6 +251,8 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
     connections.push_back(openConnection);
     nodeIn->addInConnection(openConnection);
     openConnection = nullptr;
+
+    emit projectIsDirty();
 }
 
 void NodeGraph::deleteConnection(Connection* c)
@@ -269,6 +271,8 @@ void NodeGraph::deleteConnection(Connection* c)
     scene->removeItem(c);
     delete c;
     c = nullptr;
+
+    emit projectIsDirty();
 }
 
 NodeBase* NodeGraph::getSelectedNode()

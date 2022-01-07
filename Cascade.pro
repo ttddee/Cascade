@@ -56,6 +56,7 @@ SOURCES += \
     src/nodeinput.cpp \
     src/nodeoutput.cpp \
     src/nodeproperties.cpp \
+    src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/renderer/csimage.cpp \
@@ -121,6 +122,7 @@ HEADERS += \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \
+    src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/renderer/csimage.h \

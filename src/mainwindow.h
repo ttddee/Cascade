@@ -35,6 +35,7 @@
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "mainmenu.h"
+#include "projectmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -53,7 +54,6 @@ public:
     ~MainWindow();
 
 private:
-    void saveProjectAs();
     void displayShortcuts();
 
     Ui::MainWindow *ui;
@@ -68,11 +68,13 @@ private:
     ads::CDockManager* dockManager;
 
     MainMenu* mainMenu;
+    ProjectManager* projectManager;
 
 public slots:
     void handleRendererHasBeenCreated();
     void handleNoGPUFound();
     void handleDeviceLost();
+    void handleProjectTitleChanged(const QString& t);
 
     // Main Menu
     void handleNewProjectAction();

@@ -17,40 +17,43 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#ifndef PROJECTMANAGER_H
+#define PROJECTMANAGER_H
 
-#include <QMenuBar>
+#include <QWidget>
+#include <QJsonDocument>
 
-class MainWindow;
+#include "nodegraph.h"
 
-class MainMenu : public QMenuBar
+class ProjectManager : public QObject
 {
     Q_OBJECT
+
 public:
-    MainMenu(MainWindow* mainWindow);
+    ProjectManager(NodeGraph* ng,
+                   QWidget *parent = nullptr);
+
+    void saveProject();
+    void saveProjectAs();
 
 private:
-    QMenu *fileMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
+    void updateProjectName();
+    void writeJsonToDisk(const QJsonDocument& project,
+                        const QString& path);
+    QJsonArray getJsonFromNodeGraph();
 
-    QAction* newProjectAction;
-    QAction* openProjectAction;
-    QAction* saveProjectAction;
-    QAction* saveProjectAsAction;
-    QAction* exitAction;
-    QAction* toggleNodeGraphAction;
-    QAction* togglePropertiesAction;
-    QAction* shortcutsAction;
+    NodeGraph* nodeGraph;
+
+    QJsonDocument project;
+    QString currentProjectPath;
+    QString currentProject;
+    bool projectIsDirty = true;
 
 signals:
-    void newProjectActionTriggered();
-    void openProjectActionTriggered();
-    void saveProjectActionTriggered();
-    void saveProjectAsActionTriggered();
-    void exitActionTriggered();
-    void shortcutsActionTriggered();
+    void projectTitleChanged(const QString& t);
+
+public slots:
+    void handleProjectIsDirty();
 };
 
-#endif // MAINMENU_H
+#endif // PROJECTMANAGER_H

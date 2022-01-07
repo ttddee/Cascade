@@ -290,6 +290,12 @@ void CDockWidget::setWidget(QWidget* widget, eInsertMode InsertMode)
 
 
 //============================================================================
+void CDockWidget::setTitle(const QString &t)
+{
+    this->setWindowTitle(t);
+}
+
+//============================================================================
 QWidget* CDockWidget::takeWidget()
 {
 	QWidget* w = nullptr;

@@ -104,6 +104,7 @@ signals:
     void requestNodeFileSave(NodeBase* node, const QString& path);
     void requestClearScreen();
     void requestClearProperties();
+    void projectIsDirty();
 
 public slots:
     void handleNodeLeftClicked(NodeBase* node);

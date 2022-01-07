@@ -44,7 +44,10 @@ class CsSliderBoxEntity : public UiEntity
     Q_OBJECT
 
 public:
-    explicit CsSliderBoxEntity(UIElementType et, QWidget *parent = nullptr, bool onlyUpdateOnSliderRelease = false);
+    explicit CsSliderBoxEntity
+    (UIElementType et,
+     QWidget *parent = nullptr,
+     bool onlyUpdateOnSliderRelease = false);
 
     template<typename T>
     void setMinMaxStepValue(

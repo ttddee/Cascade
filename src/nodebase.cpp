@@ -527,7 +527,6 @@ void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
     Q_UNUSED(event);
 }
 
-
 NodeBase::~NodeBase()
 {
     delete ui;

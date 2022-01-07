@@ -26,9 +26,6 @@
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
-#include <QJsonDocument>
-#include <QJsonObject>
-#include <QJsonArray>
 
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
@@ -82,6 +79,10 @@ MainWindow::MainWindow(QWidget *parent)
                 propertiesView,
                 viewerStatusBar);
 
+    projectManager = new ProjectManager(nodeGraph, this);
+    connect(projectManager, &ProjectManager::projectTitleChanged,
+            this, &MainWindow::handleProjectTitleChanged);
+
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
@@ -93,56 +94,6 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
-}
-
-void MainWindow::saveProjectAs()
-{
-    // get path
-    QString path;
-
-    QFileDialog dialog(this);
-    dialog.setViewMode(QFileDialog::Detail);
-    dialog.setNameFilter(tr("CSC Project (*.csc)"));
-    dialog.setDefaultSuffix("csc");
-    dialog.setAcceptMode(QFileDialog::AcceptSave);
-    QString f;
-    if (dialog.exec())
-    {
-        auto list = dialog.selectedFiles();
-        f = list[0];
-    }
-    CS_LOG_CONSOLE(f);
-    if (f.isEmpty())
-    {
-        return;
-    }
-    else
-    {
-        path = f;
-    }
-
-    // check path
-    QFile jsonFile = QFile(path);
-    if (jsonFile.exists())
-    {
-        // file exists
-    }
-
-    // get json from nodegraph
-    QJsonDocument project;
-    QJsonArray arr;
-    QJsonObject info;
-    info.insert("Version",
-                QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
-    arr << info;
-    nodeGraph->getNodeGraphAsJson(arr);
-    project.setArray(arr);
-
-
-    // save to disk
-    //QFile jsonFile("test.csc");
-    jsonFile.open(QFile::WriteOnly);
-    jsonFile.write(project.toJson());
 }
 
 void MainWindow::handleRendererHasBeenCreated()
@@ -171,6 +122,11 @@ void MainWindow::handleDeviceLost()
     messageBox.setFixedSize(500, 200);
 
     QApplication::quit();
+}
+
+void MainWindow::handleProjectTitleChanged(const QString& t)
+{
+    nodeGraphDockWidget->setTitle("Node Graph - " + t);
 }
 
 void MainWindow::displayShortcuts()
@@ -206,12 +162,12 @@ void MainWindow::handleOpenProjectAction()
 
 void MainWindow::handleSaveProjectAction()
 {
-    saveProjectAs();
+    projectManager->saveProject();
 }
 
 void MainWindow::handleSaveProjectAsAction()
 {
-
+    projectManager->saveProjectAs();
 }
 
 void MainWindow::handleExitAction()

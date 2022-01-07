@@ -270,6 +270,11 @@ public:
     void setWidget(QWidget* widget, eInsertMode InsertMode = AutoScrollArea);
 
     /**
+     * Set the title to t
+     */
+    void setTitle(const QString& t);
+
+    /**
      * Remove the widget from the dock and give ownership back to the caller
      */
     QWidget* takeWidget();
