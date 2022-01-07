@@ -27,6 +27,7 @@
 #include <QWidget>
 #include <QGraphicsSceneMouseEvent>
 #include <QJsonObject>
+#include <QJsonArray>
 #include <QPainter>
 
 #include "nodeinput.h"
@@ -102,9 +103,9 @@ void Connection::updatePosition()
                   + sourceOutput->visualHeight / 2);
 }
 
-void Connection::addConnectionToJsonObject(QJsonObject &connectionList)
+void Connection::addConnectionToJsonObject(QJsonArray &connectionList)
 {
-    connectionList.insert(sourceOutput->parentNode->getID(), targetInput->getID());
+    //connectionList.insert(sourceOutput->parentNode->getID(), targetInput->getID());
 }
 
 void Connection::updatePosition(const QPoint end)

@@ -23,7 +23,6 @@
 #include <set>
 #include <memory>
 
-#include <QWidget>
 #include <QPen>
 
 #include <gtest/gtest_prod.h>
@@ -76,7 +75,7 @@ public:
     NodeProperties* getProperties();
     QString getAllPropertyValues();
     QSize getTargetSize();
-    void addNodeToJsonObject(QJsonObject& nodeList);
+    void addNodeToJsonArray(QJsonArray& jsonNodesArray);
 
     NodeInput* getRgbaBackIn();
     NodeInput* getRgbaFrontIn();

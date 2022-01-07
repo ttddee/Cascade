@@ -54,7 +54,7 @@ public:
 
     float getViewScale() const;
 
-    void getNodeGraphAsJson(QJsonArray& graph);
+    void getNodeGraphAsJson(QJsonArray& jsonNodeGraph);
 
     QPoint lastMousePos;
 

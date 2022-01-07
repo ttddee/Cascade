@@ -44,7 +44,7 @@ private:
     void updateProjectName();
     void writeJsonToDisk(const QJsonDocument& project,
                         const QString& path);
-    QJsonArray getJsonFromNodeGraph();
+    QJsonObject getJsonFromNodeGraph();
 
     NodeGraph* nodeGraph;
 

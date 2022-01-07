@@ -45,7 +45,7 @@ void ProjectManager::saveProject()
 {
     if(projectIsDirty && currentProjectPath != "" && currentProject != "")
     {
-        project.setArray(getJsonFromNodeGraph());
+        project.setObject(getJsonFromNodeGraph());
         writeJsonToDisk(project, currentProjectPath);
 
         projectIsDirty = false;
@@ -77,7 +77,7 @@ void ProjectManager::saveProjectAs()
     else
         path = f;
 
-    project.setArray(getJsonFromNodeGraph());
+    project.setObject(getJsonFromNodeGraph());
     writeJsonToDisk(project, path);
 
     currentProjectPath = path;
@@ -120,14 +120,22 @@ void ProjectManager::writeJsonToDisk(const QJsonDocument& project,
     jsonFile.write(project.toJson());
 }
 
-QJsonArray ProjectManager::getJsonFromNodeGraph()
+QJsonObject ProjectManager::getJsonFromNodeGraph()
 {
-    QJsonArray arr;
-    QJsonObject info;
-    info.insert("Version",
-                QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
-    arr << info;
-    nodeGraph->getNodeGraphAsJson(arr);
+    QJsonArray jsonNodeGraph;
+    nodeGraph->getNodeGraphAsJson(jsonNodeGraph);
 
-    return arr;
+    QJsonObject jsonProject {
+        { "Nodegraph", jsonNodeGraph },
+        { "Cascade Version", QString("%1.%2.%3")
+                    .arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD) }
+
+    };
+    //QJsonObject info;
+    //info.insert("Version",
+               // QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
+    //arr << info;
+    //nodeGraph->getNodeGraphAsJson(arr);
+
+    return jsonProject;
 }

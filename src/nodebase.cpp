@@ -26,8 +26,8 @@
 #include <QPainter>
 #include <QMouseEvent>
 #include <QUuid>
+#include <QJsonArray>
 #include <QJsonObject>
-#include <QJsonValue>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -310,17 +310,37 @@ QSize NodeBase::getTargetSize()
     return size;
 }
 
-void NodeBase::addNodeToJsonObject(QJsonObject& nodeList)
+void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
 {
-    QJsonValue value =
-            nodeStrings[nodeType]
-            + ","
-            + QString::number(this->pos().x())
-            + ","
-            + QString::number(this->pos().y())
-            + ","
-            + getAllPropertyValues();
-    nodeList.insert(this->getID(), value);
+    QJsonObject jsonProps {
+        { "test", "0123" }
+    };
+
+    QJsonObject jsonInputs;
+    for(size_t i = 1; i <= nodeInputs.size(); i++)
+    {
+        jsonInputs.insert(QString::number(i), nodeInputs[i - 1]->getID());
+    }
+
+    QJsonObject jsonNode {
+        { "uuid", getID() },
+        { "type", nodeStrings[nodeType] },
+        { "posx", this->pos().x() },
+        { "posy", this->pos().y() },
+        { "properties", jsonProps },
+        { "inputs", jsonInputs }
+    };
+
+    jsonNodesArray.push_back(jsonNode);
+//    QJsonValue value =
+//            nodeStrings[nodeType]
+//            + ","
+//            + QString::number(this->pos().x())
+//            + ","
+//            + QString::number(this->pos().y())
+//            + ","
+//            + getAllPropertyValues();
+    //nodeList.insert(nodeStrings[nodeType], jsonNode);
 }
 
 NodeInput* NodeBase::getOpenInput()
