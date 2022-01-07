@@ -24,6 +24,7 @@
 #include <QLabel>
 
 #include "nodebase.h"
+#include "projectmanager.h"
 #include "uientities/cssliderboxentity.h"
 #include "uientities/fileboxentity.h"
 #include "propertiesheading.h"
@@ -57,6 +58,10 @@ NodeProperties::NodeProperties(
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(QMargins(0,0,0,0));
     this->setLayout(layout);
+
+    ProjectManager* pm = &ProjectManager::getInstance();
+    connect(this, &NodeProperties::projectIsDirty,
+            pm, &ProjectManager::handleProjectIsDirty);
 
     foreach (auto& elem, props.uiElements)
     {
@@ -275,6 +280,8 @@ NodeProperties::NodeProperties(
 void NodeProperties::handleSomeValueChanged()
 {
     parentNode->requestUpdate();
+
+    emit projectIsDirty();
 }
 
 void NodeProperties::handleFileSaveRequest(const QString& path)

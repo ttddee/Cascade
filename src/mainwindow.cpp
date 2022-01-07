@@ -79,7 +79,8 @@ MainWindow::MainWindow(QWidget *parent)
                 propertiesView,
                 viewerStatusBar);
 
-    projectManager = new ProjectManager(nodeGraph, this);
+    projectManager = &ProjectManager::getInstance();
+    projectManager->setUp(nodeGraph);
     connect(projectManager, &ProjectManager::projectTitleChanged,
             this, &MainWindow::handleProjectTitleChanged);
 

@@ -48,6 +48,9 @@ private:
     QVBoxLayout* layout;
     NodeBase* parentNode;
 
+signals:
+    void projectIsDirty();
+
 public slots:
     void handleSomeValueChanged();
     void handleFileSaveRequest(const QString& path);

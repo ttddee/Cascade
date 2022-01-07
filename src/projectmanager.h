@@ -30,13 +30,17 @@ class ProjectManager : public QObject
     Q_OBJECT
 
 public:
-    ProjectManager(NodeGraph* ng,
-                   QWidget *parent = nullptr);
+    static ProjectManager& getInstance();
+    ProjectManager(ProjectManager const&) = delete;
+    void operator=(ProjectManager const&) = delete;
+
+    void setUp(NodeGraph* ng);
 
     void saveProject();
     void saveProjectAs();
 
 private:
+    ProjectManager() {}
     void updateProjectName();
     void writeJsonToDisk(const QJsonDocument& project,
                         const QString& path);

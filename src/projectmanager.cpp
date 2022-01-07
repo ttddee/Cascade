@@ -26,10 +26,14 @@
 
 #include "log.h"
 
-ProjectManager::ProjectManager(
-        NodeGraph* ng,
-        QWidget *parent)
-    : QObject(parent)
+ProjectManager& ProjectManager::getInstance()
+{
+    static ProjectManager instance;
+
+    return instance;
+}
+
+void ProjectManager::setUp(NodeGraph* ng)
 {
     nodeGraph = ng;
 
@@ -47,7 +51,7 @@ void ProjectManager::saveProject()
         projectIsDirty = false;
         updateProjectName();
     }
-    else
+    else if(currentProject == "")
     {
         saveProjectAs();
     }

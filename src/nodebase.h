@@ -128,6 +128,7 @@ private:
     void mouseReleaseEvent(QMouseEvent*) override;
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
+    void moveEvent(QMoveEvent*) override;
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
@@ -175,6 +176,7 @@ signals:
     void nodeWasDoubleClicked(NodeBase* node);
     void nodeRequestUpdate(NodeBase* node);
     void nodeRequestFileSave(NodeBase* node, const QString& path);
+    void nodeHasMoved();
 };
 
 #endif // NODEBASE_H

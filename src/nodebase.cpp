@@ -35,6 +35,7 @@
 #include "connection.h"
 #include "uientities/uientity.h"
 #include "log.h"
+#include "projectmanager.h"
 
 NodeBase::NodeBase(
         const NodeType type,
@@ -49,6 +50,10 @@ NodeBase::NodeBase(
     ui->setupUi(this);
 
     this->setUpNode(type);
+
+    ProjectManager* pm = &ProjectManager::getInstance();
+    connect(this, &NodeBase::nodeHasMoved,
+            pm, &ProjectManager::handleProjectIsDirty);
 
     wManager = &WindowManager::getInstance();
 }
@@ -415,6 +420,13 @@ void NodeBase::paintEvent(QPaintEvent *event)
     }
 
     Q_UNUSED(event);
+}
+
+void NodeBase::moveEvent(QMoveEvent *event)
+{
+    emit nodeHasMoved();
+
+    QWidget::moveEvent(event);
 }
 
 NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
