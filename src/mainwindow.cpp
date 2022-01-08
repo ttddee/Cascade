@@ -127,7 +127,10 @@ void MainWindow::handleDeviceLost()
 
 void MainWindow::handleProjectTitleChanged(const QString& t)
 {
-    nodeGraphDockWidget->setTitle("Node Graph - " + t);
+    QString spacer = "- ";
+    if (t == "*")
+        spacer = "";
+    nodeGraphDockWidget->setTitle("Node Graph " + spacer + t);
 }
 
 void MainWindow::displayShortcuts()
@@ -158,7 +161,7 @@ void MainWindow::handleNewProjectAction()
 
 void MainWindow::handleOpenProjectAction()
 {
-
+    projectManager->loadProject();
 }
 
 void MainWindow::handleSaveProjectAction()

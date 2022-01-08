@@ -36,6 +36,7 @@ public:
 
     void setUp(NodeGraph* ng);
 
+    void loadProject();
     void saveProject();
     void saveProjectAs();
 

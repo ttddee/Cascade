@@ -41,6 +41,41 @@ void ProjectManager::setUp(NodeGraph* ng)
             this, &ProjectManager::handleProjectIsDirty);
 }
 
+void ProjectManager::loadProject()
+{
+    QFileDialog dialog(nullptr);
+    dialog.setFileMode(QFileDialog::ExistingFile);
+    dialog.setNameFilter(tr("CSC Project (*.csc)"));
+    dialog.setViewMode(QFileDialog::Detail);
+    QStringList files;
+    if (dialog.exec())
+    {
+        files = dialog.selectedFiles();
+    }
+
+    QFile loadFile(files.first());
+
+    if (!loadFile.open(QIODevice::ReadOnly))
+    {
+        CS_LOG_WARNING("Couldn't open save file.");
+    }
+
+    QByteArray projectData = loadFile.readAll();
+
+    QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
+
+    QJsonObject jsonProject = projectDocument.object();
+    CS_LOG_CONSOLE(jsonProject["cascade-version"].toString());
+    QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
+    QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
+    QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
+
+    for (size_t i = 0; i < jsonNodesArray.size(); i++)
+    {
+        CS_LOG_CONSOLE(jsonNodesArray.at(i)["type"].toString());
+    }
+}
+
 void ProjectManager::saveProject()
 {
     if(projectIsDirty && currentProjectPath != "" && currentProject != "")
@@ -126,16 +161,11 @@ QJsonObject ProjectManager::getJsonFromNodeGraph()
     nodeGraph->getNodeGraphAsJson(jsonNodeGraph);
 
     QJsonObject jsonProject {
-        { "Nodegraph", jsonNodeGraph },
-        { "Cascade Version", QString("%1.%2.%3")
+        { "nodegraph", jsonNodeGraph },
+        { "cascade-version", QString("%1.%2.%3")
                     .arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD) }
 
     };
-    //QJsonObject info;
-    //info.insert("Version",
-               // QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD));
-    //arr << info;
-    //nodeGraph->getNodeGraphAsJson(arr);
 
     return jsonProject;
 }

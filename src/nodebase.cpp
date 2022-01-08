@@ -312,14 +312,19 @@ QSize NodeBase::getTargetSize()
 
 void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
 {
-    QJsonObject jsonProps {
-        { "test", "0123" }
-    };
+    QJsonObject jsonProps;
+
+    auto widgets = getProperties()->widgets;
+
+    for(size_t i = 0; i < widgets.size(); i++)
+    {
+        jsonProps.insert(QString::number(i), widgets[i]->getValuesAsString());
+    }
 
     QJsonObject jsonInputs;
-    for(size_t i = 1; i <= nodeInputs.size(); i++)
+    for(size_t i = 0; i < nodeInputs.size(); i++)
     {
-        jsonInputs.insert(QString::number(i), nodeInputs[i - 1]->getID());
+        jsonInputs.insert(QString::number(i), nodeInputs[i]->getID());
     }
 
     QJsonObject jsonNode {
@@ -332,15 +337,6 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
     };
 
     jsonNodesArray.push_back(jsonNode);
-//    QJsonValue value =
-//            nodeStrings[nodeType]
-//            + ","
-//            + QString::number(this->pos().x())
-//            + ","
-//            + QString::number(this->pos().y())
-//            + ","
-//            + getAllPropertyValues();
-    //nodeList.insert(nodeStrings[nodeType], jsonNode);
 }
 
 NodeInput* NodeBase::getOpenInput()

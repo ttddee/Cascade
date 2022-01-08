@@ -297,7 +297,7 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
         node->addNodeToJsonArray(jsonNodesArray);
     }
     QJsonObject jsonNodesHeading {
-        { "Nodes", jsonNodesArray }
+        { "nodes", jsonNodesArray }
     };
     jsonNodeGraph.push_back(jsonNodesHeading);
 
