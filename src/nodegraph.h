@@ -34,6 +34,15 @@
 
 using namespace Cascade;
 
+struct NodePersistentProperties
+{
+    NodeType nodeType;
+    QPoint pos;
+    QString uuid;
+    QMap<int, QString> inputs;
+    QMap<int, QString> properties;
+};
+
 class NodeGraph : public QGraphicsView
 {
     Q_OBJECT
@@ -48,6 +57,8 @@ public:
             const QPoint pos);
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
+    void loadProject(const QJsonArray& jsonNodesArray,
+                     const QJsonArray& jsonConnectionsArray);
 
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
@@ -77,6 +88,8 @@ private:
 
     void selectNode(NodeBase* node);
     void activateNode(NodeBase* node);
+
+    NodeBase* loadNode(const NodePersistentProperties& p);
 
     QGraphicsScene* scene;
     WindowManager* wManager;

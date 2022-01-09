@@ -158,6 +158,11 @@ QString NodeBase::getID() const
     return id;
 }
 
+void NodeBase::setID(const QString &s)
+{
+    id = s;
+}
+
 NodeInput* NodeBase::getRgbaBackIn()
 {
     if (rgbaBackIn)

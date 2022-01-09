@@ -25,6 +25,7 @@
 #include <QJsonArray>
 
 #include "log.h"
+#include "nodedefinitions.h"
 
 ProjectManager& ProjectManager::getInstance()
 {
@@ -69,11 +70,14 @@ void ProjectManager::loadProject()
     QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
     QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
     QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
+    QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
+    QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
 
-    for (size_t i = 0; i < jsonNodesArray.size(); i++)
-    {
-        CS_LOG_CONSOLE(jsonNodesArray.at(i)["type"].toString());
-    }
+    nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
+
+    // TODO: Set current project and update title
+
+    projectIsDirty = false;
 }
 
 void ProjectManager::saveProject()

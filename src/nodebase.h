@@ -102,6 +102,7 @@ public:
     QSize getInputSize();
 
     QString getID() const;
+    void setID(const QString& s);
 
     virtual ~NodeBase();
 
@@ -132,7 +133,7 @@ private:
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
 
-    const QString id;
+    QString id;
 
     QPoint inAnchorPos;
     QPoint outAnchorPos;

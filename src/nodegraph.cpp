@@ -86,6 +86,61 @@ void NodeGraph::createNode(
     emit projectIsDirty();
 }
 
+NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
+{
+    NodeBase* n = new NodeBase(p.nodeType, this);
+    scene->addWidget(n);
+    n->move(p.pos);
+    n->setID(p.uuid);
+    nodes.push_back(n);
+
+    // TODO: Don't repeat yourself
+    connect(n, &NodeBase::nodeWasLeftClicked,
+                this, &NodeGraph::handleNodeLeftClicked);
+    connect(n, &NodeBase::nodeWasDoubleClicked,
+            this, &NodeGraph::handleNodeDoubleClicked);
+    connect(n, &NodeBase::nodeWasDoubleClicked,
+            wManager, &WindowManager::handleNodeDoubleClicked);
+    connect(n, &NodeBase::nodeRequestUpdate,
+            this, &NodeGraph::handleNodeUpdateRequest);
+    if (p.nodeType == NODE_TYPE_WRITE)
+    {
+        connect(n, &NodeBase::nodeRequestFileSave,
+                this, &NodeGraph::handleFileSaveRequest);
+    }
+    return n;
+}
+
+void NodeGraph::loadProject(
+        const QJsonArray& jsonNodesArray,
+        const QJsonArray& jsonConnectionsArray)
+{
+    for (int i = 0; i < jsonNodesArray.size(); i++)
+    {
+        CS_LOG_CONSOLE(jsonNodesArray.at(i)["type"].toString());
+
+        QJsonObject jsonNode = jsonNodesArray.at(i).toObject();
+
+        NodePersistentProperties p;
+        p.nodeType = nodeStrings.key(jsonNode["type"].toString());
+        p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
+        p.uuid = jsonNode["uuid"].toString();
+
+        QJsonObject ins = jsonNode["inputs"].toObject();
+        for (int i = 0; i < ins.size(); i++)
+        {
+            p.inputs[i] = ins.value(QString::number(i)).toString();
+        }
+
+        loadNode(p);
+    }
+    for (size_t i = 0; i < jsonConnectionsArray.size(); i++)
+    {
+        CS_LOG_CONSOLE(jsonConnectionsArray.at(i)["dst"].toString());
+
+    }
+}
+
 void NodeGraph::deleteNode(NodeBase *node)
 {
     node->invalidateAllDownstreamNodes();
