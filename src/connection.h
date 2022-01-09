@@ -37,7 +37,7 @@ public:
     void updatePosition();
     void updatePosition(const QPoint end);
 
-    void addConnectionToJsonObject(QJsonArray& connectionList);
+    void addConnectionToJsonObject(QJsonArray& jsonConnectionsArray);
 
     NodeOutput* sourceOutput = nullptr;
     NodeInput* targetInput = nullptr;

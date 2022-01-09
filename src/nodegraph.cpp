@@ -301,12 +301,15 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
     };
     jsonNodeGraph.push_back(jsonNodesHeading);
 
-    QJsonArray connectionsJson;
+    QJsonArray jsonConnectionsArray;
     foreach (const auto& connection, connections)
     {
-        connection->addConnectionToJsonObject(connectionsJson);
+        connection->addConnectionToJsonObject(jsonConnectionsArray);
     }
-    //graph << connectionsJson;
+    QJsonObject jsonConnectionsHeading {
+        { "connections", jsonConnectionsArray }
+    };
+    jsonNodeGraph.push_back(jsonConnectionsHeading);
 }
 
 void NodeGraph::mousePressEvent(QMouseEvent* event)

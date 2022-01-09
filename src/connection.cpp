@@ -103,9 +103,14 @@ void Connection::updatePosition()
                   + sourceOutput->visualHeight / 2);
 }
 
-void Connection::addConnectionToJsonObject(QJsonArray &connectionList)
+void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
 {
-    //connectionList.insert(sourceOutput->parentNode->getID(), targetInput->getID());
+    QJsonObject jsonConnection {
+        { "src", sourceOutput->parentNode->getID() },
+        { "dst-node", targetInput->parentNode->getID() },
+        { "dst", targetInput->getID()}
+    };
+    jsonConnectionsArray.push_back(jsonConnection);
 }
 
 void Connection::updatePosition(const QPoint end)
