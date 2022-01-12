@@ -58,7 +58,7 @@ void ProjectManager::loadProject()
 
     if (!loadFile.open(QIODevice::ReadOnly))
     {
-        CS_LOG_WARNING("Couldn't open save file.");
+        CS_LOG_WARNING("Couldn't open project file.");
     }
 
     QByteArray projectData = loadFile.readAll();
@@ -75,9 +75,11 @@ void ProjectManager::loadProject()
 
     nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
 
-    // TODO: Set current project and update title
+    currentProjectPath = files.first();
+    currentProject = files.first().split("/").last();
 
     projectIsDirty = false;
+    updateProjectName();
 }
 
 void ProjectManager::saveProject()

@@ -126,6 +126,7 @@ void NodeGraph::loadProject(
         p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
         p.uuid = jsonNode["uuid"].toString();
 
+        // Set UUID for Node Inputs
         QJsonObject ins = jsonNode["inputs"].toObject();
         for (int i = 0; i < ins.size(); i++)
         {
@@ -134,7 +135,7 @@ void NodeGraph::loadProject(
 
         loadNode(p);
     }
-    for (size_t i = 0; i < jsonConnectionsArray.size(); i++)
+    for (int i = 0; i < jsonConnectionsArray.size(); i++)
     {
         CS_LOG_CONSOLE(jsonConnectionsArray.at(i)["dst"].toString());
 
