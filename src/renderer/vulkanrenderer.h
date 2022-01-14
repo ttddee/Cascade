@@ -277,7 +277,7 @@ private:
 
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
 
-    std::unique_ptr<CsSettingsBuffer> settingsBuffer;
+    std::unique_ptr<CsSettingsBuffer> settingsBuffer                  = nullptr;
 
     OCIO::ConstConfigRcPtr ocioConfig;
 

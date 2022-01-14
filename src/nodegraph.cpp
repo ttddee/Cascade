@@ -148,8 +148,6 @@ void NodeGraph::loadProject(
             CS_LOG_WARNING("Could not load connection.");
 
         loadConnection(srcNode->getRgbaOut(), targetInput);
-
-        //srcNode->updateConnectionPositions();
     }
 }
 
@@ -340,7 +338,6 @@ void NodeGraph::loadConnection(NodeOutput* src, NodeInput* dst)
     c->sourceOutput->addConnection(c);
     connections.push_back(c);
     dst->addInConnectionNoUpdate(c);
-    //openConnection = nullptr;
 }
 
 void NodeGraph::deleteConnection(Connection* c)
