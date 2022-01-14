@@ -34,6 +34,7 @@ public:
     explicit NodeInput(NodeInputType t, QWidget *parent = nullptr);
 
     void addInConnection(Connection*);
+    void addInConnectionNoUpdate(Connection*);
     void removeInConnection();
     void updateConnection();
     bool hasConnection();
@@ -45,6 +46,7 @@ public:
     NodeInputType getInputType();
 
     QString getID() const;
+    void setID(const QString& uuid);
 
     NodeBase* getUpstreamNode();
 
@@ -55,7 +57,7 @@ public:
 private:
     const NodeInputType inputType;
 
-    const QString id;
+    QString id;
 
 
 signals:

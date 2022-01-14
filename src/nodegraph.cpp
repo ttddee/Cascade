@@ -68,19 +68,8 @@ void NodeGraph::createNode(
     n->move(pos);
     nodes.push_back(n);
 
-    connect(n, &NodeBase::nodeWasLeftClicked,
-                this, &NodeGraph::handleNodeLeftClicked);
-    connect(n, &NodeBase::nodeWasDoubleClicked,
-            this, &NodeGraph::handleNodeDoubleClicked);
-    connect(n, &NodeBase::nodeWasDoubleClicked,
-            wManager, &WindowManager::handleNodeDoubleClicked);
-    connect(n, &NodeBase::nodeRequestUpdate,
-            this, &NodeGraph::handleNodeUpdateRequest);
-    if (type == NODE_TYPE_WRITE)
-    {
-        connect(n, &NodeBase::nodeRequestFileSave,
-                this, &NodeGraph::handleFileSaveRequest);
-    }
+    connectNodeSignals(n);
+
     viewNode(n);
 
     emit projectIsDirty();
@@ -94,7 +83,15 @@ NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
     n->setID(p.uuid);
     nodes.push_back(n);
 
-    // TODO: Don't repeat yourself
+    connectNodeSignals(n);
+
+    n->setInputIDs(p.inputs);
+
+    return n;
+}
+
+void NodeGraph::connectNodeSignals(NodeBase* n)
+{
     connect(n, &NodeBase::nodeWasLeftClicked,
                 this, &NodeGraph::handleNodeLeftClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
@@ -103,12 +100,11 @@ NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
             wManager, &WindowManager::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeRequestUpdate,
             this, &NodeGraph::handleNodeUpdateRequest);
-    if (p.nodeType == NODE_TYPE_WRITE)
+    if (n->nodeType == NODE_TYPE_WRITE)
     {
         connect(n, &NodeBase::nodeRequestFileSave,
                 this, &NodeGraph::handleFileSaveRequest);
     }
-    return n;
 }
 
 void NodeGraph::loadProject(
@@ -117,16 +113,15 @@ void NodeGraph::loadProject(
 {
     for (int i = 0; i < jsonNodesArray.size(); i++)
     {
-        CS_LOG_CONSOLE(jsonNodesArray.at(i)["type"].toString());
-
         QJsonObject jsonNode = jsonNodesArray.at(i).toObject();
 
+        // Set properties to loaded values
         NodePersistentProperties p;
         p.nodeType = nodeStrings.key(jsonNode["type"].toString());
         p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
         p.uuid = jsonNode["uuid"].toString();
 
-        // Set UUID for Node Inputs
+        // Get UUID for Node Inputs
         QJsonObject ins = jsonNode["inputs"].toObject();
         for (int i = 0; i < ins.size(); i++)
         {
@@ -135,10 +130,26 @@ void NodeGraph::loadProject(
 
         loadNode(p);
     }
+
     for (int i = 0; i < jsonConnectionsArray.size(); i++)
     {
-        CS_LOG_CONSOLE(jsonConnectionsArray.at(i)["dst"].toString());
+        auto src = jsonConnectionsArray.at(i)["src"].toString();
+        auto dst = jsonConnectionsArray.at(i)["dst"].toString();
+        auto dstNode = jsonConnectionsArray.at(i)["dst-node"].toString();
 
+        NodeBase* srcNode;
+        NodeInput* targetInput;
+        if (NodeBase* n = findNode(src))
+            srcNode = n;
+        if (NodeBase* n = findNode(dstNode))
+            if (NodeInput* in = n->findNodeInput(dst))
+                targetInput = in;
+        if (!srcNode || !targetInput)
+            CS_LOG_WARNING("Could not load connection.");
+
+        loadConnection(srcNode->getRgbaOut(), targetInput);
+
+        //srcNode->updateConnectionPositions();
     }
 }
 
@@ -214,6 +225,16 @@ void NodeGraph::activateNode(NodeBase *node)
 {
     activeNode = node;
     node->setIsActive(true);
+}
+
+NodeBase* NodeGraph::findNode(const QString& id)
+{
+    foreach(NodeBase* n, nodes)
+    {
+        if (n->getID() == id)
+            return n;
+    }
+    return nullptr;
 }
 
 void NodeGraph::viewNode(NodeBase *node)
@@ -309,6 +330,17 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
     openConnection = nullptr;
 
     emit projectIsDirty();
+}
+
+void NodeGraph::loadConnection(NodeOutput* src, NodeInput* dst)
+{
+    Connection* c = new Connection(src);
+    scene->addItem(c);
+    c->targetInput = dst;
+    c->sourceOutput->addConnection(c);
+    connections.push_back(c);
+    dst->addInConnectionNoUpdate(c);
+    //openConnection = nullptr;
 }
 
 void NodeGraph::deleteConnection(Connection* c)

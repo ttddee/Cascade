@@ -163,6 +163,24 @@ void NodeBase::setID(const QString &s)
     id = s;
 }
 
+void NodeBase::setInputIDs(const QMap<int, QString>& ids)
+{
+    for ( int i = 0; i < ids.size(); i++)
+    {
+        nodeInputs[i]->setID(ids[i]);
+    }
+}
+
+NodeInput* NodeBase::findNodeInput(const QString& id)
+{
+    foreach(NodeInput* in, nodeInputs)
+    {
+        if (in->getID() == id)
+            return in;
+    }
+    return nullptr;
+}
+
 NodeInput* NodeBase::getRgbaBackIn()
 {
     if (rgbaBackIn)

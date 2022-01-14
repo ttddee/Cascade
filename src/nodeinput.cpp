@@ -77,6 +77,12 @@ void NodeInput::addInConnection(Connection* c)
     parentNode->requestUpdate();
 }
 
+void NodeInput::addInConnectionNoUpdate(Connection* c)
+{
+    inConnection = c;
+    updateConnection();
+}
+
 void NodeInput::removeInConnection()
 {
     inConnection = nullptr;
@@ -86,6 +92,11 @@ void NodeInput::removeInConnection()
 QString NodeInput::getID() const
 {
     return id;
+}
+
+void NodeInput::setID(const QString &uuid)
+{
+    id = uuid;
 }
 
 void NodeInput::mousePressEvent(QMouseEvent *event)

@@ -24,6 +24,8 @@
 #include <QPen>
 #include <QColor>
 
+#include "log.h"
+
 NodeOutput::NodeOutput(QWidget *parent)
     : QPushButton (parent)
 {

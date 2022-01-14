@@ -85,11 +85,14 @@ private:
     void establishConnection(NodeInput* nodeIn);
     void destroyOpenConnection();
     void deleteConnection(Connection* c);
+    void loadConnection(NodeOutput* src, NodeInput* dst);
 
     void selectNode(NodeBase* node);
     void activateNode(NodeBase* node);
+    NodeBase* findNode(const QString& id);
 
     NodeBase* loadNode(const NodePersistentProperties& p);
+    void connectNodeSignals(NodeBase* n);
 
     QGraphicsScene* scene;
     WindowManager* wManager;

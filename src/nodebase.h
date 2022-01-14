@@ -104,6 +104,12 @@ public:
     QString getID() const;
     void setID(const QString& s);
 
+    void setInputIDs(const QMap<int, QString>& ids);
+
+    NodeInput* findNodeInput(const QString& id);
+
+    void updateConnectionPositions();
+
     virtual ~NodeBase();
 
     bool needsUpdate = true;
@@ -117,7 +123,6 @@ private:
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
-    void updateConnectionPositions();
     void getAllDownstreamNodes(std::vector<NodeBase*>& nodes);
 
     void updateCropSizes();
