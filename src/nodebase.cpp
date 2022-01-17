@@ -403,30 +403,22 @@ void NodeBase::getAllDownstreamNodes(std::vector<NodeBase*>& nodes)
 std::set<Connection*> NodeBase::getAllConnections()
 {
     std::set<Connection*> connections;
+
     if (rgbaBackIn)
-    {
         if (auto c = rgbaBackIn->getConnection())
-        {
             connections.insert(c);
-        }
-    }
+
     if (rgbaFrontIn)
-    {
         if (auto c = rgbaFrontIn->getConnection())
-        {
             connections.insert(c);
-        }
-    }
+
     if (rgbaOut)
     {
         auto conns = rgbaOut->getConnections();
 
         if (conns.size() > 0)
         {
-            foreach (auto& c, conns)
-            {
-                connections.insert(c);
-            }
+            std::copy(conns.begin(), conns.end(), std::inserter(connections, connections.end()));
         }
     }
     return connections;
@@ -487,9 +479,6 @@ bool NodeBase::canBeRendered()
     if (nodeType == NODE_TYPE_READ)
     {
         auto vals = getAllPropertyValues();
-        CS_LOG_CONSOLE("Number of vals:");
-        CS_LOG_CONSOLE(QString::number(vals.size()));
-        CS_LOG_CONSOLE(vals);
         if (vals.size() == 0)
         {
             return false;

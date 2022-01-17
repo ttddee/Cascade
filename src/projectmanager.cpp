@@ -66,7 +66,6 @@ void ProjectManager::loadProject()
     QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
 
     QJsonObject jsonProject = projectDocument.object();
-    CS_LOG_CONSOLE(jsonProject["cascade-version"].toString());
     QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
     QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
     QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();

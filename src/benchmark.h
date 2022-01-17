@@ -40,7 +40,6 @@ void stopTimerAndPrint(const std::string& s)
     timerEnd = std::chrono::steady_clock::now();
 
     std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count() << "[milliseconds]" << std::endl;
-    //std::cout << s + " " << std::chrono::duration_cast<std::chrono::microseconds>(timerEnd - timerBegin).count() << "[microseconds]" << std::endl;
 }
 
 }

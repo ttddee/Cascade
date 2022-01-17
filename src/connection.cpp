@@ -42,7 +42,6 @@ Connection::Connection(NodeOutput* source)
     : QGraphicsLineItem(),
       sourceOutput(source)
 {
-    // TODO find better way to get cursor position
     this->setPen(normalPen);
     this->setLine(source->mapToParent(source->pos()).x(),
                   source->mapToParent(source->pos()).y(),

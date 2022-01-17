@@ -137,17 +137,25 @@ void NodeGraph::loadProject(
         auto dst = jsonConnectionsArray.at(i)["dst"].toString();
         auto dstNode = jsonConnectionsArray.at(i)["dst-node"].toString();
 
-        NodeBase* srcNode;
-        NodeInput* targetInput;
+        NodeBase* srcNode = nullptr;
+        NodeInput* targetInput = nullptr;
+        bool found = false;
         if (NodeBase* n = findNode(src))
+        {
             srcNode = n;
-        if (NodeBase* n = findNode(dstNode))
-            if (NodeInput* in = n->findNodeInput(dst))
-                targetInput = in;
-        if (!srcNode || !targetInput)
-            CS_LOG_WARNING("Could not load connection.");
+            if (NodeBase* n = findNode(dstNode))
+            {
 
-        loadConnection(srcNode->getRgbaOut(), targetInput);
+                if (NodeInput* in = n->findNodeInput(dst))
+                {
+                    targetInput = in;
+                    loadConnection(srcNode->getRgbaOut(), targetInput);
+                    found = true;
+                }
+            }
+        }
+        if (!found)
+            CS_LOG_WARNING("Could not load connection.");
     }
 }
 

@@ -29,7 +29,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     // Otherwise we would have to delete them manually.
 
     // File Menu
-
     fileMenu = new QMenu("File");
     this->addMenu(fileMenu);
 
@@ -64,7 +63,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
             Qt::QueuedConnection);
 
     // View Menu
-
     viewMenu = new QMenu("View");
     this->addMenu(viewMenu);
 
@@ -74,7 +72,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     viewMenu->addSeparator();
 
     // Help Menu
-
     helpMenu = new QMenu("Help");
     this->addMenu(helpMenu);
 
