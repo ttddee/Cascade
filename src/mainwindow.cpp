@@ -176,7 +176,7 @@ void MainWindow::handleSaveProjectAsAction()
 
 void MainWindow::handleExitAction()
 {
-
+    QCoreApplication::quit();
 }
 
 void MainWindow::handleShortcutsAction()
