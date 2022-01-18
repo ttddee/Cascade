@@ -39,6 +39,11 @@ QString TextBoxEntity::getValuesAsString()
     return "";
 }
 
+void TextBoxEntity::loadPropertyValues(const QString &values)
+{
+
+}
+
 TextBoxEntity::~TextBoxEntity()
 {
     delete ui;

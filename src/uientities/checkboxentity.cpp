@@ -61,6 +61,13 @@ QString CheckBoxEntity::getValuesAsString()
     return QString::number(ui->checkBox->isChecked());
 }
 
+void CheckBoxEntity::loadPropertyValues(const QString &values)
+{
+    values.toInt() == 1 ?
+                ui->checkBox->setCheckState(Qt::CheckState::Checked) :
+                ui->checkBox->setCheckState(Qt::CheckState::Unchecked);
+}
+
 CheckBoxEntity::~CheckBoxEntity()
 {
     delete ui;

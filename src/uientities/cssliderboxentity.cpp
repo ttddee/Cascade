@@ -23,7 +23,10 @@
 
 #include "../nodeproperties.h"
 
-CsSliderBoxEntity::CsSliderBoxEntity(UIElementType et, QWidget *parent, bool onlyUpdateOnSliderRelease) :
+CsSliderBoxEntity::CsSliderBoxEntity(
+        UIElementType et,
+        QWidget *parent,
+        bool onlyUpdateOnSliderRelease) :
     UiEntity(et, parent),
     ui(new Ui::CsSliderBox)
 {
@@ -42,6 +45,7 @@ CsSliderBoxEntity::CsSliderBoxEntity(UIElementType et, QWidget *parent, bool onl
         valueBoxDouble->setButtonSymbols(QAbstractSpinBox::NoButtons);
         ui->gridLayout->addWidget(valueBoxDouble, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
         valueBoxDouble->installEventFilter(this);
+        isDouble = true;
     }
     else
     {
@@ -110,6 +114,14 @@ QString CsSliderBoxEntity::getValuesAsString()
         return QString::number(ui->slider->value() / DOUBLE_MULT);
     else
         return QString::number(ui->slider->value());
+}
+
+void CsSliderBoxEntity::loadPropertyValues(const QString &values)
+{
+    if (isDouble)
+        valueBoxDouble->setValue(values.toFloat());
+    else
+        valueBoxInt->setValue(values.toInt());
 }
 
 void CsSliderBoxEntity::handleSliderValueChanged()

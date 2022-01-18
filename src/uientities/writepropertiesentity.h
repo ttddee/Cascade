@@ -38,7 +38,10 @@ public:
     explicit WritePropertiesEntity(UIElementType et, QWidget *parent = nullptr);
 
     void selfConnectToRequestFileSave(NodeProperties* p);
+
     QString getValuesAsString() override;
+
+    void loadPropertyValues(const QString& values) override;
 
     ~WritePropertiesEntity();
 

@@ -237,6 +237,25 @@ QString ColorPropertiesEntity::getValuesAsString()
     return vals;
 }
 
+void ColorPropertiesEntity::loadPropertyValues(const QString &values)
+{
+    auto split = values.split(",");
+    for (int i = 0; i < split.size() - 3; i++)
+    {
+        uiItems[i]->loadPropertyValues(split[i]);
+    }
+
+    split[split.size() - 3].toInt() == 1 ?
+                ui->maskCheckBox->setCheckState(Qt::CheckState::Checked) :
+                ui->maskCheckBox->setCheckState(Qt::CheckState::Unchecked);
+    split[split.size() - 2].toInt() == 1 ?
+                ui->clampBlackCheckBox->setCheckState(Qt::CheckState::Checked) :
+                ui->clampBlackCheckBox->setCheckState(Qt::CheckState::Unchecked);
+    split[split.size() - 1].toInt() == 1 ?
+                ui->clampWhiteCheckBox->setCheckState(Qt::CheckState::Checked) :
+                ui->clampWhiteCheckBox->setCheckState(Qt::CheckState::Unchecked);
+}
+
 void ColorPropertiesEntity::handleValueChanged()
 {
     emit valueChanged();

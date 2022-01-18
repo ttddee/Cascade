@@ -277,6 +277,14 @@ NodeProperties::NodeProperties(
     }
 }
 
+void NodeProperties::loadNodePropertyValues(const QMap<int, QString> &values)
+{
+    for (int i = 0; i < values.size(); i++)
+    {
+        widgets[i]->loadPropertyValues(values[i]);
+    }
+}
+
 void NodeProperties::handleSomeValueChanged()
 {
     parentNode->requestUpdate();

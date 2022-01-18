@@ -106,6 +106,8 @@ public:
 
     void setInputIDs(const QMap<int, QString>& ids);
 
+    void loadNodePropertyValues(const QMap<int, QString>& values);
+
     NodeInput* findNodeInput(const QString& id);
 
     void updateConnectionPositions();
@@ -150,7 +152,7 @@ private:
     NodeInput* rgbaFrontIn = nullptr;
     NodeOutput* rgbaOut = nullptr;
 
-    NodeProperties* propertiesView;
+    NodeProperties* nodeProperties;
 
     WindowManager* wManager;
 

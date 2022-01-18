@@ -45,6 +45,11 @@ QString TextBrowserEntity::getValuesAsString()
     return "";
 }
 
+void TextBrowserEntity::loadPropertyValues(const QString &values)
+{
+
+}
+
 TextBrowserEntity::~TextBrowserEntity()
 {
     delete ui;

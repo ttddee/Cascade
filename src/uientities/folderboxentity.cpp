@@ -55,6 +55,11 @@ QString FolderBoxEntity::getValuesAsString()
     return "\"" +  ui->lineEdit->text() + "\"";
 }
 
+void FolderBoxEntity::loadPropertyValues(const QString &values)
+{
+
+}
+
 void FolderBoxEntity::handleFolderButtonClicked()
 {
     QFileDialog dialog(nullptr);

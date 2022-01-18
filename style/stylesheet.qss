@@ -186,7 +186,7 @@ QSpinBox::down-button:hover {
 }
 
 QDoubleSpinBox {
-    background-color: #282d31;
+    background-color: #1d2024;
     font: 12px "Open Sans";
     color: #b9b9b9;
     border: 0px;

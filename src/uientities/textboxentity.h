@@ -41,6 +41,8 @@ public:
 
     QString getValuesAsString() override;
 
+    void loadPropertyValues(const QString& values) override;
+
     ~TextBoxEntity();
 
 private:

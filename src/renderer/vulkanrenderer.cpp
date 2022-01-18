@@ -1888,8 +1888,11 @@ void VulkanRenderer::setViewerPushConstants(const QString &s)
 void VulkanRenderer::processReadNode(NodeBase *node)
 {
     auto parts = node->getAllPropertyValues().split(",");
-    QString path = parts[0];
-    int colorSpace = parts[1].toInt();
+    int index = parts[parts.size() - 2].toInt();
+    if ( index < 0 )
+        index = 0;
+    QString path = parts[index];
+    int colorSpace = parts.last().toInt();
 
     if(path != "")
     {

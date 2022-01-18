@@ -70,7 +70,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
     this->createInputs(props);
     this->createOutputs(props);
 
-    propertiesView = new NodeProperties(nodeType, this);
+    nodeProperties = new NodeProperties(nodeType, this);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -169,6 +169,11 @@ void NodeBase::setInputIDs(const QMap<int, QString>& ids)
     {
         nodeInputs[i]->setID(ids[i]);
     }
+}
+
+void NodeBase::loadNodePropertyValues(const QMap<int, QString> &values)
+{
+    nodeProperties->loadNodePropertyValues(values);
 }
 
 NodeInput* NodeBase::findNodeInput(const QString& id)
@@ -497,7 +502,7 @@ bool NodeBase::canBeRendered()
 
 NodeProperties* NodeBase::getProperties()
 {
-    return propertiesView;
+    return nodeProperties;
 }
 
 void NodeBase::updateConnectionPositions()

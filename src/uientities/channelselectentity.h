@@ -43,6 +43,8 @@ public:
 
     QString getValuesAsString() override;
 
+    void loadPropertyValues(const QString& values) override;
+
     ~ChannelSelectEntity();
 
 private:

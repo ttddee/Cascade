@@ -96,7 +96,10 @@ public:
     void setName(const QString& name);
 
     void selfConnectToValueChanged(NodeProperties* p);
+
     QString getValuesAsString() override;
+
+    void loadPropertyValues(const QString& values) override;
 
     ~CsSliderBoxEntity();
 
@@ -160,6 +163,8 @@ private:
 
     bool isDragging = false;
     QPoint lastPos;
+
+    bool isDouble = false;
 
     float baseValue;
     bool onlyUpdateOnSliderRelease = false;

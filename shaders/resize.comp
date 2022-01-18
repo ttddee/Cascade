@@ -9,7 +9,7 @@ layout(set = 0, binding = 3) uniform InputBuffer
 {
     layout(offset = 0) float targetSizeX;
     layout(offset = 4) float targetSizeY;
-    layout(offset = 8) float mode;
+    layout(offset = 12) float mode;
 } sb;
 
 float factorX = sb.targetSizeX / imageSize(inputImage).x;

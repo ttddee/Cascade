@@ -71,6 +71,13 @@ QString ColorButtonEntity::getValuesAsString()
     return s;
 }
 
+void ColorButtonEntity::loadPropertyValues(const QString &values)
+{
+    auto split = values.split(",");
+    QColor c(split[0].toInt(), split[1].toInt(), split[2].toInt(), split[3].toInt());
+    setColor(c);
+}
+
 void ColorButtonEntity::selfConnectToValueChanged(NodeProperties *p)
 {
     connect(this, &ColorButtonEntity::valueChanged,

@@ -37,7 +37,10 @@ public:
     explicit ColorPropertiesEntity(UIElementType et, QWidget *parent = nullptr);
 
     void selfConnectToValueChanged(NodeProperties* p);
+
     QString getValuesAsString() override;
+
+    void loadPropertyValues(const QString& values) override;
 
     ~ColorPropertiesEntity();
 

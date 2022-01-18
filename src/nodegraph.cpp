@@ -86,6 +86,7 @@ NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
     connectNodeSignals(n);
 
     n->setInputIDs(p.inputs);
+    n->loadNodePropertyValues(p.properties);
 
     return n;
 }
@@ -126,6 +127,13 @@ void NodeGraph::loadProject(
         for (int i = 0; i < ins.size(); i++)
         {
             p.inputs[i] = ins.value(QString::number(i)).toString();
+        }
+
+        // Load properties to array
+        QJsonObject props = jsonNode["properties"].toObject();
+        for (int i = 0; i < props.size(); i++)
+        {
+            p.properties[i] = props.value(QString::number(i)).toString();
         }
 
         loadNode(p);

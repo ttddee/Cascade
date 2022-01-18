@@ -96,6 +96,23 @@ QString SizeBoxEntity::getValuesAsString()
     }
 }
 
+void SizeBoxEntity::loadPropertyValues(const QString &values)
+{
+    CS_LOG_CONSOLE(values);
+    if (values == "")
+    {
+        ui->modeComboBox->setCurrentIndex(0);
+    }
+    else
+    {
+        auto split = values.split(",");
+        ui->modeComboBox->setCurrentIndex(1);
+        ui->widthSpinBox->setValue(split[0].toInt());
+        ui->heightSpinBox->setValue(split[1].toInt());
+        handleSelectionChanged();
+    }
+}
+
 void SizeBoxEntity::setSizeBoxNoSignal(const QSize& size)
 {
     ui->widthSpinBox->blockSignals(true);

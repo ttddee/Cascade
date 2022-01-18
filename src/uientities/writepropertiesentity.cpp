@@ -58,7 +58,21 @@ void WritePropertiesEntity::selfConnectToRequestFileSave(NodeProperties *p)
 
 QString WritePropertiesEntity::getValuesAsString()
 {
-    return "";
+    QString str = folder;
+    str.append(",");
+    str.append(QString::number(ui->fileTypeBox->currentIndex()));
+    str.append(",");
+    str.append(fileName);
+
+    return str;
+}
+
+void WritePropertiesEntity::loadPropertyValues(const QString &values)
+{
+    auto split = values.split(",");
+    setFolder(split[0]);
+    ui->fileTypeBox->setCurrentIndex(split[1].toInt());
+    setFileName(split[2]);
 }
 
 void WritePropertiesEntity::setFileName(const QString& f)

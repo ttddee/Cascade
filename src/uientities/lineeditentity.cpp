@@ -56,6 +56,11 @@ QString LineEditEntity::getValuesAsString()
     return "\"" + ui->lineEdit->text() + "\"";
 }
 
+void LineEditEntity::loadPropertyValues(const QString &values)
+{
+
+}
+
 LineEditEntity::~LineEditEntity()
 {
     delete ui;

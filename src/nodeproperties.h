@@ -41,6 +41,8 @@ public:
             NodeBase* parentNode,
             QWidget *parent = nullptr);
 
+    void loadNodePropertyValues(const QMap<int, QString>& values);
+
     std::vector<UiEntity*> widgets;
 
 private:

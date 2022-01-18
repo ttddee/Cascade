@@ -45,6 +45,8 @@ public:
 
     QString getValuesAsString() override;
 
+    void loadPropertyValues(const QString& values) override;
+
     void setParentNode(NodeBase* node);
 
     ~ResizePropertiesEntity();

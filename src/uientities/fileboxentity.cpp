@@ -106,7 +106,18 @@ void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString FileBoxEntity::getValuesAsString()
 {
-    return getCurrentPath();
+    QStringList list = fileListModel->stringList();
+    QString str = list.join(",");
+    str.append(",");
+    str.append(QString::number(ui->fileListView->currentIndex().row()));
+
+    return str;
+}
+
+void FileBoxEntity::loadPropertyValues(const QString &values)
+{
+    auto split = values.split(",");
+    addEntries(split);
 }
 
 void FileBoxEntity::handleDeleteButtonClicked()

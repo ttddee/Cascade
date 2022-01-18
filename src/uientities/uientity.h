@@ -25,6 +25,7 @@
 
 #include "../nodedefinitions.h"
 #include "../nodeproperties.h"
+#include "../log.h"
 
 using namespace Cascade;
 
@@ -36,6 +37,8 @@ public:
     explicit UiEntity(UIElementType et, QWidget *parent = nullptr);
 
     virtual QString getValuesAsString() = 0;
+
+    virtual void loadPropertyValues(const QString& values) = 0;
 
     virtual const QString name();
 

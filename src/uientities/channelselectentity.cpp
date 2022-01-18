@@ -58,6 +58,20 @@ QString ChannelSelectEntity::getValuesAsString()
     return s;
 }
 
+void ChannelSelectEntity::loadPropertyValues(const QString &values)
+{
+    auto split = values.split(",");
+    std::vector<QCheckBox*> boxes = {
+        ui->redBox, ui->greenBox, ui->blueBox, ui->alphaBox
+    };
+    for (int i = 0; i < split.size(); i++)
+    {
+        split[i].toInt() == 1 ?
+                    boxes[i]->setCheckState(Qt::CheckState::Checked) :
+                    boxes[i]->setCheckState(Qt::CheckState::Unchecked);
+    }
+}
+
 ChannelSelectEntity::~ChannelSelectEntity()
 {
     delete ui;

@@ -60,6 +60,11 @@ QString ComboBoxEntity::getValuesAsString()
     return QString::number(ui->comboBox->currentIndex());
 }
 
+void ComboBoxEntity::loadPropertyValues(const QString &values)
+{
+    ui->comboBox->setCurrentIndex(values.toInt());
+}
+
 ComboBoxEntity::~ComboBoxEntity()
 {
     delete ui;

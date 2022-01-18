@@ -68,6 +68,11 @@ QString SpinBoxEntity::getValuesAsString()
     return QString::number(ui->spinBox->value());
 }
 
+void SpinBoxEntity::loadPropertyValues(const QString &values)
+{
+    ui->spinBox->setValue(values.toInt());
+}
+
 SpinBoxEntity::~SpinBoxEntity()
 {
     delete ui;

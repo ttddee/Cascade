@@ -32,6 +32,11 @@ QString SeparatorEntity::getValuesAsString()
     return "";
 }
 
+void SeparatorEntity::loadPropertyValues(const QString &values)
+{
+
+}
+
 SeparatorEntity::~SeparatorEntity()
 {
     delete ui;

@@ -49,8 +49,19 @@ QString ResizePropertiesEntity::getValuesAsString()
     QString s = QString::number(ui->widthPixels->value());
     s.append(",");
     s.append(QString::number(ui->heightPixels->value()));
+    s.append(",");
+    s.append(QString::number(ui->linkCheckBox->isChecked()));
 
     return s;
+}
+
+void ResizePropertiesEntity::loadPropertyValues(const QString &values)
+{
+    emit valueChanged();
+
+    auto split = values.split(",");
+    setSpinBoxNoSignal(ui->widthPixels, split[0].toInt());
+    setSpinBoxNoSignal(ui->heightPixels, split[1].toInt());
 }
 
 void ResizePropertiesEntity::handleNodeRequestUpdate()
