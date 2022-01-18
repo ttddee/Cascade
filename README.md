@@ -31,21 +31,27 @@ It's easiest to use Qt Creator as IDE, but feel free to use Visual Studio if you
 
 Open a command prompt and clone the Cascade repo:
 
-```git clone https://github.com/ttddee/Cascade```
+```
+git clone https://github.com/ttddee/Cascade
+```
 
 Enter the project directory and install vcpkg:
 
 ``` 
 cd Cascade
-
+```
+```
 git clone https://github.com/microsoft/vcpkg
-
+```
+```
 .\vcpkg\bootstrap-vcpkg.bat
 ```
 
 Now you can install all other dependencies using the command below:
 
-```.\vcpkg\vcpkg --feature-flags="versions" install --triplet=x64-windows```
+```
+.\vcpkg\vcpkg --feature-flags="versions" install --triplet=x64-windows
+```
 
 It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
 
