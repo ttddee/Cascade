@@ -98,7 +98,6 @@ QString SizeBoxEntity::getValuesAsString()
 
 void SizeBoxEntity::loadPropertyValues(const QString &values)
 {
-    CS_LOG_CONSOLE(values);
     if (values == "")
     {
         ui->modeComboBox->setCurrentIndex(0);

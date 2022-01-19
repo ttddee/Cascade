@@ -61,7 +61,6 @@ SOURCES += \
     src/propertiesview.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
-    src/renderer/objectmanager.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/slidernoclick.cpp \
@@ -127,7 +126,6 @@ HEADERS += \
     src/propertiesview.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
-    src/renderer/objectmanager.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
     src/slidernoclick.h \

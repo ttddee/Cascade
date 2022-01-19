@@ -24,7 +24,6 @@
 #include <QVulkanFunctions>
 #include <QCoreApplication>
 #include <QFile>
-#include <QVulkanFunctions>
 #include <QMouseEvent>
 #include <QVulkanWindowRenderer>
 

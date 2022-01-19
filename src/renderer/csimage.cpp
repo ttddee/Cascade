@@ -61,7 +61,7 @@ CsImage::CsImage(
                 nullptr,
                 &image);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to create linear image for texture: %d", err);
+        CS_LOG_WARNING("Failed to create linear image for texture.");
     }
 
     //Get how much memory we need and how it should aligned
@@ -97,7 +97,7 @@ CsImage::CsImage(
                 nullptr,
                 &memory);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to allocate memory for linear image: %d", err);
+        CS_LOG_WARNING("Failed to allocate memory for linear image.");
     }
 
     //Associate the image with this chunk of memory
@@ -107,7 +107,7 @@ CsImage::CsImage(
                 memory,
                 0);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to bind linear image memory: %d", err);
+        CS_LOG_WARNING("Failed to bind linear image memory.");
     }
 
     VkImageViewCreateInfo viewInfo = {};
@@ -128,7 +128,7 @@ CsImage::CsImage(
                 nullptr,
                 &view);
     if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
+        CS_LOG_WARNING("Failed to create image view for texture.");
     }
 }
 
@@ -170,7 +170,6 @@ int CsImage::getHeight() const
 void CsImage::destroy()
 {
     CS_LOG_INFO("Destroying image.");
-    CS_LOG_CONSOLE("Destroying image.");
 
     if (view) {
         devFuncs->vkDestroyImageView(*device, view, nullptr);
