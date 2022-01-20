@@ -30,6 +30,8 @@
 #include <OpenImageIO/color.h>
 #include <OpenColorIO/OpenColorIO.h>
 
+#include "vulkan/vulkan.hpp"
+
 #include "../nodedefinitions.h"
 #include "../nodebase.h"
 #include "../windowmanager.h"
@@ -93,8 +95,8 @@ private:
     void createGraphicsPipelineCache();
     void createGraphicsPipelineLayout();
     void createGraphicsPipeline(
-            VkPipeline& pl,
-            VkShaderModule& fragShaderModule);
+            vk::UniquePipeline& pl,
+            vk::UniqueShaderModule& fragShaderModule);
 
     void loadShadersFromDisk();
     void createComputePipelines();
@@ -126,7 +128,7 @@ private:
     void createQueryPool();
 
     // Recurring compute
-    VkShaderModule createShaderFromFile(
+    vk::UniqueShaderModule createShaderFromFile(
             const QString &name);
 
     bool createComputeRenderTarget(
@@ -193,35 +195,55 @@ private:
             VkMemoryPropertyFlags properties);
 
     VulkanWindow *window;
-    VkDevice device;
-    VkPhysicalDevice physicalDevice;
+    vk::Device device;
+    //VkDevice device;
+    vk::PhysicalDevice physicalDevice;
+    //VkPhysicalDevice physicalDevice;
     QVulkanDeviceFunctions *devFuncs;
     QVulkanFunctions *f;
 
-    VkBuffer vertexBuffer                       = VK_NULL_HANDLE;
-    VkDeviceMemory vertexBufferMemory           = VK_NULL_HANDLE;
-    VkDescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    vk::UniqueBuffer vertexBuffer;
+    //VkBuffer vertexBuffer                       = VK_NULL_HANDLE;
+    vk::UniqueDeviceMemory vertexBufferMemory;
+    //VkDeviceMemory vertexBufferMemory           = VK_NULL_HANDLE;
+    vk::DescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    //VkDescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    VkDescriptorPool descriptorPool             = VK_NULL_HANDLE;
-    VkDescriptorSetLayout graphicsDescriptorSetLayout = VK_NULL_HANDLE;
-    VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    vk::UniqueDescriptorPool descriptorPool;
+    //VkDescriptorPool descriptorPool             = VK_NULL_HANDLE;
+    vk::UniqueDescriptorSetLayout graphicsDescriptorSetLayout;
+    //VkDescriptorSetLayout graphicsDescriptorSetLayout = VK_NULL_HANDLE;
+    vk::UniqueDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    //VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    VkPipelineCache pipelineCache               = VK_NULL_HANDLE;
-    VkPipelineLayout graphicsPipelineLayout     = VK_NULL_HANDLE;
-    VkPipeline graphicsPipelineRGB              = VK_NULL_HANDLE;
-    VkPipeline graphicsPipelineAlpha            = VK_NULL_HANDLE;
-    VkQueryPool queryPool                       = VK_NULL_HANDLE;
+    vk::UniquePipelineCache pipelineCache;
+    vk::UniquePipelineLayout graphicsPipelineLayout;
+    vk::UniquePipeline graphicsPipelineRGB;
+    vk::UniquePipeline graphicsPipelineAlpha;
+    vk::UniqueQueryPool queryPool;
+//    VkPipelineCache pipelineCache               = VK_NULL_HANDLE;
+//    VkPipelineLayout graphicsPipelineLayout     = VK_NULL_HANDLE;
+//    VkPipeline graphicsPipelineRGB              = VK_NULL_HANDLE;
+//    VkPipeline graphicsPipelineAlpha            = VK_NULL_HANDLE;
+//    VkQueryPool queryPool                       = VK_NULL_HANDLE;
 
-    VkSampler sampler                           = VK_NULL_HANDLE;
+    vk::UniqueSampler sampler;
+    //VkSampler sampler                           = VK_NULL_HANDLE;
 
-    VkImage loadImageStaging                    = VK_NULL_HANDLE;
-    VkDeviceMemory loadImageStagingMem          = VK_NULL_HANDLE;
+    vk::UniqueImage loadImageStaging;
+    vk::UniqueDeviceMemory loadImageStagingMem;
+//    VkImage loadImageStaging                    = VK_NULL_HANDLE;
+//    VkDeviceMemory loadImageStagingMem          = VK_NULL_HANDLE;
 
-    VkBuffer outputStagingBuffer                = VK_NULL_HANDLE;
-    VkDeviceMemory outputStagingBufferMemory    = VK_NULL_HANDLE;
+    vk::UniqueBuffer outputStagingBuffer;
+    vk::UniqueDeviceMemory outputStagingBufferMemory;
+//    VkBuffer outputStagingBuffer                = VK_NULL_HANDLE;
+//    VkDeviceMemory outputStagingBufferMemory    = VK_NULL_HANDLE;
 
-    VkShaderModule noopShader                   = VK_NULL_HANDLE;
-    VkPipeline computePipelineNoop              = VK_NULL_HANDLE;
+    vk::UniqueShaderModule noopShader;
+    vk::UniquePipeline computePipelineNoop;
+//    VkShaderModule noopShader                   = VK_NULL_HANDLE;
+//    VkPipeline computePipelineNoop              = VK_NULL_HANDLE;
 
     bool texStagingPending = false;
 
@@ -236,7 +258,8 @@ private:
 
     QSize outputImageSize;
 
-    VkClearColorValue clearColor = {{ 0.05f, 0.05f, 0.05f, 0.0f }};
+    const vk::ClearColorValue clearColor = std::array<float, 4> ({ 0.05f, 0.05f, 0.05f, 0.0f });
+    //VkClearColorValue clearColor = {{ 0.05f, 0.05f, 0.05f, 0.0f }};
 
     QMatrix4x4 projection;
     float rotation    = 0.0f;
@@ -248,32 +271,45 @@ private:
     // TODO: Replace this with proper render states
     bool clearScreen = true;
 
-    const VkFormat globalImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
+    const vk::Format globalImageFormat = vk::Format::eR32G32B32A32Sfloat;
+    //const VkFormat globalImageFormat = VK_FORMAT_R32G32B32A32_SFLOAT;
     DisplayMode displayMode = DISPLAY_MODE_RGB;
 
     // Compute resources
     struct Compute
     {
-        VkQueue                     computeQueue;
-        VkCommandPool               computeCommandPool;
-        VkCommandBuffer             commandBufferGeneric;     // Command buffer for all shaders except IO
-        VkCommandBuffer             commandBufferImageLoad;   // Command buffer for loading images from disk
-        VkCommandBuffer             commandBufferImageSave;   // Command buffer for writing images to disk
-        VkFence                     fence;
+        vk::Queue                   computeQueue;
+        vk::UniqueCommandPool       computeCommandPool;
+        vk::UniqueCommandBuffer     commandBufferGeneric;     // Command buffer for all shaders except IO
+        vk::UniqueCommandBuffer     commandBufferImageLoad;   // Command buffer for loading images from disk
+        vk::UniqueCommandBuffer     commandBufferImageSave;   // Command buffer for writing images to disk
+        vk::UniqueFence             fence;
         uint32_t                    queueFamilyIndex;         // Family index of the graphics queue, used for barriers
+
+//        VkQueue                     computeQueue;
+//        VkCommandPool               computeCommandPool;
+//        VkCommandBuffer             commandBufferGeneric;     // Command buffer for all shaders except IO
+//        VkCommandBuffer             commandBufferImageLoad;   // Command buffer for loading images from disk
+//        VkCommandBuffer             commandBufferImageSave;   // Command buffer for writing images to disk
+//        VkFence                     fence;
+//        uint32_t                    queueFamilyIndex;         // Family index of the graphics queue, used for barriers
     };
 
     Compute                         compute;
-    VkPipelineLayout                computePipelineLayoutGeneric      = VK_NULL_HANDLE;
-    VkPipeline                      computePipeline                   = VK_NULL_HANDLE;
-    VkDescriptorSetLayout           computeDescriptorSetLayoutGeneric = VK_NULL_HANDLE;
-    VkDescriptorSet                 computeDescriptorSetGeneric       = VK_NULL_HANDLE;
+    vk::UniquePipelineLayout        computePipelineLayoutGeneric;
+    vk::UniquePipeline              computePipeline;
+    vk::UniqueDescriptorSetLayout   computeDescriptorSetLayoutGeneric;
+    vk::UniqueDescriptorSet         computeDescriptorSetGeneric;
+//    VkPipelineLayout                computePipelineLayoutGeneric      = VK_NULL_HANDLE;
+//    VkPipeline                      computePipeline                   = VK_NULL_HANDLE;
+//    VkDescriptorSetLayout           computeDescriptorSetLayoutGeneric = VK_NULL_HANDLE;
+//    VkDescriptorSet                 computeDescriptorSetGeneric       = VK_NULL_HANDLE;
 
     std::shared_ptr<CsImage>        computeRenderTarget               = nullptr;
     std::shared_ptr<CsImage>        imageFromDisk                     = nullptr;
 
-    QMap<NodeType, VkShaderModule>  shaders;
-    QMap<NodeType, VkPipeline>      pipelines;
+    QMap<NodeType, vk::UniqueShaderModule>  shaders;
+    QMap<NodeType, vk::UniquePipeline>      pipelines;
 
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
 

@@ -74,7 +74,7 @@ void VulkanRenderer::initResources()
     createGraphicsPipelineCache();
     createGraphicsPipelineLayout();
 
-    VkShaderModule fragShader = createShaderFromFile(":/shaders/texture_frag.spv");
+    vk::UniqueShaderModule fragShader = createShaderFromFile(":/shaders/texture_frag.spv");
     createGraphicsPipeline(graphicsPipelineRGB, fragShader);
     fragShader = createShaderFromFile(":/shaders/texture_alpha_frag.spv");
     createGraphicsPipeline(graphicsPipelineAlpha, fragShader);
@@ -124,163 +124,131 @@ QString VulkanRenderer::getGpuName()
 
 void VulkanRenderer::createVertexBuffer()
 {
-    const VkPhysicalDeviceLimits *pdevLimits = &window->physicalDeviceProperties()->limits;
-    const VkDeviceSize uniAlign = pdevLimits->minUniformBufferOffsetAlignment;
-    VkBufferCreateInfo bufInfo;
-    memset(&bufInfo, 0, sizeof(bufInfo));
-    bufInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    // Our internal layout is vertex, uniform, uniform, ... with each uniform buffer start offset aligned to uniAlign.
-    const VkDeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
-    const VkDeviceSize uniformAllocSize = aligned(UNIFORM_DATA_SIZE, uniAlign);
-    bufInfo.size = vertexAllocSize + concurrentFrameCount * uniformAllocSize;
-    bufInfo.usage = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
+    const vk::PhysicalDeviceLimits pdevLimits = physicalDevice.getProperties().limits;
+    const vk::DeviceSize uniAlign = pdevLimits.minUniformBufferOffsetAlignment;
 
-    VkResult err = devFuncs->vkCreateBuffer(device, &bufInfo, nullptr, &vertexBuffer);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create buffer: %d", err);
+    const vk::DeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
+    const vk::DeviceSize uniformAllocSize = aligned(UNIFORM_DATA_SIZE, uniAlign);
 
-    VkMemoryRequirements memReq;
-    devFuncs->vkGetBufferMemoryRequirements(device, vertexBuffer, &memReq);
+    vk::BufferCreateInfo bufferInfo({},
+                         vertexAllocSize + concurrentFrameCount * uniformAllocSize,
+                         vk::BufferUsageFlagBits::eVertexBuffer);
+    vertexBuffer = device.createBufferUnique(bufferInfo);
 
-    VkMemoryAllocateInfo memAllocInfo = {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        window->hostVisibleMemoryIndex()
-    };
+    vk::MemoryRequirements memReq;
+    device.getBufferMemoryRequirements(*vertexBuffer);
 
-    err = devFuncs->vkAllocateMemory(device, &memAllocInfo, nullptr, &vertexBufferMemory);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to allocate memory: %d", err);
+    vk::MemoryAllocateInfo memAllocInfo(memReq.size,
+                                        window->hostVisibleMemoryIndex());
 
-    err = devFuncs->vkBindBufferMemory(device, vertexBuffer, vertexBufferMemory, 0);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to bind buffer memory: %d", err);
+    vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo);
+
+    device.bindBufferMemory(*vertexBuffer, *vertexBufferMemory, 0);
 
     quint8 *p;
-    err = devFuncs->vkMapMemory(device, vertexBufferMemory, 0, memReq.size, 0, reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS)
-        qFatal("Failed to map memory: %d", err);
+    device.mapMemory(*vertexBufferMemory,
+                     0,
+                     memReq.size,
+                     {},
+                     reinterpret_cast<void **>(&p));
+
     memcpy(p, vertexData, sizeof(vertexData));
     QMatrix4x4 ident;
     memset(uniformBufferInfo, 0, sizeof(uniformBufferInfo));
     for (int i = 0; i < concurrentFrameCount; ++i) {
-        const VkDeviceSize offset = vertexAllocSize + i * uniformAllocSize;
+        const vk::DeviceSize offset = vertexAllocSize + i * uniformAllocSize;
         memcpy(p + offset, ident.constData(), 16 * sizeof(float));
-        uniformBufferInfo[i].buffer = vertexBuffer;
-        uniformBufferInfo[i].offset = offset;
-        uniformBufferInfo[i].range = uniformAllocSize;
+        uniformBufferInfo[i].setBuffer(*vertexBuffer);
+        uniformBufferInfo[i].setOffset(offset);
+        uniformBufferInfo[i].setRange(uniformAllocSize);
     }
-    devFuncs->vkUnmapMemory(device, vertexBufferMemory);
+    device.unmapMemory(*vertexBufferMemory);
 }
 
 void VulkanRenderer::createSampler()
 {
     // Create sampler
-    VkSamplerCreateInfo samplerInfo;
-    memset(&samplerInfo, 0, sizeof(samplerInfo));
-    samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
-    samplerInfo.magFilter = VK_FILTER_NEAREST;
-    samplerInfo.minFilter = VK_FILTER_NEAREST;
-    samplerInfo.addressModeU = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeV = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.addressModeW = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
-    samplerInfo.anisotropyEnable = VK_FALSE;
-    VkResult err = devFuncs->vkCreateSampler(device, &samplerInfo, nullptr, &sampler);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create sampler: %d", err);
+    vk::SamplerCreateInfo samplerInfo({},
+                                      vk::Filter::eNearest,
+                                      vk::Filter::eNearest,
+                                      vk::SamplerMipmapMode::eNearest,
+                                      vk::SamplerAddressMode::eClampToEdge,
+                                      vk::SamplerAddressMode::eClampToEdge,
+                                      vk::SamplerAddressMode::eClampToEdge,
+                                      0,
+                                      0);
+
+    sampler = device.createSamplerUnique(samplerInfo);
 }
 
 void VulkanRenderer::createDescriptorPool()
 {
     // Create descriptor pool
-    VkDescriptorPoolSize descPoolSizes[4] = {
-        { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 3 * uint32_t(concurrentFrameCount) },
-        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
-        { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1 * uint32_t(concurrentFrameCount) },
-        { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE,          6 * uint32_t(concurrentFrameCount) }
+    vk::DescriptorPoolSize descPoolSizes[4] = {
+        { vk::DescriptorType::eUniformBuffer,         3 * uint32_t(concurrentFrameCount) },
+        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
+        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
+        { vk::DescriptorType::eStorageImage,          6 * uint32_t(concurrentFrameCount) }
     };
-    VkDescriptorPoolCreateInfo descPoolInfo;
-    memset(&descPoolInfo, 0, sizeof(descPoolInfo));
-    descPoolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
-    descPoolInfo.maxSets        = 6;
-    descPoolInfo.poolSizeCount  = 4;
-    descPoolInfo.pPoolSizes = descPoolSizes;
-    VkResult err = devFuncs->vkCreateDescriptorPool(
-                device,
-                &descPoolInfo,
-                nullptr,
-                &descriptorPool);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create descriptor pool: %d", err);
+
+    vk::DescriptorPoolCreateInfo descPoolInfo({},
+                                              6,
+                                              4,
+                                              descPoolSizes);
+
+    descriptorPool = device.createDescriptorPoolUnique(descPoolInfo);
 }
 
 void VulkanRenderer::createGraphicsDescriptors()
 {
     // Create DescriptorSetLayout
-    VkDescriptorSetLayoutBinding layoutBinding[2] =
-    {
+    vk::DescriptorSetLayoutBinding layoutBinding[2] = {
         {
             0, // binding
-            VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER,
+            vk::DescriptorType::eUniformBuffer,
             1, // descriptorCount
-            VK_SHADER_STAGE_VERTEX_BIT,
+            vk::ShaderStageFlagBits::eVertex,
             nullptr
         },
         {
             1, // binding
-            VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER,
+            vk::DescriptorType::eCombinedImageSampler,
             1, // descriptorCount
-            VK_SHADER_STAGE_FRAGMENT_BIT,
+            vk::ShaderStageFlagBits::eFragment,
             nullptr
         }
     };
-    VkDescriptorSetLayoutCreateInfo descLayoutInfo = {
-        VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO,
-        nullptr,
-        0,
-        2, // bindingCount
-        layoutBinding
-    };
-    VkResult err = devFuncs->vkCreateDescriptorSetLayout(device, &descLayoutInfo, nullptr, &graphicsDescriptorSetLayout);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create descriptor set layout: %d", err);
 
+    vk::DescriptorSetLayoutCreateInfo descLayoutInfo({},
+                                                     2, // bindingCount
+                                                     layoutBinding);
+
+    graphicsDescriptorSetLayout = device.createDescriptorSetLayoutUnique(descLayoutInfo);
 }
 
 void VulkanRenderer::createGraphicsPipelineCache()
 {
     // Pipeline cache
-    VkPipelineCacheCreateInfo pipelineCacheInfo;
-    memset(&pipelineCacheInfo, 0, sizeof(pipelineCacheInfo));
-    pipelineCacheInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
-    VkResult err = devFuncs->vkCreatePipelineCache(device, &pipelineCacheInfo, nullptr, &pipelineCache);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create pipeline cache: %d", err);
+    vk::PipelineCacheCreateInfo pipelineCacheInfo({},
+                                                  {});
+
+    pipelineCache = device.createPipelineCacheUnique(pipelineCacheInfo);
 }
 
 void VulkanRenderer::createGraphicsPipelineLayout()
 {
-    VkPushConstantRange pushConstantRange;
-    pushConstantRange.stageFlags                    = VK_SHADER_STAGE_FRAGMENT_BIT;
-    pushConstantRange.offset                        = 0;
-    pushConstantRange.size                          = sizeof(viewerPushConstants);
+    vk::PushConstantRange pushConstantRange;
+    pushConstantRange.stageFlags                = vk::ShaderStageFlagBits::eFragment;
+    pushConstantRange.offset                    = 0;
+    pushConstantRange.size                      = sizeof(viewerPushConstants);
 
-    VkPipelineLayoutCreateInfo pipelineLayoutInfo;
-    memset(&pipelineLayoutInfo, 0, sizeof(pipelineLayoutInfo));
-    pipelineLayoutInfo.sType =                  VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-    pipelineLayoutInfo.setLayoutCount =         1;
-    pipelineLayoutInfo.pSetLayouts =            &graphicsDescriptorSetLayout;
-    pipelineLayoutInfo.pushConstantRangeCount = 1;
-    pipelineLayoutInfo.pPushConstantRanges =    &pushConstantRange;
+    vk::PipelineLayoutCreateInfo pipelineLayoutInfo({},
+                                                    1,
+                                                    &(*graphicsDescriptorSetLayout),
+                                                    1,
+                                                    &pushConstantRange);
 
-    VkResult err = devFuncs->vkCreatePipelineLayout(
-                device,
-                &pipelineLayoutInfo,
-                nullptr,
-                &graphicsPipelineLayout);
-    if (err != VK_SUCCESS)
-        qFatal("Failed to create pipeline layout: %d", err);
+    graphicsPipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo);
 }
 
 void VulkanRenderer::createBuffer(
@@ -476,31 +444,37 @@ void VulkanRenderer::createGraphicsPipeline(
     }
 }
 
-VkShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
+vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
 {
     QFile file(name);
     if (!file.open(QIODevice::ReadOnly))
     {
         CS_LOG_WARNING("Failed to read shader:");
         CS_LOG_WARNING(qPrintable(name));
-        return VK_NULL_HANDLE;
     }
     QByteArray blob = file.readAll();
     file.close();
 
-    VkShaderModuleCreateInfo shaderInfo;
-    memset(&shaderInfo, 0, sizeof(shaderInfo));
-    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-    shaderInfo.codeSize = blob.size();
-    shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
-    VkShaderModule shaderModule;
-    VkResult err = devFuncs->vkCreateShaderModule(window->device(), &shaderInfo, nullptr, &shaderModule);
-    if (err != VK_SUCCESS)
-    {
-        CS_LOG_WARNING("Failed to create shader module: ");
-        CS_LOG_WARNING(QString::number(err));
-        return VK_NULL_HANDLE;
-    }
+    vk::ShaderModuleCreateInfo shaderInfo({},
+                                          blob.size(),
+                                          reinterpret_cast<const uint32_t *>(blob.constData())
+                );
+
+    vk::UniqueShaderModule shaderModule = device.createShaderModuleUnique(shaderInfo);
+
+//    VkShaderModuleCreateInfo shaderInfo;
+//    memset(&shaderInfo, 0, sizeof(shaderInfo));
+//    shaderInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
+//    shaderInfo.codeSize = blob.size();
+//    shaderInfo.pCode = reinterpret_cast<const uint32_t *>(blob.constData());
+//    VkShaderModule shaderModule;
+//    VkResult err = devFuncs->vkCreateShaderModule(window->device(), &shaderInfo, nullptr, &shaderModule);
+//    if (err != VK_SUCCESS)
+//    {
+//        CS_LOG_WARNING("Failed to create shader module: ");
+//        CS_LOG_WARNING(QString::number(err));
+//        return VK_NULL_HANDLE;
+//    }
 
     return shaderModule;
 }
