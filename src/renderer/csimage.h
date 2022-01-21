@@ -24,6 +24,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "vulkan/vulkan.hpp"
+
 #include "../vulkanwindow.h"
 
 class CsImage
@@ -31,17 +33,17 @@ class CsImage
 public:
     CsImage(
             VulkanWindow* win,
-            const VkDevice* d,
-            QVulkanDeviceFunctions* df,
+            const vk::Device* d,
+            const vk::PhysicalDevice* pd,
             const int w = 100,
             const int h = 100);
 
-    VkImage& getImage();
-    VkImageView& getImageView();
-    VkDeviceMemory& getMemory();
+    vk::UniqueImage& getImage();
+    vk::UniqueImageView& getImageView();
+    vk::UniqueDeviceMemory& getMemory();
 
-    VkImageLayout getLayout();
-    void setLayout(VkImageLayout layout);
+    vk::ImageLayout getLayout() const;
+    void setLayout(const vk::ImageLayout& layout);
 
     int getWidth() const;
     int getHeight() const;
@@ -51,15 +53,15 @@ public:
     ~CsImage();
 
 private:
-    VkImage image           = VK_NULL_HANDLE;
-    VkImageView view        = VK_NULL_HANDLE;
-    VkDeviceMemory memory   = VK_NULL_HANDLE;
+    vk::UniqueImage image;
+    vk::UniqueImageView view;
+    vk::UniqueDeviceMemory memory;
 
     VulkanWindow* window;
-    QVulkanDeviceFunctions *devFuncs;
-    const VkDevice* device;
+    const vk::Device* device;
+    const vk::PhysicalDevice* physicalDevice;
 
-    VkImageLayout currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    vk::ImageLayout currentLayout = vk::ImageLayout::eUndefined;
 
     const int width;
     const int height;

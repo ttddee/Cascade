@@ -96,12 +96,11 @@ private:
     void createGraphicsPipelineLayout();
     void createGraphicsPipeline(
             vk::UniquePipeline& pl,
-            vk::UniqueShaderModule& fragShaderModule);
+            const QString& fragShaderPath);
 
     void loadShadersFromDisk();
     void createComputePipelines();
-    VkPipeline createComputePipeline(
-            NodeType nodeType);
+    VkPipeline createComputePipeline(NodeType nodeType);
     VkPipeline createComputePipelineNoop();
 
     // Load image
@@ -154,7 +153,7 @@ private:
             std::shared_ptr<CsImage> inputImageBack,
             std::shared_ptr<CsImage> inputImageFront,
             std::shared_ptr<CsImage> outputImage,
-            VkPipeline& pl,
+            vk::Pipeline& pl,
             int numShaderPasses,
             int currentPass);
     void recordComputeCommandBufferCPUCopy(
@@ -178,9 +177,9 @@ private:
             ImageBuf& image);
 
     void createBuffer(
-            VkBuffer& buffer,
-            VkDeviceMemory& bufferMemory,
-            VkDeviceSize& size);
+            vk::UniqueBuffer& buffer,
+            vk::UniqueDeviceMemory& bufferMemory,
+            vk::DeviceSize& size);
 
     void fillSettingsBuffer(
             NodeBase* node);
@@ -192,58 +191,38 @@ private:
 
     uint32_t findMemoryType(
             uint32_t typeFilter,
-            VkMemoryPropertyFlags properties);
+            vk::MemoryPropertyFlags properties);
 
     VulkanWindow *window;
     vk::Device device;
-    //VkDevice device;
     vk::PhysicalDevice physicalDevice;
-    //VkPhysicalDevice physicalDevice;
     QVulkanDeviceFunctions *devFuncs;
     QVulkanFunctions *f;
 
     vk::UniqueBuffer vertexBuffer;
-    //VkBuffer vertexBuffer                       = VK_NULL_HANDLE;
     vk::UniqueDeviceMemory vertexBufferMemory;
-    //VkDeviceMemory vertexBufferMemory           = VK_NULL_HANDLE;
     vk::DescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
-    //VkDescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
     vk::UniqueDescriptorPool descriptorPool;
-    //VkDescriptorPool descriptorPool             = VK_NULL_HANDLE;
     vk::UniqueDescriptorSetLayout graphicsDescriptorSetLayout;
-    //VkDescriptorSetLayout graphicsDescriptorSetLayout = VK_NULL_HANDLE;
     vk::UniqueDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
-    //VkDescriptorSet graphicsDescriptorSet[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
     vk::UniquePipelineCache pipelineCache;
     vk::UniquePipelineLayout graphicsPipelineLayout;
     vk::UniquePipeline graphicsPipelineRGB;
     vk::UniquePipeline graphicsPipelineAlpha;
     vk::UniqueQueryPool queryPool;
-//    VkPipelineCache pipelineCache               = VK_NULL_HANDLE;
-//    VkPipelineLayout graphicsPipelineLayout     = VK_NULL_HANDLE;
-//    VkPipeline graphicsPipelineRGB              = VK_NULL_HANDLE;
-//    VkPipeline graphicsPipelineAlpha            = VK_NULL_HANDLE;
-//    VkQueryPool queryPool                       = VK_NULL_HANDLE;
 
     vk::UniqueSampler sampler;
-    //VkSampler sampler                           = VK_NULL_HANDLE;
 
     vk::UniqueImage loadImageStaging;
     vk::UniqueDeviceMemory loadImageStagingMem;
-//    VkImage loadImageStaging                    = VK_NULL_HANDLE;
-//    VkDeviceMemory loadImageStagingMem          = VK_NULL_HANDLE;
 
     vk::UniqueBuffer outputStagingBuffer;
     vk::UniqueDeviceMemory outputStagingBufferMemory;
-//    VkBuffer outputStagingBuffer                = VK_NULL_HANDLE;
-//    VkDeviceMemory outputStagingBufferMemory    = VK_NULL_HANDLE;
 
     vk::UniqueShaderModule noopShader;
     vk::UniquePipeline computePipelineNoop;
-//    VkShaderModule noopShader                   = VK_NULL_HANDLE;
-//    VkPipeline computePipelineNoop              = VK_NULL_HANDLE;
 
     bool texStagingPending = false;
 
@@ -259,7 +238,6 @@ private:
     QSize outputImageSize;
 
     const vk::ClearColorValue clearColor = std::array<float, 4> ({ 0.05f, 0.05f, 0.05f, 0.0f });
-    //VkClearColorValue clearColor = {{ 0.05f, 0.05f, 0.05f, 0.0f }};
 
     QMatrix4x4 projection;
     float rotation    = 0.0f;
@@ -285,14 +263,6 @@ private:
         vk::UniqueCommandBuffer     commandBufferImageSave;   // Command buffer for writing images to disk
         vk::UniqueFence             fence;
         uint32_t                    queueFamilyIndex;         // Family index of the graphics queue, used for barriers
-
-//        VkQueue                     computeQueue;
-//        VkCommandPool               computeCommandPool;
-//        VkCommandBuffer             commandBufferGeneric;     // Command buffer for all shaders except IO
-//        VkCommandBuffer             commandBufferImageLoad;   // Command buffer for loading images from disk
-//        VkCommandBuffer             commandBufferImageSave;   // Command buffer for writing images to disk
-//        VkFence                     fence;
-//        uint32_t                    queueFamilyIndex;         // Family index of the graphics queue, used for barriers
     };
 
     Compute                         compute;
@@ -300,10 +270,6 @@ private:
     vk::UniquePipeline              computePipeline;
     vk::UniqueDescriptorSetLayout   computeDescriptorSetLayoutGeneric;
     vk::UniqueDescriptorSet         computeDescriptorSetGeneric;
-//    VkPipelineLayout                computePipelineLayoutGeneric      = VK_NULL_HANDLE;
-//    VkPipeline                      computePipeline                   = VK_NULL_HANDLE;
-//    VkDescriptorSetLayout           computeDescriptorSetLayoutGeneric = VK_NULL_HANDLE;
-//    VkDescriptorSet                 computeDescriptorSetGeneric       = VK_NULL_HANDLE;
 
     std::shared_ptr<CsImage>        computeRenderTarget               = nullptr;
     std::shared_ptr<CsImage>        imageFromDisk                     = nullptr;
