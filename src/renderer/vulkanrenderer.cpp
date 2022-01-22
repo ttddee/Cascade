@@ -444,7 +444,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     //devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
     computeRenderTarget = std::shared_ptr<CsImage>(
-                new CsImage(window, &device, devFuncs, width, height));
+                new CsImage(window, &device, &physicalDevice, width, height));
 
     emit window->renderTargetHasBeenCreated(width, height);
 
@@ -454,14 +454,13 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 }
 
 void VulkanRenderer::createImageMemoryBarrier(
-        VkImageMemoryBarrier& barrier,
-        VkImageLayout targetLayout,
-        VkAccessFlags srcMask,
-        VkAccessFlags dstMask,
+        vk::ImageMemoryBarrier& barrier,
+        vk::ImageLayout targetLayout,
+        vk::AccessFlags srcMask,
+        vk::AccessFlags dstMask,
         CsImage& image)
 {
-    barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-    barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+    barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
     barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
 
     barrier.oldLayout       = image.getLayout();
@@ -469,13 +468,11 @@ void VulkanRenderer::createImageMemoryBarrier(
     barrier.newLayout       = targetLayout;
     barrier.srcAccessMask   = srcMask;
     barrier.dstAccessMask   = dstMask;
-    barrier.image           = image.getImage();
+    barrier.image           = *image.getImage();
 }
 
 bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
 {
-    CS_LOG_CONSOLE(path);
-
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
     bool ok = cpuImage->read(0, 0, 0, 4, true, TypeDesc::FLOAT);
     if (!ok)
@@ -501,7 +498,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     imageFromDisk = std::shared_ptr<CsImage>(new CsImage(
                                                  window,
                                                  &device,
-                                                 devFuncs,
+                                                 &physicalDevice,
                                                  cpuImage->xend(),
                                                  cpuImage->yend()));
 
@@ -510,27 +507,29 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     // Now we can either map and copy the image data directly, or have to go
     // through a staging buffer to copy and convert into the internal optimal
     // tiling format.
-    VkFormatProperties props;
-    f->vkGetPhysicalDeviceFormatProperties(window->physicalDevice(), globalImageFormat, &props);
-    const bool canSampleLinear = (props.linearTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
-    const bool canSampleOptimal = (props.optimalTilingFeatures & VK_FORMAT_FEATURE_SAMPLED_IMAGE_BIT);
+    vk::FormatProperties props = physicalDevice.getFormatProperties(globalImageFormat, props);
+    const bool canSampleLinear = (bool)(props.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
+    const bool canSampleOptimal = (bool)(props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
     if (!canSampleLinear && !canSampleOptimal) {
         CS_LOG_WARNING("Neither linear nor optimal image sampling is supported for image");
         return false;
     }
 
-    if (loadImageStaging) {
-        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
-        loadImageStaging = VK_NULL_HANDLE;
-    }
+//    if (loadImageStaging) {
+//        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
+//        loadImageStaging = VK_NULL_HANDLE;
+//    }
 
-    if (loadImageStagingMem) {
-        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
-        loadImageStagingMem = VK_NULL_HANDLE;
-    }
+//    if (loadImageStagingMem) {
+//        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
+//        loadImageStagingMem = VK_NULL_HANDLE;
+//    }
 
-    if (!createTextureImage(imageSize, &loadImageStaging, &loadImageStagingMem,
-                            VK_IMAGE_TILING_LINEAR, VK_IMAGE_USAGE_TRANSFER_SRC_BIT,
+    if (!createTextureImage(imageSize,
+                            loadImageStaging,
+                            loadImageStagingMem,
+                            vk::ImageTiling::eLinear,
+                            vk::ImageUsageFlagBits::eTransferSrc,
                             window->hostVisibleMemoryIndex()))
         return false;
 
@@ -547,25 +546,19 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
 
     texStagingPending = true;
 
-    VkImageViewCreateInfo viewInfo;
-    memset(&viewInfo, 0, sizeof(viewInfo));
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = imageFromDisk->getImage();
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = globalImageFormat;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
+    vk::ImageViewCreateInfo viewInfo({},
+                                     *imageFromDisk->getImage(),
+                                     vk::ImageViewType::e2D,
+                                     globalImageFormat,
+                                     {
+                                         vk::ComponentSwizzle::eR,
+                                         vk::ComponentSwizzle::eG,
+                                         vk::ComponentSwizzle::eB,
+                                         vk::ComponentSwizzle::eA
+                                     },
+                                     vk::ImageSubresourceRange({}, {}, 1, {}, 1));
 
-    VkResult err = devFuncs->vkCreateImageView(device, &viewInfo, nullptr, &imageFromDisk->getImageView());
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to create image view for texture: ");
-        CS_LOG_WARNING(QString::number(err));
-        return false;
-    }
+    imageFromDisk->getImageView() =  device.createImageViewUnique(viewInfo); // Um ok...?!
 
     loadImageSize = imageSize;
 
@@ -1143,105 +1136,72 @@ void VulkanRenderer::recordComputeCommandBufferImageLoad(
     devFuncs->vkEndCommandBuffer(compute.commandBufferImageLoad);
 }
 
-bool VulkanRenderer::createTextureImage(
-                const QSize &size,
-                VkImage *image,
-                VkDeviceMemory *mem,
-                VkImageTiling tiling,
-                VkImageUsageFlags usage,
+bool VulkanRenderer::createTextureImage(const QSize &size,
+                vk::UniqueImage &image,
+                vk::UniqueDeviceMemory &mem,
+                vk::ImageTiling tiling,
+                vk::ImageUsageFlags usage,
                 uint32_t memIndex)
 {
-    VkImageCreateInfo imageInfo;
-    memset(&imageInfo, 0, sizeof(imageInfo));
-    imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imageInfo.imageType = VK_IMAGE_TYPE_2D;
-    imageInfo.format = globalImageFormat;
-    imageInfo.extent.width = size.width();
-    imageInfo.extent.height = size.height();
-    imageInfo.extent.depth = 1;
-    imageInfo.mipLevels = 1;
-    imageInfo.arrayLayers = 1;
-    imageInfo.samples = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.tiling = tiling;
-    imageInfo.usage = usage;
-    imageInfo.initialLayout = VK_IMAGE_LAYOUT_PREINITIALIZED;
+    vk::ImageCreateInfo imageInfo({},
+                                  vk::ImageType::e2D,
+                                  globalImageFormat,
+                                  { (uint32_t)size.width(), (uint32_t)size.height(), 1 },
+                                  1,
+                                  1,
+                                  vk::SampleCountFlagBits::e1,
+                                  tiling,
+                                  usage);
+    image = device.createImageUnique(imageInfo);
 
-    VkResult err = devFuncs->vkCreateImage(device, &imageInfo, nullptr, image);
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to create linear image for texture:");
-        CS_LOG_WARNING(QString::number(err));
-        return false;
-    }
 
-    VkMemoryRequirements memReq;
-    devFuncs->vkGetImageMemoryRequirements(device, *image, &memReq);
+    vk::MemoryRequirements memReq = device.getImageMemoryRequirements(*image, memReq);
 
-    if (!(memReq.memoryTypeBits & (1 << memIndex))) {
-        VkPhysicalDeviceMemoryProperties physDevMemProps;
-        window->vulkanInstance()->functions()->vkGetPhysicalDeviceMemoryProperties(
-                    window->physicalDevice(), &physDevMemProps);
-        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i) {
+    if (!(memReq.memoryTypeBits & (1 << memIndex)))
+    {
+        vk::PhysicalDeviceMemoryProperties physDevMemProps = physicalDevice.getMemoryProperties();
+        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
+        {
             if (!(memReq.memoryTypeBits & (1 << i)))
                 continue;
             memIndex = i;
         }
     }
 
-    VkMemoryAllocateInfo allocInfo = {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        memIndex
-    };
+    vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
+
     CS_LOG_INFO("Allocating texture image:");
     CS_LOG_INFO(QString::number(uint32_t(memReq.size)) + " bytes");
+    mem = device.allocateMemoryUnique(allocInfo);
 
-    err = devFuncs->vkAllocateMemory(device, &allocInfo, nullptr, mem);
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to allocate memory for image:");
-        CS_LOG_WARNING(QString::number(err));
-        return false;
-    }
-
-    err = devFuncs->vkBindImageMemory(device, *image, *mem, 0);
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to bind memory for image:");
-        CS_LOG_WARNING(QString::number(err));
-        return false;
-    }
+    device.bindImageMemory(*image, *mem, 0);
 
     return true;
 }
 
-bool VulkanRenderer::writeLinearImage(
-        float* imgStart,
+bool VulkanRenderer::writeLinearImage(float* imgStart,
         QSize imgSize,
-        VkImage image,
-        VkDeviceMemory memory)
+        vk::UniqueImage &image,
+        vk::UniqueDeviceMemory &memory)
 {
-    VkImageSubresource subres = {
-        VK_IMAGE_ASPECT_COLOR_BIT,
-        0, // mip level
-        0
-    };
-    VkSubresourceLayout layout;
-    devFuncs->vkGetImageSubresourceLayout(device, image, &subres, &layout);
+    vk::ImageSubresource subres(
+                vk::ImageAspectFlagBits::eColor,
+                0, // mip level
+                0);
+
+    vk::SubresourceLayout layout = device.getImageSubresourceLayout(*image, subres);
 
     float *p;
-    VkResult err = devFuncs->vkMapMemory(
-                device,
-                memory,
-                layout.offset,
-                layout.size,
-                0,
-                reinterpret_cast<void **>(&p));
-    if (err != VK_SUCCESS) {
-        CS_LOG_WARNING("Failed to map memory for linear image:");
-        CS_LOG_WARNING(QString::number(err));
+    vk::Result err = device.mapMemory(*memory,
+                                      layout.offset,
+                                      layout.size,
+                                      {},
+                                      reinterpret_cast<void **>(&p));
+    if (err != vk::Result::eSuccess) {
+        CS_LOG_WARNING("Failed to map memory for linear image.");
         return false;
     }
 
-    //startTimer();
     int pad = (layout.rowPitch - imgSize.width() * 16) / 4;
 
     // TODO: Parallelize this
@@ -1253,14 +1213,8 @@ bool VulkanRenderer::writeLinearImage(
         pixels += imgSize.width() * 4;
         p += imgSize.width() * 4 + pad;
     }
-    //stopTimerAndPrint("Sequential");
 
-//    startTimer();
-//    float* pixels = imgStart;
-//    parallelArrayCopy(pixels, p, imgSize.width(), imgSize.height());
-//    stopTimerAndPrint("Parallel");
-
-    devFuncs->vkUnmapMemory(device, memory);
+    device.unmapMemory(*memory);
 
     return true;
 }

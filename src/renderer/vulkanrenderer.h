@@ -109,16 +109,16 @@ private:
             const int colorSpace);
     bool createTextureImage(
             const QSize &size,
-            VkImage *image,
-            VkDeviceMemory *mem,
-            VkImageTiling tiling,
-            VkImageUsageFlags usage,
+            vk::UniqueImage& image,
+            vk::UniqueDeviceMemory& mem,
+            vk::ImageTiling tiling,
+            vk::ImageUsageFlags usage,
             uint32_t memIndex);
     bool writeLinearImage(
             float* imgStart,
             QSize imgSize,
-            VkImage image,
-            VkDeviceMemory memory);
+            vk::UniqueImage& image,
+            vk::UniqueDeviceMemory& memory);
 
     // Compute setup
     void createComputePipelineLayout();
@@ -135,10 +135,10 @@ private:
             uint32_t height);
 
     void createImageMemoryBarrier(
-            VkImageMemoryBarrier& barrier,
-            VkImageLayout targetLayout,
-            VkAccessFlags srcMask,
-            VkAccessFlags dstMask,
+            vk::ImageMemoryBarrier& barrier,
+            vk::ImageLayout targetLayout,
+            vk::AccessFlags srcMask,
+            vk::AccessFlags dstMask,
             CsImage& image);
 
     void createComputeDescriptors();
