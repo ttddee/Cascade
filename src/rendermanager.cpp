@@ -122,12 +122,12 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
     if (node->canBeRendered())
     {
         auto upstream = node->getUpstreamNodeBack();
-        auto image = upstream->cachedImage;
+        auto image = upstream->getCachedImage();
         if(image)
         {
             auto parts = node->getAllPropertyValues().split(",");
 
-            if(renderer->saveImageToDisk(*image, path, parts.last().toInt()))
+            if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
             {
                 QMessageBox messageBox;
                 messageBox.information(0,"Success","File saved successfully.");
@@ -202,15 +202,15 @@ void RenderManager::renderNode(NodeBase *node)
     }
     if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
-        std::shared_ptr<CsImage> inputImageBack = nullptr;
-        std::shared_ptr<CsImage> inputImageFront = nullptr;
+        CsImage* inputImageBack = nullptr;
+        CsImage* inputImageFront = nullptr;
 
-        inputImageBack = node->getUpstreamNodeBack()->cachedImage;
+        inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
 
-        if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->cachedImage)
+        if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
         {
             std::cout << "Rendering two inputs" << std::endl;
-            inputImageFront = node->getUpstreamNodeFront()->cachedImage;
+            inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
             renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }
         else if (inputImageBack)

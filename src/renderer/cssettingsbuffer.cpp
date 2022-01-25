@@ -28,35 +28,30 @@
 #include "../log.h"
 
 CsSettingsBuffer::CsSettingsBuffer(
-        VkDevice* dev,
-        VkPhysicalDevice* physicalDevice,
-        QVulkanDeviceFunctions* df,
-        QVulkanFunctions* f)
+        vk::Device* d,
+        vk::PhysicalDevice* pd)
 {
-    device = dev;
-    devFuncs = df;
+    device = d;
+    physicalDevice = pd;
 
-    VkDeviceSize size = sizeof(float) * 128;
+    vk::DeviceSize size = sizeof(float) * 128;
 
-    VkBufferCreateInfo bufferInfo{};
-    bufferInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-    bufferInfo.size = size;
-    bufferInfo.usage = VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT;
-    bufferInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+    vk::BufferCreateInfo bufferInfo(
+                {},
+                size,
+                vk::BufferUsageFlagBits::eTransferDst |
+                vk::BufferUsageFlagBits::eUniformBuffer,
+                vk::SharingMode::eExclusive);
 
-    if (devFuncs->vkCreateBuffer(*device, &bufferInfo, nullptr, &buffer) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to create buffer!");
-    }
+    buffer = device->createBufferUnique(bufferInfo);
 
-    VkMemoryRequirements memRequirements;
-    devFuncs->vkGetBufferMemoryRequirements(*device, buffer, &memRequirements);
+    vk::MemoryRequirements memRequirements = device->getBufferMemoryRequirements(*buffer);
 
-    VkMemoryPropertyFlags properties = VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT |
-                                       VK_MEMORY_PROPERTY_HOST_COHERENT_BIT;
+    vk::MemoryPropertyFlags properties =
+            vk::MemoryPropertyFlagBits::eHostVisible |
+            vk::MemoryPropertyFlagBits::eHostCoherent;
 
-    VkPhysicalDeviceMemoryProperties memProperties;
-    f->vkGetPhysicalDeviceMemoryProperties(*physicalDevice, &memProperties);
+    vk::PhysicalDeviceMemoryProperties memProperties = physicalDevice->getMemoryProperties();
 
     uint32_t memTypeIndex = 0;
 
@@ -69,29 +64,20 @@ CsSettingsBuffer::CsSettingsBuffer(
         }
     }
 
-    VkMemoryAllocateInfo allocInfo{};
-    allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-    allocInfo.allocationSize = memRequirements.size;
-    allocInfo.memoryTypeIndex = memTypeIndex;
+    vk::MemoryAllocateInfo allocInfo(
+                memRequirements.size,
+                memTypeIndex);
 
-    if (devFuncs->vkAllocateMemory(*device, &allocInfo, nullptr, &memory) != VK_SUCCESS)
-    {
-        throw std::runtime_error("Failed to allocate buffer memory!");
-    }
+    memory = device->allocateMemoryUnique(allocInfo);
 
-    devFuncs->vkBindBufferMemory(*device, buffer, memory, 0);
+    device->bindBufferMemory(*buffer, *memory, 0);
 
-    VkResult err = devFuncs->vkMapMemory(
-                    *device,
-                    memory,
-                    0,
-                    VK_WHOLE_SIZE,
-                    0,
-                    reinterpret_cast<void **>(&pBufferStart));
-    if (err != VK_SUCCESS)
-        {
-            CS_LOG_WARNING("Failed to map memory for staging buffer.");
-        }
+    device->mapMemory(
+                *memory,
+                0,
+                VK_WHOLE_SIZE,
+                {},
+                reinterpret_cast<void **>(&pBufferStart));
 }
 
 void CsSettingsBuffer::fillBuffer(const QString &s)
@@ -125,27 +111,27 @@ void CsSettingsBuffer::incrementLastValue()
     *pBuffer = *pBuffer + 1.0;
 }
 
-VkBuffer* CsSettingsBuffer::getBuffer()
+vk::UniqueBuffer& CsSettingsBuffer::getBuffer()
 {
-    return &buffer;
+    return buffer;
 }
 
-VkDeviceMemory* CsSettingsBuffer::getMemory()
+vk::UniqueDeviceMemory& CsSettingsBuffer::getMemory()
 {
-    return &memory;
+    return memory;
 }
 
 CsSettingsBuffer::~CsSettingsBuffer()
 {
-    devFuncs->vkUnmapMemory(*device, memory);
+//    devFuncs->vkUnmapMemory(*device, memory);
 
-    if (buffer) {
-        devFuncs->vkDestroyBuffer(*device, buffer, nullptr);
-        buffer = VK_NULL_HANDLE;
-    }
+//    if (buffer) {
+//        devFuncs->vkDestroyBuffer(*device, buffer, nullptr);
+//        buffer = VK_NULL_HANDLE;
+//    }
 
-    if (memory) {
-        devFuncs->vkFreeMemory(*device, memory, nullptr);
-        memory = VK_NULL_HANDLE;
-    }
+//    if (memory) {
+//        devFuncs->vkFreeMemory(*device, memory, nullptr);
+//        memory = VK_NULL_HANDLE;
+//    }
 }

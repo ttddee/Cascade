@@ -38,11 +38,12 @@ public:
             const int w = 100,
             const int h = 100);
 
-    vk::UniqueImage& getImage();
-    vk::UniqueImageView& getImageView();
-    vk::UniqueDeviceMemory& getMemory();
+    const vk::UniqueImage& getImage() const;
+    const vk::UniqueImageView& getImageView() const;
+    void setImageView(vk::UniqueImageView v);
+    const vk::UniqueDeviceMemory& getMemory() const;
 
-    vk::ImageLayout getLayout() const;
+    const vk::ImageLayout getLayout() const;
     void setLayout(const vk::ImageLayout& layout);
 
     int getWidth() const;

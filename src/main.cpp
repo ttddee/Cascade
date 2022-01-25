@@ -27,6 +27,8 @@
 
 #include "log.h"
 
+VULKAN_HPP_DEFAULT_DISPATCH_LOADER_DYNAMIC_STORAGE;
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

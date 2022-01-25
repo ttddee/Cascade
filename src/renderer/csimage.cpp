@@ -51,7 +51,14 @@ CsImage::CsImage(
                                   {},
                                   vk::ImageLayout::eUndefined);
 
-    image = device->createImageUnique(imageInfo);
+    try
+    {
+        image = device->createImageUnique(imageInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not create unique image for CsImage.");
+    }
 
     //Get how much memory we need and how it should aligned
     vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
@@ -59,9 +66,11 @@ CsImage::CsImage(
     //The render target will be on the GPU
     uint32_t memIndex = window->deviceLocalMemoryIndex();
 
-    if (!(memReq.memoryTypeBits & (1 << memIndex))) {
+    if (!(memReq.memoryTypeBits & (1 << memIndex)))
+    {
         vk::PhysicalDeviceMemoryProperties physDevMemProps = physicalDevice->getMemoryProperties();
-        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i) {
+        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
+        {
             if (!(memReq.memoryTypeBits & (1 << i)))
                 continue;
             memIndex = i;
@@ -70,43 +79,72 @@ CsImage::CsImage(
 
     vk::MemoryAllocateInfo allocInfo(memReq.size,
                                      memIndex);
-    memory = device->allocateMemoryUnique(allocInfo);
+    try
+    {
+        memory = device->allocateMemoryUnique(allocInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not allocate memory for CsImage.");
+    }
 
     //Associate the image with this chunk of memory
-    device->bindImageMemory(*image, *memory, 0);
+    try
+    {
+        device->bindImageMemory(*image, *memory, 0);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not bind memory for CsImage.");
+    }
 
-    vk::ImageViewCreateInfo viewInfo({},
-                                     *image,
-                                     vk::ImageViewType::e2D,
-                                     vk::Format::eR32G32B32A32Sfloat,
-                                     vk::ComponentMapping(vk::ComponentSwizzle::eR,
-                                                          vk::ComponentSwizzle::eG,
-                                                          vk::ComponentSwizzle::eB,
-                                                          vk::ComponentSwizzle::eA),
-                                     vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor,
-                                                               {},
-                                                               1,
-                                                               0,
-                                                               1));
-    view = device->createImageViewUnique(viewInfo);
+
+    vk::ImageViewCreateInfo viewInfo(
+                {},
+                *image,
+                vk::ImageViewType::e2D,
+                vk::Format::eR32G32B32A32Sfloat,
+                vk::ComponentMapping(vk::ComponentSwizzle::eR,
+                                     vk::ComponentSwizzle::eG,
+                                     vk::ComponentSwizzle::eB,
+                                     vk::ComponentSwizzle::eA),
+                vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor,
+                                          {},
+                                          1,
+                                          0,
+                                          1));
+
+    try
+    {
+        view = device->createImageViewUnique(viewInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not create image view for CsImage.");
+    }
 }
 
-vk::UniqueImage& CsImage::getImage()
+const vk::UniqueImage& CsImage::getImage() const
 {
     return image;
 }
 
-vk::UniqueImageView& CsImage::getImageView()
+const vk::UniqueImageView& CsImage::getImageView() const
 {
     return view;
 }
 
-vk::UniqueDeviceMemory& CsImage::getMemory()
+void CsImage::setImageView(vk::UniqueImageView v)
+{
+    view = std::move(v);
+}
+
+const vk::UniqueDeviceMemory& CsImage::getMemory() const
 {
     return memory;
 }
 
-vk::ImageLayout CsImage::getLayout() const
+const vk::ImageLayout CsImage::getLayout() const
 {
     return currentLayout;
 }
@@ -128,10 +166,10 @@ int CsImage::getHeight() const
 
 void CsImage::destroy()
 {
-    CS_LOG_INFO("Destroying image.");
+
 }
 
 CsImage::~CsImage()
 {
-    destroy();
+    CS_LOG_INFO("Destroying image.");
 }

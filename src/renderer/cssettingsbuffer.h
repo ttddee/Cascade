@@ -24,30 +24,30 @@
 
 #include <vulkan/vulkan.h>
 
+#include "vulkan/vulkan.hpp"
+
 class CsSettingsBuffer
 {
 public:
     CsSettingsBuffer(
-            VkDevice* dev,
-            VkPhysicalDevice* physicalDevice,
-            QVulkanDeviceFunctions* df,
-            QVulkanFunctions* f);
+            vk::Device* d,
+            vk::PhysicalDevice* pd);
 
     void fillBuffer(const QString& s);
     void appendValue(float f);
     void incrementLastValue();
 
-    VkBuffer* getBuffer();
-    VkDeviceMemory* getMemory();
+    vk::UniqueBuffer& getBuffer();
+    vk::UniqueDeviceMemory& getMemory();
 
     ~CsSettingsBuffer();
 
 private:
-    VkBuffer buffer;
-    VkDeviceMemory memory;
+    vk::UniqueBuffer buffer;
+    vk::UniqueDeviceMemory memory;
 
-    VkDevice* device;
-    QVulkanDeviceFunctions* devFuncs;
+    vk::Device* device;
+    vk::PhysicalDevice* physicalDevice;
 
     float* pBufferStart;
     int bufferSize;
