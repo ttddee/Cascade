@@ -39,8 +39,10 @@ CsSettingsBuffer::CsSettingsBuffer(
     vk::BufferCreateInfo bufferInfo(
                 {},
                 size,
-                vk::BufferUsageFlagBits::eTransferDst |
-                vk::BufferUsageFlagBits::eUniformBuffer,
+                vk::BufferUsageFlags(
+                    vk::BufferUsageFlagBits::eUniformBuffer |
+                    vk::BufferUsageFlagBits::eTransferDst
+                    ),
                 vk::SharingMode::eExclusive);
 
     buffer = device->createBufferUnique(bufferInfo);

@@ -125,13 +125,14 @@ void VulkanRenderer::createVertexBuffer()
 
     vk::BufferCreateInfo bufferInfo({},
                          vertexAllocSize + concurrentFrameCount * uniformAllocSize,
-                         vk::BufferUsageFlagBits::eVertexBuffer);
+                         vk::BufferUsageFlags(
+                                        vk::BufferUsageFlagBits::eVertexBuffer |
+                                        vk::BufferUsageFlagBits::eUniformBuffer));
     vertexBuffer = device.createBufferUnique(bufferInfo);
 
     vk::MemoryRequirements memReq = device.getBufferMemoryRequirements(*vertexBuffer);
 
-    vk::MemoryAllocateInfo memAllocInfo(memReq.size,
-                                        window->hostVisibleMemoryIndex());
+    vk::MemoryAllocateInfo memAllocInfo(memReq.size, window->hostVisibleMemoryIndex());
 
     vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo);
 
@@ -183,17 +184,18 @@ void VulkanRenderer::createSampler()
 void VulkanRenderer::createDescriptorPool()
 {
     // Create descriptor pool
-    vk::DescriptorPoolSize descPoolSizes[4] = {
+    std::vector<vk::DescriptorPoolSize> descPoolSizes = {
         { vk::DescriptorType::eUniformBuffer,         3 * uint32_t(concurrentFrameCount) },
         { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
         { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
         { vk::DescriptorType::eStorageImage,          6 * uint32_t(concurrentFrameCount) }
     };
 
-    vk::DescriptorPoolCreateInfo descPoolInfo({},
-                                              6,
-                                              4,
-                                              descPoolSizes);
+    vk::DescriptorPoolCreateInfo descPoolInfo(
+                {},
+                6,
+                4,
+                descPoolSizes.data());
 
     descriptorPool = device.createDescriptorPoolUnique(descPoolInfo);
 }
@@ -201,27 +203,25 @@ void VulkanRenderer::createDescriptorPool()
 void VulkanRenderer::createGraphicsDescriptors()
 {
     // Create DescriptorSetLayout
-    vk::DescriptorSetLayoutBinding layoutBinding[2] = {
+    std::vector<vk::DescriptorSetLayoutBinding> layoutBinding = {
         {
             0, // binding
             vk::DescriptorType::eUniformBuffer,
             1, // descriptorCount
-            vk::ShaderStageFlagBits::eVertex,
-            nullptr
+            vk::ShaderStageFlagBits::eVertex
         },
         {
             1, // binding
             vk::DescriptorType::eCombinedImageSampler,
             1, // descriptorCount
-            vk::ShaderStageFlagBits::eFragment,
-            nullptr
+            vk::ShaderStageFlagBits::eFragment
         }
     };
 
     vk::DescriptorSetLayoutCreateInfo descLayoutInfo(
                 {},
                 2, // bindingCount
-                layoutBinding);
+                layoutBinding.data());
 
     graphicsDescriptorSetLayout = device.createDescriptorSetLayoutUnique(descLayoutInfo);
 }
@@ -229,8 +229,7 @@ void VulkanRenderer::createGraphicsDescriptors()
 void VulkanRenderer::createGraphicsPipelineCache()
 {
     // Pipeline cache
-    vk::PipelineCacheCreateInfo pipelineCacheInfo({},
-                                                  {});
+    vk::PipelineCacheCreateInfo pipelineCacheInfo({}, {});
 
     pipelineCache = device.createPipelineCacheUnique(pipelineCacheInfo);
 }
@@ -242,11 +241,12 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     pushConstantRange.offset                    = 0;
     pushConstantRange.size                      = sizeof(viewerPushConstants);
 
-    vk::PipelineLayoutCreateInfo pipelineLayoutInfo({},
-                                                    1,
-                                                    &(*graphicsDescriptorSetLayout),
-                                                    1,
-                                                    &pushConstantRange);
+    vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
+                {},
+                1,
+                &(*graphicsDescriptorSetLayout),
+                1,
+                &pushConstantRange);
 
     graphicsPipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo);
 }
@@ -256,18 +256,23 @@ void VulkanRenderer::createBuffer(
         vk::UniqueDeviceMemory& bufferMemory,
         vk::DeviceSize& size)
 {
-    vk::BufferCreateInfo bufferInfo({},
-                                    size,
-                                    vk::BufferUsageFlagBits::eTransferDst | vk::BufferUsageFlagBits::eUniformBuffer,
-                                    vk::SharingMode::eExclusive);
+    vk::BufferCreateInfo bufferInfo(
+                {},
+                size,
+                vk::BufferUsageFlags(
+                    vk::BufferUsageFlagBits::eTransferDst |
+                    vk::BufferUsageFlagBits::eUniformBuffer),
+                vk::SharingMode::eExclusive);
 
     buffer = device.createBufferUnique(bufferInfo);
 
     vk::MemoryRequirements memRequirements = device.getBufferMemoryRequirements(*buffer);
 
-    uint32_t memoryType = findMemoryType(memRequirements.memoryTypeBits,
-                                         vk::MemoryPropertyFlagBits::eHostVisible |
-                                         vk::MemoryPropertyFlagBits::eHostCoherent);
+    uint32_t memoryType = findMemoryType(
+                memRequirements.memoryTypeBits,
+                vk::MemoryPropertyFlags(
+                    vk::MemoryPropertyFlagBits::eHostVisible |
+                    vk::MemoryPropertyFlagBits::eHostCoherent));
 
     vk::MemoryAllocateInfo allocInfo(memRequirements.size,
                                      memoryType);
@@ -295,7 +300,7 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
     // Graphics pipeline
     vk::GraphicsPipelineCreateInfo pipelineInfo;
 
-    vk::PipelineShaderStageCreateInfo shaderStages[2] =
+    std::vector<vk::PipelineShaderStageCreateInfo> shaderStages =
     {
         {
             {},
@@ -311,14 +316,15 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
         }
     };
     pipelineInfo.stageCount = 2;
-    pipelineInfo.pStages = shaderStages;
+    pipelineInfo.pStages = shaderStages.data();
 
     // Vertex binding
-    vk::VertexInputBindingDescription vertexBindingDesc(0,
-                                                        5 * sizeof(float),
-                                                        vk::VertexInputRate::eVertex);
+    vk::VertexInputBindingDescription vertexBindingDesc(
+                0,
+                5 * sizeof(float),
+                vk::VertexInputRate::eVertex);
 
-    vk::VertexInputAttributeDescription vertexAttrDesc[] =
+    std::vector<vk::VertexInputAttributeDescription> vertexAttrDesc =
     {
         { // position
             0, // location
@@ -334,11 +340,12 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
         }
     };
 
-    vk::PipelineVertexInputStateCreateInfo vertexInputInfo({},
-                                                           1,
-                                                           &vertexBindingDesc,
-                                                           2,
-                                                           vertexAttrDesc);
+    vk::PipelineVertexInputStateCreateInfo vertexInputInfo(
+                {},
+                1,
+                &vertexBindingDesc,
+                2,
+                vertexAttrDesc.data());
 
     pipelineInfo.pVertexInputState = &vertexInputInfo;
 
@@ -380,7 +387,6 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
                 true,
                 vk::CompareOp::eLessOrEqual);
     pipelineInfo.pDepthStencilState = &ds;
-
 
     // assume pre-multiplied alpha, blend, write out all of rgba
     vk::PipelineColorBlendAttachmentState att(
@@ -424,9 +430,10 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
     QByteArray blob = file.readAll();
     file.close();
 
-    vk::ShaderModuleCreateInfo shaderInfo({},
-                                          blob.size(),
-                                          reinterpret_cast<const uint32_t *>(blob.constData()));
+    vk::ShaderModuleCreateInfo shaderInfo(
+                {},
+                blob.size(),
+                reinterpret_cast<const uint32_t *>(blob.constData()));
 
     vk::UniqueShaderModule shaderModule = device.createShaderModuleUnique(shaderInfo);
 
@@ -448,8 +455,6 @@ void VulkanRenderer::loadShadersFromDisk()
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 {
     // Previous image will be destroyed, so we wait here
-    //device.waitIdle();
-    //devFuncs->vkQueueWaitIdle(compute.computeQueue);
     compute.computeQueue.waitIdle();
 
     try
@@ -470,25 +475,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     return true;
 }
 
-void VulkanRenderer::createImageMemoryBarrier(
-        vk::ImageMemoryBarrier& barrier,
-        vk::ImageLayout targetLayout,
-        vk::AccessFlags srcMask,
-        vk::AccessFlags dstMask,
-        CsImage* const image)
-{
-    barrier.subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-    barrier.subresourceRange.levelCount = barrier.subresourceRange.layerCount = 1;
-
-    barrier.oldLayout       = image->getLayout();
-    image->setLayout(targetLayout);
-    barrier.newLayout       = targetLayout;
-    barrier.srcAccessMask   = srcMask;
-    barrier.dstAccessMask   = dstMask;
-    barrier.image           = *image->getImage();
-}
-
-bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorSpace)
+bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpace)
 {
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
     bool ok = cpuImage->read(0, 0, 0, 4, true, TypeDesc::FLOAT);
@@ -501,7 +488,7 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     // Add alpha channel if it doesn't exist
     if (cpuImage->nchannels() == 3)
     {
-        int channelorder[] = { 0, 1, 2, -1 /*use a float value*/ };
+        int channelorder[] = { 0, 1, 2, -1 };
         float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
         std::string channelnames[] = { "R", "G", "B", "A" };
 
@@ -512,6 +499,8 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
+    // The image we are going to copy into
+    // TODO: We can skip this and copy straight into cache
     imageFromDisk = std::unique_ptr<CsImage>(
                 new CsImage(window,
                             &device,
@@ -532,30 +521,19 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
         return false;
     }
 
-//    if (loadImageStaging) {
-//        devFuncs->vkDestroyImage(device, loadImageStaging, nullptr);
-//        loadImageStaging = VK_NULL_HANDLE;
-//    }
-
-//    if (loadImageStagingMem) {
-//        devFuncs->vkFreeMemory(device, loadImageStagingMem, nullptr);
-//        loadImageStagingMem = VK_NULL_HANDLE;
-//    }
-
-    if (!createTextureImage(
-                imageSize,
-                loadImageStaging,
-                loadImageStagingMem,
-                vk::ImageTiling::eLinear,
-                vk::ImageUsageFlagBits::eTransferSrc,
-                window->hostVisibleMemoryIndex()))
-        return false;
+    // The image that gets the data from the CPU
+    loadImageStaging = std::unique_ptr<CsImage>(new CsImage(
+                                                    window,
+                                                    &device,
+                                                    &physicalDevice,
+                                                    cpuImage->xend(),
+                                                    cpuImage->yend(),
+                                                    true));
 
     if (!writeLinearImage(
                 static_cast<float*>(cpuImage->localpixels()),
                 QSize(cpuImage->xend(), cpuImage->yend()),
-                loadImageStaging,
-                loadImageStagingMem))
+                loadImageStaging))
     {
         CS_LOG_WARNING("Failed to write linear image");
         CS_LOG_CONSOLE("Failed to write linear image");
@@ -563,21 +541,6 @@ bool VulkanRenderer::createTextureFromFile(const QString &path, const int colorS
     }
 
     texStagingPending = true;
-
-    vk::ImageViewCreateInfo viewInfo(
-                {},
-                *imageFromDisk->getImage(),
-                vk::ImageViewType::e2D,
-                globalImageFormat,
-                {
-                    vk::ComponentSwizzle::eR,
-                    vk::ComponentSwizzle::eG,
-                    vk::ComponentSwizzle::eB,
-                    vk::ComponentSwizzle::eA
-                },
-                vk::ImageSubresourceRange({}, {}, 1, {}, 1));
-
-    imageFromDisk->setImageView(device.createImageViewUnique(viewInfo));
 
     loadImageSize = imageSize;
 
@@ -895,9 +858,9 @@ void VulkanRenderer::createComputeCommandBuffers()
     std::vector<vk::UniqueCommandBuffer> buffers = device.allocateCommandBuffersUnique(
                 commandBufferAllocateInfo);
 
-    *compute.commandBufferImageLoad = *buffers[0];
-    *compute.commandBufferGeneric = *buffers[1];
-    *compute.commandBufferImageSave = *buffers[2];
+    compute.commandBufferImageLoad = std::move(buffers.at(0));
+    compute.commandBufferGeneric = std::move(buffers.at(1));
+    compute.commandBufferImageSave = std::move(buffers.at(2));
 
     // Fence for compute CB sync
     vk::FenceCreateInfo fenceCreateInfo(
@@ -907,50 +870,21 @@ void VulkanRenderer::createComputeCommandBuffers()
 }
 
 void VulkanRenderer::recordComputeCommandBufferImageLoad(
-        const CsImage* const outputImage)
+        CsImage* const outputImage)
 {
-    device.waitIdle();
+    compute.computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
     compute.commandBufferImageLoad->begin(cmdBufferBeginInfo);
 
-    vk::ImageMemoryBarrier barrier(
-                vk::AccessFlagBits::eHostWrite,
-                vk::AccessFlagBits::eTransferRead,
-                vk::ImageLayout::ePreinitialized,
-                vk::ImageLayout::eTransferSrcOptimal,
-                {},
-                {},
-                *loadImageStaging,
-                vk::ImageSubresourceRange
-                {
-                    vk::ImageAspectFlagBits::eColor,
-                    0,
-                    1,
-                    1
-                });
+    loadImageStaging->transitionLayoutTo(
+                compute.commandBufferImageLoad,
+                vk::ImageLayout::eTransferSrcOptimal);
 
-    compute.commandBufferImageLoad->pipelineBarrier(
-                vk::PipelineStageFlagBits::eHost,
-                vk::PipelineStageFlagBits::eTransfer,
-                {},
-                {},
-                {},
-                barrier);
-
-    barrier.oldLayout       = vk::ImageLayout::eUndefined;
-    barrier.newLayout       = vk::ImageLayout::eTransferDstOptimal;
-    barrier.dstAccessMask   = vk::AccessFlagBits::eTransferWrite;
-    barrier.image           = *imageFromDisk->getImage();
-
-    compute.commandBufferImageLoad->pipelineBarrier(
-                vk::PipelineStageFlagBits::eTopOfPipe,
-                vk::PipelineStageFlagBits::eTransfer,
-                {},
-                {},
-                {},
-                barrier);
+    imageFromDisk->transitionLayoutTo(
+                compute.commandBufferImageLoad,
+                vk::ImageLayout::eTransferDstOptimal);
 
     vk::ImageCopy copyInfo;
     copyInfo.srcSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
@@ -962,41 +896,20 @@ void VulkanRenderer::recordComputeCommandBufferImageLoad(
     copyInfo.extent.depth               = 1;
 
     compute.commandBufferImageLoad->copyImage(
-                *loadImageStaging,
+                *loadImageStaging->getImage(),
                 vk::ImageLayout::eTransferSrcOptimal,
                 *imageFromDisk->getImage(),
                 vk::ImageLayout::eTransferDstOptimal,
                 1,
                 &copyInfo);
-    {
-        barrier.oldLayout     = vk::ImageLayout::eTransferDstOptimal;
-        barrier.newLayout     = vk::ImageLayout::eGeneral;
-        barrier.srcAccessMask = vk::AccessFlagBits::eShaderWrite;
-        barrier.dstAccessMask = vk::AccessFlagBits::eShaderRead;
-        barrier.image         = *imageFromDisk->getImage();
 
-        compute.commandBufferImageLoad->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTransfer,
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
+    imageFromDisk->transitionLayoutTo(
+                compute.commandBufferImageLoad,
+                vk::ImageLayout::eGeneral);
 
-        barrier.oldLayout     = vk::ImageLayout::eUndefined;
-        barrier.newLayout     = vk::ImageLayout::eGeneral;
-        barrier.srcAccessMask = vk::AccessFlagBits::eShaderRead;
-        barrier.dstAccessMask = vk::AccessFlagBits::eShaderWrite;
-        barrier.image         = *outputImage->getImage();
-
-        compute.commandBufferImageLoad->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
-    }
+    outputImage->transitionLayoutTo(
+                compute.commandBufferImageLoad,
+                vk::ImageLayout::eGeneral);
 
     compute.commandBufferImageLoad->bindPipeline(
                 vk::PipelineBindPoint::eCompute,
@@ -1011,96 +924,28 @@ void VulkanRenderer::recordComputeCommandBufferImageLoad(
                 cpuImage->xend() / 16 + 1,
                 cpuImage->yend() / 16 + 1,
                 1);
-    {
-        vk::ImageMemoryBarrier barrier[2];
 
-        barrier[0].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-        barrier[0].subresourceRange.levelCount = barrier[0].subresourceRange.layerCount = 1;
+    outputImage->transitionLayoutTo(
+                compute.commandBufferImageLoad,
+                vk::ImageLayout::eShaderReadOnlyOptimal);
 
-        barrier[0].oldLayout       = vk::ImageLayout::eGeneral;
-        barrier[0].newLayout       = vk::ImageLayout::eGeneral;
-        barrier[0].srcAccessMask   = {};
-        barrier[0].dstAccessMask   = {};
-        barrier[0].image           = *imageFromDisk->getImage();
-
-        barrier[1].subresourceRange.aspectMask = vk::ImageAspectFlagBits::eColor;
-        barrier[1].subresourceRange.levelCount = barrier[1].subresourceRange.layerCount = 1;
-
-        barrier[1].oldLayout       = vk::ImageLayout::eGeneral;
-        barrier[1].newLayout       = vk::ImageLayout::eShaderReadOnlyOptimal;
-        barrier[1].srcAccessMask   = {};
-        barrier[1].dstAccessMask   = {};
-        barrier[1].image           = *outputImage->getImage();
-
-        compute.commandBufferImageLoad->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eFragmentShader |
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier[0]);
-    }
     compute.commandBufferImageLoad->end();
 }
 
-bool VulkanRenderer::createTextureImage(const QSize &size,
-                vk::UniqueImage &image,
-                vk::UniqueDeviceMemory &mem,
-                vk::ImageTiling tiling,
-                vk::ImageUsageFlags usage,
-                uint32_t memIndex)
-{
-    vk::ImageCreateInfo imageInfo({},
-                                  vk::ImageType::e2D,
-                                  globalImageFormat,
-                                  { (uint32_t)size.width(), (uint32_t)size.height(), 1 },
-                                  1,
-                                  1,
-                                  vk::SampleCountFlagBits::e1,
-                                  tiling,
-                                  usage);
-    image = device.createImageUnique(imageInfo);
-
-
-    vk::MemoryRequirements memReq = device.getImageMemoryRequirements(*image);
-
-    if (!(memReq.memoryTypeBits & (1 << memIndex)))
-    {
-        vk::PhysicalDeviceMemoryProperties physDevMemProps = physicalDevice.getMemoryProperties();
-        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
-        {
-            if (!(memReq.memoryTypeBits & (1 << i)))
-                continue;
-            memIndex = i;
-        }
-    }
-
-    vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
-
-    CS_LOG_INFO("Allocating texture image:");
-    CS_LOG_INFO(QString::number(uint32_t(memReq.size)) + " bytes");
-    mem = device.allocateMemoryUnique(allocInfo);
-
-    device.bindImageMemory(*image, *mem, 0);
-
-    return true;
-}
-
-bool VulkanRenderer::writeLinearImage(float* imgStart,
+bool VulkanRenderer::writeLinearImage(
+        float* imgStart,
         QSize imgSize,
-        vk::UniqueImage &image,
-        vk::UniqueDeviceMemory &memory)
+        std::unique_ptr<CsImage>& image)
 {
     vk::ImageSubresource subres(
                 vk::ImageAspectFlagBits::eColor,
                 0, // mip level
                 0);
 
-    vk::SubresourceLayout layout = device.getImageSubresourceLayout(*image, subres);
+    vk::SubresourceLayout layout = device.getImageSubresourceLayout(*image->getImage(), subres);
 
     float *p;
-    vk::Result err = device.mapMemory(*memory,
+    vk::Result err = device.mapMemory(*image->getMemory(),
                                       layout.offset,
                                       layout.size,
                                       {},
@@ -1123,7 +968,7 @@ bool VulkanRenderer::writeLinearImage(float* imgStart,
         p += imgSize.width() * 4 + pad;
     }
 
-    device.unmapMemory(*memory);
+    device.unmapMemory(*image->getMemory());
 
     return true;
 }
@@ -1159,71 +1004,26 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
         int numShaderPasses,
         int currentShaderPass)
 {
-    //device.waitIdle();
     compute.computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
     compute.commandBufferGeneric->begin(cmdBufferBeginInfo);
 
-    if (inputImageFront && inputImageFront != inputImageBack)
+    // Layout transitions before compute stage
+    inputImageBack->transitionLayoutTo(
+                compute.commandBufferGeneric,
+                vk::ImageLayout::eGeneral);
+
+    outputImage->transitionLayoutTo(
+                compute.commandBufferGeneric,
+                vk::ImageLayout::eGeneral);
+
+    if (inputImageFront)
     {
-        std::vector<vk::ImageMemoryBarrier> barrier(3);
-
-        createImageMemoryBarrier(
-                barrier.at(0),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                inputImageBack);
-
-        createImageMemoryBarrier(
-                barrier.at(1),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                inputImageFront);
-
-        createImageMemoryBarrier(
-                barrier.at(2),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                outputImage);
-
-        compute.commandBufferGeneric->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
-    }
-    else
-    {
-        std::vector<vk::ImageMemoryBarrier> barrier(2);
-
-        createImageMemoryBarrier(
-                barrier.at(0),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                inputImageBack);
-
-        createImageMemoryBarrier(
-                barrier.at(1),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                outputImage);
-
-        compute.commandBufferGeneric->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
+        inputImageFront->transitionLayoutTo(
+                    compute.commandBufferGeneric,
+                    vk::ImageLayout::eGeneral);
     }
 
     compute.commandBufferGeneric->bindPipeline(
@@ -1240,75 +1040,26 @@ void VulkanRenderer::recordComputeCommandBufferGeneric(
                 outputImage->getHeight() / 16 + 1,
                 1);
 
-    if (inputImageFront && inputImageFront != inputImageBack)
+    // Layout transitions after compute stage
+    inputImageBack->transitionLayoutTo(
+                compute.commandBufferGeneric,
+                vk::ImageLayout::eShaderReadOnlyOptimal);
+
+    auto layout = vk::ImageLayout::eGeneral;
+    if (currentShaderPass == numShaderPasses)
+        layout = vk::ImageLayout::eShaderReadOnlyOptimal;
+
+    outputImage->transitionLayoutTo(
+                compute.commandBufferGeneric,
+                layout);
+
+    if (inputImageFront)
     {
-        std::vector<vk::ImageMemoryBarrier> barrier(3);
-
-        createImageMemoryBarrier(
-                barrier.at(0),
-                vk::ImageLayout::eShaderReadOnlyOptimal,
-                {},
-                {},
-                inputImageBack);
-
-        createImageMemoryBarrier(
-                barrier.at(1),
-                vk::ImageLayout::eShaderReadOnlyOptimal,
-                {},
-                {},
-                inputImageFront);
-
-        auto layout = vk::ImageLayout::eGeneral;
-        if (currentShaderPass == numShaderPasses)
-            layout = vk::ImageLayout::eShaderReadOnlyOptimal;
-
-        createImageMemoryBarrier(
-                barrier.at(2),
-                layout,
-                {},
-                {},
-                outputImage);
-
-        compute.commandBufferGeneric->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eFragmentShader |
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
+        inputImageFront->transitionLayoutTo(
+                    compute.commandBufferGeneric,
+                    vk::ImageLayout::eShaderReadOnlyOptimal);
     }
-    else
-    {
-        std::vector<vk::ImageMemoryBarrier> barrier(2);
 
-        createImageMemoryBarrier(
-                barrier.at(0),
-                vk::ImageLayout::eGeneral,
-                {},
-                {},
-                inputImageBack);
-
-        auto layout = vk::ImageLayout::eGeneral;
-        if (currentShaderPass == numShaderPasses)
-            layout = vk::ImageLayout::eShaderReadOnlyOptimal;
-
-        createImageMemoryBarrier(
-                barrier.at(1),
-                layout,
-                {},
-                {},
-                outputImage);
-
-        compute.commandBufferGeneric->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eFragmentShader |
-                    vk::PipelineStageFlagBits::eComputeShader,
-                    {},
-                    {},
-                    {},
-                    barrier);
-    }
     compute.commandBufferGeneric->end();
 }
 
@@ -1342,24 +1093,9 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
 
     createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
 
-    {
-        vk::ImageMemoryBarrier barrier;
-
-        createImageMemoryBarrier(
-                barrier,
-                vk::ImageLayout::eTransferSrcOptimal,
-                {},
-                {},
-                inputImage);
-
-        compute.commandBufferImageSave->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTopOfPipe,
-                    vk::PipelineStageFlagBits::eTransfer,
-                    {},
-                    {},
-                    {},
-                    barrier);
-    }
+    inputImage->transitionLayoutTo(
+                compute.commandBufferImageSave,
+                vk::ImageLayout::eTransferSrcOptimal);
 
     vk::ImageSubresourceLayers imageLayers(
                 vk::ImageAspectFlagBits::eColor,
@@ -1383,24 +1119,11 @@ void VulkanRenderer::recordComputeCommandBufferCPUCopy(
                 vk::ImageLayout::eTransferSrcOptimal,
                 *outputStagingBuffer,
                 copyInfo);
-    {
-        vk::ImageMemoryBarrier barrier;
 
-        createImageMemoryBarrier(
-                barrier,
-                vk::ImageLayout::eShaderReadOnlyOptimal,
-                {},
-                {},
-                inputImage);
+    inputImage->transitionLayoutTo(
+                compute.commandBufferImageSave,
+                vk::ImageLayout::eShaderReadOnlyOptimal);
 
-        compute.commandBufferImageSave->pipelineBarrier(
-                    vk::PipelineStageFlagBits::eTransfer,
-                    vk::PipelineStageFlagBits::eTransfer,
-                    {},
-                    {},
-                    {},
-                    barrier);
-    }
     compute.commandBufferImageSave->end();
 }
 
@@ -1644,7 +1367,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         imagePath = path;
 
         // Create texture
-        if (!createTextureFromFile(imagePath, colorSpace))
+        if (!createImageFromFile(imagePath, colorSpace))
             CS_LOG_WARNING("Failed to create texture");
 
         // Update the projection size
@@ -1662,7 +1385,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         CS_LOG_INFO("Moving render target.");
 
-        node->setCachedImage(computeRenderTarget.get());
+        node->setCachedImage(std::move(computeRenderTarget));
     }
 }
 
@@ -1721,7 +1444,7 @@ void VulkanRenderer::processNode(
 
         device.waitIdle();
 
-        node->setCachedImage(computeRenderTarget.get());
+        node->setCachedImage(std::move(computeRenderTarget));
     }
     else
     {
@@ -1769,7 +1492,7 @@ void VulkanRenderer::processNode(
 
             device.waitIdle();
 
-            node->setCachedImage(computeRenderTarget.get());
+            node->setCachedImage(std::move(computeRenderTarget));
         }
         window->requestUpdate();
     }
@@ -1780,7 +1503,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
     // TODO: Should probably use something like cmdBlitImage
     // instead of the hacky noop shader workaround
     // for displaying a node that has already been rendered
-    if(auto image = node->getCachedImage())
+    if(CsImage* image = node->getCachedImage())
     {
         CS_LOG_INFO("Displaying node.");
         clearScreen = false;

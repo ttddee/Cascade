@@ -434,9 +434,9 @@ CsImage* NodeBase::getCachedImage() const
     return cachedImage.get();
 }
 
-void NodeBase::setCachedImage(CsImage* image)
+void NodeBase::setCachedImage(std::unique_ptr<CsImage> image)
 {
-    cachedImage = std::unique_ptr<CsImage>(image);
+    cachedImage = std::move(image);
 }
 
 void NodeBase::invalidateAllDownstreamNodes()

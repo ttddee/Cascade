@@ -26,7 +26,8 @@ CsImage::CsImage(
         const vk::Device* d,
         const vk::PhysicalDevice* pd,
         const int w,
-        const int h)
+        const int h,
+        const bool isLinear)
         : device(d),
           physicalDevice(pd),
           width(w),
@@ -34,22 +35,28 @@ CsImage::CsImage(
 {
     window = win;
 
+    isLinear ? currentLayout = vk::ImageLayout::eUndefined :
+               currentLayout = vk::ImageLayout::ePreinitialized;
+
     vk::ImageCreateInfo imageInfo({},
                                   vk::ImageType::e2D,
                                   vk::Format::eR32G32B32A32Sfloat,
-                                  width,
-                                  height,
+                                  vk::Extent3D(width, height, 1),
+                                  1,
                                   1,
                                   vk::SampleCountFlagBits::e1,
-                                  vk::ImageTiling::eOptimal,
-                                  vk::ImageUsageFlagBits::eSampled |
-                                  vk::ImageUsageFlagBits::eStorage |
-                                  vk::ImageUsageFlagBits::eTransferSrc |
-                                  vk::ImageUsageFlagBits::eTransferDst,
+                                  isLinear ? vk::ImageTiling::eLinear :
+                                             vk::ImageTiling::eOptimal,
+                                  isLinear ? vk::ImageUsageFlagBits::eSampled |
+                                             vk::ImageUsageFlagBits::eTransferSrc :
+                                             vk::ImageUsageFlagBits::eSampled |
+                                             vk::ImageUsageFlagBits::eStorage |
+                                             vk::ImageUsageFlagBits::eTransferSrc |
+                                             vk::ImageUsageFlagBits::eTransferDst,
                                   vk::SharingMode::eExclusive,
                                   {},
                                   {},
-                                  vk::ImageLayout::eUndefined);
+                                  currentLayout);
 
     try
     {
@@ -60,11 +67,14 @@ CsImage::CsImage(
         CS_LOG_WARNING("Could not create unique image for CsImage.");
     }
 
-    //Get how much memory we need and how it should aligned
+    // Get how much memory we need and how it should aligned
     vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
 
-    //The render target will be on the GPU
-    uint32_t memIndex = window->deviceLocalMemoryIndex();
+    // Make sure linear images get memory visible to the CPU
+    uint32_t memIndex = 0;
+
+    isLinear ? memIndex = window->hostVisibleMemoryIndex() :
+               memIndex = window->deviceLocalMemoryIndex();
 
     if (!(memReq.memoryTypeBits & (1 << memIndex)))
     {
@@ -77,8 +87,8 @@ CsImage::CsImage(
         }
     }
 
-    vk::MemoryAllocateInfo allocInfo(memReq.size,
-                                     memIndex);
+    vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
+
     try
     {
         memory = device->allocateMemoryUnique(allocInfo);
@@ -98,9 +108,8 @@ CsImage::CsImage(
         CS_LOG_WARNING("Could not bind memory for CsImage.");
     }
 
-
     vk::ImageViewCreateInfo viewInfo(
-                {},
+                { },
                 *image,
                 vk::ImageViewType::e2D,
                 vk::Format::eR32G32B32A32Sfloat,
@@ -109,7 +118,7 @@ CsImage::CsImage(
                                      vk::ComponentSwizzle::eB,
                                      vk::ComponentSwizzle::eA),
                 vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor,
-                                          {},
+                                          0,
                                           1,
                                           0,
                                           1));
@@ -134,11 +143,6 @@ const vk::UniqueImageView& CsImage::getImageView() const
     return view;
 }
 
-void CsImage::setImageView(vk::UniqueImageView v)
-{
-    view = std::move(v);
-}
-
 const vk::UniqueDeviceMemory& CsImage::getMemory() const
 {
     return memory;
@@ -147,6 +151,38 @@ const vk::UniqueDeviceMemory& CsImage::getMemory() const
 const vk::ImageLayout CsImage::getLayout() const
 {
     return currentLayout;
+}
+
+void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout layout)
+{
+    // Note: The command buffer must be active
+
+    vk::ImageMemoryBarrier barrier(
+                vk::AccessFlagBits::eNoneKHR,
+                vk::AccessFlagBits::eShaderRead |
+                vk::AccessFlagBits::eShaderWrite,
+                currentLayout,
+                layout,
+                {},
+                {},
+                *image,
+                vk::ImageSubresourceRange
+                {
+                    vk::ImageAspectFlagBits::eColor,
+                    0,
+                    1,
+                    0,
+                    1});
+
+    cb->pipelineBarrier(
+                vk::PipelineStageFlagBits::eTopOfPipe,
+                vk::PipelineStageFlagBits::eComputeShader,
+                {},
+                {},
+                {},
+                barrier);
+
+    setLayout(layout);
 }
 
 void CsImage::setLayout(const vk::ImageLayout& layout)

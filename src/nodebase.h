@@ -86,7 +86,7 @@ public:
     std::set<Connection*> getAllConnections();
 
     CsImage* getCachedImage() const;
-    void setCachedImage(CsImage* image);
+    void setCachedImage(std::unique_ptr<CsImage> image);
 
     void invalidateAllDownstreamNodes();
 

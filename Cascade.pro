@@ -198,6 +198,7 @@ win32-msvc* {
     QT_ROOT = C:/Qt515/5.15.0/msvc2019_64
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
+    INCLUDEPATH += C:/VulkanSDK/1.2.198.1/include
 
     COPIES += dlls
     COPIES += platforms

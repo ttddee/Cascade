@@ -32,14 +32,14 @@ namespace Cascade
     QFile Log::outFile;
     QTextStream Log::stream;
 
-    void Log::messageHandler(QtMsgType type, const QMessageLogContext &, const QString & msg)
+    void Log::messageHandler(QtMsgType type, const QMessageLogContext& context, const QString & msg)
     {
-        if (type == QtDebugMsg)
-        {
+        //if (type == QtDebugMsg)
+        //{
             QString txt = QString("[VULKAN] %1").arg(msg);
             writeToFile(txt);
             console(txt);
-        }
+        //}
     }
 
     void Log::Init()

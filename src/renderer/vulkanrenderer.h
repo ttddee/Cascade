@@ -110,21 +110,13 @@ private:
     vk::UniquePipeline createComputePipelineNoop();
 
     // Load image
-    bool createTextureFromFile(
+    bool createImageFromFile(
             const QString &path,
             const int colorSpace);
-    bool createTextureImage(
-            const QSize &size,
-            vk::UniqueImage& image,
-            vk::UniqueDeviceMemory& mem,
-            vk::ImageTiling tiling,
-            vk::ImageUsageFlags usage,
-            uint32_t memIndex);
     bool writeLinearImage(
             float* imgStart,
             QSize imgSize,
-            vk::UniqueImage& image,
-            vk::UniqueDeviceMemory& memory);
+            std::unique_ptr<CsImage>& image);
 
     // Compute setup
     void createComputePipelineLayout();
@@ -140,13 +132,6 @@ private:
             uint32_t width,
             uint32_t height);
 
-    void createImageMemoryBarrier(
-            vk::ImageMemoryBarrier& barrier,
-            vk::ImageLayout targetLayout,
-            vk::AccessFlags srcMask,
-            vk::AccessFlags dstMask,
-            CsImage* const image);
-
     void createComputeDescriptors();
     void updateComputeDescriptors(
             const CsImage* const inputImageBack,
@@ -154,7 +139,7 @@ private:
             const CsImage* const outputImage);
     void createComputeCommandBuffers();
     void recordComputeCommandBufferImageLoad(
-            const CsImage* const outputImage);
+            CsImage* const outputImage);
     void recordComputeCommandBufferGeneric(
             CsImage* const inputImageBack,
             CsImage* const inputImageFront,
@@ -219,9 +204,6 @@ private:
 
     vk::UniqueSampler sampler;
 
-    vk::UniqueImage loadImageStaging;
-    vk::UniqueDeviceMemory loadImageStagingMem;
-
     vk::UniqueBuffer outputStagingBuffer;
     vk::UniqueDeviceMemory outputStagingBufferMemory;
 
@@ -276,13 +258,14 @@ private:
 
     std::unique_ptr<CsImage>                computeRenderTarget;
     std::unique_ptr<CsImage>                imageFromDisk;
+    std::unique_ptr<CsImage>                loadImageStaging;
 
     std::map<NodeType, vk::UniqueShaderModule>  shaders;
     std::map<NodeType, vk::UniquePipeline>      pipelines;
 
     std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
 
-    std::unique_ptr<CsSettingsBuffer> settingsBuffer                  = nullptr;
+    std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
 

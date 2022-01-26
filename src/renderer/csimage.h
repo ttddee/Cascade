@@ -36,14 +36,16 @@ public:
             const vk::Device* d,
             const vk::PhysicalDevice* pd,
             const int w = 100,
-            const int h = 100);
+            const int h = 100,
+            const bool isLinear = false);
 
     const vk::UniqueImage& getImage() const;
     const vk::UniqueImageView& getImageView() const;
-    void setImageView(vk::UniqueImageView v);
     const vk::UniqueDeviceMemory& getMemory() const;
 
     const vk::ImageLayout getLayout() const;
+    void transitionLayoutTo(vk::UniqueCommandBuffer& cb,
+                            vk::ImageLayout layout);
     void setLayout(const vk::ImageLayout& layout);
 
     int getWidth() const;

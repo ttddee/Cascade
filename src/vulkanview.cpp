@@ -36,14 +36,7 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
-    instance.setLayers(QByteArrayList()
-                       << "VK_LAYER_LUNARG_standard_validation"
-                       << "VK_LAYER_LUNARG_parameter_validation"
-                       << "VK_LAYER_LUNARG_object_tracker"
-                       << "VK_LAYER_LUNARG_core_validation"
-                       << "VK_LAYER_LUNARG_image"
-                       << "VK_LAYER_LUNARG_swapchain"
-                       << "VK_LAYER_KHRONOS_validation");
+    instance.setLayers(QByteArrayList() << "VK_LAYER_KHRONOS_validation");
 
     // Set up Dynamic Dispatch Loader to use with vulkan.hpp
     vk::DynamicLoader dl;
