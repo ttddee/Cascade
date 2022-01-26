@@ -582,6 +582,11 @@ void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
     Q_UNUSED(event);
 }
 
+void NodeBase::flushCache()
+{
+    cachedImage = nullptr;
+}
+
 NodeBase::~NodeBase()
 {
     delete ui;

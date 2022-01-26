@@ -92,5 +92,4 @@ VulkanWindow* VulkanView::getVulkanWindow()
 VulkanView::~VulkanView()
 {
     delete vulkanWindow;
-    CS_LOG_CONSOLE("Destroying VulkanView.");
 }

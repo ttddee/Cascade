@@ -113,6 +113,8 @@ public:
 
     void updateConnectionPositions();
 
+    void flushCache();
+
     virtual ~NodeBase();
 
     bool needsUpdate = true;

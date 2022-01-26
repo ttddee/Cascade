@@ -83,18 +83,10 @@ public:
     void translate(float dx, float dy);
     void scale(float s);
 
-    void cleanup();
-
     ~VulkanRenderer();
 
 private:
     // Initialize
-    VkResult CreateDebugUtilsMessengerEXT(
-            VkInstance instance,
-            const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo,
-            const VkAllocationCallbacks* pAllocator,
-            VkDebugUtilsMessengerEXT* pCallback);
-
     void createVertexBuffer();
     void createSampler();
     void createDescriptorPool();

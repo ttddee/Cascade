@@ -67,6 +67,8 @@ public:
 
     void getNodeGraphAsJson(QJsonArray& jsonNodeGraph);
 
+    void flushCacheAllNodes();
+
     QPoint lastMousePos;
 
 protected:

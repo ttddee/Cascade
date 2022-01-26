@@ -311,11 +311,15 @@ vk::Queue* CsCommandBuffer::getQueue()
 
 vk::CommandBuffer* CsCommandBuffer::getGeneric()
 {
+    computeQueue.waitIdle();
+
     return &(*commandBufferGeneric);
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageLoad()
 {
+    computeQueue.waitIdle();
+
     return &(*commandBufferImageLoad);
 }
 
@@ -365,4 +369,13 @@ uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryProperty
         }
     }
     throw std::runtime_error("Failed to find suitable memory type!");
+}
+
+CsCommandBuffer::~CsCommandBuffer()
+{
+    CS_LOG_INFO("Destroying command buffer.");
+    if (outputStagingBufferMemory)
+        device->freeMemory(*outputStagingBufferMemory);
+    if (outputStagingBuffer)
+        device->destroy(*outputStagingBuffer);
 }

@@ -84,5 +84,7 @@ public slots:
     void handleExitAction();
     void handleShortcutsAction();
 
+    void closeEvent(QCloseEvent* event);
+
 };
 #endif // MAINWINDOW_H

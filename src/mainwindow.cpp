@@ -175,7 +175,7 @@ void MainWindow::handleSaveProjectAsAction()
 
 void MainWindow::handleExitAction()
 {
-    QCoreApplication::quit();
+    QApplication::quit();
 }
 
 void MainWindow::handleShortcutsAction()
@@ -183,13 +183,15 @@ void MainWindow::handleShortcutsAction()
     displayShortcuts();
 }
 
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    nodeGraph->flushCacheAllNodes();
+}
+
 MainWindow::~MainWindow()
 {
     CS_LOG_INFO("Shutting down");
-    CS_LOG_CONSOLE("Shutting down");
 
     delete ui;
-
-    vulkanView->getVulkanWindow()->getRenderer()->cleanup();
 }
 

@@ -27,6 +27,8 @@ public:
     vk::DeviceMemory* recordImageSave(
             CsImage* const inputImage);
 
+    ~CsCommandBuffer();
+
     void submitGeneric();
     void submitImageLoad();
     void submitImageSave();
