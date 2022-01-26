@@ -59,6 +59,7 @@ SOURCES += \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
+    src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
     src/renderer/vulkanrenderer.cpp \
@@ -124,6 +125,7 @@ HEADERS += \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
+    src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
     src/renderer/vulkanrenderer.h \

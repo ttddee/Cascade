@@ -85,9 +85,14 @@ void VulkanRenderer::initResources()
     // Create a pipeline for each shader
     createComputePipelines();
 
-    createComputeQueue();
-    createComputeCommandPool();
-    createComputeCommandBuffers();
+//    createComputeQueue();
+//    createComputeCommandPool();
+//    createComputeCommandBuffers();
+    computeCommandBuffer = std::unique_ptr<CsCommandBuffer>(
+                new CsCommandBuffer(&device,
+                                    &physicalDevice,
+                                    &(*computePipelineLayout),
+                                    &(*computeDescriptorSet)));
 
     settingsBuffer = std::unique_ptr<CsSettingsBuffer>(new CsSettingsBuffer(
                 &device,
@@ -251,36 +256,36 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     graphicsPipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo);
 }
 
-void VulkanRenderer::createBuffer(
-        vk::UniqueBuffer& buffer,
-        vk::UniqueDeviceMemory& bufferMemory,
-        vk::DeviceSize& size)
-{
-    vk::BufferCreateInfo bufferInfo(
-                {},
-                size,
-                vk::BufferUsageFlags(
-                    vk::BufferUsageFlagBits::eTransferDst |
-                    vk::BufferUsageFlagBits::eUniformBuffer),
-                vk::SharingMode::eExclusive);
+//void VulkanRenderer::createBuffer(
+//        vk::UniqueBuffer& buffer,
+//        vk::UniqueDeviceMemory& bufferMemory,
+//        vk::DeviceSize& size)
+//{
+//    vk::BufferCreateInfo bufferInfo(
+//                {},
+//                size,
+//                vk::BufferUsageFlags(
+//                    vk::BufferUsageFlagBits::eTransferDst |
+//                    vk::BufferUsageFlagBits::eUniformBuffer),
+//                vk::SharingMode::eExclusive);
 
-    buffer = device.createBufferUnique(bufferInfo);
+//    buffer = device.createBufferUnique(bufferInfo);
 
-    vk::MemoryRequirements memRequirements = device.getBufferMemoryRequirements(*buffer);
+//    vk::MemoryRequirements memRequirements = device.getBufferMemoryRequirements(*buffer);
 
-    uint32_t memoryType = findMemoryType(
-                memRequirements.memoryTypeBits,
-                vk::MemoryPropertyFlags(
-                    vk::MemoryPropertyFlagBits::eHostVisible |
-                    vk::MemoryPropertyFlagBits::eHostCoherent));
+//    uint32_t memoryType = findMemoryType(
+//                memRequirements.memoryTypeBits,
+//                vk::MemoryPropertyFlags(
+//                    vk::MemoryPropertyFlagBits::eHostVisible |
+//                    vk::MemoryPropertyFlagBits::eHostCoherent));
 
-    vk::MemoryAllocateInfo allocInfo(memRequirements.size,
-                                     memoryType);
+//    vk::MemoryAllocateInfo allocInfo(memRequirements.size,
+//                                     memoryType);
 
-    bufferMemory = device.allocateMemoryUnique(allocInfo);
+//    bufferMemory = device.allocateMemoryUnique(allocInfo);
 
-    device.bindBufferMemory(*buffer, *bufferMemory, 0);
-}
+//    device.bindBufferMemory(*buffer, *bufferMemory, 0);
+//}
 
 void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
 {
@@ -455,7 +460,7 @@ void VulkanRenderer::loadShadersFromDisk()
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 {
     // Previous image will be destroyed, so we wait here
-    compute.computeQueue.waitIdle();
+    computeCommandBuffer->getQueue()->waitIdle();
 
     try
     {
@@ -501,7 +506,7 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
 
     // The image we are going to copy into
     // TODO: We can skip this and copy straight into cache
-    imageFromDisk = std::unique_ptr<CsImage>(
+    tmpCacheImage = std::unique_ptr<CsImage>(
                 new CsImage(window,
                             &device,
                             &physicalDevice,
@@ -540,7 +545,8 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         return false;
     }
 
-    texStagingPending = true;
+
+    computeCommandBuffer->setTexStagingPending(true);
 
     loadImageSize = imageSize;
 
@@ -607,7 +613,7 @@ void VulkanRenderer::createComputeDescriptors()
 {
     // TODO: Clean this up.
 
-    if (!computeDescriptorSetLayoutGeneric)
+    if (!computeDescriptorSetLayout)
     {
         // Define the layout of the input of the shader.
         // 2 images to read, 1 image to write
@@ -638,7 +644,7 @@ void VulkanRenderer::createComputeDescriptors()
                     4,
                     &bindings.at(0));
 
-        computeDescriptorSetLayoutGeneric = device.createDescriptorSetLayoutUnique(
+        computeDescriptorSetLayout = device.createDescriptorSetLayoutUnique(
                     descSetLayoutCreateInfo);
     }
 
@@ -660,9 +666,9 @@ void VulkanRenderer::createComputeDescriptors()
     vk::DescriptorSetAllocateInfo descSetAllocInfoCompute(
                 *descriptorPool,
                 1,
-                &(*computeDescriptorSetLayoutGeneric));
+                &(*computeDescriptorSetLayout));
 
-    computeDescriptorSetGeneric = std::move(device.allocateDescriptorSetsUnique(descSetAllocInfoCompute).front());
+    computeDescriptorSet = std::move(device.allocateDescriptorSetsUnique(descSetAllocInfoCompute).front());
 }
 
 void VulkanRenderer::updateComputeDescriptors(
@@ -719,25 +725,25 @@ void VulkanRenderer::updateComputeDescriptors(
 
         std::vector<vk::WriteDescriptorSet> descWrite(4);
 
-        descWrite.at(0).dstSet                    = *computeDescriptorSetGeneric;
+        descWrite.at(0).dstSet                    = *computeDescriptorSet;
         descWrite.at(0).dstBinding                = 0;
         descWrite.at(0).descriptorCount           = 1;
         descWrite.at(0).descriptorType            = vk::DescriptorType::eStorageImage;
         descWrite.at(0).pImageInfo                = &sourceInfoBack;
 
-        descWrite.at(1).dstSet                    = *computeDescriptorSetGeneric;
+        descWrite.at(1).dstSet                    = *computeDescriptorSet;
         descWrite.at(1).dstBinding                = 1;
         descWrite.at(1).descriptorCount           = 1;
         descWrite.at(1).descriptorType            = vk::DescriptorType::eStorageImage;
         descWrite.at(1).pImageInfo                = &sourceInfoFront;
 
-        descWrite.at(2).dstSet                    = *computeDescriptorSetGeneric;
+        descWrite.at(2).dstSet                    = *computeDescriptorSet;
         descWrite.at(2).dstBinding                = 2;
         descWrite.at(2).descriptorCount           = 1;
         descWrite.at(2).descriptorType            = vk::DescriptorType::eStorageImage;
         descWrite.at(2).pImageInfo                = &destinationInfo;
 
-        descWrite.at(3).dstSet                    = *computeDescriptorSetGeneric;
+        descWrite.at(3).dstSet                    = *computeDescriptorSet;
         descWrite.at(3).dstBinding                = 3;
         descWrite.at(3).descriptorCount           = 1;
         descWrite.at(3).descriptorType            = vk::DescriptorType::eUniformBuffer;
@@ -752,10 +758,10 @@ void VulkanRenderer::createComputePipelineLayout()
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
                 {},
                 1,
-                &(*computeDescriptorSetLayoutGeneric));
+                &(*computeDescriptorSetLayout));
 
     //Create the layout, store it to share between shaders
-    computePipelineLayoutGeneric = device.createPipelineLayoutUnique(pipelineLayoutInfo);
+    computePipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo);
 }
 
 
@@ -782,7 +788,7 @@ vk::UniquePipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
     vk::ComputePipelineCreateInfo pipelineInfo(
                 {},
                 computeStage,
-                *computePipelineLayoutGeneric);
+                *computePipelineLayout);
 
     vk::UniquePipeline pl = device.createComputePipelineUnique(*pipelineCache, pipelineInfo).value;
 
@@ -803,39 +809,39 @@ vk::UniquePipeline VulkanRenderer::createComputePipelineNoop()
     vk::ComputePipelineCreateInfo pipelineInfo(
                 {},
                 computeStage,
-                *computePipelineLayoutGeneric);
+                *computePipelineLayout);
 
     vk::UniquePipeline pl = device.createComputePipelineUnique(*pipelineCache, pipelineInfo).value;
 
     return pl;
 }
 
-void VulkanRenderer::createComputeQueue()
-{
-    auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
+//void VulkanRenderer::createComputeQueue()
+//{
+//    auto queueFamilyProperties = physicalDevice.getQueueFamilyProperties();
 
-    for (auto i = 0; i < queueFamilyProperties.size(); ++i)
-    {
-        if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eCompute)
-        {
-            compute.queueFamilyIndex = i;
-            break;
-        }
-    }
+//    for (auto i = 0; i < queueFamilyProperties.size(); ++i)
+//    {
+//        if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eCompute)
+//        {
+//            compute.queueFamilyIndex = i;
+//            break;
+//        }
+//    }
 
-    // Get a compute queue from the device
-    compute.computeQueue = device.getQueue(compute.queueFamilyIndex, 0);
-}
+//    // Get a compute queue from the device
+//    compute.computeQueue = device.getQueue(compute.queueFamilyIndex, 0);
+//}
 
-void VulkanRenderer::createComputeCommandPool()
-{
-    // Separate command pool as queue family for compute may be different than graphics
-    vk::CommandPoolCreateInfo cmdPoolInfo(
-                { vk::CommandPoolCreateFlagBits::eResetCommandBuffer },
-                compute.queueFamilyIndex);
+//void VulkanRenderer::createComputeCommandPool()
+//{
+//    // Separate command pool as queue family for compute may be different than graphics
+//    vk::CommandPoolCreateInfo cmdPoolInfo(
+//                { vk::CommandPoolCreateFlagBits::eResetCommandBuffer },
+//                compute.queueFamilyIndex);
 
-    compute.computeCommandPool = device.createCommandPoolUnique(cmdPoolInfo);
-}
+//    compute.computeCommandPool = device.createCommandPoolUnique(cmdPoolInfo);
+//}
 
 void VulkanRenderer::createQueryPool()
 {
@@ -847,90 +853,90 @@ void VulkanRenderer::createQueryPool()
     queryPool = device.createQueryPoolUnique(queryPoolInfo);
 }
 
-void VulkanRenderer::createComputeCommandBuffers()
-{
-    // Create the command buffer for loading an image from disk
-    vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
-                *compute.computeCommandPool,
-                vk::CommandBufferLevel::ePrimary,
-                3);
+//void VulkanRenderer::createComputeCommandBuffers()
+//{
+//    // Create the command buffer for loading an image from disk
+//    vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
+//                *compute.computeCommandPool,
+//                vk::CommandBufferLevel::ePrimary,
+//                3);
 
-    std::vector<vk::UniqueCommandBuffer> buffers = device.allocateCommandBuffersUnique(
-                commandBufferAllocateInfo);
+//    std::vector<vk::UniqueCommandBuffer> buffers = device.allocateCommandBuffersUnique(
+//                commandBufferAllocateInfo);
 
-    compute.commandBufferImageLoad = std::move(buffers.at(0));
-    compute.commandBufferGeneric = std::move(buffers.at(1));
-    compute.commandBufferImageSave = std::move(buffers.at(2));
+//    compute.commandBufferImageLoad = std::move(buffers.at(0));
+//    compute.commandBufferGeneric = std::move(buffers.at(1));
+//    compute.commandBufferImageSave = std::move(buffers.at(2));
 
-    // Fence for compute CB sync
-    vk::FenceCreateInfo fenceCreateInfo(
-                vk::FenceCreateFlagBits::eSignaled);
+//    // Fence for compute CB sync
+//    vk::FenceCreateInfo fenceCreateInfo(
+//                vk::FenceCreateFlagBits::eSignaled);
 
-    compute.fence = device.createFenceUnique(fenceCreateInfo);
-}
+//    compute.fence = device.createFenceUnique(fenceCreateInfo);
+//}
 
-void VulkanRenderer::recordComputeCommandBufferImageLoad(
-        CsImage* const outputImage)
-{
-    compute.computeQueue.waitIdle();
+//void VulkanRenderer::recordComputeCommandBufferImageLoad(
+//        CsImage* const outputImage)
+//{
+//    compute.computeQueue.waitIdle();
 
-    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
+//    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    compute.commandBufferImageLoad->begin(cmdBufferBeginInfo);
+//    compute.commandBufferImageLoad->begin(cmdBufferBeginInfo);
 
-    loadImageStaging->transitionLayoutTo(
-                compute.commandBufferImageLoad,
-                vk::ImageLayout::eTransferSrcOptimal);
+//    loadImageStaging->transitionLayoutTo(
+//                compute.commandBufferImageLoad,
+//                vk::ImageLayout::eTransferSrcOptimal);
 
-    imageFromDisk->transitionLayoutTo(
-                compute.commandBufferImageLoad,
-                vk::ImageLayout::eTransferDstOptimal);
+//    tmpCacheImage->transitionLayoutTo(
+//                compute.commandBufferImageLoad,
+//                vk::ImageLayout::eTransferDstOptimal);
 
-    vk::ImageCopy copyInfo;
-    copyInfo.srcSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
-    copyInfo.srcSubresource.layerCount  = 1;
-    copyInfo.dstSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
-    copyInfo.dstSubresource.layerCount  = 1;
-    copyInfo.extent.width               = loadImageSize.width();
-    copyInfo.extent.height              = loadImageSize.height();
-    copyInfo.extent.depth               = 1;
+//    vk::ImageCopy copyInfo;
+//    copyInfo.srcSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
+//    copyInfo.srcSubresource.layerCount  = 1;
+//    copyInfo.dstSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
+//    copyInfo.dstSubresource.layerCount  = 1;
+//    copyInfo.extent.width               = loadImageSize.width();
+//    copyInfo.extent.height              = loadImageSize.height();
+//    copyInfo.extent.depth               = 1;
 
-    compute.commandBufferImageLoad->copyImage(
-                *loadImageStaging->getImage(),
-                vk::ImageLayout::eTransferSrcOptimal,
-                *imageFromDisk->getImage(),
-                vk::ImageLayout::eTransferDstOptimal,
-                1,
-                &copyInfo);
+//    compute.commandBufferImageLoad->copyImage(
+//                *loadImageStaging->getImage(),
+//                vk::ImageLayout::eTransferSrcOptimal,
+//                *tmpCacheImage->getImage(),
+//                vk::ImageLayout::eTransferDstOptimal,
+//                1,
+//                &copyInfo);
 
-    imageFromDisk->transitionLayoutTo(
-                compute.commandBufferImageLoad,
-                vk::ImageLayout::eGeneral);
+//    tmpCacheImage->transitionLayoutTo(
+//                compute.commandBufferImageLoad,
+//                vk::ImageLayout::eGeneral);
 
-    outputImage->transitionLayoutTo(
-                compute.commandBufferImageLoad,
-                vk::ImageLayout::eGeneral);
+//    outputImage->transitionLayoutTo(
+//                compute.commandBufferImageLoad,
+//                vk::ImageLayout::eGeneral);
 
-    compute.commandBufferImageLoad->bindPipeline(
-                vk::PipelineBindPoint::eCompute,
-                *pipelines[NODE_TYPE_READ]);
-    compute.commandBufferImageLoad->bindDescriptorSets(
-                vk::PipelineBindPoint::eCompute,
-                *computePipelineLayoutGeneric,
-                0,
-                *computeDescriptorSetGeneric,
-                {});
-    compute.commandBufferImageLoad->dispatch(
-                cpuImage->xend() / 16 + 1,
-                cpuImage->yend() / 16 + 1,
-                1);
+//    compute.commandBufferImageLoad->bindPipeline(
+//                vk::PipelineBindPoint::eCompute,
+//                *pipelines[NODE_TYPE_READ]);
+//    compute.commandBufferImageLoad->bindDescriptorSets(
+//                vk::PipelineBindPoint::eCompute,
+//                *computePipelineLayoutGeneric,
+//                0,
+//                *computeDescriptorSetGeneric,
+//                {});
+//    compute.commandBufferImageLoad->dispatch(
+//                cpuImage->xend() / 16 + 1,
+//                cpuImage->yend() / 16 + 1,
+//                1);
 
-    outputImage->transitionLayoutTo(
-                compute.commandBufferImageLoad,
-                vk::ImageLayout::eShaderReadOnlyOptimal);
+//    outputImage->transitionLayoutTo(
+//                compute.commandBufferImageLoad,
+//                vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    compute.commandBufferImageLoad->end();
-}
+//    compute.commandBufferImageLoad->end();
+//}
 
 bool VulkanRenderer::writeLinearImage(
         float* imgStart,
@@ -996,136 +1002,136 @@ void VulkanRenderer::initSwapChainResources()
     projection.scale(500);
 }
 
-void VulkanRenderer::recordComputeCommandBufferGeneric(
-        CsImage* const inputImageBack,
-        CsImage* const inputImageFront,
-        CsImage* const outputImage,
-        vk::Pipeline& pl,
-        int numShaderPasses,
-        int currentShaderPass)
-{
-    compute.computeQueue.waitIdle();
+//void VulkanRenderer::recordComputeCommandBufferGeneric(
+//        CsImage* const inputImageBack,
+//        CsImage* const inputImageFront,
+//        CsImage* const outputImage,
+//        vk::Pipeline& pl,
+//        int numShaderPasses,
+//        int currentShaderPass)
+//{
+//    compute.computeQueue.waitIdle();
 
-    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
+//    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    compute.commandBufferGeneric->begin(cmdBufferBeginInfo);
+//    compute.commandBufferGeneric->begin(cmdBufferBeginInfo);
 
-    // Layout transitions before compute stage
-    inputImageBack->transitionLayoutTo(
-                compute.commandBufferGeneric,
-                vk::ImageLayout::eGeneral);
+//    // Layout transitions before compute stage
+//    inputImageBack->transitionLayoutTo(
+//                compute.commandBufferGeneric,
+//                vk::ImageLayout::eGeneral);
 
-    outputImage->transitionLayoutTo(
-                compute.commandBufferGeneric,
-                vk::ImageLayout::eGeneral);
+//    outputImage->transitionLayoutTo(
+//                compute.commandBufferGeneric,
+//                vk::ImageLayout::eGeneral);
 
-    if (inputImageFront)
-    {
-        inputImageFront->transitionLayoutTo(
-                    compute.commandBufferGeneric,
-                    vk::ImageLayout::eGeneral);
-    }
+//    if (inputImageFront)
+//    {
+//        inputImageFront->transitionLayoutTo(
+//                    compute.commandBufferGeneric,
+//                    vk::ImageLayout::eGeneral);
+//    }
 
-    compute.commandBufferGeneric->bindPipeline(
-                vk::PipelineBindPoint::eCompute,
-                pl);
-    compute.commandBufferGeneric->bindDescriptorSets(
-                vk::PipelineBindPoint::eCompute,
-                *computePipelineLayoutGeneric,
-                0,
-                *computeDescriptorSetGeneric,
-                {});
-    compute.commandBufferGeneric->dispatch(
-                outputImage->getWidth() / 16 + 1,
-                outputImage->getHeight() / 16 + 1,
-                1);
+//    compute.commandBufferGeneric->bindPipeline(
+//                vk::PipelineBindPoint::eCompute,
+//                pl);
+//    compute.commandBufferGeneric->bindDescriptorSets(
+//                vk::PipelineBindPoint::eCompute,
+//                *computePipelineLayoutGeneric,
+//                0,
+//                *computeDescriptorSetGeneric,
+//                {});
+//    compute.commandBufferGeneric->dispatch(
+//                outputImage->getWidth() / 16 + 1,
+//                outputImage->getHeight() / 16 + 1,
+//                1);
 
-    // Layout transitions after compute stage
-    inputImageBack->transitionLayoutTo(
-                compute.commandBufferGeneric,
-                vk::ImageLayout::eShaderReadOnlyOptimal);
+//    // Layout transitions after compute stage
+//    inputImageBack->transitionLayoutTo(
+//                compute.commandBufferGeneric,
+//                vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    auto layout = vk::ImageLayout::eGeneral;
-    if (currentShaderPass == numShaderPasses)
-        layout = vk::ImageLayout::eShaderReadOnlyOptimal;
+//    auto layout = vk::ImageLayout::eGeneral;
+//    if (currentShaderPass == numShaderPasses)
+//        layout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
-    outputImage->transitionLayoutTo(
-                compute.commandBufferGeneric,
-                layout);
+//    outputImage->transitionLayoutTo(
+//                compute.commandBufferGeneric,
+//                layout);
 
-    if (inputImageFront)
-    {
-        inputImageFront->transitionLayoutTo(
-                    compute.commandBufferGeneric,
-                    vk::ImageLayout::eShaderReadOnlyOptimal);
-    }
+//    if (inputImageFront)
+//    {
+//        inputImageFront->transitionLayoutTo(
+//                    compute.commandBufferGeneric,
+//                    vk::ImageLayout::eShaderReadOnlyOptimal);
+//    }
 
-    compute.commandBufferGeneric->end();
-}
+//    compute.commandBufferGeneric->end();
+//}
 
-uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)
-{
-    vk::PhysicalDeviceMemoryProperties memProperties = physicalDevice.getMemoryProperties();
+//uint32_t VulkanRenderer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)
+//{
+//    vk::PhysicalDeviceMemoryProperties memProperties = physicalDevice.getMemoryProperties();
 
-    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
-        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
-            return i;
-        }
-    }
-    throw std::runtime_error("Failed to find suitable memory type!");
-}
+//    for (uint32_t i = 0; i < memProperties.memoryTypeCount; i++) {
+//        if ((typeFilter & (1 << i)) && (memProperties.memoryTypes[i].propertyFlags & properties) == properties) {
+//            return i;
+//        }
+//    }
+//    throw std::runtime_error("Failed to find suitable memory type!");
+//}
 
-void VulkanRenderer::recordComputeCommandBufferCPUCopy(
-        CsImage* const inputImage)
-{
-    CS_LOG_INFO("Copying image GPU-->CPU.");
+//void VulkanRenderer::recordComputeCommandBufferCPUCopy(
+//        CsImage* const inputImage)
+//{
+//    CS_LOG_INFO("Copying image GPU-->CPU.");
 
-    // This is for outputting an image to the CPU
-    device.waitIdle();
+//    // This is for outputting an image to the CPU
+//    device.waitIdle();
 
-    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
+//    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    compute.commandBufferImageSave->begin(cmdBufferBeginInfo);
+//    compute.commandBufferImageSave->begin(cmdBufferBeginInfo);
 
-    outputImageSize = QSize(inputImage->getWidth(), inputImage->getHeight());
+//    outputImageSize = QSize(inputImage->getWidth(), inputImage->getHeight());
 
-    vk::DeviceSize bufferSize = outputImageSize.width() * outputImageSize.height() * 16; // 4 channels * 4 bytes
+//    vk::DeviceSize bufferSize = outputImageSize.width() * outputImageSize.height() * 16; // 4 channels * 4 bytes
 
-    createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
+//    createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
 
-    inputImage->transitionLayoutTo(
-                compute.commandBufferImageSave,
-                vk::ImageLayout::eTransferSrcOptimal);
+//    inputImage->transitionLayoutTo(
+//                compute.commandBufferImageSave,
+//                vk::ImageLayout::eTransferSrcOptimal);
 
-    vk::ImageSubresourceLayers imageLayers(
-                vk::ImageAspectFlagBits::eColor,
-                {},
-                0,
-                1);
+//    vk::ImageSubresourceLayers imageLayers(
+//                vk::ImageAspectFlagBits::eColor,
+//                {},
+//                0,
+//                1);
 
-    vk::BufferImageCopy copyInfo(
-                0,
-                outputImageSize.width(),
-                outputImageSize.height(),
-                imageLayers,
-                { 0, 0, 0 },
-                {
-                    (uint32_t)outputImageSize.width(),
-                    (uint32_t)outputImageSize.height(),
-                    1
-                });
-    compute.commandBufferImageSave->copyImageToBuffer(
-                *inputImage->getImage(),
-                vk::ImageLayout::eTransferSrcOptimal,
-                *outputStagingBuffer,
-                copyInfo);
+//    vk::BufferImageCopy copyInfo(
+//                0,
+//                outputImageSize.width(),
+//                outputImageSize.height(),
+//                imageLayers,
+//                { 0, 0, 0 },
+//                {
+//                    (uint32_t)outputImageSize.width(),
+//                    (uint32_t)outputImageSize.height(),
+//                    1
+//                });
+//    compute.commandBufferImageSave->copyImageToBuffer(
+//                *inputImage->getImage(),
+//                vk::ImageLayout::eTransferSrcOptimal,
+//                *outputStagingBuffer,
+//                copyInfo);
 
-    inputImage->transitionLayoutTo(
-                compute.commandBufferImageSave,
-                vk::ImageLayout::eShaderReadOnlyOptimal);
+//    inputImage->transitionLayoutTo(
+//                compute.commandBufferImageSave,
+//                vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    compute.commandBufferImageSave->end();
-}
+//    compute.commandBufferImageSave->end();
+//}
 
 void VulkanRenderer::setDisplayMode(const DisplayMode mode)
 {
@@ -1139,14 +1145,16 @@ bool VulkanRenderer::saveImageToDisk(
 {
     bool success = true;
 
-    recordComputeCommandBufferCPUCopy(inputImage);
-    submitImageSaveCommand();
+    auto mem = computeCommandBuffer->recordImageSave(
+                inputImage);
+
+    computeCommandBuffer->submitImageSave();
 
     device.waitIdle();
 
     float *pInput;
     device.mapMemory(
-                *outputStagingBufferMemory,
+                *mem,
                 0,
                 VK_WHOLE_SIZE,
                 {},
@@ -1176,7 +1184,7 @@ bool VulkanRenderer::saveImageToDisk(
 
     delete[] output;
 
-    device.unmapMemory(*outputStagingBufferMemory);
+    device.unmapMemory(*mem);
 
     return success;
 }
@@ -1185,7 +1193,10 @@ void VulkanRenderer::createRenderPass()
 {
     CS_LOG_INFO("Creating Render Pass.");
 
-    vk::CommandBuffer cb = window->currentCommandBuffer();
+    vk::CommandBuffer* cb = computeCommandBuffer->getGeneric();
+
+    vk::CommandBufferBeginInfo cbBegin;
+    cb->begin(cbBegin);
 
     const QSize sz = window->swapChainImageSize();
 
@@ -1202,8 +1213,7 @@ void VulkanRenderer::createRenderPass()
     rpBeginInfo.renderArea.extent.height = sz.height();
     rpBeginInfo.clearValueCount = 2;
     rpBeginInfo.pClearValues = clearValues;
-    vk::CommandBuffer cmdBuf = window->currentCommandBuffer();
-    cmdBuf.beginRenderPass(rpBeginInfo, vk::SubpassContents::eInline);
+    cb->beginRenderPass(rpBeginInfo, vk::SubpassContents::eInline);
 
     // TODO: Can we do this once?
     quint8 *p;
@@ -1217,7 +1227,6 @@ void VulkanRenderer::createRenderPass()
     if (err != vk::Result::eSuccess)
     {
         CS_LOG_WARNING("Failed to map memory for vertex buffer.");
-        CS_LOG_CONSOLE("Failed to map memory for vertex buffer.");
     }
 
     QMatrix4x4 m = projection;
@@ -1245,16 +1254,16 @@ void VulkanRenderer::createRenderPass()
     else
         pl = *graphicsPipelineRGB;
 
-    cb.pushConstants(
+    cb->pushConstants(
                 *graphicsPipelineLayout,
                 vk::ShaderStageFlagBits::eFragment,
                 0,
                 sizeof(viewerPushConstants),
                 viewerPushConstants.data());
-    cb.bindPipeline(
+    cb->bindPipeline(
                 vk::PipelineBindPoint::eGraphics,
                 pl);
-    cb.bindDescriptorSets(
+    cb->bindDescriptorSets(
                 vk::PipelineBindPoint::eGraphics,
                 *graphicsPipelineLayout,
                 0,
@@ -1262,7 +1271,7 @@ void VulkanRenderer::createRenderPass()
                 {});
 
     vk::DeviceSize vbOffset = 0;
-    cb.bindVertexBuffers(
+    cb->bindVertexBuffers(
                 0,
                 1,
                 &(*vertexBuffer),
@@ -1276,7 +1285,7 @@ void VulkanRenderer::createRenderPass()
     viewport.height = sz.height();
     viewport.minDepth = 0;
     viewport.maxDepth = 1;
-    cb.setViewport(
+    cb->setViewport(
                 0,
                 1,
                 &viewport);
@@ -1285,56 +1294,57 @@ void VulkanRenderer::createRenderPass()
     scissor.offset.x = scissor.offset.y = 0;
     scissor.extent.width = viewport.width;
     scissor.extent.height = viewport.height;
-    cb.setScissor(
+    cb->setScissor(
                 0,
                 1,
                 &scissor);
 
-    cb.draw(4, 1, 0, 0);
+    cb->draw(4, 1, 0, 0);
 
-    cb.endRenderPass();
+    cb->endRenderPass();
+    cb->end();
 }
 
-void VulkanRenderer::submitComputeCommands()
-{
-    // Submit compute commands
-    // Use a fence to ensure that compute command buffer has finished executing before using it again
-    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
-    device.resetFences(1, &(*compute.fence));
+//void VulkanRenderer::submitComputeCommands()
+//{
+//    // Submit compute commands
+//    // Use a fence to ensure that compute command buffer has finished executing before using it again
+//    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
+//    device.resetFences(1, &(*compute.fence));
 
-    // Do the copy on the compute queue
-    vk::SubmitInfo computeSubmitInfo;
-    computeSubmitInfo.commandBufferCount = 1;
+//    // Do the copy on the compute queue
+//    vk::SubmitInfo computeSubmitInfo;
+//    computeSubmitInfo.commandBufferCount = 1;
 
-    if (texStagingPending)
-    {
-        texStagingPending = false;
-        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageLoad);
-    }
-    else
-    {
-        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferGeneric);
-    }
-    compute.computeQueue.submit(
-                1,
-                &computeSubmitInfo,
-                *compute.fence);
-}
+//    if (texStagingPending)
+//    {
+//        texStagingPending = false;
+//        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageLoad);
+//    }
+//    else
+//    {
+//        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferGeneric);
+//    }
+//    compute.computeQueue.submit(
+//                1,
+//                &computeSubmitInfo,
+//                *compute.fence);
+//}
 
-void VulkanRenderer::submitImageSaveCommand()
-{
-    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
-    device.resetFences(1, &(*compute.fence));
+//void VulkanRenderer::submitImageSaveCommand()
+//{
+//    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
+//    device.resetFences(1, &(*compute.fence));
 
-    vk::SubmitInfo computeSubmitInfo;
-    computeSubmitInfo.commandBufferCount = 1;
-    computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageSave);
+//    vk::SubmitInfo computeSubmitInfo;
+//    computeSubmitInfo.commandBufferCount = 1;
+//    computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageSave);
 
-    compute.computeQueue.submit(
-                1,
-                &computeSubmitInfo,
-                *compute.fence);
-}
+//    compute.computeQueue.submit(
+//                1,
+//                &computeSubmitInfo,
+//                *compute.fence);
+//}
 
 std::vector<float> VulkanRenderer::unpackPushConstants(const QString& s)
 {
@@ -1377,11 +1387,15 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
             CS_LOG_WARNING("Failed to create compute render target.");
 
-        updateComputeDescriptors(&(*imageFromDisk), nullptr, &(*computeRenderTarget));
+        updateComputeDescriptors(&(*tmpCacheImage), nullptr, &(*computeRenderTarget));
 
-        recordComputeCommandBufferImageLoad(&(*computeRenderTarget));
+        computeCommandBuffer->recordImageLoad(
+                    &(*loadImageStaging),
+                    &(*tmpCacheImage),
+                    &(*computeRenderTarget),
+                    &(*pipelines[NODE_TYPE_READ]));
 
-        submitComputeCommands();
+        computeCommandBuffer->submitGeneric();
 
         CS_LOG_INFO("Moving render target.");
 
@@ -1418,9 +1432,10 @@ void VulkanRenderer::processNode(
     // but needs to be fixed
     if (!inputImageBack)
     {
-        inputImageBack = std::unique_ptr<CsImage>(
+        tmpCacheImage = std::unique_ptr<CsImage>(
                     new CsImage(window, &device, &physicalDevice,
-                                targetSize.width(), targetSize.height())).get();
+                                targetSize.width(), targetSize.height()));
+        inputImageBack = tmpCacheImage.get();
     }
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
@@ -1430,7 +1445,7 @@ void VulkanRenderer::processNode(
     {
         updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget.get());
 
-        recordComputeCommandBufferGeneric(
+        computeCommandBuffer->recordGeneric(
                     inputImageBack,
                     inputImageFront,
                     computeRenderTarget.get(),
@@ -1438,7 +1453,7 @@ void VulkanRenderer::processNode(
                     numShaderPasses,
                     currentShaderPass);
 
-        submitComputeCommands();
+        computeCommandBuffer->submitGeneric();
 
         window->requestUpdate();
 
@@ -1458,7 +1473,7 @@ void VulkanRenderer::processNode(
 
                 updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget.get());
 
-                recordComputeCommandBufferGeneric(
+                computeCommandBuffer->recordGeneric(
                             inputImageBack,
                             inputImageFront,
                             computeRenderTarget.get(),
@@ -1466,7 +1481,7 @@ void VulkanRenderer::processNode(
                             numShaderPasses,
                             currentShaderPass);
 
-                submitComputeCommands();
+                computeCommandBuffer->submitGeneric();
             }
             else if (currentShaderPass <= numShaderPasses)
             {
@@ -1478,7 +1493,7 @@ void VulkanRenderer::processNode(
 
                 updateComputeDescriptors(node->getCachedImage(), inputImageFront, computeRenderTarget.get());
 
-                recordComputeCommandBufferGeneric(
+                computeCommandBuffer->recordGeneric(
                             node->getCachedImage(),
                             inputImageFront,
                             computeRenderTarget.get(),
@@ -1486,7 +1501,7 @@ void VulkanRenderer::processNode(
                             numShaderPasses,
                             currentShaderPass);
 
-                submitComputeCommands();
+                computeCommandBuffer->submitGeneric();
             }
             currentShaderPass++;
 
@@ -1516,7 +1531,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
 
         updateComputeDescriptors(image, nullptr, computeRenderTarget.get());
 
-        recordComputeCommandBufferGeneric(
+        computeCommandBuffer->recordGeneric(
                     image,
                     nullptr,
                     computeRenderTarget.get(),
@@ -1524,7 +1539,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
                     1,
                     1);
 
-        submitComputeCommands();
+        computeCommandBuffer->submitGeneric();
 
         window->requestUpdate();
     }
@@ -1624,7 +1639,7 @@ void VulkanRenderer::cleanup()
 {
     CS_LOG_INFO("Cleaning up renderer.");
 
-    compute.computeQueue.waitIdle();
+    //compute.computeQueue.waitIdle();
 //    devFuncs->vkQueueWaitIdle(compute.computeQueue);
 
 //    if (settingsBuffer)
