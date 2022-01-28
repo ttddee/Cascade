@@ -15,6 +15,10 @@ CsCommandBuffer::CsCommandBuffer(
     createComputeQueue();
     createComputeCommandPool();
     createComputeCommandBuffers();
+
+    currentBuffer = &commandBufferGeneric.get();
+
+    CS_LOG_INFO("Created compute command buffer.");
 }
 
 void CsCommandBuffer::createComputeQueue()
@@ -55,9 +59,9 @@ void CsCommandBuffer::createComputeCommandBuffers()
     std::vector<vk::UniqueCommandBuffer> buffers = device->allocateCommandBuffersUnique(
                 commandBufferAllocateInfo);
 
-    commandBufferImageLoad = std::move(buffers.at(0));
-    commandBufferGeneric = std::move(buffers.at(1));
-    commandBufferImageSave = std::move(buffers.at(2));
+    commandBufferImageLoad = vk::UniqueCommandBuffer(std::move(buffers.at(0)));
+    commandBufferGeneric = vk::UniqueCommandBuffer(std::move(buffers.at(1)));
+    commandBufferImageSave = vk::UniqueCommandBuffer(std::move(buffers.at(2)));
 
     // Fence for compute CB sync
     vk::FenceCreateInfo fenceCreateInfo(
@@ -74,6 +78,8 @@ void CsCommandBuffer::recordGeneric(
         int numShaderPasses,
         int currentShaderPass)
 {
+    currentBuffer = &commandBufferGeneric.get();
+
     computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
@@ -134,22 +140,24 @@ void CsCommandBuffer::recordGeneric(
 }
 
 void CsCommandBuffer::recordImageLoad(
-        CsImage* const loadImageStaging,
-        CsImage* const tmpCacheImage,
+        CsImage* const loadImage,
+        CsImage* const tmpImage,
         CsImage* const renderTarget,
         vk::Pipeline* const readNodePipeline)
 {
+    currentBuffer = &commandBufferImageLoad.get();
+
     computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
     commandBufferImageLoad->begin(cmdBufferBeginInfo);
 
-    loadImageStaging->transitionLayoutTo(
+    loadImage->transitionLayoutTo(
                 commandBufferImageLoad,
                 vk::ImageLayout::eTransferSrcOptimal);
 
-    tmpCacheImage->transitionLayoutTo(
+    tmpImage->transitionLayoutTo(
                 commandBufferImageLoad,
                 vk::ImageLayout::eTransferDstOptimal);
 
@@ -158,19 +166,23 @@ void CsCommandBuffer::recordImageLoad(
     copyInfo.srcSubresource.layerCount  = 1;
     copyInfo.dstSubresource.aspectMask  = vk::ImageAspectFlagBits::eColor;
     copyInfo.dstSubresource.layerCount  = 1;
-    copyInfo.extent.width               = loadImageStaging->getWidth();
-    copyInfo.extent.height              = loadImageStaging->getHeight();
+    copyInfo.extent.width               = loadImage->getWidth();
+    copyInfo.extent.height              = loadImage->getHeight();
     copyInfo.extent.depth               = 1;
 
     commandBufferImageLoad->copyImage(
-                *loadImageStaging->getImage(),
+                *loadImage->getImage(),
                 vk::ImageLayout::eTransferSrcOptimal,
-                *tmpCacheImage->getImage(),
+                *tmpImage->getImage(),
                 vk::ImageLayout::eTransferDstOptimal,
                 1,
                 &copyInfo);
 
-    tmpCacheImage->transitionLayoutTo(
+//    loadImageStaging->transitionLayoutTo(
+//                commandBufferImageLoad,
+//                vk::ImageLayout::eGeneral);
+
+    tmpImage->transitionLayoutTo(
                 commandBufferImageLoad,
                 vk::ImageLayout::eGeneral);
 
@@ -188,8 +200,8 @@ void CsCommandBuffer::recordImageLoad(
                 *computeDescriptorSet,
                 {});
     commandBufferImageLoad->dispatch(
-                loadImageStaging->getWidth() / 16 + 1,
-                loadImageStaging->getHeight() / 16 + 1,
+                loadImage->getWidth() / 16 + 1,
+                loadImage->getHeight() / 16 + 1,
                 1);
 
     renderTarget->transitionLayoutTo(
@@ -203,6 +215,8 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
         CsImage *const inputImage)
 {
     CS_LOG_INFO("Copying image GPU-->CPU.");
+
+    currentBuffer = &commandBufferImageSave.get();
 
     // This is for outputting an image to the CPU
     computeQueue.waitIdle();
@@ -264,15 +278,8 @@ void CsCommandBuffer::submitGeneric()
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
 
-    if (texStagingPending)
-    {
-        texStagingPending = false;
-        computeSubmitInfo.pCommandBuffers = &(*commandBufferImageLoad);
-    }
-    else
-    {
-        computeSubmitInfo.pCommandBuffers = &(*commandBufferGeneric);
-    }
+    computeSubmitInfo.pCommandBuffers = &commandBufferGeneric.get();
+
     computeQueue.submit(
                 1,
                 &computeSubmitInfo,
@@ -281,7 +288,19 @@ void CsCommandBuffer::submitGeneric()
 
 void CsCommandBuffer::submitImageLoad()
 {
+    device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    device->resetFences(1, &(*fence));
 
+    // Do the copy on the compute queue
+    vk::SubmitInfo computeSubmitInfo;
+    computeSubmitInfo.commandBufferCount = 1;
+
+    computeSubmitInfo.pCommandBuffers = &commandBufferImageLoad.get();
+
+    computeQueue.submit(
+                1,
+                &computeSubmitInfo,
+                *fence);
 }
 
 void CsCommandBuffer::submitImageSave()
@@ -291,17 +310,12 @@ void CsCommandBuffer::submitImageSave()
 
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
-    computeSubmitInfo.pCommandBuffers = &(*commandBufferImageSave);
+    computeSubmitInfo.pCommandBuffers = &commandBufferImageSave.get();
 
     computeQueue.submit(
                 1,
                 &computeSubmitInfo,
                 *fence);
-}
-
-void CsCommandBuffer::setTexStagingPending(const bool b)
-{
-    texStagingPending = b;
 }
 
 vk::Queue* CsCommandBuffer::getQueue()
@@ -357,6 +371,11 @@ void CsCommandBuffer::createBuffer(
     bufferMemory = device->allocateMemoryUnique(allocInfo);
 
     device->bindBufferMemory(*buffer, *bufferMemory, 0);
+}
+
+vk::CommandBuffer* CsCommandBuffer::getCurrent()
+{
+    return currentBuffer;
 }
 
 uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)

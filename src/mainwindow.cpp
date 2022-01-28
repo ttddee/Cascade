@@ -26,6 +26,7 @@
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
+#include <QTimer>
 
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
@@ -175,7 +176,7 @@ void MainWindow::handleSaveProjectAsAction()
 
 void MainWindow::handleExitAction()
 {
-    QApplication::quit();
+    shutdown();
 }
 
 void MainWindow::handleShortcutsAction()
@@ -186,6 +187,13 @@ void MainWindow::handleShortcutsAction()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     nodeGraph->flushCacheAllNodes();
+
+    //QMainWindow::closeEvent(event);
+}
+
+void MainWindow::shutdown()
+{
+    QApplication::quit();
 }
 
 MainWindow::~MainWindow()

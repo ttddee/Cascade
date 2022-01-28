@@ -83,6 +83,7 @@ public slots:
     void handleSaveProjectAsAction();
     void handleExitAction();
     void handleShortcutsAction();
+    void shutdown();
 
     void closeEvent(QCloseEvent* event);
 

@@ -60,11 +60,11 @@ VulkanRenderer::VulkanRenderer(VulkanWindow *w)
 
 void VulkanRenderer::initResources()
 {
-    /// Get device and functions
+    // Get device and functions
     device = window->device();
     physicalDevice = window->physicalDevice();
 
-    /// Init all the permanent parts of the renderer
+    // Init all the permanent parts of the renderer
     createVertexBuffer();
     createSampler();
     createDescriptorPool();
@@ -78,21 +78,18 @@ void VulkanRenderer::initResources()
     createComputeDescriptors();
     createComputePipelineLayout();
 
-    /// Load all the shaders we need and create their pipelines
+    // Load all the shaders we need and create their pipelines
     loadShadersFromDisk();
     // Create Noop pipeline
     computePipelineNoop = createComputePipelineNoop();
     // Create a pipeline for each shader
     createComputePipelines();
 
-//    createComputeQueue();
-//    createComputeCommandPool();
-//    createComputeCommandBuffers();
     computeCommandBuffer = std::unique_ptr<CsCommandBuffer>(
                 new CsCommandBuffer(&device,
                                     &physicalDevice,
-                                    &(*computePipelineLayout),
-                                    &(*computeDescriptorSet)));
+                                    &computePipelineLayout.get(),
+                                    &computeDescriptorSet.get()));
 
     settingsBuffer = std::unique_ptr<CsSettingsBuffer>(new CsSettingsBuffer(
                 &device,
@@ -106,7 +103,7 @@ void VulkanRenderer::initResources()
     }
     catch(OCIO::Exception& exception)
     {
-        CS_LOG_CRITICAL("OpenColorIO Error: " + QString(exception.what()));
+        CS_LOG_WARNING("OpenColorIO Error: " + QString(exception.what()));
     }
 
     emit window->rendererHasBeenCreated();
@@ -128,11 +125,12 @@ void VulkanRenderer::createVertexBuffer()
     const vk::DeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
     const vk::DeviceSize uniformAllocSize = aligned(UNIFORM_DATA_SIZE, uniAlign);
 
-    vk::BufferCreateInfo bufferInfo({},
-                         vertexAllocSize + concurrentFrameCount * uniformAllocSize,
-                         vk::BufferUsageFlags(
-                                        vk::BufferUsageFlagBits::eVertexBuffer |
-                                        vk::BufferUsageFlagBits::eUniformBuffer));
+    vk::BufferCreateInfo bufferInfo
+            ({},
+             vertexAllocSize + concurrentFrameCount * uniformAllocSize,
+             vk::BufferUsageFlags(
+                            vk::BufferUsageFlagBits::eVertexBuffer |
+                            vk::BufferUsageFlagBits::eUniformBuffer));
     vertexBuffer = device.createBufferUnique(bufferInfo);
 
     vk::MemoryRequirements memReq = device.getBufferMemoryRequirements(*vertexBuffer);
@@ -141,33 +139,42 @@ void VulkanRenderer::createVertexBuffer()
 
     vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo);
 
-    device.bindBufferMemory(*vertexBuffer, *vertexBufferMemory, 0);
+    // copy the vertex and color data into that device memory
+    uint8_t * pData = static_cast<uint8_t *>(
+                device.mapMemory(
+                    vertexBufferMemory.get(), 0, memReq.size));
+    memcpy( pData, vertexData, sizeof( vertexData ) );
+    //device.unmapMemory( vertexBufferMemory.get() );
 
-    quint8 *p;
-    vk::Result err = device.mapMemory(*vertexBufferMemory,
-                     0,
-                     memReq.size,
-                     {},
-                     reinterpret_cast<void **>(&p));
 
-    if (err != vk::Result::eSuccess)
-    {
-        CS_LOG_WARNING("Failed to map memory for vertex buffer.");
-        CS_LOG_CONSOLE("Failed to map memory for vertex buffer.");
-    }
 
-    memcpy(p, vertexData, sizeof(vertexData));
+//    quint8 *p;
+//    vk::Result err = device.mapMemory(
+//                *vertexBufferMemory,
+//                0,
+//                memReq.size,
+//                {},
+//                reinterpret_cast<void **>(&p));
+
+//    if (err != vk::Result::eSuccess)
+//    {
+//        CS_LOG_WARNING("Failed to map memory for vertex buffer.");
+//        CS_LOG_CONSOLE("Failed to map memory for vertex buffer.");
+//    }
+
+//    memcpy(p, vertexData, sizeof(vertexData));
     QMatrix4x4 ident;
-    //memset(uniformBufferInfo, 0, sizeof(uniformBufferInfo));
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
         const vk::DeviceSize offset = vertexAllocSize + i * uniformAllocSize;
-        memcpy(p + offset, ident.constData(), 16 * sizeof(float));
+        memcpy(pData + offset, ident.constData(), 16 * sizeof(float));
         uniformBufferInfo[i].setBuffer(*vertexBuffer);
         uniformBufferInfo[i].setOffset(offset);
         uniformBufferInfo[i].setRange(uniformAllocSize);
     }
-    device.unmapMemory(*vertexBufferMemory);
+    device.unmapMemory(vertexBufferMemory.get());
+
+    device.bindBufferMemory(*vertexBuffer, *vertexBufferMemory, 0);
 }
 
 void VulkanRenderer::createSampler()
@@ -180,8 +187,8 @@ void VulkanRenderer::createSampler()
                                       vk::SamplerAddressMode::eClampToEdge,
                                       vk::SamplerAddressMode::eClampToEdge,
                                       vk::SamplerAddressMode::eClampToEdge,
-                                      0,
-                                      0);
+                                      {},
+                                      false);
 
     sampler = device.createSamplerUnique(samplerInfo);
 }
@@ -234,8 +241,7 @@ void VulkanRenderer::createGraphicsDescriptors()
 void VulkanRenderer::createGraphicsPipelineCache()
 {
     // Pipeline cache
-    vk::PipelineCacheCreateInfo pipelineCacheInfo({}, {});
-
+    vk::PipelineCacheCreateInfo pipelineCacheInfo;
     pipelineCache = device.createPipelineCacheUnique(pipelineCacheInfo);
 }
 
@@ -256,37 +262,6 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     graphicsPipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo);
 }
 
-//void VulkanRenderer::createBuffer(
-//        vk::UniqueBuffer& buffer,
-//        vk::UniqueDeviceMemory& bufferMemory,
-//        vk::DeviceSize& size)
-//{
-//    vk::BufferCreateInfo bufferInfo(
-//                {},
-//                size,
-//                vk::BufferUsageFlags(
-//                    vk::BufferUsageFlagBits::eTransferDst |
-//                    vk::BufferUsageFlagBits::eUniformBuffer),
-//                vk::SharingMode::eExclusive);
-
-//    buffer = device.createBufferUnique(bufferInfo);
-
-//    vk::MemoryRequirements memRequirements = device.getBufferMemoryRequirements(*buffer);
-
-//    uint32_t memoryType = findMemoryType(
-//                memRequirements.memoryTypeBits,
-//                vk::MemoryPropertyFlags(
-//                    vk::MemoryPropertyFlagBits::eHostVisible |
-//                    vk::MemoryPropertyFlagBits::eHostCoherent));
-
-//    vk::MemoryAllocateInfo allocInfo(memRequirements.size,
-//                                     memoryType);
-
-//    bufferMemory = device.allocateMemoryUnique(allocInfo);
-
-//    device.bindBufferMemory(*buffer, *bufferMemory, 0);
-//}
-
 void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
 {
     auto props = node->getAllPropertyValues();
@@ -294,8 +269,9 @@ void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
     settingsBuffer->fillBuffer(props);
 }
 
-void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
-                                            const QString& fragShaderPath)
+void VulkanRenderer::createGraphicsPipeline(
+        vk::UniquePipeline& pl,
+        const QString& fragShaderPath)
 {
     // Vertex shader never changes
     vk::UniqueShaderModule vertShaderModule = createShaderFromFile(":/shaders/texture_vert.spv");
@@ -329,7 +305,7 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
                 5 * sizeof(float),
                 vk::VertexInputRate::eVertex);
 
-    std::vector<vk::VertexInputAttributeDescription> vertexAttrDesc =
+    std::vector<vk::VertexInputAttributeDescription> vertexAttrDesc(
     {
         { // position
             0, // location
@@ -343,7 +319,7 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
             vk::Format::eR32G32Sfloat,
             3 * sizeof(float)
         }
-    };
+    });
 
     vk::PipelineVertexInputStateCreateInfo vertexInputInfo(
                 {},
@@ -369,8 +345,8 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
 
     vk::PipelineRasterizationStateCreateInfo rs(
                 {},
-                false,
-                false,
+                {},
+                {},
                 vk::PolygonMode::eFill,
                 vk::CullModeFlagBits::eBack,
                 vk::FrontFace::eClockwise,
@@ -411,17 +387,19 @@ void VulkanRenderer::createGraphicsPipeline(vk::UniquePipeline& pl,
                 &att);
     pipelineInfo.pColorBlendState = &cb;
 
-    vk::DynamicState dynEnable[] = { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
+    vk::DynamicState dynEnable[] =
+    { vk::DynamicState::eViewport, vk::DynamicState::eScissor };
 
-    vk::PipelineDynamicStateCreateInfo dyn({},
-                                           sizeof(dynEnable) / sizeof(vk::DynamicState),
-                                           dynEnable);
+    vk::PipelineDynamicStateCreateInfo dyn(
+                {},
+                sizeof(dynEnable) / sizeof(vk::DynamicState),
+                dynEnable);
     pipelineInfo.pDynamicState = &dyn;
 
     pipelineInfo.layout = *graphicsPipelineLayout;
     pipelineInfo.renderPass = window->defaultRenderPass();
 
-    pl = device.createGraphicsPipelineUnique(*pipelineCache, pipelineInfo).value;
+    pl = std::move(device.createGraphicsPipelineUnique(*pipelineCache, pipelineInfo).value);
 }
 
 vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
@@ -506,12 +484,12 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
 
     // The image we are going to copy into
     // TODO: We can skip this and copy straight into cache
-    tmpCacheImage = std::unique_ptr<CsImage>(
-                new CsImage(window,
-                            &device,
-                            &physicalDevice,
-                            cpuImage->xend(),
-                            cpuImage->yend()));
+//    tmpCacheImage = std::unique_ptr<CsImage>(
+//                new CsImage(window,
+//                            &device,
+//                            &physicalDevice,
+//                            cpuImage->xend(),
+//                            cpuImage->yend()));
 
     auto imageSize = QSize(cpuImage->xend(), cpuImage->yend());
 
@@ -527,13 +505,13 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
     }
 
     // The image that gets the data from the CPU
-    loadImageStaging = std::unique_ptr<CsImage>(new CsImage(
-                                                    window,
-                                                    &device,
-                                                    &physicalDevice,
-                                                    cpuImage->xend(),
-                                                    cpuImage->yend(),
-                                                    true));
+    loadImageStaging = std::unique_ptr<CsImage>(
+                new CsImage(window,
+                            &device,
+                            &physicalDevice,
+                            cpuImage->xend(),
+                            cpuImage->yend(),
+                            true));
 
     if (!writeLinearImage(
                 static_cast<float*>(cpuImage->localpixels()),
@@ -544,9 +522,6 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         CS_LOG_CONSOLE("Failed to write linear image");
         return false;
     }
-
-
-    computeCommandBuffer->setTexStagingPending(true);
 
     loadImageSize = imageSize;
 
@@ -671,10 +646,8 @@ void VulkanRenderer::createComputeDescriptors()
     computeDescriptorSet = std::move(device.allocateDescriptorSetsUnique(descSetAllocInfoCompute).front());
 }
 
-void VulkanRenderer::updateComputeDescriptors(
-        const CsImage* const inputImageBack,
-        const CsImage* const inputImageFront,
-        const CsImage* const outputImage)
+void VulkanRenderer::updateGraphicsDescriptors(
+        const CsImage *const outputImage)
 {
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
@@ -698,6 +671,35 @@ void VulkanRenderer::updateComputeDescriptors(
 
         device.updateDescriptorSets(descWrite, {});
     }
+}
+
+void VulkanRenderer::updateComputeDescriptors(
+        const CsImage* const inputImageBack,
+        const CsImage* const inputImageFront,
+        const CsImage* const outputImage)
+{
+//    for (int i = 0; i < concurrentFrameCount; ++i)
+//    {
+//        std::vector<vk::WriteDescriptorSet> descWrite(2);
+//        descWrite.at(0).dstSet = *graphicsDescriptorSet.at(i);
+//        descWrite.at(0).dstBinding = 0;
+//        descWrite.at(0).descriptorCount = 1;
+//        descWrite.at(0).descriptorType = vk::DescriptorType::eUniformBuffer;
+//        descWrite.at(0).pBufferInfo = &uniformBufferInfo[i];
+
+//        vk::DescriptorImageInfo descImageInfo(
+//                    *sampler,
+//                    *outputImage->getImageView(),
+//                    vk::ImageLayout::eShaderReadOnlyOptimal);
+
+//        descWrite.at(1).dstSet = *graphicsDescriptorSet.at(i);
+//        descWrite.at(1).dstBinding = 1;
+//        descWrite.at(1).descriptorCount = 1;
+//        descWrite.at(1).descriptorType = vk::DescriptorType::eCombinedImageSampler;
+//        descWrite.at(1).pImageInfo = &descImageInfo;
+
+//        device.updateDescriptorSets(descWrite, {});
+//    }
 
     {
         vk::DescriptorImageInfo sourceInfoBack(
@@ -950,10 +952,12 @@ void VulkanRenderer::createRenderPass()
 {
     CS_LOG_INFO("Creating Render Pass.");
 
-    vk::CommandBuffer* cb = computeCommandBuffer->getGeneric();
+    vk::CommandBuffer cb = window->currentCommandBuffer();
 
-    vk::CommandBufferBeginInfo cbBegin;
-    cb->begin(cbBegin);
+//    vk::CommandBuffer cb = *computeCommandBuffer->getGeneric();
+//    vk::CommandBufferBeginInfo beginInfo;
+
+//    cb.begin(beginInfo);
 
     const QSize sz = window->swapChainImageSize();
 
@@ -970,7 +974,10 @@ void VulkanRenderer::createRenderPass()
     rpBeginInfo.renderArea.extent.height = sz.height();
     rpBeginInfo.clearValueCount = 2;
     rpBeginInfo.pClearValues = clearValues;
-    cb->beginRenderPass(rpBeginInfo, vk::SubpassContents::eInline);
+
+    cb.beginRenderPass(
+                rpBeginInfo,
+                vk::SubpassContents::eInline);
 
     // TODO: Can we do this once?
     quint8 *p;
@@ -1005,22 +1012,22 @@ void VulkanRenderer::createRenderPass()
     device.unmapMemory(*vertexBufferMemory);
 
     // Choose to either display RGB or Alpha
-    vk::Pipeline pl;
+    vk::Pipeline* pl;
     if (displayMode == DISPLAY_MODE_ALPHA)
-        pl = *graphicsPipelineAlpha;
+        pl = &graphicsPipelineAlpha.get();
     else
-        pl = *graphicsPipelineRGB;
+        pl = &graphicsPipelineRGB.get();
 
-    cb->pushConstants(
+    cb.pushConstants(
                 *graphicsPipelineLayout,
                 vk::ShaderStageFlagBits::eFragment,
                 0,
                 sizeof(viewerPushConstants),
                 viewerPushConstants.data());
-    cb->bindPipeline(
+    cb.bindPipeline(
                 vk::PipelineBindPoint::eGraphics,
-                pl);
-    cb->bindDescriptorSets(
+                *pl);
+    cb.bindDescriptorSets(
                 vk::PipelineBindPoint::eGraphics,
                 *graphicsPipelineLayout,
                 0,
@@ -1028,10 +1035,10 @@ void VulkanRenderer::createRenderPass()
                 {});
 
     vk::DeviceSize vbOffset = 0;
-    cb->bindVertexBuffers(
+    cb.bindVertexBuffers(
                 0,
                 1,
-                &(*vertexBuffer),
+                &vertexBuffer.get(),
                 &vbOffset);
 
     //negative viewport
@@ -1042,7 +1049,7 @@ void VulkanRenderer::createRenderPass()
     viewport.height = sz.height();
     viewport.minDepth = 0;
     viewport.maxDepth = 1;
-    cb->setViewport(
+    cb.setViewport(
                 0,
                 1,
                 &viewport);
@@ -1051,57 +1058,48 @@ void VulkanRenderer::createRenderPass()
     scissor.offset.x = scissor.offset.y = 0;
     scissor.extent.width = viewport.width;
     scissor.extent.height = viewport.height;
-    cb->setScissor(
+    cb.setScissor(
                 0,
                 1,
                 &scissor);
 
-    cb->draw(4, 1, 0, 0);
+    CS_LOG_INFO("Drawing");
+    cb.draw(4, 1, 0, 0);
 
-    cb->endRenderPass();
-    cb->end();
+    cb.endRenderPass();
+
+//    auto swImage = window->swapChainImage(window->currentSwapChainImageIndex());
+
+//    QSize imSize(computeRenderTarget->getWidth(), computeRenderTarget->getHeight());
+
+//    QSize blitSrcSize = imSize;
+//    QSize blitDstSize = imSize;
+
+//    if (imSize.width() > sz.width())
+//    {
+//        blitSrcSize.setWidth(blitSrcSize.width() - (imSize.width() - sz.width()));
+//        blitDstSize.setWidth(blitSrcSize.width());
+//    }
+//    if (imSize.height() > sz.height())
+//    {
+//        blitSrcSize.setHeight(blitSrcSize.height() - (imSize.height() - sz.height()));
+//        blitDstSize.setHeight(blitSrcSize.height());
+//    }
+
+//    vk::ImageSubresourceLayers imageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 );
+//    vk::ImageBlit imageBlit(
+//                imageSubresourceLayers,
+//                { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( blitSrcSize.width(), blitSrcSize.height(), 1 ) } },
+//                imageSubresourceLayers,
+//                { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( blitDstSize.width(), blitDstSize.height(), 1 ) } } );
+//    cb.blitImage(*displayImage->getImage(),
+//                 vk::ImageLayout::eTransferSrcOptimal,
+//                 swImage,
+//                 vk::ImageLayout::eColorAttachmentOptimal,
+//                 imageBlit,
+//                 vk::Filter::eLinear );
+    //cb.end();
 }
-
-//void VulkanRenderer::submitComputeCommands()
-//{
-//    // Submit compute commands
-//    // Use a fence to ensure that compute command buffer has finished executing before using it again
-//    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
-//    device.resetFences(1, &(*compute.fence));
-
-//    // Do the copy on the compute queue
-//    vk::SubmitInfo computeSubmitInfo;
-//    computeSubmitInfo.commandBufferCount = 1;
-
-//    if (texStagingPending)
-//    {
-//        texStagingPending = false;
-//        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageLoad);
-//    }
-//    else
-//    {
-//        computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferGeneric);
-//    }
-//    compute.computeQueue.submit(
-//                1,
-//                &computeSubmitInfo,
-//                *compute.fence);
-//}
-
-//void VulkanRenderer::submitImageSaveCommand()
-//{
-//    device.waitForFences(1, &(*compute.fence), true, UINT64_MAX);
-//    device.resetFences(1, &(*compute.fence));
-
-//    vk::SubmitInfo computeSubmitInfo;
-//    computeSubmitInfo.commandBufferCount = 1;
-//    computeSubmitInfo.pCommandBuffers = &(*compute.commandBufferImageSave);
-
-//    compute.computeQueue.submit(
-//                1,
-//                &computeSubmitInfo,
-//                *compute.fence);
-//}
 
 std::vector<float> VulkanRenderer::unpackPushConstants(const QString& s)
 {
@@ -1138,25 +1136,40 @@ void VulkanRenderer::processReadNode(NodeBase *node)
             CS_LOG_WARNING("Failed to create texture");
 
         // Update the projection size
+        // TODO: Do we need this here?
         createVertexBuffer();
+
+        tmpCacheImage = std::unique_ptr<CsImage>(
+                    new CsImage(window,
+                                &device,
+                                &physicalDevice,
+                                cpuImage->xend(),
+                                cpuImage->yend()));
 
         // Create render target
         if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
             CS_LOG_WARNING("Failed to create compute render target.");
 
-        updateComputeDescriptors(&(*tmpCacheImage), nullptr, &(*computeRenderTarget));
+        updateComputeDescriptors(tmpCacheImage.get(), nullptr, computeRenderTarget.get());
 
         computeCommandBuffer->recordImageLoad(
-                    &(*loadImageStaging),
-                    &(*tmpCacheImage),
-                    &(*computeRenderTarget),
-                    &(*pipelines[NODE_TYPE_READ]));
+                    loadImageStaging.get(),
+                    tmpCacheImage.get(),
+                    computeRenderTarget.get(),
+                    &pipelines[NODE_TYPE_READ].get());
 
-        computeCommandBuffer->submitGeneric();
+        computeCommandBuffer->submitImageLoad();
 
         CS_LOG_INFO("Moving render target.");
 
         node->setCachedImage(std::move(computeRenderTarget));
+
+        displayImage = node->getCachedImage();
+
+        // Delete the staging image
+        device.waitIdle();
+
+        loadImageStaging = nullptr;
     }
 }
 
@@ -1266,8 +1279,10 @@ void VulkanRenderer::processNode(
 
             node->setCachedImage(std::move(computeRenderTarget));
         }
+
         window->requestUpdate();
     }
+    displayImage = node->getCachedImage();
 }
 
 void VulkanRenderer::displayNode(const NodeBase *node)
@@ -1277,6 +1292,10 @@ void VulkanRenderer::displayNode(const NodeBase *node)
     // for displaying a node that has already been rendered
     if(CsImage* image = node->getCachedImage())
     {
+        //displayImage = image;
+
+        // TODO: All of this has been done in processNode?
+
         CS_LOG_INFO("Displaying node.");
         clearScreen = false;
 
@@ -1286,6 +1305,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
         if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
             qFatal("Failed to create compute render target.");
 
+        updateGraphicsDescriptors(image);
         updateComputeDescriptors(image, nullptr, computeRenderTarget.get());
 
         computeCommandBuffer->recordGeneric(
@@ -1302,6 +1322,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
     }
     else
     {
+        CS_LOG_INFO("Clearing screen");
         doClearScreen();
     }
 }
@@ -1339,9 +1360,10 @@ void VulkanRenderer::startNextFrame()
         // Clear background
         vk::ClearDepthStencilValue clearDS = { 1, 0 };
         vk::ClearValue clearValues[2];
-        memset(clearValues, 0, sizeof(clearValues));
         clearValues[0].color = clearColor;
         clearValues[1].depthStencil = clearDS;
+
+        vk::CommandBuffer cmdBuf = window->currentCommandBuffer();
 
         vk::RenderPassBeginInfo rpBeginInfo;
         rpBeginInfo.renderPass = window->defaultRenderPass();
@@ -1350,7 +1372,7 @@ void VulkanRenderer::startNextFrame()
         rpBeginInfo.renderArea.extent.height = sz.height();
         rpBeginInfo.clearValueCount = 2;
         rpBeginInfo.pClearValues = clearValues;
-        vk::CommandBuffer cmdBuf = window->currentCommandBuffer();
+
         cmdBuf.beginRenderPass(
                     &rpBeginInfo,
                     vk::SubpassContents::eInline);
@@ -1389,9 +1411,19 @@ void VulkanRenderer::scale(float s)
 
 void VulkanRenderer::releaseSwapChainResources()
 {
+    CS_LOG_INFO("Releasing swapchain resources.");
+}
+
+void VulkanRenderer::releaseResources()
+{
+    CS_LOG_INFO("Releasing resources.");
+}
+
+VulkanRenderer::~VulkanRenderer()
+{
+    CS_LOG_INFO("Destroying Renderer.");
     device.waitIdle();
 
-    CS_LOG_INFO("Releasing resources.");
     loadImageStaging = nullptr;
     tmpCacheImage = nullptr;
     computeRenderTarget = nullptr;
@@ -1415,14 +1447,4 @@ void VulkanRenderer::releaseSwapChainResources()
     device.destroy(*vertexBuffer);
 
     device.waitIdle();
-}
-
-void VulkanRenderer::releaseResources()
-{
-
-}
-
-VulkanRenderer::~VulkanRenderer()
-{
-    CS_LOG_INFO("Destroying Renderer.");
 }

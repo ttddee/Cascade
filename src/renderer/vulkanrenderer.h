@@ -124,6 +124,8 @@ private:
             uint32_t height);
 
     void createComputeDescriptors();
+    void updateGraphicsDescriptors(
+            const CsImage* const outputImage);
     void updateComputeDescriptors(
             const CsImage* const inputImageBack,
             const CsImage* const inputImageFront,
@@ -219,6 +221,8 @@ private:
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
+
+    CsImage* displayImage = nullptr;
 
 };
 

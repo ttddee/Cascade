@@ -20,25 +20,24 @@ public:
             int numShaderPasses,
             int currentShaderPass);
     void recordImageLoad(
-            CsImage* const loadImageStaging,
-            CsImage* const tmpCacheImage,
+            CsImage* const loadImage,
+            CsImage* const tmpImage,
             CsImage* const renderTarget,
             vk::Pipeline* const readNodePipeline);
     vk::DeviceMemory* recordImageSave(
             CsImage* const inputImage);
 
-    ~CsCommandBuffer();
-
     void submitGeneric();
     void submitImageLoad();
     void submitImageSave();
 
-    void setTexStagingPending(const bool b);
+    ~CsCommandBuffer();
 
     vk::Queue* getQueue();
     vk::CommandBuffer* getGeneric();
     vk::CommandBuffer* getImageLoad();
     vk::CommandBuffer* getImageSave();
+    vk::CommandBuffer* getCurrent();
 
 private:
     void createComputeQueue();
@@ -66,6 +65,8 @@ private:
     // Command buffer for writing images to disk
     vk::UniqueCommandBuffer commandBufferImageSave;
 
+    vk::CommandBuffer* currentBuffer;
+
     vk::Queue computeQueue;
     vk::UniqueFence fence;
 
@@ -74,8 +75,6 @@ private:
 
     vk::UniqueBuffer outputStagingBuffer;
     vk::UniqueDeviceMemory outputStagingBufferMemory;
-
-    bool texStagingPending = false;
 };
 
 #endif // CSCOMMANDBUFFER_H
