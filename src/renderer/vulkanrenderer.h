@@ -187,7 +187,7 @@ private:
 
     QSize outputImageSize;
 
-    const vk::ClearColorValue clearColor = std::array<float, 4> ({ 0.95f, 0.05f, 0.05f, 0.0f });
+    const vk::ClearColorValue clearColor = std::array<float, 4> ({ 0.05f, 0.05f, 0.05f, 0.0f });
 
     QMatrix4x4 projection;
     float rotation    = 0.0f;

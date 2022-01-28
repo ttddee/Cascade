@@ -35,8 +35,8 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
     this->setFlags(QVulkanWindow::PersistentResources);
 
     // Set swapchain color format
-    QVector colorFormats({ VK_FORMAT_B8G8R8A8_SRGB });
-    this->setPreferredColorFormats(colorFormats);
+    //QVector colorFormats({ VK_FORMAT_B8G8R8A8_SRGB });
+    //this->setPreferredColorFormats(colorFormats);
 
     // If there is more than one GPU, pick the discrete one if possible
     auto props = availablePhysicalDevices();

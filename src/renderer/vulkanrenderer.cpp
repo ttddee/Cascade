@@ -330,8 +330,9 @@ void VulkanRenderer::createGraphicsPipeline(
 
     pipelineInfo.pVertexInputState = &vertexInputInfo;
 
-    vk::PipelineInputAssemblyStateCreateInfo ia({},
-                                                vk::PrimitiveTopology::eTriangleStrip);
+    vk::PipelineInputAssemblyStateCreateInfo ia(
+                {},
+                vk::PrimitiveTopology::eTriangleStrip);
     pipelineInfo.pInputAssemblyState = &ia;
 
     // The viewport and scissor will be set dynamically via vkCmdSetViewport/Scissor.
@@ -377,7 +378,14 @@ void VulkanRenderer::createGraphicsPipeline(
                 vk::BlendOp::eAdd,
                 vk::BlendFactor::eOne,
                 vk::BlendFactor::eOne,
-                vk::BlendOp::eAdd);
+                vk::BlendOp::eAdd,
+                {
+                    vk::ColorComponentFlags(
+                        vk::ColorComponentFlagBits::eR |
+                        vk::ColorComponentFlagBits::eG |
+                        vk::ColorComponentFlagBits::eB |
+                        vk::ColorComponentFlagBits::eA)
+                });
 
     vk::PipelineColorBlendStateCreateInfo cb(
                 {},
@@ -1068,6 +1076,8 @@ void VulkanRenderer::createRenderPass()
 
     cb.endRenderPass();
 
+    //cb.end();
+
 //    auto swImage = window->swapChainImage(window->currentSwapChainImageIndex());
 
 //    QSize imSize(computeRenderTarget->getWidth(), computeRenderTarget->getHeight());
@@ -1098,7 +1108,7 @@ void VulkanRenderer::createRenderPass()
 //                 vk::ImageLayout::eColorAttachmentOptimal,
 //                 imageBlit,
 //                 vk::Filter::eLinear );
-    //cb.end();
+
 }
 
 std::vector<float> VulkanRenderer::unpackPushConstants(const QString& s)
