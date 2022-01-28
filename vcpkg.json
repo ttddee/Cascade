@@ -8,7 +8,6 @@
       "default-features": false,
 	  "features": [ "gif", "libraw", "opencolorio" ]
     },
-	"vulkan-headers",
 	"tbb",
 	"gtest"
   ],

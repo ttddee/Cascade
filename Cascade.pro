@@ -59,9 +59,9 @@ SOURCES += \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
+    src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
-    src/renderer/objectmanager.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/slidernoclick.cpp \
@@ -125,9 +125,9 @@ HEADERS += \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
+    src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
-    src/renderer/objectmanager.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
     src/slidernoclick.h \
@@ -200,6 +200,7 @@ win32-msvc* {
     QT_ROOT = C:/Qt515/5.15.0/msvc2019_64
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
+    INCLUDEPATH += C:/VulkanSDK/1.2.198.1/include
 
     COPIES += dlls
     COPIES += platforms

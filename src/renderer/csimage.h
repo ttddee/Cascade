@@ -24,6 +24,8 @@
 
 #include <vulkan/vulkan.h>
 
+#include "vulkan/vulkan.hpp"
+
 #include "../vulkanwindow.h"
 
 class CsImage
@@ -31,17 +33,20 @@ class CsImage
 public:
     CsImage(
             VulkanWindow* win,
-            const VkDevice* d,
-            QVulkanDeviceFunctions* df,
+            const vk::Device* d,
+            const vk::PhysicalDevice* pd,
             const int w = 100,
-            const int h = 100);
+            const int h = 100,
+            const bool isLinear = false);
 
-    VkImage& getImage();
-    VkImageView& getImageView();
-    VkDeviceMemory& getMemory();
+    const vk::UniqueImage& getImage() const;
+    const vk::UniqueImageView& getImageView() const;
+    const vk::UniqueDeviceMemory& getMemory() const;
 
-    VkImageLayout getLayout();
-    void setLayout(VkImageLayout layout);
+    const vk::ImageLayout getLayout() const;
+    void transitionLayoutTo(vk::UniqueCommandBuffer& cb,
+                            vk::ImageLayout layout);
+    void setLayout(const vk::ImageLayout& layout);
 
     int getWidth() const;
     int getHeight() const;
@@ -51,15 +56,15 @@ public:
     ~CsImage();
 
 private:
-    VkImage image           = VK_NULL_HANDLE;
-    VkImageView view        = VK_NULL_HANDLE;
-    VkDeviceMemory memory   = VK_NULL_HANDLE;
+    vk::UniqueImage image;
+    vk::UniqueImageView view;
+    vk::UniqueDeviceMemory memory;
 
     VulkanWindow* window;
-    QVulkanDeviceFunctions *devFuncs;
-    const VkDevice* device;
+    const vk::Device* device;
+    const vk::PhysicalDevice* physicalDevice;
 
-    VkImageLayout currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+    vk::ImageLayout currentLayout = vk::ImageLayout::eUndefined;
 
     const int width;
     const int height;

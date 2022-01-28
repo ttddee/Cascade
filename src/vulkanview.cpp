@@ -21,6 +21,7 @@
 
 #include <QApplication>
 #include <QHBoxLayout>
+#include <QLoggingCategory>
 
 #include "csmessagebox.h"
 #include "viewerstatusbar.h"
@@ -35,15 +36,13 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
-    instance.setLayers(QByteArrayList()
-                       << "VK_LAYER_GOOGLE_threading"
-                       << "VK_LAYER_LUNARG_parameter_validation"
-                       << "VK_LAYER_LUNARG_object_tracker"
-                       << "VK_LAYER_LUNARG_core_validation"
-                       << "VK_LAYER_LUNARG_image"
-                       << "VK_LAYER_LUNARG_swapchain"
-                       << "VK_LAYER_GOOGLE_unique_objects"
-                       << "VK_LAYER_KHRONOS_validation");
+    instance.setLayers(QByteArrayList() << "VK_LAYER_KHRONOS_validation");
+
+    // Set up Dynamic Dispatch Loader to use with vulkan.hpp
+    vk::DynamicLoader dl;
+    PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
+        dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
     if (!instance.create())
     {
@@ -66,6 +65,8 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
         CS_LOG_FATAL("Failed to create Vulkan instance. Error code: ");
         CS_LOG_FATAL(QString::number(instance.errorCode()));
     }
+
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance.vkInstance());
 
     // Create a VulkanWindow
     vulkanWindow = new VulkanWindow();
@@ -91,5 +92,4 @@ VulkanWindow* VulkanView::getVulkanWindow()
 VulkanView::~VulkanView()
 {
     delete vulkanWindow;
-    CS_LOG_CONSOLE("Destroying VulkanView.");
 }

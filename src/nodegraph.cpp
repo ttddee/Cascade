@@ -413,6 +413,12 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
     jsonNodeGraph.push_back(jsonConnectionsHeading);
 }
 
+void NodeGraph::flushCacheAllNodes()
+{
+    for (auto& n : nodes)
+        n->flushCache();
+}
+
 void NodeGraph::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)

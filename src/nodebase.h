@@ -62,8 +62,6 @@ public:
 
     const NodeType nodeType;
 
-    std::shared_ptr<CsImage> cachedImage = nullptr;;
-
     void setIsSelected(const bool b);
     void setIsActive(const bool b);
     void setIsViewed(const bool b);
@@ -72,34 +70,37 @@ public:
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
 
-    NodeProperties* getProperties();
-    QString getAllPropertyValues();
-    QSize getTargetSize();
+    NodeProperties* getProperties() const;
+    QString getAllPropertyValues() const;
+    QSize getTargetSize() const;
     void addNodeToJsonArray(QJsonArray& jsonNodesArray);
 
-    NodeInput* getRgbaBackIn();
-    NodeInput* getRgbaFrontIn();
-    NodeOutput* getRgbaOut();
+    NodeInput* getRgbaBackIn() const;
+    NodeInput* getRgbaFrontIn() const;
+    NodeOutput* getRgbaOut() const;
 
-    NodeBase* getUpstreamNodeBack();
-    NodeBase* getUpstreamNodeFront();
+    NodeBase* getUpstreamNodeBack() const;
+    NodeBase* getUpstreamNodeFront()const;
 
     void getAllUpstreamNodes(std::vector<NodeBase*>& nodes);
     std::set<Connection*> getAllConnections();
 
+    CsImage* getCachedImage() const;
+    void setCachedImage(std::unique_ptr<CsImage> image);
+
     void invalidateAllDownstreamNodes();
 
-    bool canBeRendered();
+    bool canBeRendered() const;
 
     void requestUpdate();
 
-    QString getCustomSize();
+    QString getCustomSize() const;
 
-    bool getHasCustomSize();
+    bool getHasCustomSize() const;
     void setHasCustomSize(UiEntity* source);
 
-    NodeInput* getOpenInput();
-    QSize getInputSize();
+    NodeInput* getOpenInput() const;
+    QSize getInputSize() const;
 
     QString getID() const;
     void setID(const QString& s);
@@ -111,6 +112,8 @@ public:
     NodeInput* findNodeInput(const QString& id);
 
     void updateConnectionPositions();
+
+    void flushCache();
 
     virtual ~NodeBase();
 
@@ -136,6 +139,8 @@ private:
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
     void moveEvent(QMoveEvent*) override;
+
+    std::unique_ptr<CsImage> cachedImage;
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;

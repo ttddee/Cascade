@@ -23,136 +23,169 @@
 
 CsImage::CsImage(
         VulkanWindow* win,
-        const VkDevice* d,
-        QVulkanDeviceFunctions* df,
+        const vk::Device* d,
+        const vk::PhysicalDevice* pd,
         const int w,
-        const int h)
-        : devFuncs(df),
-          device(d),
+        const int h,
+        const bool isLinear)
+        : device(d),
+          physicalDevice(pd),
           width(w),
           height(h)
 {
     window = win;
 
-    VkImageCreateInfo imageInfo = {};
+    isLinear ? currentLayout = vk::ImageLayout::eUndefined :
+               currentLayout = vk::ImageLayout::ePreinitialized;
 
-    imageInfo.sType             = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
-    imageInfo.imageType         = VK_IMAGE_TYPE_2D;
-    imageInfo.format            = VK_FORMAT_R32G32B32A32_SFLOAT;
-    imageInfo.extent.width      = width;
-    imageInfo.extent.height     = height;
-    imageInfo.extent.depth      = 1;
-    imageInfo.mipLevels         = 1;
-    imageInfo.arrayLayers       = 1;
-    imageInfo.samples           = VK_SAMPLE_COUNT_1_BIT;
-    imageInfo.tiling            = VK_IMAGE_TILING_OPTIMAL;
-    imageInfo.usage             = VK_IMAGE_USAGE_SAMPLED_BIT |
-                                  VK_IMAGE_USAGE_STORAGE_BIT |
-                                  VK_IMAGE_USAGE_TRANSFER_SRC_BIT |
-                                  VK_IMAGE_USAGE_TRANSFER_DST_BIT;
-    imageInfo.sharingMode       = VK_SHARING_MODE_EXCLUSIVE;
-    imageInfo.initialLayout     = VK_IMAGE_LAYOUT_UNDEFINED;
+    vk::ImageCreateInfo imageInfo({},
+                                  vk::ImageType::e2D,
+                                  vk::Format::eR32G32B32A32Sfloat,
+                                  vk::Extent3D(width, height, 1),
+                                  1,
+                                  1,
+                                  vk::SampleCountFlagBits::e1,
+                                  isLinear ? vk::ImageTiling::eLinear :
+                                             vk::ImageTiling::eOptimal,
+                                  isLinear ? vk::ImageUsageFlagBits::eSampled |
+                                             vk::ImageUsageFlagBits::eTransferSrc :
+                                             vk::ImageUsageFlagBits::eSampled |
+                                             vk::ImageUsageFlagBits::eStorage |
+                                             vk::ImageUsageFlagBits::eTransferSrc |
+                                             vk::ImageUsageFlagBits::eTransferDst,
+                                  vk::SharingMode::eExclusive,
+                                  {},
+                                  {},
+                                  currentLayout);
 
-    currentLayout = VK_IMAGE_LAYOUT_UNDEFINED;
-
-    VkResult err = devFuncs->vkCreateImage(
-                *device,
-                &imageInfo,
-                nullptr,
-                &image);
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to create linear image for texture: %d", err);
+    try
+    {
+        image = device->createImageUnique(imageInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not create unique image for CsImage.");
     }
 
-    //Get how much memory we need and how it should aligned
-    VkMemoryRequirements memReq;
-    devFuncs->vkGetImageMemoryRequirements(*device, image, &memReq);
+    // Get how much memory we need and how it should aligned
+    vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
 
-    //The render target will be on the GPU
-    uint32_t memIndex = window->deviceLocalMemoryIndex();
+    // Make sure linear images get memory visible to the CPU
+    uint32_t memIndex = 0;
 
-    if (!(memReq.memoryTypeBits & (1 << memIndex))) {
-        VkPhysicalDeviceMemoryProperties physDevMemProps;
-        window->vulkanInstance()->functions()->vkGetPhysicalDeviceMemoryProperties(
-                    window->physicalDevice(), &physDevMemProps);
-        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i) {
+    isLinear ? memIndex = window->hostVisibleMemoryIndex() :
+               memIndex = window->deviceLocalMemoryIndex();
+
+    if (!(memReq.memoryTypeBits & (1 << memIndex)))
+    {
+        vk::PhysicalDeviceMemoryProperties physDevMemProps = physicalDevice->getMemoryProperties();
+        for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
+        {
             if (!(memReq.memoryTypeBits & (1 << i)))
                 continue;
             memIndex = i;
         }
     }
 
-    VkMemoryAllocateInfo allocInfo = {
-        VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO,
-        nullptr,
-        memReq.size,
-        memIndex
-    };
-    CS_LOG_INFO("Allocating texture image: ");
-    CS_LOG_INFO(QString::number(uint32_t(memReq.size)) + " bytes");
+    vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
 
-    err = devFuncs->vkAllocateMemory(
-                *device,
-                &allocInfo,
-                nullptr,
-                &memory);
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to allocate memory for linear image: %d", err);
+    try
+    {
+        memory = device->allocateMemoryUnique(allocInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not allocate memory for CsImage.");
     }
 
     //Associate the image with this chunk of memory
-    err = devFuncs->vkBindImageMemory(
-                *device,
-                image,
-                memory,
-                0);
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to bind linear image memory: %d", err);
+    try
+    {
+        device->bindImageMemory(*image, *memory, 0);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not bind memory for CsImage.");
     }
 
-    VkImageViewCreateInfo viewInfo = {};
-    viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-    viewInfo.image = image;
-    viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
-    viewInfo.format = VK_FORMAT_R32G32B32A32_SFLOAT;
-    viewInfo.components.r = VK_COMPONENT_SWIZZLE_R;
-    viewInfo.components.g = VK_COMPONENT_SWIZZLE_G;
-    viewInfo.components.b = VK_COMPONENT_SWIZZLE_B;
-    viewInfo.components.a = VK_COMPONENT_SWIZZLE_A;
-    viewInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
-    viewInfo.subresourceRange.levelCount = viewInfo.subresourceRange.layerCount = 1;
+    vk::ImageViewCreateInfo viewInfo(
+                { },
+                *image,
+                vk::ImageViewType::e2D,
+                vk::Format::eR32G32B32A32Sfloat,
+                vk::ComponentMapping(vk::ComponentSwizzle::eR,
+                                     vk::ComponentSwizzle::eG,
+                                     vk::ComponentSwizzle::eB,
+                                     vk::ComponentSwizzle::eA),
+                vk::ImageSubresourceRange(vk::ImageAspectFlagBits::eColor,
+                                          0,
+                                          1,
+                                          0,
+                                          1));
 
-    err = devFuncs->vkCreateImageView(
-                *device,
-                &viewInfo,
-                nullptr,
-                &view);
-    if (err != VK_SUCCESS) {
-        qWarning("Failed to create image view for texture: %d", err);
+    try
+    {
+        view = device->createImageViewUnique(viewInfo);
+    }
+    catch (std::exception const &e)
+    {
+        CS_LOG_WARNING("Could not create image view for CsImage.");
     }
 }
 
-VkImage& CsImage::getImage()
+const vk::UniqueImage& CsImage::getImage() const
 {
     return image;
 }
 
-VkImageView& CsImage::getImageView()
+const vk::UniqueImageView& CsImage::getImageView() const
 {
     return view;
 }
 
-VkDeviceMemory& CsImage::getMemory()
+const vk::UniqueDeviceMemory& CsImage::getMemory() const
 {
     return memory;
 }
 
-VkImageLayout CsImage::getLayout()
+const vk::ImageLayout CsImage::getLayout() const
 {
     return currentLayout;
 }
 
-void CsImage::setLayout(VkImageLayout layout)
+void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout layout)
+{
+    // Note: The command buffer must be active
+
+    vk::ImageMemoryBarrier barrier(
+                vk::AccessFlagBits::eNoneKHR,
+                vk::AccessFlagBits::eShaderRead |
+                vk::AccessFlagBits::eShaderWrite,
+                currentLayout,
+                layout,
+                {},
+                {},
+                *image,
+                vk::ImageSubresourceRange
+                {
+                    vk::ImageAspectFlagBits::eColor,
+                    0,
+                    1,
+                    0,
+                    1});
+
+    cb->pipelineBarrier(
+                vk::PipelineStageFlagBits::eTopOfPipe,
+                vk::PipelineStageFlagBits::eComputeShader,
+                {},
+                {},
+                {},
+                barrier);
+
+    setLayout(layout);
+}
+
+void CsImage::setLayout(const vk::ImageLayout& layout)
 {
     currentLayout = layout;
 }
@@ -169,24 +202,10 @@ int CsImage::getHeight() const
 
 void CsImage::destroy()
 {
-    CS_LOG_INFO("Destroying image.");
-    CS_LOG_CONSOLE("Destroying image.");
 
-    if (view) {
-        devFuncs->vkDestroyImageView(*device, view, nullptr);
-        view = VK_NULL_HANDLE;
-    }
-    if (image) {
-        devFuncs->vkDestroyImage(*device, image, nullptr);
-        image = VK_NULL_HANDLE;
-    }
-    if (memory) {
-        devFuncs->vkFreeMemory(*device, memory, nullptr);
-        memory = VK_NULL_HANDLE;
-    }
 }
 
 CsImage::~CsImage()
 {
-    destroy();
+    CS_LOG_INFO("Destroying image.");
 }

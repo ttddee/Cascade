@@ -186,7 +186,7 @@ NodeInput* NodeBase::findNodeInput(const QString& id)
     return nullptr;
 }
 
-NodeInput* NodeBase::getRgbaBackIn()
+NodeInput* NodeBase::getRgbaBackIn() const
 {
     if (rgbaBackIn)
     {
@@ -195,7 +195,7 @@ NodeInput* NodeBase::getRgbaBackIn()
     return nullptr;
 }
 
-NodeInput* NodeBase::getRgbaFrontIn()
+NodeInput* NodeBase::getRgbaFrontIn() const
 {
     if (rgbaFrontIn)
     {
@@ -204,7 +204,7 @@ NodeInput* NodeBase::getRgbaFrontIn()
     return nullptr;
 }
 
-NodeOutput* NodeBase::getRgbaOut()
+NodeOutput* NodeBase::getRgbaOut() const
 {
     if (rgbaOut)
     {
@@ -213,7 +213,7 @@ NodeOutput* NodeBase::getRgbaOut()
     return nullptr;
 }
 
-NodeBase* NodeBase::getUpstreamNodeBack()
+NodeBase* NodeBase::getUpstreamNodeBack() const
 {
     if(rgbaBackIn && rgbaBackIn->hasConnection())
     {
@@ -222,7 +222,7 @@ NodeBase* NodeBase::getUpstreamNodeBack()
     return nullptr;
 }
 
-NodeBase* NodeBase::getUpstreamNodeFront()
+NodeBase* NodeBase::getUpstreamNodeFront() const
 {
     if(rgbaFrontIn && rgbaFrontIn->hasConnection())
     {
@@ -261,12 +261,12 @@ void NodeBase::requestUpdate()
     emit nodeRequestUpdate(this);
 }
 
-QString NodeBase::getCustomSize()
+QString NodeBase::getCustomSize() const
 {
     return sizeSource->getValuesAsString();
 }
 
-bool NodeBase::getHasCustomSize()
+bool NodeBase::getHasCustomSize() const
 {
     return hasCustomSize;
 }
@@ -277,14 +277,14 @@ void NodeBase::setHasCustomSize(UiEntity* source)
     sizeSource = source;
 }
 
-QSize NodeBase::getInputSize()
+QSize NodeBase::getInputSize() const
 {
     auto upstreamNode = getUpstreamNodeBack();
 
     QSize size(0, 0);
     if (upstreamNode)
     {
-        auto upstreamImage = upstreamNode->cachedImage;
+        auto upstreamImage = upstreamNode->getCachedImage();
 
         if (upstreamImage)
         {
@@ -295,7 +295,7 @@ QSize NodeBase::getInputSize()
     return size;
 }
 
-QSize NodeBase::getTargetSize()
+QSize NodeBase::getTargetSize() const
 {
     QSize size(0, 0);
 
@@ -367,7 +367,7 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
     jsonNodesArray.push_back(jsonNode);
 }
 
-NodeInput* NodeBase::getOpenInput()
+NodeInput* NodeBase::getOpenInput() const
 {
     foreach(auto in, nodeInputs)
     {
@@ -377,7 +377,7 @@ NodeInput* NodeBase::getOpenInput()
     return nullptr;
 }
 
-QString NodeBase::getAllPropertyValues()
+QString NodeBase::getAllPropertyValues() const
 {
     QString vals;
     auto widgets = getProperties()->widgets;
@@ -427,6 +427,16 @@ std::set<Connection*> NodeBase::getAllConnections()
         }
     }
     return connections;
+}
+
+CsImage* NodeBase::getCachedImage() const
+{
+    return cachedImage.get();
+}
+
+void NodeBase::setCachedImage(std::unique_ptr<CsImage> image)
+{
+    cachedImage = std::move(image);
 }
 
 void NodeBase::invalidateAllDownstreamNodes()
@@ -479,7 +489,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
     return nullptr;
 }
 
-bool NodeBase::canBeRendered()
+bool NodeBase::canBeRendered() const
 {
     if (nodeType == NODE_TYPE_READ)
     {
@@ -500,7 +510,7 @@ bool NodeBase::canBeRendered()
     return true;
 }
 
-NodeProperties* NodeBase::getProperties()
+NodeProperties* NodeBase::getProperties() const
 {
     return nodeProperties;
 }
@@ -570,6 +580,11 @@ void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
     emit nodeWasDoubleClicked(this);
 
     Q_UNUSED(event);
+}
+
+void NodeBase::flushCache()
+{
+    cachedImage = nullptr;
 }
 
 NodeBase::~NodeBase()
