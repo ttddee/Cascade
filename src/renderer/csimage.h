@@ -40,7 +40,8 @@ public:
             const vk::PhysicalDevice* pd,
             const int w = 100,
             const int h = 100,
-            const bool isLinear = false);
+            const bool isLinear = false,
+            const char* debugName = "Unnamed");
 
     const vk::UniqueImage& getImage() const;
     const vk::UniqueImageView& getImageView() const;

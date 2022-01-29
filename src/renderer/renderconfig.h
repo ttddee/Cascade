@@ -5,6 +5,8 @@
 
 #include <vulkan/vulkan.hpp>
 
+#define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(type, x) reinterpret_cast<uint64_t>(static_cast<type>(x))
+
 namespace Cascade::Renderer
 {
     inline constexpr vk::Format globalImageFormat(vk::Format::eR32G32B32A32Sfloat);

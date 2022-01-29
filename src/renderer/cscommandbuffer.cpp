@@ -1,6 +1,7 @@
 #include "cscommandbuffer.h"
 
 #include "../log.h"
+#include "renderconfig.h"
 
 namespace Cascade::Renderer
 {
@@ -18,8 +19,6 @@ CsCommandBuffer::CsCommandBuffer(
     createComputeQueue();
     createComputeCommandPool();
     createComputeCommandBuffers();
-
-    currentBuffer = &commandBufferGeneric.get();
 
     CS_LOG_INFO("Created compute command buffer.");
 }
@@ -81,8 +80,6 @@ void CsCommandBuffer::recordGeneric(
         int numShaderPasses,
         int currentShaderPass)
 {
-    currentBuffer = &commandBufferGeneric.get();
-
     computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
@@ -148,8 +145,6 @@ void CsCommandBuffer::recordImageLoad(
         CsImage* const renderTarget,
         vk::Pipeline* const readNodePipeline)
 {
-    currentBuffer = &commandBufferImageLoad.get();
-
     computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
@@ -215,8 +210,6 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
 {
     CS_LOG_INFO("Copying image GPU-->CPU.");
 
-    currentBuffer = &commandBufferImageSave.get();
-
     // This is for outputting an image to the CPU
     computeQueue.waitIdle();
 
@@ -263,7 +256,7 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
 
     commandBufferImageSave->end();
 
-    return &(*outputStagingBufferMemory);
+    return &outputStagingBufferMemory.get();
 }
 
 void CsCommandBuffer::submitGeneric()
@@ -374,6 +367,16 @@ void CsCommandBuffer::createBuffer(
 
     buffer = device->createBufferUnique(bufferInfo);
 
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *buffer),
+                    "Output Staging Buffer");
+        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
+
     vk::MemoryRequirements memRequirements = device->getBufferMemoryRequirements(*buffer);
 
     uint32_t memoryType = findMemoryType(
@@ -387,12 +390,17 @@ void CsCommandBuffer::createBuffer(
 
     bufferMemory = device->allocateMemoryUnique(allocInfo);
 
-    device->bindBufferMemory(*buffer, *bufferMemory, 0);
-}
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eDeviceMemory,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *bufferMemory),
+                    "Output Staging Buffer Memory");
+        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
 
-vk::CommandBuffer* CsCommandBuffer::getCurrent()
-{
-    return currentBuffer;
+    device->bindBufferMemory(*buffer, *bufferMemory, 0);
 }
 
 uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)

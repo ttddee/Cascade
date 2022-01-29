@@ -219,9 +219,6 @@ private:
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
-
-    CsImage* displayImage = nullptr;
-
 };
 
 } // end namespace Cascade::Renderer

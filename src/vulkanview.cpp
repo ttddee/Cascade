@@ -38,6 +38,9 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     // Set up validation layers
     instance.setLayers(QByteArrayList() << "VK_LAYER_KHRONOS_validation");
 
+#ifdef QT_DEBUG
+    instance.setExtensions(QByteArrayList() << "VK_EXT_debug_utils");
+#endif
     // Set up Dynamic Dispatch Loader to use with vulkan.hpp
     vk::DynamicLoader dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =

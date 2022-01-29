@@ -40,7 +40,6 @@ public:
     vk::CommandBuffer* getGeneric();
     vk::CommandBuffer* getImageLoad();
     vk::CommandBuffer* getImageSave();
-    vk::CommandBuffer* getCurrent();
 
 private:
     void createComputeQueue();

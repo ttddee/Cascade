@@ -20,6 +20,7 @@
 #include "csimage.h"
 
 #include "../log.h"
+#include "renderconfig.h"
 
 namespace Cascade::Renderer
 {
@@ -30,7 +31,8 @@ CsImage::CsImage(
         const vk::PhysicalDevice* pd,
         const int w,
         const int h,
-        const bool isLinear)
+        const bool isLinear,
+        const char* debugName)
         : device(d),
           physicalDevice(pd),
           width(w),
@@ -63,6 +65,16 @@ CsImage::CsImage(
 
     image = device->createImageUnique(imageInfo);
 
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eImage,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkImage, *image),
+                    debugName);
+        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
+
     // Get how much memory we need and how it should aligned
     vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
 
@@ -86,6 +98,16 @@ CsImage::CsImage(
     vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
 
     memory = device->allocateMemoryUnique(allocInfo);
+
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eDeviceMemory,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *memory),
+                    debugName);
+        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
 
     //Associate the image with this chunk of memory
     device->bindImageMemory(*image, *memory, 0);

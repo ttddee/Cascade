@@ -116,6 +116,10 @@ QString VulkanRenderer::getGpuName()
 
 void VulkanRenderer::createVertexBuffer()
 {
+    // The current vertexBuffer will be destroyed,
+    // so we have to wait here.
+    device.waitIdle();
+
     const vk::PhysicalDeviceLimits pdevLimits(physicalDevice.getProperties().limits);
     const vk::DeviceSize uniAlign = pdevLimits.minUniformBufferOffsetAlignment;
 
@@ -130,17 +134,37 @@ void VulkanRenderer::createVertexBuffer()
                             vk::BufferUsageFlagBits::eUniformBuffer));
     vertexBuffer = device.createBufferUnique(bufferInfo);
 
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *vertexBuffer),
+                    "Vertex Buffer");
+        device.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
+
     vk::MemoryRequirements memReq = device.getBufferMemoryRequirements(*vertexBuffer);
 
     vk::MemoryAllocateInfo memAllocInfo(memReq.size, window->hostVisibleMemoryIndex());
 
     vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo);
 
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eDeviceMemory,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *vertexBufferMemory),
+                    "Vertex Buffer Memory");
+        device.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
+
     // copy the vertex and color data into device memory
-    uint8_t * pData = static_cast<uint8_t *>(
+    uint8_t* pData = static_cast<uint8_t *>(
                 device.mapMemory(
                     vertexBufferMemory.get(), 0, memReq.size));
-    memcpy( pData, vertexData, sizeof( vertexData ) );
+    memcpy(pData, vertexData, sizeof(vertexData));
 
     QMatrix4x4 ident;
     for (int i = 0; i < concurrentFrameCount; ++i)
@@ -425,11 +449,14 @@ void VulkanRenderer::loadShadersFromDisk()
 
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 {
-    // Previous image will be destroyed, so we wait here
-    computeCommandBuffer->getQueue()->waitIdle();
-
     computeRenderTarget = std::unique_ptr<CsImage>(
-                new CsImage(window, &device, &physicalDevice, width, height));
+                new CsImage(window,
+                            &device,
+                            &physicalDevice,
+                            width,
+                            height,
+                            false,
+                            "Compute Render Target"));
 
     emit window->renderTargetHasBeenCreated(width, height);
 
@@ -479,7 +506,8 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
                             &physicalDevice,
                             cpuImage->xend(),
                             cpuImage->yend(),
-                            true));
+                            true,
+                            "Load Image Staging"));
 
     if (!writeLinearImage(
                 static_cast<float*>(cpuImage->localpixels()),
@@ -962,7 +990,6 @@ void VulkanRenderer::createRenderPass()
     cb.draw(4, 1, 0, 0);
 
     cb.endRenderPass();
-
 }
 
 void VulkanRenderer::setViewerPushConstants(const QString &s)
@@ -992,7 +1019,9 @@ void VulkanRenderer::processReadNode(NodeBase *node)
                                 &device,
                                 &physicalDevice,
                                 cpuImage->xend(),
-                                cpuImage->yend()));
+                                cpuImage->yend(),
+                                false,
+                                "Tmp Cache Image"));
 
         // Create render target
         if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
@@ -1012,8 +1041,6 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         node->setCachedImage(std::move(computeRenderTarget));
 
-        displayImage = node->getCachedImage();
-
         // Delete the staging image
         device.waitIdle();
 
@@ -1027,11 +1054,10 @@ void VulkanRenderer::processNode(
         CsImage* inputImageFront,
         const QSize targetSize)
 {
-
     fillSettingsBuffer(node);
 
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
-        qFatal("Failed to create compute render target.");
+        CS_LOG_WARNING("Failed to create compute render target.");
 
     // Tells the shader if we have a mask on the front input
     settingsBuffer->appendValue(0.0);
@@ -1045,8 +1071,13 @@ void VulkanRenderer::processNode(
     if (!inputImageBack)
     {
         tmpCacheImage = std::unique_ptr<CsImage>(
-                    new CsImage(window, &device, &physicalDevice,
-                                targetSize.width(), targetSize.height()));
+                    new CsImage(window,
+                                &device,
+                                &physicalDevice,
+                                targetSize.width(),
+                                targetSize.height(),
+                                false,
+                                "Tmp Cache Image"));
         inputImageBack = tmpCacheImage.get();
     }
 
@@ -1101,7 +1132,7 @@ void VulkanRenderer::processNode(
                 settingsBuffer->incrementLastValue();
 
                 if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
-                    qFatal("Failed to create compute render target.");
+                    CS_LOG_WARNING("Failed to create compute render target.");
 
                 updateComputeDescriptors(node->getCachedImage(), inputImageFront, computeRenderTarget.get());
 
@@ -1124,7 +1155,6 @@ void VulkanRenderer::processNode(
 
         window->requestUpdate();
     }
-    displayImage = node->getCachedImage();
 }
 
 void VulkanRenderer::displayNode(const NodeBase *node)
@@ -1139,7 +1169,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
         createVertexBuffer();
 
         if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
-            qFatal("Failed to create compute render target.");
+            CS_LOG_WARNING("Failed to create compute render target.");
 
         updateGraphicsDescriptors(image);
         updateComputeDescriptors(image, nullptr, computeRenderTarget.get());
@@ -1244,11 +1274,11 @@ void VulkanRenderer::shutdown()
     CS_LOG_INFO("Destroying Renderer.");
     device.waitIdle();
 
+    computeCommandBuffer = nullptr;
     loadImageStaging = nullptr;
     tmpCacheImage = nullptr;
     computeRenderTarget = nullptr;
     settingsBuffer = nullptr;
-    computeCommandBuffer = nullptr;
     for(auto& pl : pipelines)
         device.destroy(*pl.second);
     device.destroy(*computePipelineNoop);
