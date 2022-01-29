@@ -87,6 +87,8 @@ public:
     void translate(float dx, float dy);
     void scale(float s);
 
+    void shutdown();
+
     ~VulkanRenderer();
 
 private:

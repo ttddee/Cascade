@@ -176,7 +176,9 @@ void MainWindow::handleSaveProjectAsAction()
 
 void MainWindow::handleExitAction()
 {
-    shutdown();
+    // Using this instead of QApplication::quit(),
+    // so that the renderer can shut down gracefully
+    closeEvent(nullptr);
 }
 
 void MainWindow::handleShortcutsAction()
@@ -188,12 +190,11 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     nodeGraph->flushCacheAllNodes();
 
-    //QMainWindow::closeEvent(event);
-}
+    vulkanView->getVulkanWindow()->getRenderer()->shutdown();
 
-void MainWindow::shutdown()
-{
-    QApplication::quit();
+    QMainWindow::closeEvent(event);
+
+    Q_UNUSED(event);
 }
 
 MainWindow::~MainWindow()

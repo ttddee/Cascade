@@ -34,12 +34,9 @@ namespace Cascade
 
     void Log::messageHandler(QtMsgType type, const QMessageLogContext& context, const QString & msg)
     {
-        //if (type == QtDebugMsg)
-        //{
-            QString txt = QString("[VULKAN] %1").arg(msg);
-            writeToFile(txt);
-            console(txt);
-        //}
+        QString txt = QString("[VULKAN] %1").arg(msg);
+        writeToFile(txt);
+        console(txt);
     }
 
     void Log::Init()
@@ -65,14 +62,12 @@ namespace Cascade
     {
         QString txt = QString("[INFO] %1").arg(s);
         writeToFile(txt);
-        console(txt);
     }
 
     void Log::warning(const QString &s)
     {
         QString txt = QString("[WARNING] %1").arg(s);
         writeToFile(txt);
-        console(txt);
     }
 
     void Log::critical(const QString &s)

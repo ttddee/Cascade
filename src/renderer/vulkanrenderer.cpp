@@ -1239,7 +1239,7 @@ void VulkanRenderer::releaseResources()
     CS_LOG_INFO("Releasing resources.");
 }
 
-VulkanRenderer::~VulkanRenderer()
+void VulkanRenderer::shutdown()
 {
     CS_LOG_INFO("Destroying Renderer.");
     device.waitIdle();
@@ -1267,6 +1267,11 @@ VulkanRenderer::~VulkanRenderer()
     device.destroy(*vertexBuffer);
 
     device.waitIdle();
+}
+
+VulkanRenderer::~VulkanRenderer()
+{
+
 }
 
 } // end namespace Cascade::Renderer

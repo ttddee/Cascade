@@ -62,7 +62,6 @@ SOURCES += \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
-    src/renderer/renderutility.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/slidernoclick.cpp \
