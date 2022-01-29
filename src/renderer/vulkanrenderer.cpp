@@ -35,6 +35,10 @@
 #include "../benchmark.h"
 #include "../multithreading.h"
 #include "../log.h"
+#include "renderutility.h"
+
+namespace Cascade::Renderer
+{
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -44,13 +48,6 @@ static float vertexData[] = { // Y up, front = CW
      1,  -1, 0, 1, 1,
      1,   1, 0, 1, 0
 };
-
-static const int UNIFORM_DATA_SIZE = 16 * sizeof(float);
-
-static inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
-{
-    return (v + byteAlign - 1) & ~(byteAlign - 1);
-}
 
 VulkanRenderer::VulkanRenderer(VulkanWindow *w)
     : window(w)
@@ -123,7 +120,7 @@ void VulkanRenderer::createVertexBuffer()
     const vk::DeviceSize uniAlign = pdevLimits.minUniformBufferOffsetAlignment;
 
     const vk::DeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
-    const vk::DeviceSize uniformAllocSize = aligned(UNIFORM_DATA_SIZE, uniAlign);
+    const vk::DeviceSize uniformAllocSize = aligned(uniformDataSize, uniAlign);
 
     vk::BufferCreateInfo bufferInfo
             ({},
@@ -139,30 +136,12 @@ void VulkanRenderer::createVertexBuffer()
 
     vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo);
 
-    // copy the vertex and color data into that device memory
+    // copy the vertex and color data into device memory
     uint8_t * pData = static_cast<uint8_t *>(
                 device.mapMemory(
                     vertexBufferMemory.get(), 0, memReq.size));
     memcpy( pData, vertexData, sizeof( vertexData ) );
-    //device.unmapMemory( vertexBufferMemory.get() );
 
-
-
-//    quint8 *p;
-//    vk::Result err = device.mapMemory(
-//                *vertexBufferMemory,
-//                0,
-//                memReq.size,
-//                {},
-//                reinterpret_cast<void **>(&p));
-
-//    if (err != vk::Result::eSuccess)
-//    {
-//        CS_LOG_WARNING("Failed to map memory for vertex buffer.");
-//        CS_LOG_CONSOLE("Failed to map memory for vertex buffer.");
-//    }
-
-//    memcpy(p, vertexData, sizeof(vertexData));
     QMatrix4x4 ident;
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
@@ -180,15 +159,16 @@ void VulkanRenderer::createVertexBuffer()
 void VulkanRenderer::createSampler()
 {
     // Create sampler
-    vk::SamplerCreateInfo samplerInfo({},
-                                      vk::Filter::eNearest,
-                                      vk::Filter::eNearest,
-                                      vk::SamplerMipmapMode::eNearest,
-                                      vk::SamplerAddressMode::eClampToEdge,
-                                      vk::SamplerAddressMode::eClampToEdge,
-                                      vk::SamplerAddressMode::eClampToEdge,
-                                      {},
-                                      false);
+    vk::SamplerCreateInfo samplerInfo(
+                {},
+                vk::Filter::eNearest,
+                vk::Filter::eNearest,
+                vk::SamplerMipmapMode::eNearest,
+                vk::SamplerAddressMode::eClampToEdge,
+                vk::SamplerAddressMode::eClampToEdge,
+                vk::SamplerAddressMode::eClampToEdge,
+                {},
+                false);
 
     sampler = device.createSamplerUnique(samplerInfo);
 }
@@ -448,16 +428,8 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
     // Previous image will be destroyed, so we wait here
     computeCommandBuffer->getQueue()->waitIdle();
 
-    try
-    {
-        computeRenderTarget = std::unique_ptr<CsImage>(
-                    new CsImage(window, &device, &physicalDevice, width, height));
-    }
-    catch (std::exception const &e)
-    {
-        CS_LOG_WARNING("Could not create compute render target.");
-        return false;
-    }
+    computeRenderTarget = std::unique_ptr<CsImage>(
+                new CsImage(window, &device, &physicalDevice, width, height));
 
     emit window->renderTargetHasBeenCreated(width, height);
 
@@ -486,24 +458,12 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    transformColorSpace(lookupColorSpace(colorSpace), "linear", *cpuImage);
+    transformColorSpace(colorSpaces.at(colorSpace), "linear", *cpuImage);
 
     updateVertexData(cpuImage->xend(), cpuImage->yend());
 
-    // The image we are going to copy into
-    // TODO: We can skip this and copy straight into cache
-//    tmpCacheImage = std::unique_ptr<CsImage>(
-//                new CsImage(window,
-//                            &device,
-//                            &physicalDevice,
-//                            cpuImage->xend(),
-//                            cpuImage->yend()));
-
     auto imageSize = QSize(cpuImage->xend(), cpuImage->yend());
 
-    // Now we can either map and copy the image data directly, or have to go
-    // through a staging buffer to copy and convert into the internal optimal
-    // tiling format.
     vk::FormatProperties props = physicalDevice.getFormatProperties(globalImageFormat);
     const bool canSampleLinear = (bool)(props.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
     const bool canSampleOptimal = (bool)(props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
@@ -534,51 +494,6 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
     loadImageSize = imageSize;
 
     return true;
-}
-
-QString VulkanRenderer::lookupColorSpace(const int i)
-{
-    // 0 = sRGB
-    // 1 = Linear
-    // 2 = rec709
-    // 3 = Gamma 1.8
-    // 4 = Gamma 2.2
-    // 5 = Panalog
-    // 6 = REDLog
-    // 7 = ViperLog
-    // 8 = AlexaV3LogC
-    // 9 = PLogLin
-    // 10 = SLog
-    // 11 = Raw
-    // If space is Linear, no conversion necessary
-
-    switch(i)
-    {
-        case 0:
-            return "sRGB";
-        case 2:
-            return "rec709";
-        case 3:
-            return "Gamma1.8";
-        case 4:
-            return "Gamma2.2";
-        case 5:
-            return "Panalog";
-        case 6:
-            return "REDLog";
-        case 7:
-            return "ViperLog";
-        case 8:
-            return "AlexaV3LogC";
-        case 9:
-            return "PLogLin";
-        case 10:
-            return "SLog";
-        case 11:
-            return "raw";
-        default:
-            return "linear";
-    }
 }
 
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
@@ -686,81 +601,56 @@ void VulkanRenderer::updateComputeDescriptors(
         const CsImage* const inputImageFront,
         const CsImage* const outputImage)
 {
-//    for (int i = 0; i < concurrentFrameCount; ++i)
-//    {
-//        std::vector<vk::WriteDescriptorSet> descWrite(2);
-//        descWrite.at(0).dstSet = *graphicsDescriptorSet.at(i);
-//        descWrite.at(0).dstBinding = 0;
-//        descWrite.at(0).descriptorCount = 1;
-//        descWrite.at(0).descriptorType = vk::DescriptorType::eUniformBuffer;
-//        descWrite.at(0).pBufferInfo = &uniformBufferInfo[i];
+    vk::DescriptorImageInfo sourceInfoBack(
+                *sampler,
+                *inputImageBack->getImageView(),
+                vk::ImageLayout::eGeneral);
 
-//        vk::DescriptorImageInfo descImageInfo(
-//                    *sampler,
-//                    *outputImage->getImageView(),
-//                    vk::ImageLayout::eShaderReadOnlyOptimal);
+    vk::DescriptorImageInfo sourceInfoFront;
+    sourceInfoFront.sampler = *sampler;
+    if (inputImageFront)
+        sourceInfoFront.imageView = *inputImageFront->getImageView();
+    else
+        sourceInfoFront.imageView = *inputImageBack->getImageView();
+    sourceInfoFront.imageLayout = vk::ImageLayout::eGeneral;
 
-//        descWrite.at(1).dstSet = *graphicsDescriptorSet.at(i);
-//        descWrite.at(1).dstBinding = 1;
-//        descWrite.at(1).descriptorCount = 1;
-//        descWrite.at(1).descriptorType = vk::DescriptorType::eCombinedImageSampler;
-//        descWrite.at(1).pImageInfo = &descImageInfo;
+    vk::DescriptorImageInfo destinationInfo(
+                {},
+                *outputImage->getImageView(),
+                vk::ImageLayout::eGeneral);
 
-//        device.updateDescriptorSets(descWrite, {});
-//    }
+    vk::DescriptorBufferInfo settingsBufferInfo(
+                *settingsBuffer->getBuffer(),
+                0,
+                VK_WHOLE_SIZE);
 
-    {
-        vk::DescriptorImageInfo sourceInfoBack(
-                    *sampler,
-                    *inputImageBack->getImageView(),
-                    vk::ImageLayout::eGeneral);
+    std::vector<vk::WriteDescriptorSet> descWrite(4);
 
-        vk::DescriptorImageInfo sourceInfoFront;
-        sourceInfoFront.sampler = *sampler;
-        if (inputImageFront)
-            sourceInfoFront.imageView = *inputImageFront->getImageView();
-        else
-            sourceInfoFront.imageView = *inputImageBack->getImageView();
-        sourceInfoFront.imageLayout = vk::ImageLayout::eGeneral;
+    descWrite.at(0).dstSet                    = *computeDescriptorSet;
+    descWrite.at(0).dstBinding                = 0;
+    descWrite.at(0).descriptorCount           = 1;
+    descWrite.at(0).descriptorType            = vk::DescriptorType::eStorageImage;
+    descWrite.at(0).pImageInfo                = &sourceInfoBack;
 
-        vk::DescriptorImageInfo destinationInfo(
-                    {},
-                    *outputImage->getImageView(),
-                    vk::ImageLayout::eGeneral);
+    descWrite.at(1).dstSet                    = *computeDescriptorSet;
+    descWrite.at(1).dstBinding                = 1;
+    descWrite.at(1).descriptorCount           = 1;
+    descWrite.at(1).descriptorType            = vk::DescriptorType::eStorageImage;
+    descWrite.at(1).pImageInfo                = &sourceInfoFront;
 
-        vk::DescriptorBufferInfo settingsBufferInfo(
-                    *settingsBuffer->getBuffer(),
-                    0,
-                    VK_WHOLE_SIZE);
+    descWrite.at(2).dstSet                    = *computeDescriptorSet;
+    descWrite.at(2).dstBinding                = 2;
+    descWrite.at(2).descriptorCount           = 1;
+    descWrite.at(2).descriptorType            = vk::DescriptorType::eStorageImage;
+    descWrite.at(2).pImageInfo                = &destinationInfo;
 
-        std::vector<vk::WriteDescriptorSet> descWrite(4);
+    descWrite.at(3).dstSet                    = *computeDescriptorSet;
+    descWrite.at(3).dstBinding                = 3;
+    descWrite.at(3).descriptorCount           = 1;
+    descWrite.at(3).descriptorType            = vk::DescriptorType::eUniformBuffer;
+    descWrite.at(3).pBufferInfo               = &settingsBufferInfo;
 
-        descWrite.at(0).dstSet                    = *computeDescriptorSet;
-        descWrite.at(0).dstBinding                = 0;
-        descWrite.at(0).descriptorCount           = 1;
-        descWrite.at(0).descriptorType            = vk::DescriptorType::eStorageImage;
-        descWrite.at(0).pImageInfo                = &sourceInfoBack;
-
-        descWrite.at(1).dstSet                    = *computeDescriptorSet;
-        descWrite.at(1).dstBinding                = 1;
-        descWrite.at(1).descriptorCount           = 1;
-        descWrite.at(1).descriptorType            = vk::DescriptorType::eStorageImage;
-        descWrite.at(1).pImageInfo                = &sourceInfoFront;
-
-        descWrite.at(2).dstSet                    = *computeDescriptorSet;
-        descWrite.at(2).dstBinding                = 2;
-        descWrite.at(2).descriptorCount           = 1;
-        descWrite.at(2).descriptorType            = vk::DescriptorType::eStorageImage;
-        descWrite.at(2).pImageInfo                = &destinationInfo;
-
-        descWrite.at(3).dstSet                    = *computeDescriptorSet;
-        descWrite.at(3).dstBinding                = 3;
-        descWrite.at(3).descriptorCount           = 1;
-        descWrite.at(3).descriptorType            = vk::DescriptorType::eUniformBuffer;
-        descWrite.at(3).pBufferInfo               = &settingsBufferInfo;
-
-        device.updateDescriptorSets(descWrite, {});
-    }
+    device.updateDescriptorSets(descWrite, {});
 }
 
 void VulkanRenderer::createComputePipelineLayout()
@@ -920,12 +810,14 @@ bool VulkanRenderer::saveImageToDisk(
     device.waitIdle();
 
     float *pInput;
-    device.mapMemory(
+    vk::Result result = device.mapMemory(
                 *mem,
                 0,
                 VK_WHOLE_SIZE,
                 {},
                 reinterpret_cast<void **>(&pInput));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Failed to map memory.");
 
     int width = inputImage->getWidth();
     int height = inputImage->getHeight();
@@ -940,7 +832,7 @@ bool VulkanRenderer::saveImageToDisk(
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 
-    transformColorSpace("linear", lookupColorSpace(colorSpace), *saveImage);
+    transformColorSpace("linear", colorSpaces.at(colorSpace), *saveImage);
 
     success = saveImage->write(path.toStdString());
 
@@ -961,11 +853,6 @@ void VulkanRenderer::createRenderPass()
     CS_LOG_INFO("Creating Render Pass.");
 
     vk::CommandBuffer cb = window->currentCommandBuffer();
-
-//    vk::CommandBuffer cb = *computeCommandBuffer->getGeneric();
-//    vk::CommandBufferBeginInfo beginInfo;
-
-//    cb.begin(beginInfo);
 
     const QSize sz = window->swapChainImageSize();
 
@@ -992,7 +879,7 @@ void VulkanRenderer::createRenderPass()
     vk::Result err = device.mapMemory(
                 *vertexBufferMemory,
                 uniformBufferInfo[window->currentFrame()].offset,
-                UNIFORM_DATA_SIZE,
+                uniformDataSize,
                 {},
                 reinterpret_cast<void **>(&p));
 
@@ -1076,51 +963,6 @@ void VulkanRenderer::createRenderPass()
 
     cb.endRenderPass();
 
-    //cb.end();
-
-//    auto swImage = window->swapChainImage(window->currentSwapChainImageIndex());
-
-//    QSize imSize(computeRenderTarget->getWidth(), computeRenderTarget->getHeight());
-
-//    QSize blitSrcSize = imSize;
-//    QSize blitDstSize = imSize;
-
-//    if (imSize.width() > sz.width())
-//    {
-//        blitSrcSize.setWidth(blitSrcSize.width() - (imSize.width() - sz.width()));
-//        blitDstSize.setWidth(blitSrcSize.width());
-//    }
-//    if (imSize.height() > sz.height())
-//    {
-//        blitSrcSize.setHeight(blitSrcSize.height() - (imSize.height() - sz.height()));
-//        blitDstSize.setHeight(blitSrcSize.height());
-//    }
-
-//    vk::ImageSubresourceLayers imageSubresourceLayers( vk::ImageAspectFlagBits::eColor, 0, 0, 1 );
-//    vk::ImageBlit imageBlit(
-//                imageSubresourceLayers,
-//                { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( blitSrcSize.width(), blitSrcSize.height(), 1 ) } },
-//                imageSubresourceLayers,
-//                { { vk::Offset3D( 0, 0, 0 ), vk::Offset3D( blitDstSize.width(), blitDstSize.height(), 1 ) } } );
-//    cb.blitImage(*displayImage->getImage(),
-//                 vk::ImageLayout::eTransferSrcOptimal,
-//                 swImage,
-//                 vk::ImageLayout::eColorAttachmentOptimal,
-//                 imageBlit,
-//                 vk::Filter::eLinear );
-
-}
-
-std::vector<float> VulkanRenderer::unpackPushConstants(const QString& s)
-{
-    // TODO: Move into render utility
-    std::vector<float> values;
-    auto parts = s.split(",");
-    foreach(const QString& part, parts)
-    {
-        values.push_back(part.toFloat());
-    }
-    return values;
 }
 
 void VulkanRenderer::setViewerPushConstants(const QString &s)
@@ -1144,10 +986,6 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         // Create texture
         if (!createImageFromFile(imagePath, colorSpace))
             CS_LOG_WARNING("Failed to create texture");
-
-        // Update the projection size
-        // TODO: Do we need this here?
-        createVertexBuffer();
 
         tmpCacheImage = std::unique_ptr<CsImage>(
                     new CsImage(window,
@@ -1191,12 +1029,6 @@ void VulkanRenderer::processNode(
 {
 
     fillSettingsBuffer(node);
-
-    if (currentRenderSize != targetSize)
-    {
-        updateVertexData(targetSize.width(), targetSize.height());
-        createVertexBuffer();
-    }
 
     if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
         qFatal("Failed to create compute render target.");
@@ -1297,15 +1129,9 @@ void VulkanRenderer::processNode(
 
 void VulkanRenderer::displayNode(const NodeBase *node)
 {
-    // TODO: Should probably use something like cmdBlitImage
-    // instead of the hacky noop shader workaround
-    // for displaying a node that has already been rendered
     if(CsImage* image = node->getCachedImage())
     {
-        //displayImage = image;
-
-        // TODO: All of this has been done in processNode?
-
+        // Execute a NoOp shader on the node
         CS_LOG_INFO("Displaying node.");
         clearScreen = false;
 
@@ -1344,25 +1170,9 @@ void VulkanRenderer::doClearScreen()
     window->requestUpdate();
 }
 
-std::vector<char> uintVecToCharVec(const std::vector<unsigned int>& in)
-{
-    std::vector<char> out;
-
-    for (size_t i = 0; i < in.size(); i++)
-    {
-        out.push_back(in[i] >> 0);
-        out.push_back(in[i] >> 8);
-        out.push_back(in[i] >> 16);
-        out.push_back(in[i] >> 24);
-    }
-
-    return out;
-}
-
 void VulkanRenderer::startNextFrame()
 {
     CS_LOG_INFO("Starting next frame.");
-
     if (clearScreen)
     {
         const QSize sz = window->swapChainImageSize();
@@ -1458,3 +1268,5 @@ VulkanRenderer::~VulkanRenderer()
 
     device.waitIdle();
 }
+
+} // end namespace Cascade::Renderer

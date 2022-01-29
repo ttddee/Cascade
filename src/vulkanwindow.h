@@ -25,8 +25,14 @@
 #include <QWindow>
 
 #include "windowmanager.h"
+#include "global.h"
 
-class VulkanRenderer;
+namespace Cascade::Renderer
+{
+    class VulkanRenderer;
+}
+
+using namespace Cascade::Renderer;
 
 class VulkanWindow : public QVulkanWindow
 {

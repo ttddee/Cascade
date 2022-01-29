@@ -28,6 +28,9 @@
 
 #include "../vulkanwindow.h"
 
+namespace Cascade::Renderer
+{
+
 class CsImage
 {
 public:
@@ -69,5 +72,7 @@ private:
     const int width;
     const int height;
 };
+
+} // end namespace Cascade::Renderer
 
 #endif // CSIMAGE_H

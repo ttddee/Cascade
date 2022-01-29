@@ -26,6 +26,9 @@
 
 #include "vulkan/vulkan.hpp"
 
+namespace Cascade::Renderer
+{
+
 class CsSettingsBuffer
 {
 public:
@@ -52,5 +55,7 @@ private:
     float* pBufferStart;
     int bufferSize;
 };
+
+} // end namespace Cascade::Renderer
 
 #endif // CSSETTINGSBUFFER_H

@@ -38,12 +38,16 @@
 #include "cssettingsbuffer.h"
 #include "csimage.h"
 #include "cscommandbuffer.h"
+#include "renderconfig.h"
 
 using namespace Cascade;
 using namespace OIIO;
 namespace OCIO = OCIO_NAMESPACE;
 
 class VulkanWindow;
+
+namespace Cascade::Renderer
+{
 
 class VulkanRenderer : public QVulkanWindowRenderer
 {
@@ -138,8 +142,6 @@ private:
             const int w,
             const int h);
 
-    QString lookupColorSpace(
-            const int i);
     void transformColorSpace(
             const QString& from,
             const QString& to,
@@ -149,9 +151,6 @@ private:
             const NodeBase* node);
 
     void logicalDeviceLost() override;
-
-    std::vector<float> unpackPushConstants(
-            const QString& s);
 
     VulkanWindow *window;
     vk::Device device;
@@ -187,8 +186,6 @@ private:
 
     QSize outputImageSize;
 
-    const vk::ClearColorValue clearColor = std::array<float, 4> ({ 0.05f, 0.05f, 0.05f, 0.0f });
-
     QMatrix4x4 projection;
     float rotation    = 0.0f;
     float position_x  = 0.0f;
@@ -199,7 +196,6 @@ private:
     // TODO: Replace this with proper render states
     bool clearScreen = true;
 
-    const vk::Format globalImageFormat = vk::Format::eR32G32B32A32Sfloat;
     DisplayMode displayMode = DISPLAY_MODE_RGB;
 
     std::unique_ptr<CsCommandBuffer> computeCommandBuffer;
@@ -225,5 +221,7 @@ private:
     CsImage* displayImage = nullptr;
 
 };
+
+} // end namespace Cascade::Renderer
 
 #endif // VULKANRENDERER_H

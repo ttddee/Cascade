@@ -21,6 +21,9 @@
 
 #include "../log.h"
 
+namespace Cascade::Renderer
+{
+
 CsImage::CsImage(
         VulkanWindow* win,
         const vk::Device* d,
@@ -58,14 +61,7 @@ CsImage::CsImage(
                                   {},
                                   currentLayout);
 
-    try
-    {
-        image = device->createImageUnique(imageInfo);
-    }
-    catch (std::exception const &e)
-    {
-        CS_LOG_WARNING("Could not create unique image for CsImage.");
-    }
+    image = device->createImageUnique(imageInfo);
 
     // Get how much memory we need and how it should aligned
     vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
@@ -89,24 +85,10 @@ CsImage::CsImage(
 
     vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
 
-    try
-    {
-        memory = device->allocateMemoryUnique(allocInfo);
-    }
-    catch (std::exception const &e)
-    {
-        CS_LOG_WARNING("Could not allocate memory for CsImage.");
-    }
+    memory = device->allocateMemoryUnique(allocInfo);
 
     //Associate the image with this chunk of memory
-    try
-    {
-        device->bindImageMemory(*image, *memory, 0);
-    }
-    catch (std::exception const &e)
-    {
-        CS_LOG_WARNING("Could not bind memory for CsImage.");
-    }
+    device->bindImageMemory(*image, *memory, 0);
 
     vk::ImageViewCreateInfo viewInfo(
                 { },
@@ -123,14 +105,7 @@ CsImage::CsImage(
                                           0,
                                           1));
 
-    try
-    {
-        view = device->createImageViewUnique(viewInfo);
-    }
-    catch (std::exception const &e)
-    {
-        CS_LOG_WARNING("Could not create image view for CsImage.");
-    }
+    view = device->createImageViewUnique(viewInfo);
 }
 
 const vk::UniqueImage& CsImage::getImage() const
@@ -209,3 +184,5 @@ CsImage::~CsImage()
 {
     CS_LOG_INFO("Destroying image.");
 }
+
+} // end namespace Cascade::Renderer

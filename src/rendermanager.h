@@ -25,8 +25,14 @@
 #include "nodebase.h"
 #include "nodedefinitions.h"
 
-class VulkanRenderer;
 class NodeGraph;
+
+namespace Cascade::Renderer
+{
+    class VulkanRenderer;
+}
+
+using namespace Cascade::Renderer;
 
 class RenderManager : public QObject
 {

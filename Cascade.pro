@@ -62,6 +62,7 @@ SOURCES += \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
+    src/renderer/renderutility.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/slidernoclick.cpp \
@@ -111,6 +112,7 @@ HEADERS += \
     src/docking/IconProvider.h \
     src/docking/ads_globals.h \
     src/docking/linux/FloatingWidgetTitleBar.h \
+    src/global.h \
     src/log.h \
     src/mainmenu.h \
     src/mainwindow.h \
@@ -128,6 +130,8 @@ HEADERS += \
     src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
+    src/renderer/renderconfig.h \
+    src/renderer/renderutility.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
     src/slidernoclick.h \

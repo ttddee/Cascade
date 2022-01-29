@@ -27,6 +27,9 @@
 
 #include "../log.h"
 
+namespace Cascade::Renderer
+{
+
 CsSettingsBuffer::CsSettingsBuffer(
         vk::Device* d,
         vk::PhysicalDevice* pd)
@@ -74,12 +77,14 @@ CsSettingsBuffer::CsSettingsBuffer(
 
     device->bindBufferMemory(*buffer, *memory, 0);
 
-    device->mapMemory(
+    vk::Result result = device->mapMemory(
                 *memory,
                 0,
                 VK_WHOLE_SIZE,
                 {},
                 reinterpret_cast<void **>(&pBufferStart));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Failed to map memory");
 }
 
 void CsSettingsBuffer::fillBuffer(const QString &s)
@@ -125,15 +130,7 @@ vk::UniqueDeviceMemory& CsSettingsBuffer::getMemory()
 
 CsSettingsBuffer::~CsSettingsBuffer()
 {
-//    devFuncs->vkUnmapMemory(*device, memory);
 
-//    if (buffer) {
-//        devFuncs->vkDestroyBuffer(*device, buffer, nullptr);
-//        buffer = VK_NULL_HANDLE;
-//    }
-
-//    if (memory) {
-//        devFuncs->vkFreeMemory(*device, memory, nullptr);
-//        memory = VK_NULL_HANDLE;
-//    }
 }
+
+} // end namespace Cascade::Renderer

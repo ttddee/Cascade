@@ -33,7 +33,7 @@
 #include "windowmanager.h"
 #include "uicolors.h"
 
-using namespace Cascade;
+using namespace Cascade::Renderer;
 
 class NodeInput;
 class NodeOutput;

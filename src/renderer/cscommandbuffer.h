@@ -3,6 +3,9 @@
 
 #include "csimage.h"
 
+namespace Cascade::Renderer
+{
+
 class CsCommandBuffer
 {
 public:
@@ -76,5 +79,7 @@ private:
     vk::UniqueBuffer outputStagingBuffer;
     vk::UniqueDeviceMemory outputStagingBufferMemory;
 };
+
+} // end namespace Cascade::Renderer
 
 #endif // CSCOMMANDBUFFER_H

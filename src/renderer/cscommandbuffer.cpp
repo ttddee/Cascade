@@ -2,6 +2,9 @@
 
 #include "../log.h"
 
+namespace Cascade::Renderer
+{
+
 CsCommandBuffer::CsCommandBuffer(
         const vk::Device* d,
         const vk::PhysicalDevice* pd,
@@ -178,10 +181,6 @@ void CsCommandBuffer::recordImageLoad(
                 1,
                 &copyInfo);
 
-//    loadImageStaging->transitionLayoutTo(
-//                commandBufferImageLoad,
-//                vk::ImageLayout::eGeneral);
-
     tmpImage->transitionLayoutTo(
                 commandBufferImageLoad,
                 vk::ImageLayout::eGeneral);
@@ -271,8 +270,12 @@ void CsCommandBuffer::submitGeneric()
 {
     // Submit compute commands
     // Use a fence to ensure that compute command buffer has finished executing before using it again
-    device->waitForFences(1, &(*fence), true, UINT64_MAX);
-    device->resetFences(1, &(*fence));
+    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem waiting for fence.");
+    result = device->resetFences(1, &(*fence));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Could not reset fence.");
 
     // Do the copy on the compute queue
     vk::SubmitInfo computeSubmitInfo;
@@ -280,16 +283,22 @@ void CsCommandBuffer::submitGeneric()
 
     computeSubmitInfo.pCommandBuffers = &commandBufferGeneric.get();
 
-    computeQueue.submit(
+    result = computeQueue.submit(
                 1,
                 &computeSubmitInfo,
                 *fence);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 void CsCommandBuffer::submitImageLoad()
 {
-    device->waitForFences(1, &(*fence), true, UINT64_MAX);
-    device->resetFences(1, &(*fence));
+    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem waiting for fence.");
+    result = device->resetFences(1, &(*fence));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Could not reset fence.");
 
     // Do the copy on the compute queue
     vk::SubmitInfo computeSubmitInfo;
@@ -297,25 +306,33 @@ void CsCommandBuffer::submitImageLoad()
 
     computeSubmitInfo.pCommandBuffers = &commandBufferImageLoad.get();
 
-    computeQueue.submit(
+    result = computeQueue.submit(
                 1,
                 &computeSubmitInfo,
                 *fence);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 void CsCommandBuffer::submitImageSave()
 {
-    device->waitForFences(1, &(*fence), true, UINT64_MAX);
-    device->resetFences(1, &(*fence));
+    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem waiting for fence.");
+    result = device->resetFences(1, &(*fence));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Could not reset fence.");
 
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
     computeSubmitInfo.pCommandBuffers = &commandBufferImageSave.get();
 
-    computeQueue.submit(
+    result = computeQueue.submit(
                 1,
                 &computeSubmitInfo,
                 *fence);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 vk::Queue* CsCommandBuffer::getQueue()
@@ -398,3 +415,5 @@ CsCommandBuffer::~CsCommandBuffer()
     if (outputStagingBuffer)
         device->destroy(*outputStagingBuffer);
 }
+
+} // end namespace Cascade::Renderer
