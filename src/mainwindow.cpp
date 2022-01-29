@@ -27,6 +27,7 @@
 #include <QDir>
 #include <QFileDialog>
 #include <QTimer>
+#include <QCloseEvent>
 
 #include "renderer/vulkanrenderer.h"
 #include "csmessagebox.h"
@@ -193,8 +194,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
     vulkanView->getVulkanWindow()->getRenderer()->shutdown();
 
     QMainWindow::closeEvent(event);
-
-    Q_UNUSED(event);
 }
 
 MainWindow::~MainWindow()

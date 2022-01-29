@@ -38,7 +38,10 @@ namespace Cascade
             return logger;
         }
 
-        static void messageHandler(QtMsgType type, const QMessageLogContext& context, const QString & msg);
+        static void messageHandler(
+                QtMsgType type,
+                const QMessageLogContext& context,
+                const QString & msg);
 
         static void debug(const QString& s);
         static void info(const QString& s);

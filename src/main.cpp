@@ -43,13 +43,9 @@ int main(int argc, char *argv[])
     int fontId = QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Regular.ttf");
     QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Bold.ttf");
     if (fontId != -1)
-    {
         a.setFont(QFont("Open Sans"));
-    }
     else
-    {
         CS_LOG_WARNING("Problem loading font.");
-    }
 
     // Load style sheet
     QFile f(":/style/stylesheet.qss");

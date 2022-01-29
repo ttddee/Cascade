@@ -32,7 +32,10 @@ namespace Cascade
     QFile Log::outFile;
     QTextStream Log::stream;
 
-    void Log::messageHandler(QtMsgType type, const QMessageLogContext& context, const QString & msg)
+    void Log::messageHandler(
+            QtMsgType type,
+            const QMessageLogContext& context,
+            const QString & msg)
     {
         QString txt = QString("[VULKAN] %1").arg(msg);
         writeToFile(txt);
@@ -43,9 +46,9 @@ namespace Cascade
     {
         QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
-        QFile::remove("cascade.log");
+        QFile::remove("Cascade.log");
 
-        outFile.setFileName("cascade.log");
+        outFile.setFileName("Cascade.log");
         outFile.open(QIODevice::WriteOnly | QIODevice::Append);
         stream.setDevice(&outFile);
 
@@ -90,5 +93,7 @@ namespace Cascade
     void Log::writeToFile(const QString &s)
     {
         stream << s << "\n";
+        stream.flush();
+        //outFile.flush();
     }
 }
