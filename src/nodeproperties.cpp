@@ -43,6 +43,7 @@
 #include "uientities/folderboxentity.h"
 #include "uientities/uientity.h"
 #include "uientities/resizepropertiesentity.h"
+#include "uientities/codeeditorentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -273,6 +274,16 @@ NodeProperties::NodeProperties(
 
             connect(parentNode, &NodeBase::nodeRequestUpdate,
                     item, &ResizePropertiesEntity::handleNodeRequestUpdate);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_CODE_EDITOR)
+        {
+            CodeEditorEntity* item = new CodeEditorEntity(
+                        UI_ELEMENT_TYPE_CODE_EDITOR,
+                        this);
+            item->selfConnectToValueChanged(this);
+            item->setParentNode(parentNode);
+            layout->addWidget(item);
+            widgets.push_back(item);
         }
     }
 }

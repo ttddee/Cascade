@@ -1,18 +1,23 @@
 /*
-BGDark: #181b1e
-BGMid: #1d2024
-BGLight: #282d31
-BGHover: #626971
-Red: #e5463d
-RedHover: #fd4439
-Green: #35e257
-GreenHover: #31fb59
-BlueDark: #254a73
-Blue: #2372ef
-BlueHover: #287bff
-FGDark: #9299a1
-FGMid: #c5c5c5
-FGLight: #b9b9b9
+BGDark:         #181b1e
+BGMid:          #1d2024
+BGLight:        #282d31
+BGHover:        #626971
+Red:            #e5463d
+RedHover:       #fd4439
+Green:          #35e257
+GreenHover:     #31fb59
+BlueDark:       #254a73
+Blue:           #2372ef
+BlueHover:      #287bff
+FGDark:         #9299a1
+FGMid:          #c5c5c5
+FGLight:        #b9b9b9
+
+CodeEdit Red:   #b64d41
+CodeEdit Green: #32b25b
+CodeEdit Blue:  #0f6db3
+
 */
 
 QWidget {
@@ -382,6 +387,10 @@ font: 11px "Open Sans";
 
 QSplitter:handle {
     background-color: #181b1e;
+}
+
+QSplitter#CodeEditSplitter:handle {
+    background-color: #282d31;
 }
 
 QStatusBar {

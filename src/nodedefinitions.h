@@ -113,7 +113,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_SEPARATOR,
         UI_ELEMENT_TYPE_LINEEDIT, // TODO: This is not used anywhere
         UI_ELEMENT_TYPE_FOLDERBOX, // TODO: This is not used anywhere
-        UI_ELEMENT_TYPE_RESIZE_PROPERTIES
+        UI_ELEMENT_TYPE_RESIZE_PROPERTIES,
+        UI_ELEMENT_TYPE_CODE_EDITOR
     };
 
     ////////////////////////////////////
@@ -152,6 +153,7 @@ namespace Cascade
     {
         NODE_TYPE_CROP,
         NODE_TYPE_READ,
+        NODE_TYPE_SHADER,
         NODE_TYPE_BLUR,
         NODE_TYPE_COLOR,
         NODE_TYPE_RESIZE,
@@ -175,7 +177,6 @@ namespace Cascade
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
         NODE_TYPE_CHROMAKEY,
-        NODE_TYPE_MUTE,
         NODE_TYPE_MAX
     };
 
@@ -209,7 +210,7 @@ namespace Cascade
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" },
-        { NODE_TYPE_MUTE, "Mute Channel" }
+        { NODE_TYPE_SHADER, "GLSL Shader" }
     };
 
     ////////////////////////////////////
@@ -667,7 +668,7 @@ namespace Cascade
             nodeStrings[NODE_TYPE_CHANNEL_COPY],
             NODE_CATEGORY_CHANNEL,
             { NODE_INPUT_TYPE_RGB_BACK,
-              NODE_INPUT_TYPE_RGB_FRONT},
+              NODE_INPUT_TYPE_RGB_FRONT },
             { NODE_OUTPUT_TYPE_RGB },
             {
                 { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
@@ -772,25 +773,24 @@ namespace Cascade
         1
     };
 
-    const static NodeInitProperties muteNodeInitProperties =
+    const static NodeInitProperties shaderNodeInitProperties =
     {
-        NODE_TYPE_MUTE,
-        nodeStrings[NODE_TYPE_MUTE],
-        NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        NODE_TYPE_SHADER,
+        nodeStrings[NODE_TYPE_SHADER],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_RGB_FRONT },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MUTE] },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Red,1," },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Green,1," },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Blue,1," }
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHADER] },
+            { UI_ELEMENT_TYPE_CODE_EDITOR, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_INPUT_ALWAYS_CLEAR,
         ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ":/shaders/mute_comp.spv",
+        ":/shaders/noop_comp.spv",
         1
     };
 
@@ -897,9 +897,9 @@ namespace Cascade
         {
             return chromaKeyNodeInitProperties;
         }
-        else if(t == NODE_TYPE_MUTE)
+        else if(t == NODE_TYPE_SHADER)
         {
-            return muteNodeInitProperties;
+            return shaderNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

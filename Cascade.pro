@@ -25,6 +25,21 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    src/codeeditor/QCXXHighlighter.cpp \
+    src/codeeditor/QCodeEditor.cpp \
+    src/codeeditor/QFramedTextAttribute.cpp \
+    src/codeeditor/QGLSLCompleter.cpp \
+    src/codeeditor/QGLSLHighlighter.cpp \
+    src/codeeditor/QJSONHighlighter.cpp \
+    src/codeeditor/QLanguage.cpp \
+    src/codeeditor/QLineNumberArea.cpp \
+    src/codeeditor/QLuaCompleter.cpp \
+    src/codeeditor/QLuaHighlighter.cpp \
+    src/codeeditor/QPythonCompleter.cpp \
+    src/codeeditor/QPythonHighlighter.cpp \
+    src/codeeditor/QStyleSyntaxHighlighter.cpp \
+    src/codeeditor/QSyntaxStyle.cpp \
+    src/codeeditor/QXMLHighlighter.cpp \
     src/colorbutton.cpp \
     src/connection.cpp \
     src/docking/DockAreaTabBar.cpp \
@@ -63,9 +78,11 @@ SOURCES += \
     src/renderer/cssettingsbuffer.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
+    src/shadercompiler/SpvShaderCompiler.cpp \
     src/slidernoclick.cpp \
     src/uientities/channelselectentity.cpp \
     src/uientities/checkboxentity.cpp \
+    src/uientities/codeeditorentity.cpp \
     src/uientities/colorbuttonentity.cpp \
     src/uientities/colorpropertiesentity.cpp \
     src/uientities/comboboxentity.cpp \
@@ -88,6 +105,23 @@ SOURCES += \
 
 HEADERS += \
     src/benchmark.h \
+    src/codeeditor/QCXXHighlighter.hpp \
+    src/codeeditor/QCodeEditor.hpp \
+    src/codeeditor/QFramedTextAttribute.hpp \
+    src/codeeditor/QGLSLCompleter.hpp \
+    src/codeeditor/QGLSLHighlighter.hpp \
+    src/codeeditor/QHighlightBlockRule.hpp \
+    src/codeeditor/QHighlightRule.hpp \
+    src/codeeditor/QJSONHighlighter.hpp \
+    src/codeeditor/QLanguage.hpp \
+    src/codeeditor/QLineNumberArea.hpp \
+    src/codeeditor/QLuaCompleter.hpp \
+    src/codeeditor/QLuaHighlighter.hpp \
+    src/codeeditor/QPythonCompleter.hpp \
+    src/codeeditor/QPythonHighlighter.hpp \
+    src/codeeditor/QStyleSyntaxHighlighter.hpp \
+    src/codeeditor/QSyntaxStyle.hpp \
+    src/codeeditor/QXMLHighlighter.hpp \
     src/colorbutton.h \
     src/connection.h \
     src/docking/DockAreaTabBar.h \
@@ -133,10 +167,13 @@ HEADERS += \
     src/renderer/vulkanhppinclude.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
+    src/shadercompiler/DirStackFileIncluder.h \
+    src/shadercompiler/SpvShaderCompiler.h \
     src/slidernoclick.h \
     src/uicolors.h \
     src/uientities/channelselectentity.h \
     src/uientities/checkboxentity.h \
+    src/uientities/codeeditorentity.h \
     src/uientities/colorbuttonentity.h \
     src/uientities/colorpropertiesentity.h \
     src/uientities/comboboxentity.h \
@@ -216,6 +253,14 @@ win32-msvc* {
         LIBS += -L$$LIB_ROOT/debug/lib -lOpenImageIO_Util_d
         LIBS += -L$$LIB_ROOT/debug/lib -lOpenColorIO
         LIBS += -L$$LIB_ROOT/debug/lib -ltbb_debug
+        LIBS += -L$$LIB_ROOT/debug/lib -lglslangd
+        LIBS += -L$$LIB_ROOT/debug/lib -lglslang-default-resource-limitsd
+        LIBS += -L$$LIB_ROOT/debug/lib -lGenericCodeGend
+        LIBS += -L$$LIB_ROOT/debug/lib -lMachineIndependentd
+        LIBS += -L$$LIB_ROOT/debug/lib -lOGLCompilerd
+        LIBS += -L$$LIB_ROOT/debug/lib -lOSDependentd
+        LIBS += -L$$LIB_ROOT/debug/lib -lSPIRVd
+        LIBS += -L$$LIB_ROOT/debug/lib -lSPVRemapperd
 
         # Debug DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svgd.dll)
@@ -268,6 +313,14 @@ win32-msvc* {
         LIBS += -L$$LIB_ROOT/lib -lOpenImageIO_Util
         LIBS += -L$$LIB_ROOT/lib -lOpenColorIO
         LIBS += -L$$LIB_ROOT/lib -ltbb
+        LIBS += -L$$LIB_ROOT/lib -lglslang
+        LIBS += -L$$LIB_ROOT/lib -lglslang-default-resource-limits
+        LIBS += -L$$LIB_ROOT/lib -lGenericCodeGen
+        LIBS += -L$$LIB_ROOT/lib -lMachineIndependent
+        LIBS += -L$$LIB_ROOT/lib -lOGLCompiler
+        LIBS += -L$$LIB_ROOT/lib -lOSDependent
+        LIBS += -L$$LIB_ROOT/lib -lSPIRV
+        LIBS += -L$$LIB_ROOT/lib -lSPVRemapper
 
         # Release DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
@@ -341,7 +394,8 @@ win32-msvc* {
 
 RESOURCES += \
     ads.qrc \
-    resources.qrc
+    resources.qrc \
+    src/codeeditor/qcodeeditor_resources.qrc
 
 DISTFILES += \
     style/stylesheet.qss

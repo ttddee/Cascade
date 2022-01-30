@@ -102,8 +102,7 @@ private:
 
     void loadShadersFromDisk();
     void createComputePipelines();
-    vk::UniquePipeline createComputePipeline(NodeType nodeType);
-    vk::UniquePipeline createComputePipelineNoop();
+    vk::UniquePipeline createComputePipeline(const vk::ShaderModule& shaderModule);
 
     // Load image
     bool createImageFromFile(
@@ -121,6 +120,8 @@ private:
     // Recurring compute
     vk::UniqueShaderModule createShaderFromFile(
             const QString &name);
+    vk::UniqueShaderModule createShaderFromCode(
+            const std::vector<unsigned int>& code);
 
     bool createComputeRenderTarget(
             uint32_t width,
@@ -171,8 +172,9 @@ private:
 
     vk::UniqueSampler sampler;
 
-    vk::UniqueShaderModule noopShader;
     vk::UniquePipeline computePipelineNoop;
+    vk::UniqueShaderModule shaderUser;
+    vk::UniquePipeline computePipelineUser;
 
     QSize loadImageSize;
 

@@ -78,7 +78,8 @@ void VulkanRenderer::initResources()
     // Load all the shaders we need and create their pipelines
     loadShadersFromDisk();
     // Create Noop pipeline
-    computePipelineNoop = createComputePipelineNoop();
+    computePipelineNoop = createComputePipeline(
+                createShaderFromFile(":/shaders/noop_comp.spv").get());
     // Create a pipeline for each shader
     createComputePipelines();
 
@@ -435,6 +436,22 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
     return shaderModule;
 }
 
+vk::UniqueShaderModule VulkanRenderer::createShaderFromCode(const std::vector<unsigned int> &code)
+{
+    auto codeChar = uintVecToCharVec(code);
+
+    QByteArray codeArray = QByteArray(reinterpret_cast<const char*>(codeChar.data()), codeChar.size());
+
+    vk::ShaderModuleCreateInfo shaderInfo(
+                {},
+                codeArray.size(),
+                reinterpret_cast<const uint32_t *>(codeArray.constData()));
+
+    vk::UniqueShaderModule shaderModule = device.createShaderModuleUnique(shaderInfo).value;
+
+    return shaderModule;
+}
+
 void VulkanRenderer::loadShadersFromDisk()
 {
     for (int i = 0; i != NODE_TYPE_MAX; i++)
@@ -701,39 +718,17 @@ void VulkanRenderer::createComputePipelines()
     {
         NodeType nodeType = static_cast<NodeType>(i);
 
-        pipelines[nodeType] = createComputePipeline(nodeType);
+        pipelines[nodeType] = createComputePipeline(shaders[nodeType].get());
     }
 }
 
-vk::UniquePipeline VulkanRenderer::createComputePipeline(NodeType nodeType)
+vk::UniquePipeline VulkanRenderer::createComputePipeline(
+        const vk::ShaderModule& shaderModule)
 {
-    auto shaderModule = *shaders[nodeType];
-
     vk::PipelineShaderStageCreateInfo computeStage(
                 {},
                 vk::ShaderStageFlagBits::eCompute,
                 shaderModule,
-                "main");
-
-    vk::ComputePipelineCreateInfo pipelineInfo(
-                {},
-                computeStage,
-                *computePipelineLayout);
-
-    vk::UniquePipeline pl = device.createComputePipelineUnique(*pipelineCache, pipelineInfo).value;
-
-    return pl;
-}
-
-vk::UniquePipeline VulkanRenderer::createComputePipelineNoop()
-{
-    // TODO: This should not need its own function
-    auto shaderModule = createShaderFromFile(":/shaders/noop_comp.spv");;
-
-    vk::PipelineShaderStageCreateInfo computeStage(
-                {},
-                vk::ShaderStageFlagBits::eCompute,
-                *shaderModule,
                 "main");
 
     vk::ComputePipelineCreateInfo pipelineInfo(
@@ -1085,6 +1080,31 @@ void VulkanRenderer::processNode(
         inputImageBack = tmpCacheImage.get();
     }
 
+    auto pipeline = pipelines[node->nodeType].get();
+
+    if (node->nodeType == NODE_TYPE_SHADER)
+    {
+        if (node->getShaderCode().size() != 0)
+        {
+            shaderUser = createShaderFromCode(node->getShaderCode());
+
+            computePipelineUser = createComputePipeline(shaderUser.get());
+
+            pipeline = computePipelineUser.get();
+
+            CS_LOG_INFO("RENDERING SHADERNODE.");
+        }
+        else
+        {
+            pipeline = computePipelineNoop.get();
+        }
+
+    }
+    else
+    {
+        CS_LOG_INFO("NOT A SHADERNODE.");
+    }
+
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
     int currentShaderPass = 1;
 
@@ -1096,7 +1116,7 @@ void VulkanRenderer::processNode(
                     inputImageBack,
                     inputImageFront,
                     computeRenderTarget.get(),
-                    *pipelines[node->nodeType],
+                    pipeline,
                     numShaderPasses,
                     currentShaderPass);
 
@@ -1124,7 +1144,7 @@ void VulkanRenderer::processNode(
                             inputImageBack,
                             inputImageFront,
                             computeRenderTarget.get(),
-                            *pipelines[node->nodeType],
+                            pipeline,
                             numShaderPasses,
                             currentShaderPass);
 
@@ -1144,7 +1164,7 @@ void VulkanRenderer::processNode(
                             node->getCachedImage(),
                             inputImageFront,
                             computeRenderTarget.get(),
-                            *pipelines[node->nodeType],
+                            pipeline,
                             numShaderPasses,
                             currentShaderPass);
 
@@ -1286,12 +1306,14 @@ void VulkanRenderer::shutdown()
     for(auto& pl : pipelines)
         device.destroy(*pl.second);
     device.destroy(*computePipelineNoop);
+    device.destroy(*computePipelineUser);
     device.destroy(*graphicsPipelineRGB);
     device.destroy(*graphicsPipelineAlpha);
     device.destroy(*pipelineCache);
     device.destroy(*descriptorPool);
     for(auto& sh : shaders)
         device.destroy(*sh.second);
+    device.destroy(*shaderUser);
     device.destroy(*graphicsPipelineLayout);
     device.destroy(*computePipelineLayout);
     device.destroy(*graphicsDescriptorSetLayout);

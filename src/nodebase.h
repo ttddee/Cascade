@@ -107,6 +107,9 @@ public:
 
     void setInputIDs(const QMap<int, QString>& ids);
 
+    const std::vector<unsigned int>& getShaderCode();
+    void setShaderCode(const std::vector<unsigned int> code);
+
     void loadNodePropertyValues(const QMap<int, QString>& values);
 
     NodeInput* findNodeInput(const QString& id);
@@ -160,6 +163,8 @@ private:
     NodeProperties* nodeProperties;
 
     WindowManager* wManager;
+
+    std::vector<unsigned int> shaderCode;
 
     bool isSelected = false;
     bool isActive = false;

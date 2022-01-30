@@ -172,6 +172,16 @@ void NodeBase::setInputIDs(const QMap<int, QString>& ids)
     }
 }
 
+const std::vector<unsigned int>& NodeBase::getShaderCode()
+{
+    return shaderCode;
+}
+
+void NodeBase::setShaderCode(const std::vector<unsigned int> code)
+{
+    shaderCode = code;
+}
+
 void NodeBase::loadNodePropertyValues(const QMap<int, QString> &values)
 {
     nodeProperties->loadNodePropertyValues(values);
