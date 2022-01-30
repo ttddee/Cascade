@@ -27,7 +27,6 @@
 namespace Cascade
 {
 
-
 struct MessageBoxProperties
 {
     const QString title;

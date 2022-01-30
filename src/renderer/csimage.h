@@ -24,9 +24,8 @@
 
 #include <vulkan/vulkan.h>
 
-#include "vulkan/vulkan.hpp"
-
 #include "../vulkanwindow.h"
+#include "vulkanhppinclude.h"
 
 namespace Cascade::Renderer
 {

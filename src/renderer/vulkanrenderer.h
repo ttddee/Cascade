@@ -30,15 +30,13 @@
 #include <OpenImageIO/color.h>
 #include <OpenColorIO/OpenColorIO.h>
 
-#include "vulkan/vulkan.hpp"
-
+#include "renderconfig.h"
 #include "../nodedefinitions.h"
 #include "../nodebase.h"
 #include "../windowmanager.h"
 #include "cssettingsbuffer.h"
 #include "csimage.h"
 #include "cscommandbuffer.h"
-#include "renderconfig.h"
 
 using namespace Cascade;
 using namespace OIIO;

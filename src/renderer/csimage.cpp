@@ -63,7 +63,7 @@ CsImage::CsImage(
                                   {},
                                   currentLayout);
 
-    image = device->createImageUnique(imageInfo);
+    image = device->createImageUnique(imageInfo).value;
 
 #ifdef QT_DEBUG
     {
@@ -71,7 +71,7 @@ CsImage::CsImage(
                     vk::ObjectType::eImage,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkImage, *image),
                     debugName);
-        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
@@ -97,7 +97,7 @@ CsImage::CsImage(
 
     vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
 
-    memory = device->allocateMemoryUnique(allocInfo);
+    memory = device->allocateMemoryUnique(allocInfo).value;
 
 #ifdef QT_DEBUG
     {
@@ -105,12 +105,12 @@ CsImage::CsImage(
                     vk::ObjectType::eDeviceMemory,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *memory),
                     debugName);
-        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
     //Associate the image with this chunk of memory
-    device->bindImageMemory(*image, *memory, 0);
+    auto result = device->bindImageMemory(*image, *memory, 0);
 
     vk::ImageViewCreateInfo viewInfo(
                 { },
@@ -127,7 +127,7 @@ CsImage::CsImage(
                                           0,
                                           1));
 
-    view = device->createImageViewUnique(viewInfo);
+    view = device->createImageViewUnique(viewInfo).value;
 }
 
 const vk::UniqueImage& CsImage::getImage() const
@@ -204,6 +204,9 @@ void CsImage::destroy()
 
 CsImage::~CsImage()
 {
+    // Need to make sure this image is not used by any command buffer
+    auto result = device->waitIdle();
+
     CS_LOG_INFO("Destroying image.");
 }
 

@@ -130,6 +130,7 @@ HEADERS += \
     src/renderer/cssettingsbuffer.h \
     src/renderer/renderconfig.h \
     src/renderer/renderutility.h \
+    src/renderer/vulkanhppinclude.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
     src/slidernoclick.h \

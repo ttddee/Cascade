@@ -21,13 +21,26 @@
 #define RENDERCONFIG_H
 
 #include <QString>
+#include <QByteArrayList>
 
-#include <vulkan/vulkan.hpp>
+#include "vulkanhppinclude.h"
 
 #define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(type, x) reinterpret_cast<uint64_t>(static_cast<type>(x))
 
 namespace Cascade::Renderer
 {
+    inline const QByteArrayList instanceLayers =
+    {
+        "VK_LAYER_KHRONOS_validation"
+    };
+
+    inline const QByteArrayList instanceExtensions =
+    {
+    #ifdef QT_DEBUG
+        "VK_EXT_debug_utils"
+    #endif
+    };
+
     inline constexpr vk::Format globalImageFormat(vk::Format::eR32G32B32A32Sfloat);
 
     inline const vk::ClearColorValue clearColor(std::array<float, 4>(

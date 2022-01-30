@@ -48,7 +48,7 @@ CsSettingsBuffer::CsSettingsBuffer(
                     ),
                 vk::SharingMode::eExclusive);
 
-    buffer = device->createBufferUnique(bufferInfo);
+    buffer = device->createBufferUnique(bufferInfo).value;
 
     vk::MemoryRequirements memRequirements = device->getBufferMemoryRequirements(*buffer);
 
@@ -73,11 +73,11 @@ CsSettingsBuffer::CsSettingsBuffer(
                 memRequirements.size,
                 memTypeIndex);
 
-    memory = device->allocateMemoryUnique(allocInfo);
+   memory = device->allocateMemoryUnique(allocInfo).value;
 
-    device->bindBufferMemory(*buffer, *memory, 0);
+    auto result = device->bindBufferMemory(*buffer, *memory, 0);
 
-    vk::Result result = device->mapMemory(
+    result = device->mapMemory(
                 *memory,
                 0,
                 VK_WHOLE_SIZE,

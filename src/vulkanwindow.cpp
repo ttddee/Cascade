@@ -34,10 +34,6 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
     // Make sure we keep our GPU resources when window loses focus
     this->setFlags(QVulkanWindow::PersistentResources);
 
-    // Set swapchain color format
-    //QVector colorFormats({ VK_FORMAT_B8G8R8A8_SRGB });
-    //this->setPreferredColorFormats(colorFormats);
-
     // If there is more than one GPU, pick the discrete one if possible
     auto props = availablePhysicalDevices();
     if (props.size() > 1)

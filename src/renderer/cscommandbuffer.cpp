@@ -66,7 +66,7 @@ void CsCommandBuffer::createComputeCommandPool()
                 { vk::CommandPoolCreateFlagBits::eResetCommandBuffer },
                 computeFamilyIndex);
 
-    computeCommandPool = device->createCommandPoolUnique(cmdPoolInfo);
+    computeCommandPool = device->createCommandPoolUnique(cmdPoolInfo).value;
 }
 
 void CsCommandBuffer::createComputeCommandBuffers()
@@ -78,7 +78,7 @@ void CsCommandBuffer::createComputeCommandBuffers()
                 3);
 
     std::vector<vk::UniqueCommandBuffer> buffers = device->allocateCommandBuffersUnique(
-                commandBufferAllocateInfo);
+                commandBufferAllocateInfo).value;
 
     commandBufferImageLoad = vk::UniqueCommandBuffer(std::move(buffers.at(0)));
     commandBufferGeneric = vk::UniqueCommandBuffer(std::move(buffers.at(1)));
@@ -88,7 +88,7 @@ void CsCommandBuffer::createComputeCommandBuffers()
     vk::FenceCreateInfo fenceCreateInfo(
                 vk::FenceCreateFlagBits::eSignaled);
 
-    fence = device->createFenceUnique(fenceCreateInfo);
+    fence = device->createFenceUnique(fenceCreateInfo).value;
 }
 
 void CsCommandBuffer::recordGeneric(
@@ -99,11 +99,11 @@ void CsCommandBuffer::recordGeneric(
         int numShaderPasses,
         int currentShaderPass)
 {
-    computeQueue.waitIdle();
+    auto result = computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    commandBufferGeneric->begin(cmdBufferBeginInfo);
+    result = commandBufferGeneric->begin(cmdBufferBeginInfo);
 
     // Layout transitions before compute stage
     inputImageBack->transitionLayoutTo(
@@ -155,7 +155,7 @@ void CsCommandBuffer::recordGeneric(
                     vk::ImageLayout::eShaderReadOnlyOptimal);
     }
 
-    commandBufferGeneric->end();
+    result = commandBufferGeneric->end();
 }
 
 void CsCommandBuffer::recordImageLoad(
@@ -164,11 +164,11 @@ void CsCommandBuffer::recordImageLoad(
         CsImage* const renderTarget,
         vk::Pipeline* const readNodePipeline)
 {
-    computeQueue.waitIdle();
+    auto result = computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    commandBufferImageLoad->begin(cmdBufferBeginInfo);
+    result = commandBufferImageLoad->begin(cmdBufferBeginInfo);
 
     loadImage->transitionLayoutTo(
                 commandBufferImageLoad,
@@ -221,7 +221,7 @@ void CsCommandBuffer::recordImageLoad(
                 commandBufferImageLoad,
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    commandBufferImageLoad->end();
+    result = commandBufferImageLoad->end();
 }
 
 vk::DeviceMemory* CsCommandBuffer::recordImageSave(
@@ -230,11 +230,11 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
     CS_LOG_INFO("Copying image GPU-->CPU.");
 
     // This is for outputting an image to the CPU
-    computeQueue.waitIdle();
+    auto result = computeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    commandBufferImageSave->begin(cmdBufferBeginInfo);
+    result = commandBufferImageSave->begin(cmdBufferBeginInfo);
 
     auto outputImageSize = QSize(inputImage->getWidth(), inputImage->getHeight());
 
@@ -273,7 +273,7 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
                 commandBufferImageSave,
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    commandBufferImageSave->end();
+    result = commandBufferImageSave->end();
 
     return &outputStagingBufferMemory.get();
 }
@@ -354,14 +354,14 @@ vk::Queue* CsCommandBuffer::getQueue()
 
 vk::CommandBuffer* CsCommandBuffer::getGeneric()
 {
-    computeQueue.waitIdle();
+    auto result = computeQueue.waitIdle();
 
     return &(*commandBufferGeneric);
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageLoad()
 {
-    computeQueue.waitIdle();
+    auto result = computeQueue.waitIdle();
 
     return &(*commandBufferImageLoad);
 }
@@ -392,7 +392,7 @@ void CsCommandBuffer::createBuffer(
                     vk::ObjectType::eBuffer,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *buffer),
                     "Output Staging Buffer");
-        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
@@ -407,7 +407,7 @@ void CsCommandBuffer::createBuffer(
     vk::MemoryAllocateInfo allocInfo(memRequirements.size,
                                      memoryType);
 
-    bufferMemory = device->allocateMemoryUnique(allocInfo);
+    bufferMemory = device->allocateMemoryUnique(allocInfo).value;
 
 #ifdef QT_DEBUG
     {
@@ -415,11 +415,11 @@ void CsCommandBuffer::createBuffer(
                     vk::ObjectType::eDeviceMemory,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *bufferMemory),
                     "Output Staging Buffer Memory");
-        device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
-    device->bindBufferMemory(*buffer, *bufferMemory, 0);
+    auto result = device->bindBufferMemory(*buffer, *bufferMemory, 0);
 }
 
 uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)

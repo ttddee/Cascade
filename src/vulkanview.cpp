@@ -27,6 +27,7 @@
 #include "renderer/vulkanrenderer.h"
 #include "log.h"
 #include "popupmessages.h"
+#include "renderer/renderconfig.h"
 
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)
@@ -36,11 +37,9 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
-    instance.setLayers(QByteArrayList() << "VK_LAYER_KHRONOS_validation");
+    instance.setLayers(instanceLayers);
+    instance.setExtensions(instanceExtensions);
 
-#ifdef QT_DEBUG
-    instance.setExtensions(QByteArrayList() << "VK_EXT_debug_utils");
-#endif
     // Set up Dynamic Dispatch Loader to use with vulkan.hpp
     vk::DynamicLoader dl;
     PFN_vkGetInstanceProcAddr vkGetInstanceProcAddr =
