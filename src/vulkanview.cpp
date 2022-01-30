@@ -23,10 +23,10 @@
 #include <QHBoxLayout>
 #include <QLoggingCategory>
 
-#include "csmessagebox.h"
 #include "viewerstatusbar.h"
 #include "renderer/vulkanrenderer.h"
 #include "log.h"
+#include "popupmessages.h"
 
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)
@@ -49,21 +49,7 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
 
     if (!instance.create())
     {
-        CsMessageBox messageBox;
-        messageBox.setWindowTitle("Error");
-        messageBox.setText("Failed to initialize Vulkan.\n"
-                           "\n"
-                           "It could be that your GPU is not supported or your driver needs to be updated.\n"
-                           "You can find a list of supported GPUs at vulkan.gpuinfo.org\n"
-                           "\n"
-                           "If you want to help out the developers, please send the file cascade.log "
-                           "and the make and model of your GPU to \n"
-                           "\n"
-                           "cascadeapp@protonmail.com\n"
-                           "\n"
-                           "Or open an issue on: github.com/ttddee/Cascade"
-                           );
-        messageBox.exec();
+        executeMessageBox(MESSAGEBOX_FAILED_INITIALIZATION);
 
         CS_LOG_FATAL("Failed to create Vulkan instance. Error code: ");
         CS_LOG_FATAL(QString::number(instance.errorCode()));

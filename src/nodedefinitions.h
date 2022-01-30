@@ -794,6 +794,7 @@ namespace Cascade
         1
     };
 
+    // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
         if(t == NODE_TYPE_CROP)

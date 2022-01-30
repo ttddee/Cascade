@@ -70,6 +70,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
     this->createInputs(props);
     this->createOutputs(props);
 
+    // TODO: Use unique_ptr
     nodeProperties = new NodeProperties(nodeType, this);
 }
 

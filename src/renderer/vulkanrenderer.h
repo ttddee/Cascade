@@ -67,16 +67,15 @@ public:
             CsImage* inputImageBack,
             CsImage* inputImageFront,
             const QSize targetSize);
+    bool saveImageToDisk(
+            CsImage* const inputImage,
+            const QString& path,
+            const int colorSpace);
     void displayNode(
             const NodeBase* node);
     void doClearScreen();
     void setDisplayMode(
             const DisplayMode mode);
-
-    bool saveImageToDisk(
-            CsImage* const inputImage,
-            const QString& path,
-            const int colorSpace);
 
     void setViewerPushConstants(const QString& s);
 

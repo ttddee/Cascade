@@ -27,7 +27,6 @@ DEFINES += QT_DEPRECATED_WARNINGS
 SOURCES += \
     src/colorbutton.cpp \
     src/connection.cpp \
-    src/csmessagebox.cpp \
     src/docking/DockAreaTabBar.cpp \
     src/docking/DockAreaTitleBar.cpp \
     src/docking/DockAreaWidget.cpp \
@@ -91,7 +90,6 @@ HEADERS += \
     src/benchmark.h \
     src/colorbutton.h \
     src/connection.h \
-    src/csmessagebox.h \
     src/docking/DockAreaTabBar.h \
     src/docking/DockAreaTitleBar.h \
     src/docking/DockAreaTitleBar_p.h \
@@ -123,6 +121,7 @@ HEADERS += \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \
+    src/popupmessages.h \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \

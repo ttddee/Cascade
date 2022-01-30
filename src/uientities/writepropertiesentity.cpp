@@ -21,7 +21,8 @@
 #include "ui_writepropertiesentity.h"
 
 #include <QFileDialog>
-#include <QMessageBox>
+
+#include "../popupmessages.h"
 
 WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
@@ -121,8 +122,7 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
     }
     else
     {
-        QMessageBox messageBox;
-        messageBox.information(0,"No folder set", "Please select a folder.");
+        executeMessageBox(MESSAGEBOX_NO_FOLDER_SET);
     }
 }
 

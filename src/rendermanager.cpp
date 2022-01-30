@@ -22,11 +22,11 @@
 #include <iostream>
 
 #include <QFile>
-#include <QMessageBox>
 
 #include "uientities/uientity.h"
 #include "uientities/fileboxentity.h"
 #include "renderer/vulkanrenderer.h"
+#include "popupmessages.h"
 
 RenderManager& RenderManager::getInstance()
 {
@@ -129,13 +129,11 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
 
             if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
             {
-                QMessageBox messageBox;
-                messageBox.information(0,"Success","File saved successfully.");
+                executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
             }
             else
             {
-                QMessageBox messageBox;
-                messageBox.information(0,"Error","There was a problem saving the file.");
+                executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
             }
         }
     }
@@ -209,7 +207,6 @@ void RenderManager::renderNode(NodeBase *node)
 
         if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
         {
-            std::cout << "Rendering two inputs" << std::endl;
             inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
             renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }

@@ -22,7 +22,6 @@
 
 #include <iostream>
 
-#include <QMessageBox>
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
@@ -30,10 +29,11 @@
 #include <QCloseEvent>
 
 #include "renderer/vulkanrenderer.h"
-#include "csmessagebox.h"
 #include "log.h"
+#include "popupmessages.h"
 
 using namespace ads;
+using namespace Cascade;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -110,20 +110,16 @@ void MainWindow::handleRendererHasBeenCreated()
 
 void MainWindow::handleNoGPUFound()
 {
-    QMessageBox messageBox;
-    messageBox.critical(0,"Error","No compatible GPU found. Shutting down!");
-    messageBox.setFixedSize(500, 200);
+    executeMessageBox(MESSAGEBOX_NO_GPU_FOUND);
 
-    QApplication::quit();
+    closeEvent(nullptr);
 }
 
 void MainWindow::handleDeviceLost()
 {
-    QMessageBox messageBox;
-    messageBox.critical(0,"Device Lost","We lost contact to the GPU and need to shut down. Sorry!");
-    messageBox.setFixedSize(500, 200);
+    executeMessageBox(MESSAGEBOX_DEVICE_LOST);
 
-    QApplication::quit();
+    closeEvent(nullptr);
 }
 
 void MainWindow::handleProjectTitleChanged(const QString& t)
@@ -136,23 +132,7 @@ void MainWindow::handleProjectTitleChanged(const QString& t)
 
 void MainWindow::displayShortcuts()
 {
-    CsMessageBox messageBox;
-    messageBox.setMinimumSize(600, 400);
-    messageBox.setWindowTitle("Shortcuts");
-    messageBox.setText("\n"
-                       "F1 - View selected node front input\n"
-                       "\n"
-                       "F2 - View selected node back input\n"
-                       "\n"
-                       "F3 - View selected node alpha input\n"
-                       "\n"
-                       "F4 - Toggle between selected node RGB output and alpha output\n"
-                       "\n"
-                       "Delete - Delete selected node\n"
-                       "\n"
-                       "Ctrl + Left Click - Reset slider to default\n"
-                       );
-    messageBox.exec();
+    executeMessageBox(MESSAGEBOX_SHORTCUTS);
 }
 
 void MainWindow::handleNewProjectAction()
