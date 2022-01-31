@@ -1,6 +1,6 @@
 # Cascade Image Editor
 
-![Cascade](screenshots/csc-screen01.jpg)   
+![Cascade](screenshots/csc-screen03.jpg)   
 
 ![Cascade](screenshots/csc-screen02.jpg) 
 
