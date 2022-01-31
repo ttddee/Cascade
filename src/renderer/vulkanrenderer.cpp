@@ -1091,18 +1091,12 @@ void VulkanRenderer::processNode(
             computePipelineUser = createComputePipeline(shaderUser.get());
 
             pipeline = computePipelineUser.get();
-
-            CS_LOG_INFO("RENDERING SHADERNODE.");
         }
         else
         {
             pipeline = computePipelineNoop.get();
         }
 
-    }
-    else
-    {
-        CS_LOG_INFO("NOT A SHADERNODE.");
     }
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;

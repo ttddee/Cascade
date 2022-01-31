@@ -437,10 +437,6 @@ uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryProperty
 CsCommandBuffer::~CsCommandBuffer()
 {
     CS_LOG_INFO("Destroying command buffer.");
-    if (outputStagingBufferMemory)
-        device->freeMemory(*outputStagingBufferMemory);
-    if (outputStagingBuffer)
-        device->destroy(*outputStagingBuffer);
 }
 
 } // end namespace Cascade::Renderer

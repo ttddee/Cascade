@@ -526,12 +526,6 @@ QScrollArea#dockWidgetScrollArea {
     border: none;
 }
 
-#tabCloseButton {
-    margin-top: 3px;
-    padding: 0px -2px;
-    image: url(:/design/advanceddocking/close-button.svg);
-}
-
 #tabCloseButton:hover {
     background-color: #1d2024;
 }
@@ -542,23 +536,6 @@ QScrollArea#dockWidgetScrollArea {
 
 #tabsMenuButton::menu-indicator {
     image: none;
-}
-
-#tabsMenuButton {
-    qproperty-icon: url(:/ads/design/tabs-menu-button.svg);
-    qproperty-iconSize: 16px;
-}
-
-#dockAreaCloseButton {
-    qproperty-icon: url(:/ads/design/close-button.svg),
-            url(:/ads/design/close-button-disabled.svg) disabled;
-    qproperty-iconSize: 16px;
-}
-
-#detachGroupButton {
-    qproperty-icon: url(:/ads/design/detach-button.svg),
-            url(:/ads/design/detach-button-disabled.svg) disabled;
-    qproperty-iconSize: 16px;
 }
 
 ads--CDockOverlayCross
