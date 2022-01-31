@@ -2,6 +2,8 @@
 
 ![Cascade](screenshots/csc-screen01.jpg)   
 
+![Cascade](screenshots/csc-screen02.jpg) 
+
 Cascade is a node-based image editor with GPU-acceleration.
 
 ## Features
@@ -21,7 +23,7 @@ If you want to get involved or have questions, please join our [Discord](https:/
 
 ## Build
 
-To build the project on Windows, you will only have to install Qt manually. The rest is handled by vcpkg. 
+To build the project on Windows, you will have to install Qt and the Vulkan SDK manually. The rest is handled by vcpkg. 
 
 Windows versions are compiled with MSVC 2019 64bit.
 
