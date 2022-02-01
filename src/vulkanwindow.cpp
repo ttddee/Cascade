@@ -93,18 +93,31 @@ void VulkanWindow::setViewerMode(const ViewerMode mode)
 
 void VulkanWindow::mousePressEvent(QMouseEvent *e)
 {
-    isDragging = true;
+    if (e->button() == Qt::LeftButton)
+    {
+        // Find the cursor position in relation to the center
+        // of the window
+        QPoint p(-this->size().width() / 2 + e->pos().x(),
+                 -this->size().height() / 2 + e->pos().y());
+
+        emit viewerHasBeenClicked(renderer->mapViewerToProjection(p));
+    }
+
+    if (e->button() == Qt::MiddleButton)
+        middleIsDragging = true;
+
     lastPos = e->pos();
 }
 
-void VulkanWindow::mouseReleaseEvent(QMouseEvent *)
+void VulkanWindow::mouseReleaseEvent(QMouseEvent *e)
 {
-    isDragging = false;
+    if (e->button() == Qt::MiddleButton)
+        middleIsDragging = false;
 }
 
 void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
 {
-    if (isDragging)
+    if (middleIsDragging)
     {
         float dx = e->pos().x() - lastPos.x();
         float dy = e->pos().y() - lastPos.y();

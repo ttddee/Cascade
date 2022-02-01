@@ -160,7 +160,7 @@
    <item>
     <widget class="QLabel" name="viewerModeLabel">
      <property name="text">
-      <string>Output RGB</string>
+      <string>RGB Output</string>
      </property>
     </widget>
    </item>

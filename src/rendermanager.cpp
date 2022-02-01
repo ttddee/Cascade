@@ -194,6 +194,18 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processReadNode(node);
         }
     }
+    else if (node->nodeType == NODE_TYPE_PAINT && node->needsUpdate)
+    {
+        if (node->canBeRendered())
+        {
+            CsImage* inputImageBack = nullptr;
+
+            inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
+
+            renderer->processPaintNode(node, inputImageBack, node->getTargetSize());
+        }
+    }
+    // Node has output size different to input size
     if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
     {
         renderer->processNode(node, nullptr, nullptr, node->getTargetSize());
@@ -205,11 +217,13 @@ void RenderManager::renderNode(NodeBase *node)
 
         inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
 
+        // Node has front image
         if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
         {
             inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
             renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }
+        // Node only has back image
         else if (inputImageBack)
         {
             renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());

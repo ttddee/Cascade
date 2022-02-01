@@ -65,6 +65,10 @@ public:
             CsImage* inputImageBack,
             CsImage* inputImageFront,
             const QSize targetSize);
+    void processPaintNode(
+            NodeBase* node,
+            CsImage* inputImageBack,
+            const QSize targetSize);
     bool saveImageToDisk(
             CsImage* const inputImage,
             const QString& path,
@@ -76,6 +80,8 @@ public:
             const DisplayMode mode);
 
     void setViewerPushConstants(const QString& s);
+
+    QPoint mapViewerToProjection(const QPoint& pos);
 
     void startNextFrame() override;
 
@@ -134,6 +140,9 @@ private:
             const CsImage* const inputImageBack,
             const CsImage* const inputImageFront,
             const CsImage* const outputImage);
+    void updateComputeDescriptorsPaint(
+            const CsImage* const inputImageBack,
+            const CsImage* const outputImage);
 
     // Has to be called in startNextFrame()
     void createRenderPass();
@@ -184,8 +193,6 @@ private:
     QString imagePath;
 
     int concurrentFrameCount;  
-
-    QSize outputImageSize;
 
     QMatrix4x4 projection;
     float rotation    = 0.0f;

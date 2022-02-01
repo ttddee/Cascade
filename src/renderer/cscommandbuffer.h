@@ -48,10 +48,15 @@ public:
             vk::Pipeline* const readNodePipeline);
     vk::DeviceMemory* recordImageSave(
             CsImage* const inputImage);
+    void recordPaint(
+            CsImage* const inputImageBack,
+            CsImage* const paintOverlay,
+            vk::Pipeline& pl);
 
     void submitGeneric();
     void submitImageLoad();
     void submitImageSave();
+    void submitPaint();
 
     ~CsCommandBuffer();
 
@@ -59,6 +64,7 @@ public:
     vk::CommandBuffer* getGeneric();
     vk::CommandBuffer* getImageLoad();
     vk::CommandBuffer* getImageSave();
+    vk::CommandBuffer* getPaint();
 
 private:
     void createComputeQueue();
@@ -85,6 +91,8 @@ private:
     vk::UniqueCommandBuffer commandBufferImageLoad;
     // Command buffer for writing images to disk
     vk::UniqueCommandBuffer commandBufferImageSave;
+    // Command bufefr for paint nodes
+    vk::UniqueCommandBuffer commandBufferPaint;
 
     vk::CommandBuffer* currentBuffer;
 

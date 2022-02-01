@@ -61,6 +61,8 @@ void WindowManager::setUp(
             this, &WindowManager::handleRenderTargetCreated);
     connect(viewerStatusBar, &ViewerStatusBar::valueChanged,
             this, &WindowManager::handleViewerStatusBarValueChanged);
+    connect(vulkanWindow, &VulkanWindow::viewerHasBeenClicked,
+            nodeGraph, &NodeGraph::handleViewerHasBeenClicked);
 
     rManager = &RenderManager::getInstance();
 }

@@ -90,6 +90,7 @@ SOURCES += \
     src/uientities/fileboxentity.cpp \
     src/uientities/folderboxentity.cpp \
     src/uientities/lineeditentity.cpp \
+    src/uientities/paintpropertiesentity.cpp \
     src/uientities/resizepropertiesentity.cpp \
     src/uientities/separatorentity.cpp \
     src/uientities/sizeboxentity.cpp \
@@ -181,6 +182,7 @@ HEADERS += \
     src/uientities/fileboxentity.h \
     src/uientities/folderboxentity.h \
     src/uientities/lineeditentity.h \
+    src/uientities/paintpropertiesentity.h \
     src/uientities/resizepropertiesentity.h \
     src/uientities/separatorentity.h \
     src/uientities/sizeboxentity.h \

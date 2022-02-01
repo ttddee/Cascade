@@ -44,6 +44,7 @@
 #include "uientities/uientity.h"
 #include "uientities/resizepropertiesentity.h"
 #include "uientities/codeeditorentity.h"
+#include "uientities/paintpropertiesentity.h"
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -284,6 +285,17 @@ NodeProperties::NodeProperties(
             item->setParentNode(parentNode);
             layout->addWidget(item);
             widgets.push_back(item);
+        }
+        else if (elem.first == UI_ELEMENT_TYPE_PAINT_PROPERTIES)
+        {
+            PaintPropertiesEntity* item = new PaintPropertiesEntity(
+                        UI_ELEMENT_TYPE_PAINT_PROPERTIES,
+                        this);
+            item->selfConnectToValueChanged(this);
+            layout->addWidget(item);
+            widgets.push_back(item);
+            connect(parentNode, &NodeBase::viewerClick,
+                    item, &PaintPropertiesEntity::handleViewerClick);
         }
     }
 }

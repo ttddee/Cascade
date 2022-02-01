@@ -114,7 +114,8 @@ namespace Cascade
         UI_ELEMENT_TYPE_LINEEDIT, // TODO: This is not used anywhere
         UI_ELEMENT_TYPE_FOLDERBOX, // TODO: This is not used anywhere
         UI_ELEMENT_TYPE_RESIZE_PROPERTIES,
-        UI_ELEMENT_TYPE_CODE_EDITOR
+        UI_ELEMENT_TYPE_CODE_EDITOR,
+        UI_ELEMENT_TYPE_PAINT_PROPERTIES
     };
 
     ////////////////////////////////////
@@ -177,6 +178,7 @@ namespace Cascade
         NODE_TYPE_CLAMP,
         NODE_TYPE_ERODE,
         NODE_TYPE_CHROMAKEY,
+        NODE_TYPE_PAINT,
         NODE_TYPE_MAX
     };
 
@@ -187,6 +189,7 @@ namespace Cascade
     {
         { NODE_TYPE_CROP, "Crop" },
         { NODE_TYPE_READ, "Read Image" },
+        { NODE_TYPE_SHADER, "GLSL Shader" },
         { NODE_TYPE_BLUR, "Blur" },
         { NODE_TYPE_COLOR, "Color" },
         { NODE_TYPE_RESIZE, "Resize" },
@@ -210,7 +213,8 @@ namespace Cascade
         { NODE_TYPE_CLAMP, "Clamp" },
         { NODE_TYPE_ERODE, "Erode" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" },
-        { NODE_TYPE_SHADER, "GLSL Shader" }
+        { NODE_TYPE_PAINT, "Paint" }
+
     };
 
     ////////////////////////////////////
@@ -794,6 +798,26 @@ namespace Cascade
         1
     };
 
+    const static NodeInitProperties paintNodeInitProperties =
+    {
+        NODE_TYPE_PAINT,
+        nodeStrings[NODE_TYPE_PAINT],
+        NODE_CATEGORY_GENERATE,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PAINT] },
+            { UI_ELEMENT_TYPE_PAINT_PROPERTIES, "" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/paint_a_comp.spv",
+        1
+    };
+
     // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
@@ -804,6 +828,10 @@ namespace Cascade
         else if(t == NODE_TYPE_READ)
         {
             return readNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_SHADER)
+        {
+            return shaderNodeInitProperties;
         }
         else if(t == NODE_TYPE_BLUR)
         {
@@ -897,9 +925,9 @@ namespace Cascade
         {
             return chromaKeyNodeInitProperties;
         }
-        else if(t == NODE_TYPE_SHADER)
+        else if(t == NODE_TYPE_PAINT)
         {
-            return shaderNodeInitProperties;
+            return paintNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

@@ -88,6 +88,9 @@ public:
     CsImage* getCachedImage() const;
     void setCachedImage(std::unique_ptr<CsImage> image);
 
+    CsImage* getPaintImage() const;
+    void setPaintImage(std::unique_ptr<CsImage> image);
+
     void invalidateAllDownstreamNodes();
 
     bool canBeRendered() const;
@@ -115,6 +118,8 @@ public:
     NodeInput* findNodeInput(const QString& id);
 
     void updateConnectionPositions();
+
+    void triggerViewerClick(QPoint pos);
 
     void flushCache();
 
@@ -144,6 +149,7 @@ private:
     void moveEvent(QMoveEvent*) override;
 
     std::unique_ptr<CsImage> cachedImage;
+    std::unique_ptr<CsImage> paintImage;
 
     Ui::NodeBase *ui;
     const NodeGraph* nodeGraph;
@@ -194,6 +200,7 @@ signals:
     void nodeRequestUpdate(NodeBase* node);
     void nodeRequestFileSave(NodeBase* node, const QString& path);
     void nodeHasMoved();
+    void viewerClick(QPoint pos);
 };
 
 #endif // NODEBASE_H

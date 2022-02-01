@@ -271,7 +271,17 @@ void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
 {
     auto props = node->getAllPropertyValues();
 
+    CS_LOG_CONSOLE(props);
+
     settingsBuffer->fillBuffer(props);
+}
+
+QPoint VulkanRenderer::mapViewerToProjection(const QPoint &pos)
+{
+    QPoint projected((pos.x() + currentRenderSize.width() / 2) - (position_x * currentRenderSize.width() / 2),
+                     (pos.y() + currentRenderSize.height() / 2) + (position_y * currentRenderSize.height() / 2));
+
+    return projected;
 }
 
 void VulkanRenderer::createGraphicsPipeline(
@@ -377,7 +387,7 @@ void VulkanRenderer::createGraphicsPipeline(
 
     // assume pre-multiplied alpha, blend, write out all of rgba
     vk::PipelineColorBlendAttachmentState att(
-                true,
+                false,
                 vk::BlendFactor::eOne,
                 vk::BlendFactor::eOne,
                 vk::BlendOp::eAdd,
@@ -394,7 +404,7 @@ void VulkanRenderer::createGraphicsPipeline(
 
     vk::PipelineColorBlendStateCreateInfo cb(
                 {},
-                {},
+                false,
                 {},
                 1,
                 &att);
@@ -700,6 +710,56 @@ void VulkanRenderer::updateComputeDescriptors(
     device.updateDescriptorSets(descWrite, {});
 }
 
+void VulkanRenderer::updateComputeDescriptorsPaint(
+        const CsImage* const inputImageBack,
+        const CsImage* const outputImage)
+{
+//    auto result = device.waitIdle();
+
+//    vk::DescriptorImageInfo sourceInfoBack(
+//                *sampler,
+//                *inputImageBack->getImageView(),
+//                vk::ImageLayout::eGeneral);
+
+//    vk::DescriptorImageInfo destinationInfo(
+//                {},
+//                *outputImage->getImageView(),
+//                vk::ImageLayout::eGeneral);
+
+//    vk::DescriptorBufferInfo settingsBufferInfo(
+//                *settingsBuffer->getBuffer(),
+//                0,
+//                VK_WHOLE_SIZE);
+
+//    std::vector<vk::WriteDescriptorSet> descWrite(4);
+
+//    descWrite.at(0).dstSet                    = *computeDescriptorSet;
+//    descWrite.at(0).dstBinding                = 0;
+//    descWrite.at(0).descriptorCount           = 1;
+//    descWrite.at(0).descriptorType            = vk::DescriptorType::eStorageImage;
+//    descWrite.at(0).pImageInfo                = &sourceInfoBack;
+
+//    descWrite.at(1).dstSet                    = *computeDescriptorSet;
+//    descWrite.at(1).dstBinding                = 1;
+//    descWrite.at(1).descriptorCount           = 1;
+//    descWrite.at(1).descriptorType            = vk::DescriptorType::eStorageImage;
+//    descWrite.at(1).pImageInfo                = &sourceInfoFront;
+
+//    descWrite.at(2).dstSet                    = *computeDescriptorSet;
+//    descWrite.at(2).dstBinding                = 2;
+//    descWrite.at(2).descriptorCount           = 1;
+//    descWrite.at(2).descriptorType            = vk::DescriptorType::eStorageImage;
+//    descWrite.at(2).pImageInfo                = &destinationInfo;
+
+//    descWrite.at(3).dstSet                    = *computeDescriptorSet;
+//    descWrite.at(3).dstBinding                = 3;
+//    descWrite.at(3).descriptorCount           = 1;
+//    descWrite.at(3).descriptorType            = vk::DescriptorType::eUniformBuffer;
+//    descWrite.at(3).pBufferInfo               = &settingsBufferInfo;
+
+//    device.updateDescriptorSets(descWrite, {});
+}
+
 void VulkanRenderer::createComputePipelineLayout()
 {
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
@@ -710,7 +770,6 @@ void VulkanRenderer::createComputePipelineLayout()
     //Create the layout, store it to share between shaders
     computePipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo).value;
 }
-
 
 void VulkanRenderer::createComputePipelines()
 {
@@ -928,6 +987,18 @@ void VulkanRenderer::createRenderPass()
 
     m = m * translation * scale;
 
+//    QPoint point(100, 200);
+//    CS_LOG_CONSOLE(QString::number(position_x));
+//    CS_LOG_CONSOLE(QString::number(position_y));
+//    CS_LOG_CONSOLE(QString::number(position_z));
+
+
+//    auto e = point * m;
+
+//    CS_LOG_CONSOLE(QString::number(e.x()));
+//    CS_LOG_CONSOLE(QString::number(e.y()));
+//    CS_LOG_CONSOLE("------------------");
+
     memcpy(p, m.constData(), 16 * sizeof(float));
     device.unmapMemory(*vertexBufferMemory);
 
@@ -1096,7 +1167,6 @@ void VulkanRenderer::processNode(
         {
             pipeline = computePipelineNoop.get();
         }
-
     }
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
@@ -1173,6 +1243,77 @@ void VulkanRenderer::processNode(
 
         window->requestUpdate();
     }
+}
+
+void VulkanRenderer::processPaintNode(
+        NodeBase *node,
+        CsImage *inputImageBack,
+        const QSize targetSize)
+{
+    auto result = device.waitIdle();
+
+    fillSettingsBuffer(node);
+
+    if (!node->getPaintImage())
+    {
+        node->setPaintImage(std::unique_ptr<CsImage>(
+                    new CsImage(window,
+                                &device,
+                                &physicalDevice,
+                                targetSize.width(),
+                                targetSize.height(),
+                                false,
+                                "Paint Image")));
+    }
+
+    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+        CS_LOG_WARNING("Failed to create compute render target.");
+
+    auto pipeline = pipelines[node->nodeType].get();
+
+    updateComputeDescriptors(node->getPaintImage(), inputImageBack, computeRenderTarget.get());
+
+    computeCommandBuffer->recordPaint(
+                node->getPaintImage(),
+                computeRenderTarget.get(),
+                pipeline);
+
+    computeCommandBuffer->submitPaint();
+
+    result = device.waitIdle();
+
+    node->setPaintImage(std::move(computeRenderTarget));
+
+    saveImageToDisk(node->getPaintImage(), "C:\\Users\\ryzen\\Desktop\\test.tif", 0);
+    //saveImageToDisk(computeRenderTarget.get(), "C:\\Users\\ryzen\\Desktop\\test2.tif", 0);
+
+    auto shader = createShaderFromFile(":/shaders/paint_b_comp.spv");
+    auto pl = createComputePipeline(shader.get());
+
+    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+        CS_LOG_WARNING("Failed to create compute render target.");
+
+    updateComputeDescriptors(inputImageBack, node->getPaintImage(), computeRenderTarget.get());
+
+    computeCommandBuffer->recordGeneric(
+                inputImageBack,
+                node->getPaintImage(),
+                computeRenderTarget.get(),
+                pl.get(), 1, 1);
+
+    computeCommandBuffer->submitGeneric();
+
+    result = device.waitIdle();
+
+    window->requestUpdate();
+
+    result = device.waitIdle();
+
+
+
+    node->setCachedImage(std::move(computeRenderTarget));
+
+    window->requestUpdate();
 }
 
 void VulkanRenderer::displayNode(const NodeBase *node)

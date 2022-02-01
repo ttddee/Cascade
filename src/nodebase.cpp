@@ -450,6 +450,16 @@ void NodeBase::setCachedImage(std::unique_ptr<CsImage> image)
     cachedImage = std::move(image);
 }
 
+CsImage* NodeBase::getPaintImage() const
+{
+    return paintImage.get();
+}
+
+void NodeBase::setPaintImage(std::unique_ptr<CsImage> image)
+{
+    paintImage = std::move(image);
+}
+
 void NodeBase::invalidateAllDownstreamNodes()
 {
     std::vector<NodeBase*> nodes;
@@ -538,6 +548,11 @@ void NodeBase::updateConnectionPositions()
     }
 }
 
+void NodeBase::triggerViewerClick(QPoint pos)
+{
+    emit viewerClick(pos);
+}
+
 void NodeBase::updateCropSizes()
 {
     auto vals = getAllPropertyValues().split(",");
@@ -596,6 +611,7 @@ void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
 void NodeBase::flushCache()
 {
     cachedImage = nullptr;
+    paintImage = nullptr;
 }
 
 NodeBase::~NodeBase()

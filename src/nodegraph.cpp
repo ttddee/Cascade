@@ -389,6 +389,13 @@ void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
     deleteConnection(c);
 }
 
+void NodeGraph::handleViewerHasBeenClicked(QPoint pos)
+{
+    // Forward viewer click to paint node
+    if (viewedNode->nodeType == NODE_TYPE_PAINT)
+        viewedNode->triggerViewerClick(pos);
+}
+
 void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
 {
     QJsonArray jsonNodesArray;

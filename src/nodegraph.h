@@ -131,6 +131,7 @@ public slots:
     void handleNodeUpdateRequest(NodeBase* node);
     void handleFileSaveRequest(NodeBase* node, const QString& path);
     void handleConnectedNodeInputClicked(Connection* c);
+    void handleViewerHasBeenClicked(QPoint pos);
 };
 
 #endif // NODEGRAPH_H

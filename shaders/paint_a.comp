@@ -1,0 +1,49 @@
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D paintImage;
+layout (binding = 1, rgba32f) uniform image2D inputImageBack2;
+layout (binding = 2, rgba32f) uniform image2D outputImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float posX;
+	layout(offset = 4) float posY;
+} sb;
+
+int brushRadius = 10;
+
+bool insideArea(vec2 c, vec2 b, int size) 
+{
+	if (c.x > b.x - size && c.x < b.x + size &&
+		c.y > b.y - size && c.y < b.y + size)
+		return true;
+    return false;   
+}
+
+void main()
+{   
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	ivec2 brushPos = ivec2(sb.posX, sb.posY);
+
+	vec4 pixelPaint = imageLoad(paintImage, pixelCoords).rgba; 
+	
+	//pixelBack.a = 0.0;
+	
+	//vec4 pixelFinal = pixelBack;
+	
+	vec4 pixelFinal = pixelPaint;
+	
+	float dist = distance(pixelCoords, brushPos) / brushRadius;
+	
+	if (insideArea(pixelCoords, brushPos, brushRadius))
+	{
+		pixelFinal = vec4(1.0 - dist, 0.0, 0.0, 1.0 - dist);
+	}
+
+
+	//vec4 pixelFinal = (pixelPaint * (1 - pixelPaint.a) + pixelPaint);
+
+	imageStore(outputImage, pixelCoords, pixelFinal);
+    //imageStore(resultImage, pixelCoords, pixelPaint);
+}

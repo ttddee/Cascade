@@ -56,7 +56,7 @@ private:
 
     VulkanRenderer* renderer;
 
-    bool isDragging = false;
+    bool middleIsDragging = false;
 
     QPoint lastPos;
 
@@ -72,6 +72,7 @@ signals:
     void rendererHasBeenCreated();
     void requestZoomTextUpdate(float f);
     void renderTargetHasBeenCreated(int w, int h);
+    void viewerHasBeenClicked(QPoint pos);
 
 public slots:
     void handleZoomResetRequest();

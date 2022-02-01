@@ -47,5 +47,7 @@
         <file>shaders/erodedilate_comp.spv</file>
         <file>shaders/chromakey_comp.spv</file>
         <file>shaders/mute_comp.spv</file>
+        <file>shaders/paint_a_comp.spv</file>
+        <file>shaders/paint_b_comp.spv</file>
     </qresource>
 </RCC>

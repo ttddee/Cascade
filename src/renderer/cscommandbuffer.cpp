@@ -75,7 +75,7 @@ void CsCommandBuffer::createComputeCommandBuffers()
     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
                 *computeCommandPool,
                 vk::CommandBufferLevel::ePrimary,
-                3);
+                4);
 
     std::vector<vk::UniqueCommandBuffer> buffers = device->allocateCommandBuffersUnique(
                 commandBufferAllocateInfo).value;
@@ -83,6 +83,38 @@ void CsCommandBuffer::createComputeCommandBuffers()
     commandBufferImageLoad = vk::UniqueCommandBuffer(std::move(buffers.at(0)));
     commandBufferGeneric = vk::UniqueCommandBuffer(std::move(buffers.at(1)));
     commandBufferImageSave = vk::UniqueCommandBuffer(std::move(buffers.at(2)));
+    commandBufferPaint = vk::UniqueCommandBuffer(std::move(buffers.at(3)));
+
+#ifdef QT_DEBUG
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eCommandBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkCommandBuffer, *commandBufferImageLoad),
+                    "Command Buffer Image Load");
+        vk::Result result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eCommandBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkCommandBuffer, *commandBufferGeneric),
+                    "Command Buffer Generic");
+        vk::Result result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eCommandBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkCommandBuffer, *commandBufferImageSave),
+                    "Command Buffer Image Save");
+        vk::Result result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+    {
+        vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
+                    vk::ObjectType::eCommandBuffer,
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkCommandBuffer, *commandBufferPaint),
+                    "Command Buffer Paint");
+        vk::Result result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+    }
+#endif
 
     // Fence for compute CB sync
     vk::FenceCreateInfo fenceCreateInfo(
@@ -156,6 +188,52 @@ void CsCommandBuffer::recordGeneric(
     }
 
     result = commandBufferGeneric->end();
+}
+
+void CsCommandBuffer::recordPaint(
+        CsImage *const inputImageBack,
+        CsImage *const paintOverlay,
+        vk::Pipeline &pl)
+{
+    auto result = computeQueue.waitIdle();
+
+    vk::CommandBufferBeginInfo cmdBufferBeginInfo;
+
+    result = commandBufferPaint->begin(cmdBufferBeginInfo);
+
+    // Layout transitions before compute stage
+    inputImageBack->transitionLayoutTo(
+                commandBufferPaint,
+                vk::ImageLayout::eGeneral);
+
+    paintOverlay->transitionLayoutTo(
+                commandBufferPaint,
+                vk::ImageLayout::eGeneral);
+
+    commandBufferPaint->bindPipeline(
+                vk::PipelineBindPoint::eCompute,
+                pl);
+    commandBufferPaint->bindDescriptorSets(
+                vk::PipelineBindPoint::eCompute,
+                *computePipelineLayout,
+                0,
+                *computeDescriptorSet,
+                {});
+    commandBufferPaint->dispatch(
+                inputImageBack->getWidth() / 16 + 1,
+                inputImageBack->getHeight() / 16 + 1,
+                1);
+
+    // Layout transitions after compute stage
+    inputImageBack->transitionLayoutTo(
+                commandBufferPaint,
+                vk::ImageLayout::eShaderReadOnlyOptimal);
+
+    paintOverlay->transitionLayoutTo(
+                commandBufferPaint,
+                vk::ImageLayout::eShaderReadOnlyOptimal);
+
+    result = commandBufferPaint->end();
 }
 
 void CsCommandBuffer::recordImageLoad(
@@ -347,6 +425,27 @@ void CsCommandBuffer::submitImageSave()
         CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
+void CsCommandBuffer::submitPaint()
+{
+    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem waiting for fence.");
+    result = device->resetFences(1, &(*fence));
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Could not reset fence.");
+
+    vk::SubmitInfo computeSubmitInfo;
+    computeSubmitInfo.commandBufferCount = 1;
+    computeSubmitInfo.pCommandBuffers = &commandBufferPaint.get();
+
+    result = computeQueue.submit(
+                1,
+                &computeSubmitInfo,
+                *fence);
+    if (result != vk::Result::eSuccess)
+        CS_LOG_WARNING("Problem submitting compute queue.");
+}
+
 vk::Queue* CsCommandBuffer::getQueue()
 {
     return &computeQueue;
@@ -356,19 +455,24 @@ vk::CommandBuffer* CsCommandBuffer::getGeneric()
 {
     auto result = computeQueue.waitIdle();
 
-    return &(*commandBufferGeneric);
+    return &commandBufferGeneric.get();
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageLoad()
 {
     auto result = computeQueue.waitIdle();
 
-    return &(*commandBufferImageLoad);
+    return &commandBufferImageLoad.get();
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageSave()
 {
     return &(*commandBufferImageSave);
+}
+
+vk::CommandBuffer* CsCommandBuffer::getPaint()
+{
+    return &commandBufferPaint.get();
 }
 
 void CsCommandBuffer::createBuffer(
