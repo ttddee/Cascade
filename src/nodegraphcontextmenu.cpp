@@ -61,9 +61,10 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     a,
                     &QAction::triggered,
                     parent,
-                    [parent, t]{ parent->createNode(t,
-                                                    QPoint(parent->mapToScene(parent->lastMousePos).x(),
-                                                           parent->mapToScene(parent->lastMousePos).y())); });
+                    [parent, t]{ parent->createNode(
+                        t,
+                        QPoint(parent->mapToScene(parent->lastMousePos).x(),
+                               parent->mapToScene(parent->lastMousePos).y())); });
     }
 }
 

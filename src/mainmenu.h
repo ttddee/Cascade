@@ -30,8 +30,11 @@ class MainMenu : public QMenuBar
 public:
     MainMenu(MainWindow* mainWindow);
 
+    ~MainMenu();
+
 private:
     QMenu *fileMenu;
+    QMenu *editMenu;
     QMenu *viewMenu;
     QMenu *helpMenu;
 
@@ -43,6 +46,8 @@ private:
     QAction* toggleNodeGraphAction;
     QAction* togglePropertiesAction;
     QAction* shortcutsAction;
+
+    std::vector<QAction*> createNodeActions;
 
 signals:
     void newProjectActionTriggered();

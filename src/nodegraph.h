@@ -70,6 +70,7 @@ public:
     void flushCacheAllNodes();
 
     QPoint lastMousePos;
+    QPoint lastCreatedNodePos = QPoint(29700, 29920);
 
 protected:
     void mousePressEvent(QMouseEvent*) override;

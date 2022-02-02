@@ -126,6 +126,7 @@ namespace Cascade
         NODE_CATEGORY_GENERATE,
         NODE_CATEGORY_COLOR,
         NODE_CATEGORY_FILTER,
+        NODE_CATEGORY_EFFECTS,
         NODE_CATEGORY_MERGE,
         NODE_CATEGORY_TRANSFORM,
         NODE_CATEGORY_CHANNEL,
@@ -141,6 +142,7 @@ namespace Cascade
         { NODE_CATEGORY_GENERATE, "Generate" },
         { NODE_CATEGORY_COLOR, "Color" },
         { NODE_CATEGORY_FILTER, "Filter" },
+        { NODE_CATEGORY_EFFECTS, "Effects" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
         { NODE_CATEGORY_CHANNEL, "Channel" }
@@ -694,7 +696,7 @@ namespace Cascade
     {
         NODE_TYPE_RIVER_STYX,
         nodeStrings[NODE_TYPE_RIVER_STYX],
-        NODE_CATEGORY_GENERATE,
+        NODE_CATEGORY_EFFECTS,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {

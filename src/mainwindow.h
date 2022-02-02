@@ -51,6 +51,8 @@ public:
     ads::CDockWidget* nodeGraphDockWidget;
     ads::CDockWidget* propertiesViewDockWidget;
 
+    NodeGraph* getNodeGraph() const;
+
     ~MainWindow();
 
 private:

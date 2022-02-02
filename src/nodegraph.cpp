@@ -72,6 +72,8 @@ void NodeGraph::createNode(
 
     viewNode(n);
 
+    lastCreatedNodePos = pos;
+
     emit projectIsDirty();
 }
 

@@ -98,6 +98,11 @@ MainWindow::MainWindow(QWidget *parent)
                 QDir::currentPath());
 }
 
+NodeGraph* MainWindow::getNodeGraph() const
+{
+    return nodeGraph;
+}
+
 void MainWindow::handleRendererHasBeenCreated()
 {
     // We are waiting for the renderer to be fully
