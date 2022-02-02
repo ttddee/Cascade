@@ -128,14 +128,10 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
             auto parts = node->getAllPropertyValues().split(",");
 
             if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
-            {
                 executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
-            }
             else
-            {
                 executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
             }
-        }
     }
 }
 
@@ -149,13 +145,9 @@ void RenderManager::displayNode(NodeBase* node)
     if (node && node->canBeRendered())
     {
         if (renderNodes(node))
-        {
             renderer->displayNode(node);
-        }
         else
-        {
             renderer->doClearScreen();
-        }
     }
     else
     {
@@ -173,13 +165,9 @@ bool RenderManager::renderNodes(NodeBase *node)
     foreach(NodeBase* n, nodes)
     {
         if (n->canBeRendered())
-        {
             renderNode(n);
-        }
         else
-        {
             allNodesRendered = false;
-        }
     }
 
     return allNodesRendered;
@@ -194,6 +182,7 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processReadNode(node);
         }
     }
+    // A node that has an output size different to the size of its input
     if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
     {
         renderer->processNode(node, nullptr, nullptr, node->getTargetSize());
@@ -205,11 +194,13 @@ void RenderManager::renderNode(NodeBase *node)
 
         inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
 
+        // A node that has a front and back image
         if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
         {
             inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
             renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }
+        // A node without a front image
         else if (inputImageBack)
         {
             renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());

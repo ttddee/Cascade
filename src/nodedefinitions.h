@@ -627,7 +627,9 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EDGE_DETECT] },
-            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,10.0,0.01,1.0" }
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity X,0.0,10.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity Y,0.0,10.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,10.0,0.01,1.0" },
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,

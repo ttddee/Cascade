@@ -7,7 +7,9 @@ layout (binding = 2, rgba32f) uniform image2D resultImage;
 
 layout(set = 0, binding = 3) uniform InputBuffer
 {
-    layout(offset = 0) float gain;
+    layout(offset = 0) float intensityX;
+	layout(offset = 4) float intensityY;
+	layout(offset = 8) float gain;
 } sb;
 
 vec3 conv(in float[9] kernel, in vec3[9] data) 
@@ -40,14 +42,14 @@ void main()
     }
 
     float[9] xKernel;
-    xKernel[0] = 1.0; xKernel[1] =  0.0; xKernel[2] = -1.0;
-    xKernel[3] = 2.0; xKernel[4] = 0.0; xKernel[5] = -2.0;
-    xKernel[6] = 1.0; xKernel[7] =  0.0; xKernel[8] = -1.0;
+    xKernel[0] = 1.0 * sb.intensityX; xKernel[1] =  0.0; xKernel[2] = -1.0 * sb.intensityX;
+    xKernel[3] = 2.0 * sb.intensityX; xKernel[4] = 0.0; xKernel[5] = -2.0 * sb.intensityX;
+    xKernel[6] = 1.0 * sb.intensityX; xKernel[7] =  0.0; xKernel[8] = -1.0 * sb.intensityX;
 
     float[9] yKernel;
-    yKernel[0] = -1.0; yKernel[1] =  -2.0; yKernel[2] =  -1.0;
+    yKernel[0] = -1.0 * sb.intensityY; yKernel[1] =  -2.0 * sb.intensityY; yKernel[2] =  -1.0 * sb.intensityY;
     yKernel[3] = 0.0; yKernel[4] = 0.0; yKernel[5] = 0.0;
-    yKernel[6] = 1.0; yKernel[7] =  2.0; yKernel[8] = 1.0;
+    yKernel[6] = 1.0 * sb.intensityY; yKernel[7] =  2.0 * sb.intensityY; yKernel[8] = 1.0 * sb.intensityY;
                                     
     vec3 resX = vec3(conv(xKernel, imageData.rgb));
 
