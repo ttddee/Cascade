@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include "global.h"
+
 class VulkanWindow;
 class NodeGraph;
 class PropertiesView;
@@ -29,14 +31,7 @@ class ViewerStatusBar;
 class NodeBase;
 class RenderManager;
 
-enum ViewerMode
-{
-    VIEWER_MODE_FRONT_RGB,
-    VIEWER_MODE_BACK_RGB,
-    VIEWER_MODE_INPUT_ALPHA,
-    VIEWER_MODE_OUTPUT_RGB,
-    VIEWER_MODE_OUTPUT_ALPHA
-};
+using namespace Cascade;
 
 class WindowManager : public QObject
 {
@@ -59,6 +54,8 @@ private:
 
     bool eventFilter(QObject* watched, QEvent* event);
 
+    void setViewerMode(const ViewerMode mode);
+
     VulkanWindow* vulkanWindow;
     NodeGraph* nodeGraph;
     PropertiesView* propertiesView;
@@ -67,7 +64,6 @@ private:
     RenderManager* rManager;
 
     ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
-    bool viewOutputAlpha = false;
 
 public slots:
     void handleNodeDoubleClicked(NodeBase* node);
@@ -75,6 +71,7 @@ public slots:
     void handleRenderTargetCreated(int w, int h);
     void handleViewerStatusBarValueChanged();
     void handleClearPropertiesRequest();
+    void handleViewerModeChanged(const Cascade::ViewerMode mode);
 };
 
 #endif // WINDOWMANAGER_H

@@ -30,6 +30,15 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
 
     this->setAttribute(Qt::WA_StyledBackground);
 
+    QMapIterator<ViewerMode, QString> i(viewerModeText);
+    while (i.hasNext())
+    {
+        i.next();
+        ui->viewerModeBox->addItem(i.value());
+    }
+    ui->viewerModeBox->setCurrentIndex(3);
+    ui->viewerModeBox->setMinimumWidth(90);
+
     gammaSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
@@ -54,6 +63,8 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
             this, &ViewerStatusBar::handleValueChanged);
     connect(gainSlider, &CsSliderBoxEntity::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
+    connect(ui->viewerModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+            this, &ViewerStatusBar::handleViewerModeCheckBoxChanged);
 }
 
 void ViewerStatusBar::setZoomText(const QString &s)
@@ -71,9 +82,9 @@ void ViewerStatusBar::setHeightText(const QString &s)
     ui->heightLabel->setText(s);
 }
 
-void ViewerStatusBar::setViewerModeText(const QString &s)
+void ViewerStatusBar::setViewerMode(const ViewerMode m)
 {
-    ui->viewerModeLabel->setText(s);
+    ui->viewerModeBox->setCurrentIndex(m);
 }
 
 void ViewerStatusBar::handleBwToggled()
@@ -88,6 +99,13 @@ void ViewerStatusBar::handleBwToggled()
 void ViewerStatusBar::handleValueChanged()
 {
     emit valueChanged();
+}
+
+void ViewerStatusBar::handleViewerModeCheckBoxChanged()
+{
+    auto mode = viewerModeText.key(ui->viewerModeBox->currentText());
+    emit viewerModeChanged(mode);
+    ui->viewerModeBox->clearFocus();
 }
 
 QString ViewerStatusBar::getViewerSettings()

@@ -31,7 +31,6 @@ layout(set = 0, binding = 3) uniform InputBuffer
 } sb;
 
 // copy from https://www.shadertoy.com/view/4l2GzW
-
 float r(float n)
 {
  	return fract(cos(n*89.42)*343.42);
@@ -60,7 +59,6 @@ float worley(vec2 n,float s)
 }
 
 // copy from https://www.shadertoy.com/view/4sc3z2
-
 #define MOD3 vec3(.1031,.11369,.13787)
 
 vec3 hash33(vec3 p3)

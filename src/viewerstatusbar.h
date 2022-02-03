@@ -23,6 +23,7 @@
 #include <QWidget>
 
 #include "uientities/cssliderboxentity.h"
+#include "global.h"
 
 namespace Ui {
 class ViewerStatusBar;
@@ -38,7 +39,7 @@ public:
     void setZoomText(const QString& s);
     void setWidthText(const QString& s);
     void setHeightText(const QString& s);
-    void setViewerModeText(const QString& s);
+    void setViewerMode(const ViewerMode m);
 
     QString getViewerSettings();
 
@@ -55,10 +56,12 @@ private:
 signals:
     void requestZoomReset();
     void valueChanged();
+    void viewerModeChanged(const Cascade::ViewerMode mode);
 
 public slots:
     void handleBwToggled();
     void handleValueChanged();
+    void handleViewerModeCheckBoxChanged();
 };
 
 #endif // VIEWERSTATUSBAR_H

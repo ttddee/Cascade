@@ -61,6 +61,8 @@ void WindowManager::setUp(
             this, &WindowManager::handleRenderTargetCreated);
     connect(viewerStatusBar, &ViewerStatusBar::valueChanged,
             this, &WindowManager::handleViewerStatusBarValueChanged);
+    connect(viewerStatusBar, &ViewerStatusBar::viewerModeChanged,
+            this, &WindowManager::handleViewerModeChanged);
 
     rManager = &RenderManager::getInstance();
 }
@@ -78,50 +80,27 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_F1)
         {
-            currentViewerMode = VIEWER_MODE_FRONT_RGB;
-            viewerStatusBar->setViewerModeText("RGB Front");
-            vulkanWindow->setViewerMode(currentViewerMode);
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-            viewOutputAlpha = false;
+            setViewerMode(VIEWER_MODE_FRONT_RGB);
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
-            currentViewerMode = VIEWER_MODE_BACK_RGB;
-            viewerStatusBar->setViewerModeText("RGB Back");
-            vulkanWindow->setViewerMode(currentViewerMode);
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-            viewOutputAlpha = false;
+            setViewerMode(VIEWER_MODE_BACK_RGB);
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
-            currentViewerMode = VIEWER_MODE_INPUT_ALPHA;
-            viewerStatusBar->setViewerModeText("Alpha Input");
-            vulkanWindow->setViewerMode(currentViewerMode);
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
-            viewOutputAlpha = false;
+            setViewerMode(VIEWER_MODE_INPUT_ALPHA);
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
-            if (nodeGraph->getSelectedNode() != nodeGraph->getViewedNode())
+            if (nodeGraph->getSelectedNode() == nodeGraph->getViewedNode() &&
+                currentViewerMode == VIEWER_MODE_OUTPUT_RGB)
             {
-                viewOutputAlpha = false;
-            }
-            if (!viewOutputAlpha)
-            {
-                currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
-                viewerStatusBar->setViewerModeText("RGB Output");
-                viewOutputAlpha = true;
+                setViewerMode(VIEWER_MODE_OUTPUT_ALPHA);
             }
             else
             {
-                currentViewerMode = VIEWER_MODE_OUTPUT_ALPHA;
-                viewerStatusBar->setViewerModeText("Alpha Output");
-                viewOutputAlpha = false;
+                setViewerMode(VIEWER_MODE_OUTPUT_RGB);
             }
-
-            vulkanWindow->setViewerMode(currentViewerMode);
-
-            nodeGraph->viewNode(nodeGraph->getSelectedNode());
         }
 
         if (keyEvent->key() == Qt::Key_Delete)
@@ -144,6 +123,14 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
     return false;
 }
 
+void WindowManager::setViewerMode(const ViewerMode mode)
+{
+    currentViewerMode = mode;
+    viewerStatusBar->setViewerMode(mode);
+    vulkanWindow->setViewerMode(mode);
+    nodeGraph->viewNode(nodeGraph->getSelectedNode());
+}
+
 void WindowManager::handleClearPropertiesRequest()
 {
     propertiesView->clear();
@@ -163,6 +150,11 @@ void WindowManager::handleRenderTargetCreated(int w, int h)
 {
     viewerStatusBar->setWidthText(QString::number(w));
     viewerStatusBar->setHeightText(QString::number(h));
+}
+
+void WindowManager::handleViewerModeChanged(const Cascade::ViewerMode mode)
+{
+    setViewerMode(mode);
 }
 
 void WindowManager::handleViewerStatusBarValueChanged()
