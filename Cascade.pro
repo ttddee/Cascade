@@ -73,6 +73,7 @@ SOURCES += \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
+    src/renderer/computemanager.cpp \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
@@ -159,6 +160,7 @@ HEADERS += \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
+    src/renderer/computemanager.h \
     src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
@@ -241,6 +243,7 @@ win32-msvc* {
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
     INCLUDEPATH += C:/VulkanSDK/1.2.198.1/include
+    INCLUDEPATH += C:/Users/ryzen/Cascade/external/kompute/install/include
 
     COPIES += dlls
     COPIES += platforms
@@ -261,6 +264,8 @@ win32-msvc* {
         LIBS += -L$$LIB_ROOT/debug/lib -lOSDependentd
         LIBS += -L$$LIB_ROOT/debug/lib -lSPIRVd
         LIBS += -L$$LIB_ROOT/debug/lib -lSPVRemapperd
+        LIBS += -LC:/Users/ryzen/Cascade/external/kompute/install/debug/lib -lkompute
+        LIBS += -LC:/Users/ryzen/Cascade/external/kompute/install/debug/lib -lfmtd
 
         # Debug DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svgd.dll)

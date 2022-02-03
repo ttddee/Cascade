@@ -37,6 +37,7 @@
 #include "cssettingsbuffer.h"
 #include "csimage.h"
 #include "cscommandbuffer.h"
+#include "computemanager.h"
 
 using namespace Cascade;
 using namespace OIIO;
@@ -218,6 +219,8 @@ private:
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 
     OCIO::ConstConfigRcPtr ocioConfig;
+
+    std::unique_ptr<ComputeManager> computeMager;
 };
 
 } // end namespace Cascade::Renderer

@@ -61,6 +61,8 @@ void VulkanRenderer::initResources()
     device = window->device();
     physicalDevice = window->physicalDevice();
 
+    computeMager = std::unique_ptr<ComputeManager>(new ComputeManager());
+
     // Init all the permanent parts of the renderer
     createVertexBuffer();
     createSampler();
