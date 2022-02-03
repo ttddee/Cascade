@@ -10,8 +10,7 @@
     },
 	"tbb",
 	"glslang",
-	"gtest",
-	"kompute"
+	"gtest"
   ],
   "builtin-baseline": "0d0547a3d816b5092abece5abbdc85d23c88d9c9",
   "overrides": [
