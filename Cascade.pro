@@ -266,6 +266,7 @@ win32-msvc* {
         LIBS += -L$$LIB_ROOT/debug/lib -lSPVRemapperd
         LIBS += -LC:/Users/ryzen/Cascade/external/kompute/install/debug/lib -lkompute
         LIBS += -LC:/Users/ryzen/Cascade/external/kompute/install/debug/lib -lfmtd
+        LIBS += -LC:/VulkanSDK/1.2.198.1/Lib -lvulkan-1
 
         # Debug DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svgd.dll)

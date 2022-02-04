@@ -9,10 +9,17 @@ namespace Cascade::Renderer
 class ComputeManager
 {
 public:
+    ComputeManager(vk::Instance* inst,
+                   vk::PhysicalDevice* physDev,
+                   vk::Device* dev);
     ComputeManager();
 
 private:
-    kp::Manager manager;
+    std::unique_ptr<kp::Manager> manager;
+
+    std::shared_ptr<vk::Instance> instance = nullptr;
+    std::shared_ptr<vk::PhysicalDevice> physicalDevice = nullptr;
+    std::shared_ptr<vk::Device> device = nullptr;
 };
 
 } // end namespace Cascade::Renderer

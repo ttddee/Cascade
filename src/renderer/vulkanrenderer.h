@@ -154,6 +154,7 @@ private:
     void logicalDeviceLost() override;
 
     VulkanWindow *window;
+    QVulkanInstance* qInstance;
     vk::Device device;
     vk::PhysicalDevice physicalDevice;
 
@@ -220,7 +221,7 @@ private:
 
     OCIO::ConstConfigRcPtr ocioConfig;
 
-    std::unique_ptr<ComputeManager> computeMager;
+    std::unique_ptr<ComputeManager> computeManager;
 };
 
 } // end namespace Cascade::Renderer

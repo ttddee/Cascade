@@ -58,10 +58,10 @@ VulkanRenderer::VulkanRenderer(VulkanWindow *w)
 void VulkanRenderer::initResources()
 {
     // Get device and functions
+    qInstance = window->vulkanInstance();
+    vk::Instance instance = qInstance->vkInstance();
     device = window->device();
     physicalDevice = window->physicalDevice();
-
-    computeMager = std::unique_ptr<ComputeManager>(new ComputeManager());
 
     // Init all the permanent parts of the renderer
     createVertexBuffer();
@@ -105,6 +105,9 @@ void VulkanRenderer::initResources()
     {
         CS_LOG_WARNING("OpenColorIO Error: " + QString(exception.what()));
     }
+
+    computeManager = std::unique_ptr<ComputeManager>(
+                new ComputeManager());
 
     emit window->rendererHasBeenCreated();
 }
