@@ -109,6 +109,11 @@ void VulkanRenderer::initResources()
     computeManager = std::unique_ptr<ComputeManager>(
                 new ComputeManager());
 
+//    computeManager = std::unique_ptr<ComputeManager>(
+//                new ComputeManager(&instance,
+//                                   &physicalDevice,
+//                                   &device));
+
     emit window->rendererHasBeenCreated();
 }
 

@@ -9,9 +9,6 @@ namespace Cascade::Renderer
 class ComputeManager
 {
 public:
-    ComputeManager(vk::Instance* inst,
-                   vk::PhysicalDevice* physDev,
-                   vk::Device* dev);
     ComputeManager();
 
 private:
