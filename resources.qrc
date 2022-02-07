@@ -49,5 +49,6 @@
         <file>shaders/mute_comp.spv</file>
         <file>shaders/flip_comp.spv</file>
         <file>shaders/checkerboard_comp.spv</file>
+        <file>shaders/colorbalance_comp.spv</file>
     </qresource>
 </RCC>

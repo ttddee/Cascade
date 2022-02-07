@@ -181,6 +181,7 @@ namespace Cascade
         NODE_TYPE_CHROMAKEY,
         NODE_TYPE_FLIP,
         NODE_TYPE_CHECKERBOARD,
+        NODE_TYPE_COLORBALANCE,
         NODE_TYPE_MAX
     };
 
@@ -216,7 +217,8 @@ namespace Cascade
         { NODE_TYPE_CHROMAKEY, "Chroma Key" },
         { NODE_TYPE_SHADER, "GLSL Shader" },
         { NODE_TYPE_FLIP, "Flip" },
-        { NODE_TYPE_CHECKERBOARD, "Checkerboard" }
+        { NODE_TYPE_CHECKERBOARD, "Checkerboard" },
+        { NODE_TYPE_COLORBALANCE, "Color Balance" }
     };
 
     ////////////////////////////////////
@@ -849,6 +851,29 @@ namespace Cascade
         1
     };
 
+    const static NodeInitProperties colorBalanceNodeInitProperties =
+    {
+        NODE_TYPE_COLORBALANCE,
+        nodeStrings[NODE_TYPE_COLORBALANCE],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLORBALANCE] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Green,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blue,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Preserve Luminance,0," }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/colorbalance_comp.spv",
+        1
+    };
+
     // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
@@ -963,6 +988,10 @@ namespace Cascade
         else if(t == NODE_TYPE_CHECKERBOARD)
         {
             return checkerboardNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_COLORBALANCE)
+        {
+            return colorBalanceNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

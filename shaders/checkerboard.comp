@@ -1,5 +1,5 @@
-// Original shader by Martin Fiedler
-// http://keyj.emphy.de/
+// Original shader created for the GIPS project by Martin Fiedler
+// https://github.com/kajott/GIPS
 
 #version 430
 
