@@ -1,0 +1,42 @@
+// Original shader by Martin Fiedler
+// http://keyj.emphy.de/
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float size;
+    layout(offset = 4) float aspect;
+    layout(offset = 8) float phaseX;
+    layout(offset = 12) float phaseY;
+	layout(offset = 16) float aRed;
+	layout(offset = 20) float aGreen;
+	layout(offset = 24) float aBlue;
+	layout(offset = 28) float aAlpha;
+	layout(offset = 32) float bRed;
+	layout(offset = 36) float bGreen;
+	layout(offset = 40) float bBlue;
+	layout(offset = 44) float bAlpha;
+} sb;
+
+void main()
+{   
+    ivec2 imageSize = imageSize(inputBack);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 pixel = imageLoad(inputBack, pixelCoords).rgba;  
+
+	float m = (mod(pixelCoords.x / sb.size * exp(-sb.aspect) - sb.phaseX, 2.0) - 1.0)
+            * (mod(pixelCoords.y / sb.size * exp( sb.aspect) - sb.phaseY, 2.0) - 1.0);
+
+	vec4 result = (m < 0.0) ? vec4(sb.aRed, sb.aGreen, sb.aBlue, sb.aAlpha) : vec4(sb.bRed, sb.bGreen, sb.bBlue, sb.bAlpha);
+
+	imageStore(resultImage, pixelCoords, result);
+    
+}

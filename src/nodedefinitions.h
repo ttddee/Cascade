@@ -180,6 +180,7 @@ namespace Cascade
         NODE_TYPE_ERODE,
         NODE_TYPE_CHROMAKEY,
         NODE_TYPE_FLIP,
+        NODE_TYPE_CHECKERBOARD,
         NODE_TYPE_MAX
     };
 
@@ -214,7 +215,8 @@ namespace Cascade
         { NODE_TYPE_ERODE, "Erode" },
         { NODE_TYPE_CHROMAKEY, "Chroma Key" },
         { NODE_TYPE_SHADER, "GLSL Shader" },
-        { NODE_TYPE_FLIP, "Flip" }
+        { NODE_TYPE_FLIP, "Flip" },
+        { NODE_TYPE_CHECKERBOARD, "Checkerboard" }
     };
 
     ////////////////////////////////////
@@ -487,7 +489,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] },
-            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 1.0, 1.0, 1.0, 1.0" },
             { UI_ELEMENT_TYPE_SIZEBOX, "" }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
@@ -766,7 +768,7 @@ namespace Cascade
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMAKEY] },
-            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color, 0.0, 0.0, 0.0, 0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range A,0.0,1.0,0.01,0.05" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range B,0.0,1.0,0.01,0.25" }
         },
@@ -818,6 +820,32 @@ namespace Cascade
         ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/flip_comp.spv",
+        1
+    };
+
+    const static NodeInitProperties checkerboardNodeInitProperties =
+    {
+        NODE_TYPE_CHECKERBOARD,
+        nodeStrings[NODE_TYPE_CHECKERBOARD],
+        NODE_CATEGORY_GENERATE,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHECKERBOARD] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Size,1.0,1000.0,0.01,20.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Aspect,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Phase X,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Phase Y,-1.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color A:, 0.0, 0.0, 0.0, 0.0" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color B:, 1.0, 1.0, 1.0, 1.0" },
+            { UI_ELEMENT_TYPE_SIZEBOX, "" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/checkerboard_comp.spv",
         1
     };
 
@@ -931,6 +959,10 @@ namespace Cascade
         else if(t == NODE_TYPE_FLIP)
         {
             return flipNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_CHECKERBOARD)
+        {
+            return checkerboardNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

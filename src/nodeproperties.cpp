@@ -105,7 +105,14 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_COLOR_BUTTON,
                         this);
             item->selfConnectToValueChanged(this);
-            item->setName(elem.second);
+            auto parts = elem.second.split(",");
+            item->setName(parts.at(0));
+            QColor color = QColor(
+                        parts.at(1).toFloat() * 255,
+                        parts.at(2).toFloat() * 255,
+                        parts.at(3).toFloat() * 255,
+                        parts.at(4).toFloat() * 255);
+            item->setColor(color);
             layout->addWidget(item);
             widgets.push_back(item);
         }

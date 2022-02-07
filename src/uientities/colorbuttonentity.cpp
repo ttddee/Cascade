@@ -60,13 +60,13 @@ void ColorButtonEntity::handleColorChanged(QColor c)
 QString ColorButtonEntity::getValuesAsString()
 {
     QString s;
-    s.append(QString::number(getColor().red()));
+    s.append(QString::number(getColor().red() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().green()));
+    s.append(QString::number(getColor().green() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().blue()));
+    s.append(QString::number(getColor().blue() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().alpha()));
+    s.append(QString::number(getColor().alpha() / 255.0));
 
     return s;
 }

@@ -176,8 +176,6 @@ private:
     vk::UniqueShaderModule shaderUser;
     vk::UniquePipeline computePipelineUser;
 
-    QSize loadImageSize;
-
     QSize currentRenderSize;
 
     std::unique_ptr<ImageBuf> cpuImage;

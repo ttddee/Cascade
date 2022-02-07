@@ -536,8 +536,6 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         return false;
     }
 
-    loadImageSize = imageSize;
-
     return true;
 }
 
