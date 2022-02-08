@@ -56,8 +56,6 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 
     renderer->setDisplayMode(DISPLAY_MODE_RGB);
 
-    NodeBase* nodeToDisplay = nullptr;
-
     if (viewerMode == VIEWER_MODE_FRONT_RGB)
     {
         if (props.frontInputTrait == FRONT_INPUT_ALWAYS_CLEAR)
@@ -66,8 +64,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         }
         else if (props.frontInputTrait == FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            nodeToDisplay = node->getUpstreamNodeFront();
-            displayNode(nodeToDisplay);
+            displayNode(node->getUpstreamNodeFront());
         }
     }
     else if (viewerMode == VIEWER_MODE_BACK_RGB)
@@ -78,8 +75,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         }
         else if (props.backInputTrait == BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            nodeToDisplay = node->getUpstreamNodeBack();
-            displayNode(nodeToDisplay);
+            displayNode(node->getUpstreamNodeBack());
         }
     }
     else if (viewerMode == VIEWER_MODE_INPUT_ALPHA)
@@ -90,14 +86,13 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         }
         else if (props.alphaInputTrait == ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            nodeToDisplay = node->getUpstreamNodeFront();
             renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
-            displayNode(nodeToDisplay);
+            displayNode(node->getUpstreamNodeFront());
         }
     }
     else if (viewerMode == VIEWER_MODE_OUTPUT_RGB || viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
     {
-        nodeToDisplay = node;
+        NodeBase* nodeToDisplay = node;
 
         if (viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
         {
@@ -130,8 +125,8 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
             if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
                 executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
             else
-                executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
-            }
+                executeMessageBox(MESSAGEBOX_FILE_SAVE_PROBLEM);
+        }
     }
 }
 
