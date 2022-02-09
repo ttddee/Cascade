@@ -176,6 +176,7 @@ namespace Cascade
         NODE_TYPE_SHADER,
         NODE_TYPE_SHARPEN,
         NODE_TYPE_SHUFFLE,
+        NODE_TYPE_SMART_DENOISE,
         NODE_TYPE_SOLARIZE,
         NODE_TYPE_UNPREMULT,
         NODE_TYPE_WRITE,
@@ -218,6 +219,7 @@ namespace Cascade
         { NODE_TYPE_SHADER, "GLSL Shader" },
         { NODE_TYPE_SHARPEN, "Sharpen" },
         { NODE_TYPE_SHUFFLE, "Shuffle" },
+        { NODE_TYPE_SMART_DENOISE, "Smart Denoise" },
         { NODE_TYPE_SOLARIZE, "Solarize" },
         { NODE_TYPE_UNPREMULT, "Unpremult" },
         { NODE_TYPE_WRITE, "Write Image" }
@@ -960,6 +962,26 @@ namespace Cascade
         1
     };
 
+    const static NodeInitProperties smartDenoiseNodeInitProperties =
+    {
+        NODE_TYPE_SMART_DENOISE,
+        nodeStrings[NODE_TYPE_SMART_DENOISE],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SMART_DENOISE] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Sigma,1.0,20.0,0.01,7.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Threshold,0.01,1.0,0.01,0.195" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/smartdenoise_comp.spv",
+        1
+    };
+
     // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
@@ -1098,6 +1120,10 @@ namespace Cascade
         else if(t == NODE_TYPE_CONTOURS)
         {
             return contoursNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_SMART_DENOISE)
+        {
+            return smartDenoiseNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

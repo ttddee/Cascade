@@ -1,0 +1,74 @@
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+//  Copyright (c) 2018-2019 Michele Morrone
+//  All rights reserved.
+//
+//  https://michelemorrone.eu - https://BrutPitt.com
+//
+//  me@michelemorrone.eu - brutpitt@gmail.com
+//  twitter: @BrutPitt - github: BrutPitt
+//  
+//  https://github.com/BrutPitt/glslSmartDeNoise/
+//
+//  This software is distributed under the terms of the BSD 2-Clause license
+//~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+// Adapted by Till Dechent for Cascade Image Editor
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float sigma;
+    layout(offset = 4) float threshold;
+} sb;
+
+#define INV_SQRT_OF_2PI 0.39894228040143267793994605993439  // 1.0/SQRT_OF_2PI
+#define INV_PI 0.31830988618379067153776752674503
+
+float kSigma = 3.0;
+
+void main()
+{   
+    ivec2 imageSize = imageSize(inputBack);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	
+	vec4 pixel = imageLoad(inputBack, pixelCoords).rgba; 
+
+	float radius = round(kSigma*sb.sigma);
+    float radQ = radius * radius;
+
+    float invSigmaQx2 = .5 / (sb.sigma * sb.sigma);      // 1.0 / (sigma^2 * 2.0)
+    float invSigmaQx2PI = INV_PI * invSigmaQx2;    // 1/(2 * PI * sigma^2)
+
+    float invThresholdSqx2 = .5 / (sb.threshold * sb.threshold);     // 1.0 / (sigma^2 * 2.0)
+    float invThresholdSqrt2PI = INV_SQRT_OF_2PI / sb.threshold;   // 1.0 / (sqrt(2*PI) * sigma^2)
+
+    vec4 centrPx = pixel; 
+
+    float zBuff = 0.0;
+    vec4 aBuff = vec4(0.0);
+
+    vec2 d;
+    for (d.x=-radius; d.x <= radius; d.x++) {
+        float pt = sqrt(radQ-d.x*d.x);       // pt = yRadius: have circular trend
+        for (d.y=-pt; d.y <= pt; d.y++) {
+            float blurFactor = exp( -dot(d , d) * invSigmaQx2 ) * invSigmaQx2PI;
+
+            vec4 walkPx = imageLoad(inputBack, ivec2(pixelCoords + d));
+            vec4 dC = walkPx-centrPx;
+            float deltaFactor = exp( -dot(dC, dC) * invThresholdSqx2) * invThresholdSqrt2PI * blurFactor;
+
+            zBuff += deltaFactor;
+            aBuff += deltaFactor*walkPx;
+        }
+    }
+    vec4 result = aBuff/zBuff;
+
+	imageStore(resultImage, pixelCoords, result); 
+}

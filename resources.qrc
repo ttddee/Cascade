@@ -55,5 +55,6 @@
         <file>shaders/colormap_comp.spv</file>
         <file>shaders/extractcolor_comp.spv</file>
         <file>shaders/contours_comp.spv</file>
+        <file>shaders/smartdenoise_comp.spv</file>
     </qresource>
 </RCC>
