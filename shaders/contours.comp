@@ -1,0 +1,52 @@
+// Original shader created for the GIPS project by Martin Fiedler
+// https://github.com/kajott/GIPS
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float threshold;
+    layout(offset = 4) float range;
+    layout(offset = 8) float fgRed;
+    layout(offset = 12) float fgGreen;
+	layout(offset = 16) float fgBlue;
+	layout(offset = 24) float contOnly;
+	layout(offset = 28) float bgRed;
+    layout(offset = 32) float bgGreen;
+	layout(offset = 36) float bgBlue;
+} sb;
+
+void main()
+{   
+    ivec2 imageSize = imageSize(inputBack);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	
+	vec4 pixel = imageLoad(inputBack, pixelCoords).rgba; 
+
+	vec3 fg = vec3(sb.fgRed, sb.fgGreen, sb.fgBlue);
+	vec3 bg = vec3(sb.bgRed, sb.bgGreen, sb.bgBlue);
+
+	vec4 center = pixel;
+	vec3 p00 = imageLoad(inputBack, ivec2(pixelCoords.x - 1, pixelCoords.y - 1)).rgb;
+	vec3 p10 = imageLoad(inputBack, ivec2(pixelCoords.x, pixelCoords.y - 1)).rgb;
+	vec3 p20 = imageLoad(inputBack, ivec2(pixelCoords.x + 1, pixelCoords.y - 1)).rgb;
+	vec3 p01 = imageLoad(inputBack, ivec2(pixelCoords.x - 1, pixelCoords.y)).rgb;
+	vec3 p21 = imageLoad(inputBack, ivec2(pixelCoords.x + 1, pixelCoords.y)).rgb;
+	vec3 p02 = imageLoad(inputBack, ivec2(pixelCoords.x - 1, pixelCoords.y + 1)).rgb;
+	vec3 p12 = imageLoad(inputBack, ivec2(pixelCoords.x, pixelCoords.y + 1)).rgb;
+	vec3 p22 = imageLoad(inputBack, ivec2(pixelCoords.x + 1, pixelCoords.y + 1)).rgb;
+    vec3 Gv = p00 - p02 + 2.0 * (p10 - p12) + p20 - p22;
+    vec3 Gh = p00 - p20 + 2.0 * (p01 - p21) + p02 - p22;
+    vec3 G = sqrt(Gv*Gv + Gh*Gh);
+    vec4 result = vec4(mix((sb.contOnly > 0.5) ? bg : center.rgb, fg, 1.0 *
+        min(1.0, max(0.0, max(G.r, max(G.g, G.b)) - sb.threshold) / sb.range)
+    ), center.a);
+
+	imageStore(resultImage, pixelCoords, result); 
+}

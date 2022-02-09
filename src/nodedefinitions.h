@@ -154,6 +154,7 @@ namespace Cascade
         NODE_TYPE_COLOR_CORRECT,
         NODE_TYPE_COLOR_MAP,
         NODE_TYPE_CONSTANT,
+        NODE_TYPE_CONTOURS,
         NODE_TYPE_CROP,
         NODE_TYPE_DIFFERENCE,
         NODE_TYPE_DIRECTIONAL_BLUR,
@@ -195,6 +196,7 @@ namespace Cascade
         { NODE_TYPE_COLOR_CORRECT, "Color Correct" },
         { NODE_TYPE_COLOR_MAP, "Color Map" },
         { NODE_TYPE_CONSTANT, "Constant" },
+        { NODE_TYPE_CONTOURS, "Contours" },
         { NODE_TYPE_CROP, "Crop" },
         { NODE_TYPE_DIFFERENCE, "Difference Key" },
         { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
@@ -935,6 +937,29 @@ namespace Cascade
         1
     };
 
+    const static NodeInitProperties contoursNodeInitProperties =
+    {
+        NODE_TYPE_CONTOURS,
+        nodeStrings[NODE_TYPE_CONTOURS],
+        NODE_CATEGORY_FILTER,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONTOURS] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Threshold,0.0,4.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range,0.01,4.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 0.0, 0.0, 0.0, 0.0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Contours Only,0," },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Background:, 1.0, 1.0, 1.0, 1.0" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/contours_comp.spv",
+        1
+    };
+
     // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
@@ -1069,6 +1094,10 @@ namespace Cascade
         else if(t == NODE_TYPE_EXTRACT_COLOR)
         {
             return extractColorNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_CONTOURS)
+        {
+            return contoursNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }
