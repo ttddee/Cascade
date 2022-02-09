@@ -1,0 +1,60 @@
+// Original shader created for the GIPS project by Martin Fiedler
+// https://github.com/kajott/GIPS
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float hue;
+    layout(offset = 4) float sat;
+    layout(offset = 8) float invertLuma;
+    layout(offset = 12) float invertChroma;
+} sb;
+
+#define TWO_PI 6.28318530718
+
+void main()
+{   
+    ivec2 imageSize = imageSize(inputBack);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+
+    vec4 pixel = imageLoad(inputBack, pixelCoords).rgba;  
+	
+	// The hue is expected to be in radians,
+	// so we stretch the 0.0 --> 1.0 value here
+	float hueNorm = sb.hue * TWO_PI;
+
+	float luma = dot(pixel.rgb, vec3(.299, .587, .114));
+    vec3 chroma = pixel.rgb - vec3(luma);
+
+    // rotate chrominance vector around (1,1,1) axis
+    float s = sqrt(1.0/3.0) * sin(hueNorm);
+	float c = cos(hueNorm);
+	float b = (1.0/3.0) * (1.0 - c);
+    chroma = mat3(b+c, b-s, b+s,
+                  b+s, b+c, b-s,
+                  b-s, b+s, b+c) * chroma;
+
+    if (sb.invertLuma > 0.5) 
+	{ 
+		luma = 1.0 - luma; 
+	}
+	float inv = 1.0;
+	if (sb.invertChroma > 0.5)
+	{
+		inv = -1.0;
+	}
+	
+    vec4 result = vec4((luma + chroma * sb.sat * inv), pixel.a);
+	
+	
+
+	imageStore(resultImage, pixelCoords, result);
+    
+}

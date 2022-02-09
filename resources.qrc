@@ -50,5 +50,9 @@
         <file>shaders/flip_comp.spv</file>
         <file>shaders/checkerboard_comp.spv</file>
         <file>shaders/colorbalance_comp.spv</file>
+        <file>shaders/huesat_comp.spv</file>
+        <file>shaders/levels_comp.spv</file>
+        <file>shaders/colormap_comp.spv</file>
+        <file>shaders/extractcolor_comp.spv</file>
     </qresource>
 </RCC>

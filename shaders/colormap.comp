@@ -1,0 +1,37 @@
+// Original shader created for the GIPS project by Martin Fiedler
+// https://github.com/kajott/GIPS
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float aRed;
+    layout(offset = 4) float aGreen;
+    layout(offset = 8) float aBlue;
+    layout(offset = 16) float bRed;
+	layout(offset = 20) float bGreen;
+	layout(offset = 24) float bBlue;
+	layout(offset = 32) float gamma;
+} sb;
+
+void main()
+{   
+    ivec2 imageSize = imageSize(inputBack);
+
+    ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+	
+	vec4 pixel = imageLoad(inputBack, pixelCoords).rgba; 
+
+	vec3 a = vec3(sb.aRed, sb.aGreen, sb.aBlue);
+	vec3 b = vec3(sb.bRed, sb.bGreen, sb.bBlue);
+	vec3 gamma = vec3(sb.gamma);
+
+    pixel.rgb = mix(a, b, pow(pixel.rgb, gamma));
+
+	imageStore(resultImage, pixelCoords, pixel); 
+}

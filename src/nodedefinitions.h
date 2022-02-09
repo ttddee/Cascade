@@ -145,35 +145,39 @@ namespace Cascade
     ////////////////////////////////////
     enum NodeType
     {
-        NODE_TYPE_CROP,
-        NODE_TYPE_READ,
-        NODE_TYPE_SHADER,
         NODE_TYPE_BLUR,
-        NODE_TYPE_COLOR,
-        NODE_TYPE_RESIZE,
-        NODE_TYPE_ROTATE,
-        NODE_TYPE_SHARPEN,
-        NODE_TYPE_MERGE,
-        NODE_TYPE_SHUFFLE,
-        NODE_TYPE_PIXELATE,
-        NODE_TYPE_SOLARIZE,
+        NODE_TYPE_CHANNEL_COPY,
+        NODE_TYPE_CHECKERBOARD,
+        NODE_TYPE_CHROMA_KEY,
+        NODE_TYPE_CLAMP,
+        NODE_TYPE_COLOR_BALANCE,
+        NODE_TYPE_COLOR_CORRECT,
+        NODE_TYPE_COLOR_MAP,
         NODE_TYPE_CONSTANT,
-        NODE_TYPE_NOISE,
+        NODE_TYPE_CROP,
         NODE_TYPE_DIFFERENCE,
+        NODE_TYPE_DIRECTIONAL_BLUR,
+        NODE_TYPE_EDGE_DETECT,
+        NODE_TYPE_ERODE,
+        NODE_TYPE_EXTRACT_COLOR,
+        NODE_TYPE_FLIP,
+        NODE_TYPE_HUE_SATURATION,
+        NODE_TYPE_INVERT,
+        NODE_TYPE_LEVELS,
+        NODE_TYPE_MERGE,
+        NODE_TYPE_NOISE,
+        NODE_TYPE_PIXELATE,
         NODE_TYPE_PREMULT,
+        NODE_TYPE_READ,
+        NODE_TYPE_RESIZE,
+        NODE_TYPE_RIVER_STYX,
+        NODE_TYPE_ROTATE,
+        NODE_TYPE_SHADER,
+        NODE_TYPE_SHARPEN,
+        NODE_TYPE_SHUFFLE,
+        NODE_TYPE_SOLARIZE,
         NODE_TYPE_UNPREMULT,
         NODE_TYPE_WRITE,
-        NODE_TYPE_INVERT,
-        NODE_TYPE_EDGE_DETECT,
-        NODE_TYPE_DIRECTIONAL_BLUR,
-        NODE_TYPE_CHANNEL_COPY,
-        NODE_TYPE_RIVER_STYX,
-        NODE_TYPE_CLAMP,
-        NODE_TYPE_ERODE,
-        NODE_TYPE_CHROMAKEY,
-        NODE_TYPE_FLIP,
-        NODE_TYPE_CHECKERBOARD,
-        NODE_TYPE_COLORBALANCE,
         NODE_TYPE_MAX
     };
 
@@ -182,35 +186,39 @@ namespace Cascade
     ////////////////////////////////////
     const static QMap<NodeType, QString> nodeStrings =
     {
-        { NODE_TYPE_CROP, "Crop" },
-        { NODE_TYPE_READ, "Read Image" },
         { NODE_TYPE_BLUR, "Blur" },
-        { NODE_TYPE_COLOR, "Color" },
-        { NODE_TYPE_RESIZE, "Resize" },
-        { NODE_TYPE_ROTATE, "Rotate" },
-        { NODE_TYPE_SHARPEN, "Sharpen" },
-        { NODE_TYPE_MERGE, "Merge" },
-        { NODE_TYPE_SHUFFLE, "Shuffle" },
-        { NODE_TYPE_PIXELATE, "Pixelate" },
-        { NODE_TYPE_SOLARIZE, "Solarize" },
-        { NODE_TYPE_CONSTANT, "Constant" },
-        { NODE_TYPE_NOISE, "Noise" },
-        { NODE_TYPE_DIFFERENCE, "Difference Key" },
-        { NODE_TYPE_PREMULT, "Premult" },
-        { NODE_TYPE_UNPREMULT, "Unpremult" },
-        { NODE_TYPE_WRITE, "Write Image" },
-        { NODE_TYPE_INVERT, "Invert" },
-        { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
-        { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
         { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
-        { NODE_TYPE_RIVER_STYX, "River Styx" },
-        { NODE_TYPE_CLAMP, "Clamp" },
-        { NODE_TYPE_ERODE, "Erode" },
-        { NODE_TYPE_CHROMAKEY, "Chroma Key" },
-        { NODE_TYPE_SHADER, "GLSL Shader" },
-        { NODE_TYPE_FLIP, "Flip" },
         { NODE_TYPE_CHECKERBOARD, "Checkerboard" },
-        { NODE_TYPE_COLORBALANCE, "Color Balance" }
+        { NODE_TYPE_CHROMA_KEY, "Chroma Key" },
+        { NODE_TYPE_CLAMP, "Clamp" },
+        { NODE_TYPE_COLOR_BALANCE, "Color Balance" },
+        { NODE_TYPE_COLOR_CORRECT, "Color Correct" },
+        { NODE_TYPE_COLOR_MAP, "Color Map" },
+        { NODE_TYPE_CONSTANT, "Constant" },
+        { NODE_TYPE_CROP, "Crop" },
+        { NODE_TYPE_DIFFERENCE, "Difference Key" },
+        { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
+        { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
+        { NODE_TYPE_ERODE, "Erode" },
+        { NODE_TYPE_EXTRACT_COLOR, "Extract Color" },
+        { NODE_TYPE_FLIP, "Flip" },
+        { NODE_TYPE_HUE_SATURATION, "Hue Saturation" },
+        { NODE_TYPE_INVERT, "Invert" },
+        { NODE_TYPE_LEVELS, "Levels" },
+        { NODE_TYPE_MERGE, "Merge" },
+        { NODE_TYPE_NOISE, "Noise" },
+        { NODE_TYPE_PIXELATE, "Pixelate" },
+        { NODE_TYPE_PREMULT, "Premult" },
+        { NODE_TYPE_READ, "Read Image" },
+        { NODE_TYPE_RESIZE, "Resize" },
+        { NODE_TYPE_RIVER_STYX, "River Styx" },
+        { NODE_TYPE_ROTATE, "Rotate" },
+        { NODE_TYPE_SHADER, "GLSL Shader" },
+        { NODE_TYPE_SHARPEN, "Sharpen" },
+        { NODE_TYPE_SHUFFLE, "Shuffle" },
+        { NODE_TYPE_SOLARIZE, "Solarize" },
+        { NODE_TYPE_UNPREMULT, "Unpremult" },
+        { NODE_TYPE_WRITE, "Write Image" }
     };
 
     ////////////////////////////////////
@@ -299,14 +307,14 @@ namespace Cascade
 
     const static NodeInitProperties colorNodeInitProperties =
     {
-        NODE_TYPE_COLOR,
-        nodeStrings[NODE_TYPE_COLOR],
+        NODE_TYPE_COLOR_CORRECT,
+        nodeStrings[NODE_TYPE_COLOR_CORRECT],
         NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK,
           NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR] },
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_CORRECT] },
             { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
             { UI_ELEMENT_TYPE_COLOR_PROPERTIES, "" }
         },
@@ -730,13 +738,13 @@ namespace Cascade
 
     const static NodeInitProperties chromaKeyNodeInitProperties =
     {
-        NODE_TYPE_CHROMAKEY,
-        nodeStrings[NODE_TYPE_CHROMAKEY],
+        NODE_TYPE_CHROMA_KEY,
+        nodeStrings[NODE_TYPE_CHROMA_KEY],
         NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMAKEY] },
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMA_KEY] },
             { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color, 0.0, 0.0, 0.0, 0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range A,0.0,1.0,0.01,0.05" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range B,0.0,1.0,0.01,0.25" }
@@ -816,13 +824,13 @@ namespace Cascade
 
     const static NodeInitProperties colorBalanceNodeInitProperties =
     {
-        NODE_TYPE_COLORBALANCE,
-        nodeStrings[NODE_TYPE_COLORBALANCE],
+        NODE_TYPE_COLOR_BALANCE,
+        nodeStrings[NODE_TYPE_COLOR_BALANCE],
         NODE_CATEGORY_COLOR,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLORBALANCE] },
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_BALANCE] },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red,-1.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Green,-1.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blue,-1.0,1.0,0.01,0.0" },
@@ -833,6 +841,97 @@ namespace Cascade
         ALPHA_INPUT_ALWAYS_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/colorbalance_comp.spv",
+        1
+    };
+
+    const static NodeInitProperties hueSaturationNodeInitProperties =
+    {
+        NODE_TYPE_HUE_SATURATION,
+        nodeStrings[NODE_TYPE_HUE_SATURATION],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_HUE_SATURATION] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Hue,0.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Saturation,0.0,5.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Invert Luminance,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Invert Chroma,0," }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/huesat_comp.spv",
+        1
+    };
+
+    const static NodeInitProperties levelsNodeInitProperties =
+    {
+        NODE_TYPE_LEVELS,
+        nodeStrings[NODE_TYPE_LEVELS],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_LEVELS] },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "In Black,0.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "In White,0.0,1.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gamma,0.2,5.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out Black,0.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out White,0.0,1.0,0.01,1.0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Luminance Only,0," }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/levels_comp.spv",
+        1
+    };
+
+    const static NodeInitProperties colorMapNodeInitProperties =
+    {
+        NODE_TYPE_COLOR_MAP,
+        nodeStrings[NODE_TYPE_COLOR_MAP],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_MAP] },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color A:, 0.0, 0.0, 0.0, 0.0" },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color B:, 1.0, 1.0, 1.0, 1.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gamma,0.2,3.0,0.01,1.0" }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/colormap_comp.spv",
+        1
+    };
+
+    const static NodeInitProperties extractColorNodeInitProperties =
+    {
+        NODE_TYPE_EXTRACT_COLOR,
+        nodeStrings[NODE_TYPE_EXTRACT_COLOR],
+        NODE_CATEGORY_COLOR,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EXTRACT_COLOR] },
+            { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 0.0, 0.0, 0.0, 0.0" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Tolerance,0.0,1.0,0.01,0.5" },
+            { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Smoothness,0.0,1.0,0.01,0.0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Hue Only,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Invert,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Desaturate,0," }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/extractcolor_comp.spv",
         1
     };
 
@@ -851,7 +950,7 @@ namespace Cascade
         {
             return blurNodeInitProperties;
         }
-        else if(t == NODE_TYPE_COLOR)
+        else if(t == NODE_TYPE_COLOR_CORRECT)
         {
             return colorNodeInitProperties;
         }
@@ -935,7 +1034,7 @@ namespace Cascade
         {
             return erodeNodeInitProperties;
         }
-        else if(t == NODE_TYPE_CHROMAKEY)
+        else if(t == NODE_TYPE_CHROMA_KEY)
         {
             return chromaKeyNodeInitProperties;
         }
@@ -951,9 +1050,25 @@ namespace Cascade
         {
             return checkerboardNodeInitProperties;
         }
-        else if(t == NODE_TYPE_COLORBALANCE)
+        else if(t == NODE_TYPE_COLOR_BALANCE)
         {
             return colorBalanceNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_HUE_SATURATION)
+        {
+            return hueSaturationNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_LEVELS)
+        {
+            return levelsNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_COLOR_MAP)
+        {
+            return colorMapNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_EXTRACT_COLOR)
+        {
+            return extractColorNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }
