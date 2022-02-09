@@ -48,8 +48,11 @@ public:
 private:
     Ui::ViewerStatusBar *ui;
 
+    bool split = false;
     bool bw = false;
+    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
 
+    CsSliderBoxEntity* splitSlider;
     CsSliderBoxEntity* gammaSlider;
     CsSliderBoxEntity* gainSlider;
 
@@ -59,6 +62,8 @@ signals:
     void viewerModeChanged(const Cascade::ViewerMode mode);
 
 public slots:
+    void handleSplitToggled();
+    void handleSplitSliderChanged();
     void handleBwToggled();
     void handleValueChanged();
     void handleViewerModeCheckBoxChanged();

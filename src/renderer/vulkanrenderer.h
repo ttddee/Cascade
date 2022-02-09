@@ -129,7 +129,8 @@ private:
 
     void createComputeDescriptors();
     void updateGraphicsDescriptors(
-            const CsImage* const outputImage);
+            const CsImage* const outputImage,
+            const CsImage* const upstreamImage);
     void updateComputeDescriptors(
             const CsImage* const inputImageBack,
             const CsImage* const inputImageFront,
@@ -211,7 +212,8 @@ private:
     std::map<NodeType, vk::UniqueShaderModule>  shaders;
     std::map<NodeType, vk::UniquePipeline>      pipelines;
 
-    std::vector<float> viewerPushConstants = { 0.0f, 1.0f, 1.0f };
+    // TODO: Move this out of here
+    std::vector<float> viewerPushConstants = { 0.0f, 0.5f, 0.0f, 1.0f, 1.0f };
 
     std::unique_ptr<CsSettingsBuffer> settingsBuffer;
 

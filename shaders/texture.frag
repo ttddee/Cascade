@@ -25,17 +25,36 @@ layout(location = 0) out vec4 fragColor;
 
 layout(binding = 1) uniform sampler2D tex;
 
+layout(binding = 2) uniform sampler2D upstream;
+
 layout(push_constant) uniform pushConstants {
-    layout(offset = 0) float bw;
-    layout(offset = 4) float gamma;
-    layout(offset = 8) float gain;
+	layout(offset = 0) float split;
+	layout(offset = 4) float splitPercent;
+    layout(offset = 8) float bw;
+    layout(offset = 12) float gamma;
+    layout(offset = 16) float gain;
 } pc;
 
 float thresh = 0.00313066844250063;
 
 void main()
 {
+	ivec2 imageSize = textureSize(tex,0);
+
     vec4 pixel = texture(tex, v_texcoord);
+	
+	if (pc.split > 0.5)
+	{
+		int xPos = int(imageSize.x * v_texcoord.x);
+		if (v_texcoord.x < pc.splitPercent)
+		{
+			pixel = texture(upstream, v_texcoord);
+		}
+		if (int(imageSize.x * pc.splitPercent) == xPos)
+		{
+			pixel = vec4(0.0, 0.0, 0.0, 0.0);
+		}
+	}
 
     if (pc.bw > 0.0)
     {

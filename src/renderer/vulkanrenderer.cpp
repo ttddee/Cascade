@@ -232,12 +232,18 @@ void VulkanRenderer::createGraphicsDescriptors()
             vk::DescriptorType::eCombinedImageSampler,
             1, // descriptorCount
             vk::ShaderStageFlagBits::eFragment
+        },
+        {
+            2, // binding
+            vk::DescriptorType::eCombinedImageSampler,
+            1, // descriptorCount
+            vk::ShaderStageFlagBits::eFragment
         }
     };
 
     vk::DescriptorSetLayoutCreateInfo descLayoutInfo(
                 {},
-                2, // bindingCount
+                3, // bindingCount
                 layoutBinding.data());
 
     graphicsDescriptorSetLayout = device.createDescriptorSetLayoutUnique(descLayoutInfo).value;
@@ -613,11 +619,12 @@ void VulkanRenderer::createComputeDescriptors()
 }
 
 void VulkanRenderer::updateGraphicsDescriptors(
-        const CsImage *const outputImage)
+        const CsImage* const outputImage,
+        const CsImage* const upstreamImage)
 {
     for (int i = 0; i < concurrentFrameCount; ++i)
     {
-        std::vector<vk::WriteDescriptorSet> descWrite(2);
+        std::vector<vk::WriteDescriptorSet> descWrite(3);
         descWrite.at(0).dstSet = *graphicsDescriptorSet.at(i);
         descWrite.at(0).dstBinding = 0;
         descWrite.at(0).descriptorCount = 1;
@@ -634,6 +641,17 @@ void VulkanRenderer::updateGraphicsDescriptors(
         descWrite.at(1).descriptorCount = 1;
         descWrite.at(1).descriptorType = vk::DescriptorType::eCombinedImageSampler;
         descWrite.at(1).pImageInfo = &descImageInfo;
+
+        vk::DescriptorImageInfo descImageInfoUpstream(
+                    *sampler,
+                    *upstreamImage->getImageView(),
+                    vk::ImageLayout::eShaderReadOnlyOptimal);
+
+        descWrite.at(2).dstSet = *graphicsDescriptorSet.at(i);
+        descWrite.at(2).dstBinding = 2;
+        descWrite.at(2).descriptorCount = 1;
+        descWrite.at(2).descriptorType = vk::DescriptorType::eCombinedImageSampler;
+        descWrite.at(2).pImageInfo = &descImageInfoUpstream;
 
         device.updateDescriptorSets(descWrite, {});
     }
@@ -1187,7 +1205,13 @@ void VulkanRenderer::displayNode(const NodeBase *node)
         if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
             CS_LOG_WARNING("Failed to create compute render target.");
 
-        updateGraphicsDescriptors(image);
+        CsImage* upstreamImage = nullptr;
+        if (node->getUpstreamNodeBack())
+            upstreamImage = node->getUpstreamNodeBack()->getCachedImage();
+        if (!upstreamImage)
+            upstreamImage = image;
+
+        updateGraphicsDescriptors(image, upstreamImage);
         updateComputeDescriptors(image, nullptr, computeRenderTarget.get());
 
         computeCommandBuffer->recordGeneric(

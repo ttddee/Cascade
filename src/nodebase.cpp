@@ -401,7 +401,6 @@ QString NodeBase::getAllPropertyValues() const
             vals.append(",");
         }
     }
-    CS_LOG_CONSOLE(vals);
     return vals;
 }
 
@@ -443,7 +442,9 @@ std::set<Connection*> NodeBase::getAllConnections()
 
 CsImage* NodeBase::getCachedImage() const
 {
-    return cachedImage.get();
+    if (cachedImage)
+        return cachedImage.get();
+    return nullptr;
 }
 
 void NodeBase::setCachedImage(std::unique_ptr<CsImage> image)

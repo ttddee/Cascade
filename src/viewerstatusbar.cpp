@@ -39,13 +39,21 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     ui->viewerModeBox->setCurrentIndex(3);
     ui->viewerModeBox->setMinimumWidth(90);
 
+    splitSlider = new CsSliderBoxEntity(
+                UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                this);
+    splitSlider->setName("Split");
+    splitSlider->setMaximumWidth(250);
+    splitSlider->setMinMaxStepValue(0.0, 1.0, 0.01, 0.5);
+    ui->horizontalLayout->insertWidget(11, splitSlider);
+
     gammaSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
                 this);
     gammaSlider->setName("Gamma");
     gammaSlider->setMaximumWidth(250);
     gammaSlider->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
-    ui->horizontalLayout->insertWidget(12, gammaSlider);
+    ui->horizontalLayout->insertWidget(15, gammaSlider);
 
     gainSlider = new CsSliderBoxEntity(
                 UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
@@ -53,16 +61,20 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     gainSlider->setName("Gain");
     gainSlider->setMaximumWidth(250);
     gainSlider->setMinMaxStepValue(0.0, 5.0, 0.01, 1.0);
-    ui->horizontalLayout->insertWidget(13, gainSlider);
+    ui->horizontalLayout->insertWidget(16, gainSlider);
 
     connect(ui->zoomResetButton, &QPushButton::clicked,
             this, &ViewerStatusBar::requestZoomReset);
+    connect(ui->splitCheckBox, &QCheckBox::toggled,
+            this, &ViewerStatusBar::handleSplitToggled);
     connect(ui->bwCheckBox, &QCheckBox::toggled,
             this, &ViewerStatusBar::handleBwToggled);
     connect(gammaSlider, &CsSliderBoxEntity::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
     connect(gainSlider, &CsSliderBoxEntity::valueChanged,
             this, &ViewerStatusBar::handleValueChanged);
+    connect(splitSlider, &CsSliderBoxEntity::valueChanged,
+            this, &ViewerStatusBar::handleSplitSliderChanged);
     connect(ui->viewerModeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &ViewerStatusBar::handleViewerModeCheckBoxChanged);
 }
@@ -87,6 +99,23 @@ void ViewerStatusBar::setViewerMode(const ViewerMode m)
     ui->viewerModeBox->setCurrentIndex(m);
 }
 
+void ViewerStatusBar::handleSplitToggled()
+{
+    if(!split)
+        split = true;
+    else
+        split = false;
+    emit valueChanged();
+}
+
+void ViewerStatusBar::handleSplitSliderChanged()
+{
+    if (split)
+    {
+        emit valueChanged();
+    }
+}
+
 void ViewerStatusBar::handleBwToggled()
 {
     if(!bw)
@@ -103,14 +132,29 @@ void ViewerStatusBar::handleValueChanged()
 
 void ViewerStatusBar::handleViewerModeCheckBoxChanged()
 {
-    auto mode = viewerModeText.key(ui->viewerModeBox->currentText());
-    emit viewerModeChanged(mode);
+    currentViewerMode = viewerModeText.key(ui->viewerModeBox->currentText());
+    emit viewerModeChanged(currentViewerMode);
     ui->viewerModeBox->clearFocus();
+
+    emit valueChanged();
 }
 
 QString ViewerStatusBar::getViewerSettings()
 {
+    // Only use set split viewer on RGB Out or Alpha Out view
+    bool viewerSplit = split;
+    if (currentViewerMode == VIEWER_MODE_BACK_RGB ||
+        currentViewerMode == VIEWER_MODE_FRONT_RGB ||
+        currentViewerMode == VIEWER_MODE_INPUT_ALPHA)
+    {
+        viewerSplit = false;
+    }
+
     QString s;
+    s.append(QString::number(static_cast<float>(viewerSplit)));
+    s.append(",");
+    s.append(splitSlider->getValuesAsString());
+    s.append(",");
     s.append(QString::number(static_cast<float>(bw)));
     s.append(",");
     s.append(gammaSlider->getValuesAsString());
