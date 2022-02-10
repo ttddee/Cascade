@@ -30,13 +30,16 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 4) float bGreen;
     layout(offset = 8) float bBlue;
     layout(offset = 12) float bAlpha;
+	layout(offset = 16) float useMask;
 } sb;
 
 void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba;  
+    vec4 rgba = imageLoad(inputImage, pixelCoords).rgba; 
+	float mask = imageLoad(inputImage, pixelCoords).a;
+	vec4 original = rgba;
 
     if (sb.bRed > 0.0)
     {
@@ -54,6 +57,11 @@ void main()
     {
         rgba.a = 1.0 - rgba.a;
     }
+	
+	if (sb.useMask > 0.5)
+	{
+		rgba = mix(original, rgba, mask);
+	}
 
     imageStore(resultImage, pixelCoords, rgba);
 }

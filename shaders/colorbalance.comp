@@ -14,6 +14,7 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 4) float balG;
     layout(offset = 8) float balB;
     layout(offset = 12) float presLuma;
+	layout(offset = 16) float useMask;
 } sb;
 
 void main()
@@ -22,7 +23,10 @@ void main()
 
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
-    vec4 pixel = imageLoad(inputBack, pixelCoords).rgba;  
+    vec4 pixel = imageLoad(inputBack, pixelCoords).rgba;
+	float mask = imageLoad(inputFront, pixelCoords).a;
+
+	vec4 original = pixel;
 
 	float luma = dot(pixel.rgb, vec3(.25, .5, .25));
     pixel.r *= 1.0 + sb.balR;
@@ -31,6 +35,11 @@ void main()
     if (sb.presLuma > 0.5) {
         pixel.rgb *= luma / dot(pixel.rgb, vec3(.25, .5, .25));
     }
+	
+	if (sb.useMask > 0.5)
+	{
+		pixel = mix(original, pixel, mask);
+	}
 
 	imageStore(resultImage, pixelCoords, pixel);
     

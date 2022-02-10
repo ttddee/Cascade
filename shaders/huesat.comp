@@ -14,6 +14,7 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 4) float sat;
     layout(offset = 8) float invertLuma;
     layout(offset = 12) float invertChroma;
+	layout(offset = 16) float useMask;
 } sb;
 
 #define TWO_PI 6.28318530718
@@ -25,6 +26,7 @@ void main()
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
 
     vec4 pixel = imageLoad(inputBack, pixelCoords).rgba;  
+	float mask = imageLoad(inputFront, pixelCoords).a;
 	
 	// The hue is expected to be in radians,
 	// so we stretch the 0.0 --> 1.0 value here
@@ -53,7 +55,10 @@ void main()
 	
     vec4 result = vec4((luma + chroma * sb.sat * inv), pixel.a);
 	
-	
+	if (sb.useMask > 0.5)
+	{
+		result = mix(pixel, result, mask);
+	}
 
 	imageStore(resultImage, pixelCoords, result);
     

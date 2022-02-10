@@ -597,15 +597,17 @@ namespace Cascade
         NODE_TYPE_INVERT,
         nodeStrings[NODE_TYPE_INVERT],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] },
-            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" }
+            { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/invert_comp.spv",
         1
@@ -831,18 +833,20 @@ namespace Cascade
         NODE_TYPE_COLOR_BALANCE,
         nodeStrings[NODE_TYPE_COLOR_BALANCE],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_BALANCE] },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red,-1.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Green,-1.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blue,-1.0,1.0,0.01,0.0" },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Preserve Luminance,0," }
+            { UI_ELEMENT_TYPE_CHECKBOX, "Preserve Luminance,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/colorbalance_comp.spv",
         1
@@ -853,18 +857,20 @@ namespace Cascade
         NODE_TYPE_HUE_SATURATION,
         nodeStrings[NODE_TYPE_HUE_SATURATION],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_HUE_SATURATION] },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Hue,0.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Saturation,0.0,5.0,0.01,1.0" },
             { UI_ELEMENT_TYPE_CHECKBOX, "Invert Luminance,0," },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Invert Chroma,0," }
+            { UI_ELEMENT_TYPE_CHECKBOX, "Invert Chroma,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/huesat_comp.spv",
         1
@@ -875,7 +881,8 @@ namespace Cascade
         NODE_TYPE_LEVELS,
         nodeStrings[NODE_TYPE_LEVELS],
         NODE_CATEGORY_COLOR,
-        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_INPUT_TYPE_RGB_BACK,
+          NODE_INPUT_TYPE_ALPHA },
         { NODE_OUTPUT_TYPE_RGB },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_LEVELS] },
@@ -884,11 +891,12 @@ namespace Cascade
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gamma,0.2,5.0,0.01,1.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out Black,0.0,1.0,0.01,0.0" },
             { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out White,0.0,1.0,0.01,1.0" },
-            { UI_ELEMENT_TYPE_CHECKBOX, "Luminance Only,0," }
+            { UI_ELEMENT_TYPE_CHECKBOX, "Luminance Only,0," },
+            { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
         },
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
+        ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
         ":/shaders/levels_comp.spv",
         1
