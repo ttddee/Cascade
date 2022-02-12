@@ -401,7 +401,6 @@ QString NodeBase::getAllPropertyValues() const
             vals.append(",");
         }
     }
-    CS_LOG_CONSOLE(vals);
     return vals;
 }
 
