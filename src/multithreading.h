@@ -5,7 +5,17 @@
 
 #include <OpenColorIO/OpenColorIO.h>
 #include <OpenImageIO/imagebuf.h>
-#include <tbb/tbb.h>
+
+// Prevent tbb emit() from clashing with Qt. Wtf.
+#ifndef Q_MOC_RUN
+#if defined(emit)
+    #undef emit
+    #include <tbb/tbb.h>
+    #define emit
+#else
+    #include <tbb/tbb.h>
+#endif // defined(emit)
+#endif // Q_MOC_RUN
 
 namespace OCIO = OCIO_NAMESPACE;
 using namespace OIIO;

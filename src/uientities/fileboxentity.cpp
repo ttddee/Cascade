@@ -38,7 +38,7 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 #ifdef QT_DEBUG
-    addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
+    //addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
 #endif
 
     connect(ui->loadButton, &QPushButton::clicked,

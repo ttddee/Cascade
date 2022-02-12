@@ -10,7 +10,7 @@
 #elif __linux__
 	#include <glslang/Public/ShaderLang.h>
 	#include <glslang/SPIRV/GlslangToSpv.h>
-	#include <glslang/DirStackFileIncluder.h>
+    #include "DirStackFileIncluder.h"
 	#include <glslang/Include/ResourceLimits.h>
 #endif
 
