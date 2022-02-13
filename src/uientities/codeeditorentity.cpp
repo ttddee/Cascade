@@ -96,7 +96,7 @@ void CodeEditorEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString CodeEditorEntity::getValuesAsString()
 {
-    return "";
+    return codeEditor->toPlainText();
 }
 
 void CodeEditorEntity::loadPropertyValues(const QString &values)
