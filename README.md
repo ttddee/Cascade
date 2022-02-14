@@ -21,7 +21,7 @@ The release has been tested on Windows 10 and NVIDIA GPUs.
 
 If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM) or create an issue here on Github.
 
-## Build
+## Windows Build
 
 To build the project on Windows, you will have to install Qt and the Vulkan SDK manually. The rest is handled by vcpkg. 
 
@@ -56,6 +56,30 @@ Now you can install all other dependencies using the command below:
 ```
 
 It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
+
+## Ubuntu Build (21.10)
+
+Clone the repository:
+
+```
+git clone https://github.com/ttddee/Cascade
+```
+
+Change to the Cascade directory and execute the `ubuntu-setup` bash script.
+
+```
+cd Cascade
+```
+```
+chmod +x ubuntu-setup
+```
+```
+sudo ./ubuntu-setup
+```
+
+This should install all the dependencies you need as well as QtCreator.
+
+Now, open the project with QtCreator and configure it to use Qt5, GCC as compiler and GDB as debugger.
 
 ## Shortcuts
 
