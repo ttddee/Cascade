@@ -59,6 +59,12 @@ It will take a while to compile but upon completion you should be able to open t
 
 ## Ubuntu Build (21.10)
 
+We are going to download the repository into the home directory.
+
+```
+cd ~
+```
+
 Clone the repository:
 
 ```
