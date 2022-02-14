@@ -1,6 +1,6 @@
 #!/bin/bash
 
-apt -y install git libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev glslang-dev cmake libglew-dev freeglut3-dev
+apt -y install git libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
 mkdir external
 
