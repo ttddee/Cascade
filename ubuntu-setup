@@ -1,0 +1,37 @@
+#!/bin/bash
+
+apt -y install git libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev glslang-dev cmake libglew-dev freeglut3-dev
+
+mkdir external
+
+cd external
+
+git clone https://github.com/AcademySoftwareFoundation/OpenColorIO
+
+cd OpenColorIO
+
+git checkout tags/v2.1.0
+
+mkdir build 
+
+mkdir install
+
+cd build
+
+cmake -DCMAKE_INSTALL_PREFIX=~/Cascade/external/OpenColorIO/install ~/Cascade/external/OpenColorIO -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug -D CMAKE_CXX_COMPILER=/usr/bin/gcc
+
+make -j8
+
+make install
+
+cd ../..
+
+mkdir glslang
+
+cd glslang
+
+wget https://github.com/KhronosGroup/glslang/releases/download/master-tot/glslang-master-linux-Debug.zip
+
+unzip glslang-master-linux-Debug.zip
+
+rm glslang-master-linux-Debug.zip

@@ -1,7 +1,5 @@
 QT       += core gui widgets
 
-#greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
-
 CONFIG += c++17
 
 QMAKE_CXXFLAGS_RELEASE -= -O2
@@ -217,14 +215,22 @@ FORMS += \
     src/viewerstatusbar.ui
 
 linux-g++ {
-    LIBS += -L /usr/lib -lOpenImageIO
-    LIBS += -L /usr/lib -lOpenColorIO
-    LIBS += -L /usr/lib -ltbb
-    LIBS += -L /usr/lib -ldl
-    LIBS += -L /usr/lib -lglslang
-    LIBS += -L /usr/lib -lOGLCompiler
-    LIBS += -L /usr/lib -lOSDependent
-    LIBS += -L /usr/lib -lSPIRV
+    INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
+    INCLUDEPATH += $$PWD/external/glslang/include
+
+    LIBS += -L/usr/lib -lOpenImageIO
+    LIBS += -L$$PWD/external/OpenColorIO/install/lib/ -lOpenColorIO
+    LIBS += -L/usr/lib -ltbb
+    # The link order of the following libs is important
+    LIBS += -L$$PWD/external/glslang/lib -lSPIRV
+    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools-opt
+    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools
+    LIBS += -L$$PWD/external/glslang/lib -lMachineIndependent
+    LIBS += -L$$PWD/external/glslang/lib -lglslang
+    LIBS += -L$$PWD/external/glslang/lib -lglslang-default-resource-limits
+    LIBS += -L$$PWD/external/glslang/lib -lOSDependent
+    LIBS += -L$$PWD/external/glslang/lib -lOGLCompiler
+    LIBS += -L$$PWD/external/glslang/lib -lGenericCodeGen
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD

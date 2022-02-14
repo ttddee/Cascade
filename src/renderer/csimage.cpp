@@ -155,7 +155,8 @@ void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout la
     // Note: The command buffer must be active
 
     vk::ImageMemoryBarrier barrier(
-                vk::AccessFlagBits::eNoneKHR,
+                //vk::AccessFlagBits::eNoneKHR,
+                vk::AccessFlagBits::eShaderRead,
                 vk::AccessFlagBits::eShaderRead |
                 vk::AccessFlagBits::eShaderWrite,
                 currentLayout,
