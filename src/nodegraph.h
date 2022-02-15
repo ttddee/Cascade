@@ -54,9 +54,11 @@ public:
 
     void createNode(
             const NodeType type,
-            const QPoint pos);
+            const QPoint pos,
+            const bool view = true);
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
+    void createProject();
     void loadProject(const QJsonArray& jsonNodesArray,
                      const QJsonArray& jsonConnectionsArray);
 

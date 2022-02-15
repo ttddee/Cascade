@@ -59,9 +59,16 @@ NodeGraph::NodeGraph(QWidget* parent)
             wManager, &WindowManager::handleClearPropertiesRequest);
 }
 
+void NodeGraph::createProject()
+{
+    createNode(NODE_TYPE_READ, QPoint(29600, 29920), false);
+    createNode(NODE_TYPE_WRITE, QPoint(30200, 29920), false);
+}
+
 void NodeGraph::createNode(
         const NodeType type,
-        const QPoint pos)
+        const QPoint pos,
+        const bool view)
 {
     NodeBase* n = new NodeBase(type, this);
     scene->addWidget(n);
@@ -70,7 +77,8 @@ void NodeGraph::createNode(
 
     connectNodeSignals(n);
 
-    viewNode(n);
+    if (view)
+        viewNode(n);
 
     lastCreatedNodePos = pos;
 

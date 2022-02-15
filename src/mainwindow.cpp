@@ -96,6 +96,8 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
+
+    projectManager->createNewProject();
 }
 
 NodeGraph* MainWindow::getNodeGraph() const

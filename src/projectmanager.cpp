@@ -42,6 +42,11 @@ void ProjectManager::setUp(NodeGraph* ng)
             this, &ProjectManager::handleProjectIsDirty);
 }
 
+void ProjectManager::createNewProject()
+{
+    nodeGraph->createProject();
+}
+
 void ProjectManager::loadProject()
 {
     QFileDialog dialog(nullptr);
