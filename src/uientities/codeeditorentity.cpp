@@ -101,7 +101,7 @@ QString CodeEditorEntity::getValuesAsString()
 
 void CodeEditorEntity::loadPropertyValues(const QString &values)
 {
-
+    codeEditor->setText(values);
 }
 
 void CodeEditorEntity::handleTextChanged()
