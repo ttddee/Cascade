@@ -71,8 +71,14 @@ QString WritePropertiesEntity::getValuesAsString()
 void WritePropertiesEntity::loadPropertyValues(const QString &values)
 {
     auto split = values.split(",");
-    setFolder(split[0]);
+    QFileInfo checkPath(split[0]);
+    if (checkPath.exists())
+        setFolder(split[0]);
+    else
+        setFolder("");
     ui->fileTypeBox->setCurrentIndex(split[1].toInt());
+
+
     setFileName(split[2]);
 }
 
