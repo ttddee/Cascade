@@ -21,7 +21,7 @@
 #define FILEBOXENTITY_H
 
 #include <QWidget>
-#include <QStringListModel>
+#include <QListWidgetItem>
 
 #include "../nodedefinitions.h"
 #include "uientity.h"
@@ -34,14 +34,26 @@ namespace Ui {
 class FileBoxEntity;
 }
 
+class ListItem : public QListWidgetItem
+{
+public:
+    ListItem();
+
+    const bool valid();
+    void setValid(const bool b);
+
+    ~ListItem();
+
+private:
+    bool isValid = true;
+};
+
 class FileBoxEntity : public UiEntity
 {
     Q_OBJECT
 
 public:
     explicit FileBoxEntity(UIElementType et, QWidget *parent = nullptr);
-
-    QString getCurrentPath();
 
     void selfConnectToValueChanged(NodeProperties* p);
 
@@ -54,9 +66,9 @@ public:
 private:
     void addEntries(const QStringList& entries);
     void deleteCurrentEntry();
+    const bool fileExists(const QString& path);
 
     Ui::FileBoxEntity *ui;
-    QStringListModel* fileListModel;
 
 signals:
     void valueChanged();

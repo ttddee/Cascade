@@ -25,17 +25,31 @@
 #include <QFileDialog>
 #include <QItemSelectionModel>
 
+ListItem::ListItem()
+{
+
+}
+
+const bool ListItem::valid()
+{
+    return this->isValid;
+}
+
+void ListItem::setValid(const bool b)
+{
+    this->isValid = b;
+}
+
+ListItem::~ListItem()
+{
+
+}
+
 FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
     ui(new Ui::FileBoxEntity)
 {
     ui->setupUi(this);
-
-    QStringList slist;
-
-    fileListModel = new QStringListModel(slist, this);
-    ui->fileListView->setModel(fileListModel);
-    ui->fileListView->setEditTriggers(QAbstractItemView::NoEditTriggers);
 
 #ifdef QT_DEBUG
     //addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
@@ -45,24 +59,15 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
             this, &FileBoxEntity::handleLoadButtonClicked);
     connect(ui->deleteButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleDeleteButtonClicked);
-    connect(ui->fileListView->selectionModel(), &QItemSelectionModel::selectionChanged,
-            this, [this] { emit valueChanged(); });
-}
-
-QString FileBoxEntity::getCurrentPath()
-{
-    auto index = ui->fileListView->currentIndex();
-
-    QString itemText = index.data().toString();
-
-    return itemText;
+    connect(ui->fileListWidget, &QListWidget::currentItemChanged,
+            this, &FileBoxEntity::valueChanged);
 }
 
 void FileBoxEntity::handleLoadButtonClicked()
 {
     QFileDialog dialog(nullptr);
     dialog.setFileMode(QFileDialog::ExistingFiles);
-    dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.png *.tga *.tif *exr)"));
+    dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.jpeg *.png *.tga *.tif *exr)"));
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
@@ -73,27 +78,31 @@ void FileBoxEntity::handleLoadButtonClicked()
 
 void FileBoxEntity::addEntries(const QStringList& entries)
 {
-    foreach(QString name, entries)
+    foreach(QString path, entries)
     {
-        fileListModel->insertRow(fileListModel->rowCount());
-        QModelIndex index = fileListModel->index(fileListModel->rowCount() - 1, 0);
-        fileListModel->setData(index, name);
+        ListItem *item = new ListItem();
+        item->setText(path);
+        int idx = ui->fileListWidget->count();
+        ui->fileListWidget->insertItem(idx, item);
+        ui->fileListWidget->setCurrentRow(idx);
 
-        ui->fileListView->setCurrentIndex(index);
+        if (!fileExists(path))
+        {
+            item->setValid(false);
+            item->setForeground(QBrush(QColor(229, 70, 61)));
+        }
     }
     emit valueChanged();
 }
 
 void FileBoxEntity::deleteCurrentEntry()
 {
-    QModelIndex index = ui->fileListView->currentIndex();
-    int row = index.row();
+    int row = ui->fileListWidget->currentRow();
+    delete ui->fileListWidget->takeItem(row);
 
-    fileListModel->removeRows(row, 1);
     if (row > 0)
     {
-        index = fileListModel->index(row - 1, 0);
-        ui->fileListView->setCurrentIndex(index);
+        ui->fileListWidget->setCurrentRow(row - 1);
     }
     emit valueChanged();
 }
@@ -106,10 +115,14 @@ void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString FileBoxEntity::getValuesAsString()
 {
-    QStringList list = fileListModel->stringList();
-    QString str = list.join(",");
-    str.append(",");
-    str.append(QString::number(ui->fileListView->currentIndex().row()));
+    QString str;
+    for (int i = 0; i < ui->fileListWidget->count(); ++i)
+    {
+        str.append(ui->fileListWidget->item(i)->text());
+        str.append(",");
+    }
+    if (ui->fileListWidget->count() > 0)
+        str.append(QString::number(ui->fileListWidget->currentRow()));
 
     return str;
 }
@@ -117,7 +130,14 @@ QString FileBoxEntity::getValuesAsString()
 void FileBoxEntity::loadPropertyValues(const QString &values)
 {
     auto split = values.split(",");
+    split.removeLast();
     addEntries(split);
+}
+
+const bool FileBoxEntity::fileExists(const QString& path)
+{
+    QFileInfo checkFile(path);
+    return checkFile.exists() && checkFile.isFile();
 }
 
 void FileBoxEntity::handleDeleteButtonClicked()

@@ -69,10 +69,7 @@
       </widget>
      </item>
      <item>
-      <widget class="QListView" name="fileListView">
-       <property name="enabled">
-        <bool>true</bool>
-       </property>
+      <widget class="QListWidget" name="fileListWidget">
        <property name="minimumSize">
         <size>
          <width>0</width>

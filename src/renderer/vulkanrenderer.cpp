@@ -1019,7 +1019,9 @@ void VulkanRenderer::processReadNode(NodeBase *node)
     QString path = parts[index];
     int colorSpace = parts.last().toInt();
 
-    if(path != "")
+    QFileInfo checkFile(path);
+
+    if(path != "" && checkFile.exists() && checkFile.isFile())
     {
         imagePath = path;
 
@@ -1058,6 +1060,10 @@ void VulkanRenderer::processReadNode(NodeBase *node)
         auto result = device.waitIdle();
 
         loadImageStaging = nullptr;
+    }
+    else
+    {
+        node->flushCache();
     }
 }
 
