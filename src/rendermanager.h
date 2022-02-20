@@ -60,7 +60,11 @@ private:
 
 public slots:
     void handleNodeDisplayRequest(NodeBase* node);
-    void handleNodeFileSaveRequest(NodeBase* node, const QString& path);
+    void handleNodeFileSaveRequest(
+            NodeBase* node,
+            const QString& path,
+            const bool isBatch,
+            const bool isLast);
     void handleClearScreenRequest();
 };
 

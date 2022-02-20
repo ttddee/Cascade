@@ -112,7 +112,11 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     }
 }
 
-void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& path)
+void RenderManager::handleNodeFileSaveRequest(
+        NodeBase* node,
+        const QString& path,
+        const bool isBatch,
+        const bool isLast)
 {
     if (node->canBeRendered())
     {
@@ -123,9 +127,20 @@ void RenderManager::handleNodeFileSaveRequest(NodeBase* node, const QString& pat
             auto parts = node->getAllPropertyValues().split(",");
 
             if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
-                executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
+            {
+                if (!isBatch)
+                {
+                    executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
+                }
+                if (isBatch && isLast)
+                {
+                    executeMessageBox(MESSAGEBOX_FILES_SAVE_SUCCESS);
+                }
+            }
             else
+            {
                 executeMessageBox(MESSAGEBOX_FILE_SAVE_PROBLEM);
+            }
         }
     }
 }

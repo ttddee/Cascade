@@ -26,6 +26,8 @@
 #include <QGraphicsProxyWidget>
 #include <QJsonArray>
 #include <QJsonObject>
+#include <QProgressDialog>
+#include <QApplication>
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
@@ -224,7 +226,7 @@ QGraphicsItem* NodeGraph::getObjectUnderCursor()
     return item;
 }
 
-QWidget* NodeGraph::getWidgetFromGraphicsitem(QGraphicsItem *item)
+QWidget* NodeGraph::getWidgetFromGraphicsItem(QGraphicsItem *item)
 {
     QGraphicsProxyWidget* pWidget = qgraphicsitem_cast<QGraphicsProxyWidget*>(item);
 
@@ -316,10 +318,81 @@ void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
     }
 }
 
-void NodeGraph::handleFileSaveRequest(NodeBase* node, const QString& path)
+void NodeGraph::handleFileSaveRequest(
+        NodeBase* node,
+        const QString& path,
+        const QString& fileType,
+        const bool batchRender)
 {
-    viewNode(node);
-    emit requestNodeFileSave(node, path);
+    if (batchRender)
+    {
+        // TODO: This should be in RenderManager
+
+        // Get all upstream Read Nodes
+        std::vector<NodeBase*> upstreamNodes;
+        node->getAllUpstreamNodes(upstreamNodes);
+
+        std::vector<NodeBase*> readNodes;
+        for (auto& n : nodes)
+        {
+            if (n->nodeType == NODE_TYPE_READ)
+                readNodes.push_back(n);
+        }
+
+        // Get how many images we need to render
+        int numImagesToRender = 0;
+        for (auto& n : readNodes)
+        {
+            if (n->getNumImages() > numImagesToRender)
+            {
+                numImagesToRender = n->getNumImages();
+            }
+        }
+
+        int digits = QString::number(numImagesToRender).length();
+
+        for (auto& n : readNodes)
+            n->switchToFirstImage();
+
+        QProgressDialog progress(
+                    "Rendering Images...",
+                    "Cancel",
+                    0,
+                    numImagesToRender,
+                    this);
+        progress.setWindowModality(Qt::WindowModal);
+        progress.setMinimumSize(QSize(350, 100));
+
+        progress.setValue(0);
+
+        for (int i = 0; i < numImagesToRender; ++i)
+        {
+            progress.setValue(i + 1);
+            if (progress.wasCanceled())
+                break;
+
+            bool isLast = false;
+            if (i == numImagesToRender - 1)
+                isLast = true;
+            viewNode(node);
+            emit requestNodeFileSave(
+                        node,
+                        path +
+                        "-" +
+                        QString::number(i).rightJustified(digits, '0') +
+                        "." +
+                        fileType,
+                        batchRender,
+                        isLast);
+            for (auto& n : readNodes)
+                n->switchToNextImage();
+        }
+    }
+    else
+    {
+        viewNode(node);
+        emit requestNodeFileSave(node, path + "." + fileType);
+    }
 }
 
 Connection* NodeGraph::createOpenConnection(NodeOutput* nodeOut)
@@ -481,7 +554,7 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
 
         auto item = getObjectUnderCursor();
 
-        NodeBase* node = qobject_cast<NodeBase*>(getWidgetFromGraphicsitem(item));
+        NodeBase* node = qobject_cast<NodeBase*>(getWidgetFromGraphicsItem(item));
         if(node)
         {
             if (auto in = node->getOpenInput())

@@ -434,6 +434,25 @@ QLineEdit {
     padding: 3 0 0 3;
 }
 
+QProgressDialog {
+    background-color: #282d31;
+}
+
+QProgressDialog QPushButton {
+    padding: 3 5 3 5;
+}
+
+QProgressBar {
+    border-radius: 3px;
+    text-align: center;
+    font-weight: bold;
+}
+
+QProgressBar::chunk {
+    border-radius: 3px;
+    background-color: #254a73;
+}
+
 QMessageBox {
     font: 12px "Open Sans";
     color: #b9b9b9;

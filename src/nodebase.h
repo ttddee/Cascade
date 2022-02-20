@@ -118,6 +118,10 @@ public:
 
     void flushCache();
 
+    const int getNumImages();
+    void switchToFirstImage();
+    void switchToNextImage();
+
     virtual ~NodeBase();
 
     bool needsUpdate = true;
@@ -192,7 +196,11 @@ signals:
     void nodeWasLeftClicked(NodeBase* node);
     void nodeWasDoubleClicked(NodeBase* node);
     void nodeRequestUpdate(NodeBase* node);
-    void nodeRequestFileSave(NodeBase* node, const QString& path);
+    void nodeRequestFileSave(
+            NodeBase* node,
+            const QString& path,
+            const QString& fileType,
+            const bool batchRender);
     void nodeHasMoved();
 };
 

@@ -61,6 +61,10 @@ public:
 
     void loadPropertyValues(const QString& values) override;
 
+    const int getNumImages();
+    void switchToFirstImage();
+    void switchToNextImage();
+
     ~FileBoxEntity();
 
 private:

@@ -84,7 +84,7 @@ private:
     void showContextMenu();
 
     QGraphicsItem* getObjectUnderCursor();
-    QWidget* getWidgetFromGraphicsitem(QGraphicsItem* item);
+    QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
 
     Connection* createOpenConnection(NodeOutput* nodeOut);
     void establishConnection(NodeInput* nodeIn);
@@ -122,7 +122,11 @@ private:
 
 signals:
     void requestNodeDisplay(NodeBase* node);
-    void requestNodeFileSave(NodeBase* node, const QString& path);
+    void requestNodeFileSave(
+            NodeBase* node,
+            const QString& path,
+            const bool isBatch = false,
+            const bool isLast = false);
     void requestClearScreen();
     void requestClearProperties();
     void projectIsDirty();
@@ -132,7 +136,11 @@ public slots:
     void handleNodeDoubleClicked(NodeBase* node);
     void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
     void handleNodeUpdateRequest(NodeBase* node);
-    void handleFileSaveRequest(NodeBase* node, const QString& path);
+    void handleFileSaveRequest(
+            NodeBase* node,
+            const QString& path,
+            const QString& fileType,
+            const bool batchRender);
     void handleConnectedNodeInputClicked(Connection* c);
 };
 

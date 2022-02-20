@@ -140,6 +140,23 @@ const bool FileBoxEntity::fileExists(const QString& path)
     return checkFile.exists() && checkFile.isFile();
 }
 
+const int FileBoxEntity::getNumImages()
+{
+    return ui->fileListWidget->count();
+}
+
+void FileBoxEntity::switchToFirstImage()
+{
+    ui->fileListWidget->setCurrentRow(0);
+}
+
+void FileBoxEntity::switchToNextImage()
+{
+    int count = ui->fileListWidget->count();
+    if (ui->fileListWidget->currentRow() < (count - 1))
+        ui->fileListWidget->setCurrentRow(ui->fileListWidget->currentRow() + 1);
+}
+
 void FileBoxEntity::handleDeleteButtonClicked()
 {
     deleteCurrentEntry();

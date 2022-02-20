@@ -310,7 +310,31 @@ void NodeProperties::handleSomeValueChanged()
     emit projectIsDirty();
 }
 
-void NodeProperties::handleFileSaveRequest(const QString& path)
+void NodeProperties::handleFileSaveRequest(
+        const QString& path,
+        const QString& fileType,
+        const bool batchRender)
 {
-    emit parentNode->nodeRequestFileSave(parentNode, path);
+    emit parentNode->nodeRequestFileSave(parentNode, path, fileType, batchRender);
+}
+
+const int NodeProperties::getNumImages()
+{
+    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+
+    return entity->getNumImages();
+}
+
+void NodeProperties::switchToFirstImage()
+{
+    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+
+    entity->switchToFirstImage();
+}
+
+void NodeProperties::switchToNextImage()
+{
+    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+
+    entity->switchToNextImage();
 }

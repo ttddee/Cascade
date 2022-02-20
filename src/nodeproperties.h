@@ -43,6 +43,10 @@ public:
 
     void loadNodePropertyValues(const QMap<int, QString>& values);
 
+    const int getNumImages();
+    void switchToFirstImage();
+    void switchToNextImage();
+
     std::vector<UiEntity*> widgets;
 
 private:
@@ -55,7 +59,10 @@ signals:
 
 public slots:
     void handleSomeValueChanged();
-    void handleFileSaveRequest(const QString& path);
+    void handleFileSaveRequest(
+            const QString& path,
+            const QString& fileType,
+            const bool batchRender);
 };
 
 #endif // NODEPROPERTIES_H

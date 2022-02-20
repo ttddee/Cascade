@@ -57,7 +57,10 @@ private:
     QStringList filetypes = { "jpg", "png", "tga", "tif", "exr" };
 
 signals:
-    void requestFileSave(const QString& path);
+    void requestFileSave(
+            const QString& path,
+            const QString& fileType,
+            const bool batchRender);
 
 public slots:
     void handleFileNametextChanged();

@@ -63,7 +63,9 @@ QString WritePropertiesEntity::getValuesAsString()
     str.append(",");
     str.append(QString::number(ui->fileTypeBox->currentIndex()));
     str.append(",");
-    str.append(fileName);
+    str.append(fileName),
+    str.append(","),
+    str.append(QString::number(ui->batchCheckBox->isChecked()));
 
     return str;
 }
@@ -77,9 +79,8 @@ void WritePropertiesEntity::loadPropertyValues(const QString &values)
     else
         setFolder("");
     ui->fileTypeBox->setCurrentIndex(split[1].toInt());
-
-
     setFileName(split[2]);
+    ui->batchCheckBox->setChecked(split[3].toInt());
 }
 
 void WritePropertiesEntity::setFileName(const QString& f)
@@ -124,7 +125,10 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
 {
     if (folder != "")
     {
-        emit requestFileSave(folder + "/" + ui->fileNameLabel->text());
+        emit requestFileSave(
+                    folder + "/" + fileName,
+                    ui->fileTypeBox->currentText(),
+                    ui->batchCheckBox->isChecked());
     }
     else
     {

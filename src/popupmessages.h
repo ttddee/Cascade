@@ -40,6 +40,7 @@ enum MessageBoxType
     MESSAGEBOX_NO_GPU_FOUND,
     MESSAGEBOX_DEVICE_LOST,
     MESSAGEBOX_FILE_SAVE_SUCCESS,
+    MESSAGEBOX_FILES_SAVE_SUCCESS,
     MESSAGEBOX_FILE_SAVE_PROBLEM,
     MESSAGEBOX_NO_FOLDER_SET,
     MESSAGEBOX_FAILED_INITIALIZATION
@@ -84,6 +85,13 @@ const static MessageBoxProperties fileSaveSuccessBoxProperties =
     QSize(500, 200)
 };
 
+const static MessageBoxProperties filesSaveSuccessBoxProperties =
+{
+    "Success",
+    "Files saved successfully.",
+    QSize(500, 200)
+};
+
 const static MessageBoxProperties fileSaveProblemBoxProperties =
 {
     "Error",
@@ -116,6 +124,7 @@ const static std::unordered_map<MessageBoxType, MessageBoxProperties> messageBox
     { MESSAGEBOX_NO_GPU_FOUND, noGpuFoundBoxProperties },
     { MESSAGEBOX_DEVICE_LOST, deviceLostBoxProperties },
     { MESSAGEBOX_FILE_SAVE_SUCCESS, fileSaveSuccessBoxProperties },
+    { MESSAGEBOX_FILES_SAVE_SUCCESS, filesSaveSuccessBoxProperties },
     { MESSAGEBOX_FILE_SAVE_PROBLEM, fileSaveProblemBoxProperties },
     { MESSAGEBOX_NO_FOLDER_SET, noFolderSetBoxProperties },
     { MESSAGEBOX_FAILED_INITIALIZATION, failedInitializationBoxProperties }

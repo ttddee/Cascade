@@ -600,6 +600,21 @@ void NodeBase::flushCache()
     cachedImage = nullptr;
 }
 
+const int NodeBase::getNumImages()
+{
+    return nodeProperties->getNumImages();
+}
+
+void NodeBase::switchToFirstImage()
+{
+    nodeProperties->switchToFirstImage();
+}
+
+void NodeBase::switchToNextImage()
+{
+    nodeProperties->switchToNextImage();
+}
+
 NodeBase::~NodeBase()
 {
     delete ui;
