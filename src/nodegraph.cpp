@@ -326,8 +326,6 @@ void NodeGraph::handleFileSaveRequest(
 {
     if (batchRender)
     {
-        // TODO: This should be in RenderManager
-
         // Get all upstream Read Nodes
         std::vector<NodeBase*> upstreamNodes;
         node->getAllUpstreamNodes(upstreamNodes);

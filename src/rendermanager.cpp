@@ -126,6 +126,12 @@ void RenderManager::handleNodeFileSaveRequest(
         {
             auto parts = node->getAllPropertyValues().split(",");
 
+//            auto handle = std::async(std::launch::async, [this, image, path, parts]()
+//            {
+//                return renderer->saveImageToDisk(image, path, parts.last().toInt());
+//            });
+//            bool success = handle.get();
+
             if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
             {
                 if (!isBatch)

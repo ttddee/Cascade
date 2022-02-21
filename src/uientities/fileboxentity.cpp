@@ -20,10 +20,7 @@
 #include "fileboxentity.h"
 #include "ui_fileboxentity.h"
 
-#include <iostream>
-
 #include <QFileDialog>
-#include <QItemSelectionModel>
 
 ListItem::ListItem()
 {

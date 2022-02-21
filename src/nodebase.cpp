@@ -458,6 +458,7 @@ void NodeBase::invalidateAllDownstreamNodes()
     getAllDownstreamNodes(nodes);
     foreach(auto& n, nodes)
     {
+        n->flushCache();
         n->requestUpdate();
     }
 }
