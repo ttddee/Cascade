@@ -23,6 +23,7 @@
 #include <QFileDialog>
 #include <QJsonObject>
 #include <QJsonArray>
+#include <QMessageBox>
 
 #include "log.h"
 #include "nodedefinitions.h"
@@ -42,9 +43,36 @@ void ProjectManager::setUp(NodeGraph* ng)
             this, &ProjectManager::handleProjectIsDirty);
 }
 
-void ProjectManager::createNewProject()
+void ProjectManager::createStartupProject()
 {
     nodeGraph->createProject();
+}
+
+void ProjectManager::createNewProject()
+{
+    if (checkIfDiscardChanges())
+    {
+        nodeGraph->clear();
+        nodeGraph->createProject();
+    }
+}
+
+const bool ProjectManager::checkIfDiscardChanges()
+{
+    if (projectIsDirty)
+    {
+        QMessageBox box;
+        box.setText("The project has been modified.");
+        box.setInformativeText("Do you want to discard your changes?");
+        box.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        box.setDefaultButton(QMessageBox::Cancel);
+        box.setMinimumSize(QSize(500, 200));
+
+        int ret = box.exec();
+        if (ret == QMessageBox::Yes)
+            return true;
+    }
+    return false;
 }
 
 void ProjectManager::loadProject()
@@ -57,33 +85,33 @@ void ProjectManager::loadProject()
     if (dialog.exec())
     {
         files = dialog.selectedFiles();
+
+        QFile loadFile(files.first());
+
+        if (!loadFile.open(QIODevice::ReadOnly))
+        {
+            CS_LOG_WARNING("Couldn't open project file.");
+        }
+
+        QByteArray projectData = loadFile.readAll();
+
+        QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
+
+        QJsonObject jsonProject = projectDocument.object();
+        QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
+        QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
+        QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
+        QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
+        QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
+
+        nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
+
+        currentProjectPath = files.first();
+        currentProject = files.first().split("/").last();
+
+        projectIsDirty = false;
+        updateProjectName();
     }
-
-    QFile loadFile(files.first());
-
-    if (!loadFile.open(QIODevice::ReadOnly))
-    {
-        CS_LOG_WARNING("Couldn't open project file.");
-    }
-
-    QByteArray projectData = loadFile.readAll();
-
-    QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
-
-    QJsonObject jsonProject = projectDocument.object();
-    QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
-    QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
-    QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
-    QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
-    QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
-
-    nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
-
-    currentProjectPath = files.first();
-    currentProject = files.first().split("/").last();
-
-    projectIsDirty = false;
-    updateProjectName();
 }
 
 void ProjectManager::saveProject()
@@ -116,20 +144,21 @@ void ProjectManager::saveProjectAs()
     {
         auto list = dialog.selectedFiles();
         f = list[0];
+
+        if (f.isEmpty())
+            return;
+        else
+            path = f;
+
+        project.setObject(getJsonFromNodeGraph());
+        writeJsonToDisk(project, path);
+
+        currentProjectPath = path;
+        currentProject = path.split("/").last();
+
+        projectIsDirty = false;
+        updateProjectName();
     }
-    if (f.isEmpty())
-        return;
-    else
-        path = f;
-
-    project.setObject(getJsonFromNodeGraph());
-    writeJsonToDisk(project, path);
-
-    currentProjectPath = path;
-    currentProject = path.split("/").last();
-
-    projectIsDirty = false;
-    updateProjectName();
 }
 
 void ProjectManager::handleProjectIsDirty()

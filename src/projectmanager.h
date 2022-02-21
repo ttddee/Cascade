@@ -36,6 +36,7 @@ public:
 
     void setUp(NodeGraph* ng);
 
+    void createStartupProject();
     void createNewProject();
     void loadProject();
     void saveProject();
@@ -47,6 +48,7 @@ private:
     void writeJsonToDisk(const QJsonDocument& project,
                         const QString& path);
     QJsonObject getJsonFromNodeGraph();
+    const bool checkIfDiscardChanges();
 
     NodeGraph* nodeGraph;
 

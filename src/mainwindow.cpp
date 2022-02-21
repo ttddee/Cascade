@@ -97,7 +97,7 @@ MainWindow::MainWindow(QWidget *parent)
                 QSettings::SystemScope,
                 QDir::currentPath());
 
-    projectManager->createNewProject();
+    projectManager->createStartupProject();
 }
 
 NodeGraph* MainWindow::getNodeGraph() const
@@ -144,7 +144,7 @@ void MainWindow::displayShortcuts()
 
 void MainWindow::handleNewProjectAction()
 {
-    CS_LOG_CONSOLE("Beep");
+    projectManager->createNewProject();
 }
 
 void MainWindow::handleOpenProjectAction()

@@ -71,6 +71,8 @@ public:
 
     void flushCacheAllNodes();
 
+    void clear();
+
     QPoint lastMousePos;
     QPoint lastCreatedNodePos = QPoint(29700, 29920);
 

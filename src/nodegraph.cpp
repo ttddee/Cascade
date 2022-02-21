@@ -500,6 +500,18 @@ void NodeGraph::flushCacheAllNodes()
         n->flushCache();
 }
 
+void NodeGraph::clear()
+{
+    foreach (const auto& connection, connections)
+    {
+        this->deleteConnection(connection);
+    }
+    foreach (const auto& node, nodes)
+    {
+        this->deleteNode(node);
+    }
+}
+
 void NodeGraph::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
