@@ -17,38 +17,23 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#ifndef PREFERENCESDIALOG_H
+#define PREFERENCESDIALOG_H
 
-#include <QMenuBar>
+#include <QDialog>
+#include <QTabWidget>
+#include <QDialogButtonBox>
 
-class MainWindow;
-
-class MainMenu : public QMenuBar
+class PreferencesDialog : public QDialog
 {
     Q_OBJECT
-public:
-    MainMenu(MainWindow* mainWindow);
 
-    ~MainMenu();
+public:
+    explicit PreferencesDialog(QWidget *parent = nullptr);
 
 private:
-    QMenu *fileMenu;
-    QMenu *editMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
-
-    QAction* newProjectAction;
-    QAction* openProjectAction;
-    QAction* saveProjectAction;
-    QAction* saveProjectAsAction;
-    QAction* exitAction;
-    QAction* preferencesAction;
-    QAction* toggleNodeGraphAction;
-    QAction* togglePropertiesAction;
-    QAction* shortcutsAction;
-
-    std::vector<QAction*> createNodeActions;
+    QTabWidget* tabWidget;
+    QDialogButtonBox* buttonBox;
 };
 
-#endif // MAINMENU_H
+#endif // PREFERENCESDIALOG_H

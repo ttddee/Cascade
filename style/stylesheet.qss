@@ -448,6 +448,10 @@ QProgressBar {
     font-weight: bold;
 }
 
+PreferencesDialog QPushButton {
+    padding: 3 5 3 5;
+}
+
 QProgressBar::chunk {
     border-radius: 3px;
     background-color: #254a73;

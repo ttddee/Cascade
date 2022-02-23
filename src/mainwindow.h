@@ -84,6 +84,7 @@ public slots:
     void handleSaveProjectAction();
     void handleSaveProjectAsAction();
     void handleExitAction();
+    void handlePreferencesAction();
     void handleShortcutsAction();
 
     void closeEvent(QCloseEvent* event);

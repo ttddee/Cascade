@@ -17,38 +17,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef MAINMENU_H
-#define MAINMENU_H
+#include "preferencesdialog.h"
 
-#include <QMenuBar>
+#include <QVBoxLayout>
 
-class MainWindow;
-
-class MainMenu : public QMenuBar
+PreferencesDialog::PreferencesDialog(QWidget *parent)
 {
-    Q_OBJECT
-public:
-    MainMenu(MainWindow* mainWindow);
+    tabWidget = new QTabWidget;
+    tabWidget->addTab(new QWidget(), tr("General"));
+    tabWidget->addTab(new QWidget(), tr("Test"));
 
-    ~MainMenu();
+    buttonBox = new QDialogButtonBox(
+                QDialogButtonBox::Save |
+                QDialogButtonBox::Cancel);
 
-private:
-    QMenu *fileMenu;
-    QMenu *editMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
+    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
-    QAction* newProjectAction;
-    QAction* openProjectAction;
-    QAction* saveProjectAction;
-    QAction* saveProjectAsAction;
-    QAction* exitAction;
-    QAction* preferencesAction;
-    QAction* toggleNodeGraphAction;
-    QAction* togglePropertiesAction;
-    QAction* shortcutsAction;
+    QVBoxLayout *mainLayout = new QVBoxLayout;
+    mainLayout->addWidget(tabWidget);
+    mainLayout->addWidget(buttonBox);
+    setLayout(mainLayout);
 
-    std::vector<QAction*> createNodeActions;
-};
-
-#endif // MAINMENU_H
+    setWindowTitle(tr("Preferences"));
+    setMinimumSize(600, 500);
+}

@@ -106,6 +106,13 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                         QPoint(100, 30)); });
     }
 
+    editMenu->addSeparator();
+
+    preferencesAction = new QAction("Preferences..." , editMenu);
+    editMenu->addAction(preferencesAction);
+    connect(preferencesAction, &QAction::triggered,
+            mainWindow, &MainWindow::handlePreferencesAction);
+
     // View Menu
     viewMenu = new QMenu("View");
     this->addMenu(viewMenu);

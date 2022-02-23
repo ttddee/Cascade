@@ -31,6 +31,7 @@
 #include "renderer/vulkanrenderer.h"
 #include "log.h"
 #include "popupmessages.h"
+#include "preferencesdialog.h"
 
 using namespace ads;
 using namespace Cascade;
@@ -167,6 +168,12 @@ void MainWindow::handleExitAction()
     // Using this instead of QApplication::quit(),
     // so that the renderer can shut down gracefully
     closeEvent(nullptr);
+}
+
+void MainWindow::handlePreferencesAction()
+{
+    auto prefs = new PreferencesDialog();
+    prefs->show();
 }
 
 void MainWindow::handleShortcutsAction()
