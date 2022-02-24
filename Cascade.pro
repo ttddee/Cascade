@@ -20,6 +20,8 @@ DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x050F00
 
 #-------------------------------
 
+RC_ICONS = cascade.ico
+
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
