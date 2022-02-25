@@ -71,6 +71,7 @@ SOURCES += \
     src/nodeoutput.cpp \
     src/nodeproperties.cpp \
     src/preferencesdialog.cpp \
+    src/preferencesmanager.cpp \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
@@ -158,6 +159,7 @@ HEADERS += \
     src/nodeproperties.h \
     src/popupmessages.h \
     src/preferencesdialog.h \
+    src/preferencesmanager.h \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \

@@ -36,6 +36,7 @@
 #include "viewerstatusbar.h"
 #include "mainmenu.h"
 #include "projectmanager.h"
+#include "preferencesmanager.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class MainWindow; }
@@ -71,6 +72,7 @@ private:
 
     MainMenu* mainMenu;
     ProjectManager* projectManager;
+    PreferencesManager* preferencesManager;
 
 public slots:
     void handleRendererHasBeenCreated();

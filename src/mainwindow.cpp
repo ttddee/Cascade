@@ -86,6 +86,9 @@ MainWindow::MainWindow(QWidget *parent)
     connect(projectManager, &ProjectManager::projectTitleChanged,
             this, &MainWindow::handleProjectTitleChanged);
 
+    preferencesManager = &PreferencesManager::getInstance();
+    preferencesManager->setUp();
+
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,

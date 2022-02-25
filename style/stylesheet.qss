@@ -448,8 +448,36 @@ QProgressBar {
     font-weight: bold;
 }
 
+PreferencesDialog {
+    background-color: #282d31;
+}
+
 PreferencesDialog QPushButton {
     padding: 3 5 3 5;
+}
+
+QTableWidget {
+    background-color: #181b1e;
+    alternate-background-color: #282d31;
+    border: 0px;
+    padding: 5px;
+    outline: 0px;
+}
+QTableWidget::item {
+    selection-background-color: #254a73;
+}
+QTableWidget::item:focus {
+    border: 0px;
+}
+QHeaderView {
+    font: 12px "Open Sans";
+    color: #b9b9b9;
+    font-weight: bold;
+}
+QHeaderView::section {
+    border: 0px;
+    background-color: #181b1e;
+    padding: 3px;
 }
 
 QProgressBar::chunk {

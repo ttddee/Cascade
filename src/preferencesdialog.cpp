@@ -20,12 +20,18 @@
 #include "preferencesdialog.h"
 
 #include <QVBoxLayout>
+#include <QJsonObject>
+#include <QHeaderView>
+
+#include "preferencesmanager.h"
+#include "log.h"
 
 PreferencesDialog::PreferencesDialog(QWidget *parent)
 {
     tabWidget = new QTabWidget;
     tabWidget->addTab(new QWidget(), tr("General"));
-    tabWidget->addTab(new QWidget(), tr("Test"));
+
+    loadKeys();
 
     buttonBox = new QDialogButtonBox(
                 QDialogButtonBox::Save |
@@ -41,4 +47,37 @@ PreferencesDialog::PreferencesDialog(QWidget *parent)
 
     setWindowTitle(tr("Preferences"));
     setMinimumSize(600, 500);
+}
+
+void PreferencesDialog::loadKeys()
+{
+    auto prefsManager = &PreferencesManager::getInstance();
+    auto jsonKeys = prefsManager->getKeys();
+
+    keysWidget = new QTableWidget(jsonKeys.size(), 2);
+    QStringList labels({ "Function", "Key" });
+    keysWidget->setHorizontalHeaderLabels(labels);
+    keysWidget->horizontalHeader()->setStretchLastSection(true);
+    keysWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    keysWidget->setShowGrid(false);
+    keysWidget->verticalHeader()->hide();
+    keysWidget->setColumnWidth(0, 200);
+    keysWidget->setAlternatingRowColors(true);
+
+    CS_LOG_CONSOLE(QString::number(jsonKeys.size()));
+
+
+    for (int i = 0; i < jsonKeys.size(); ++i)
+    {
+        QJsonObject jsonKey = jsonKeys.at(i).toObject();
+        CS_LOG_CONSOLE(jsonKey["function"].toString());
+        CS_LOG_CONSOLE(jsonKey["key"].toString());
+        QTableWidgetItem *f = new QTableWidgetItem(jsonKey["function"].toString());
+        f->setFlags(f->flags() ^ Qt::ItemIsEditable);
+        keysWidget->setItem(i, 0, f);
+        QTableWidgetItem *k = new QTableWidgetItem(jsonKey["key"].toString());
+        keysWidget->setItem(i, 1, k);
+    }
+
+    tabWidget->addTab(keysWidget, tr("Keys"));
 }

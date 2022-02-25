@@ -1,0 +1,34 @@
+{
+    "cascade-version": "0.1.9",
+    "prefs": [
+        {
+            "general": [
+
+            ]
+        },
+        {
+            "keys": [
+				{
+                    "function": "View Front Input",
+					"key": "F1"
+				},
+				{
+                    "function": "View Back Input",
+					"key": "F2"
+				},
+				{
+                    "function": "View Alpha Input",
+					"key": "F3"
+				},
+				{
+                    "function": "View RGB/Alpha Output",
+					"key": "F4"
+				},
+				{
+                    "function": "Delete Selected Node",
+					"key": "Delete"
+				}
+            ]
+        }
+    ]
+}

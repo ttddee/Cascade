@@ -17,28 +17,32 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PREFERENCESDIALOG_H
-#define PREFERENCESDIALOG_H
+#ifndef PREFERENCESMANAGER_H
+#define PREFERENCESMANAGER_H
 
-#include <QDialog>
-#include <QTabWidget>
-#include <QDialogButtonBox>
-#include <QTableWidget>
+#include <QObject>
+#include <QJsonArray>
 
-class PreferencesDialog : public QDialog
+class PreferencesManager : public QObject
 {
     Q_OBJECT
 
 public:
-    explicit PreferencesDialog(QWidget *parent = nullptr);
+    static PreferencesManager& getInstance();
+    PreferencesManager(PreferencesManager const&) = delete;
+    void operator=(PreferencesManager const&) = delete;
+
+    void setUp();
+
+    const QJsonArray& getKeys();
 
 private:
-    void loadKeys();
+    PreferencesManager() {}
 
-    QTabWidget* tabWidget;
-    QDialogButtonBox* buttonBox;
+    void loadPreferences();
 
-    QTableWidget* keysWidget;
+    QJsonArray jsonGeneralPrefsArray;
+    QJsonArray jsonKeysPrefsArray;
 };
 
-#endif // PREFERENCESDIALOG_H
+#endif // PREFERENCESMANAGER_H
