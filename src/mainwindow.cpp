@@ -141,11 +141,6 @@ void MainWindow::handleProjectTitleChanged(const QString& t)
     nodeGraphDockWidget->setTitle("Node Graph " + spacer + t);
 }
 
-void MainWindow::displayShortcuts()
-{
-    executeMessageBox(MESSAGEBOX_SHORTCUTS);
-}
-
 void MainWindow::handleNewProjectAction()
 {
     projectManager->createNewProject();
@@ -179,9 +174,9 @@ void MainWindow::handlePreferencesAction()
     prefs->show();
 }
 
-void MainWindow::handleShortcutsAction()
+void MainWindow::handleAboutAction()
 {
-    displayShortcuts();
+    executeMessageBox(MESSAGEBOX_ABOUT);
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)
@@ -195,8 +190,6 @@ void MainWindow::closeEvent(QCloseEvent *event)
 
 MainWindow::~MainWindow()
 {
-    CS_LOG_INFO("Shutting down");
-
     delete ui;
 }
 

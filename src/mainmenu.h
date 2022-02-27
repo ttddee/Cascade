@@ -46,7 +46,7 @@ private:
     QAction* preferencesAction;
     QAction* toggleNodeGraphAction;
     QAction* togglePropertiesAction;
-    QAction* shortcutsAction;
+    QAction* aboutAction;
 
     std::vector<QAction*> createNodeActions;
 };

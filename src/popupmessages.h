@@ -36,7 +36,7 @@ struct MessageBoxProperties
 
 enum MessageBoxType
 {
-    MESSAGEBOX_SHORTCUTS,
+    MESSAGEBOX_ABOUT,
     MESSAGEBOX_NO_GPU_FOUND,
     MESSAGEBOX_DEVICE_LOST,
     MESSAGEBOX_FILE_SAVE_SUCCESS,
@@ -46,21 +46,10 @@ enum MessageBoxType
     MESSAGEBOX_FAILED_INITIALIZATION
 };
 
-const static MessageBoxProperties shortcutsBoxProperties =
+const static MessageBoxProperties aboutBoxProperties =
 {
-    "Shortcuts",
-    "\n"
-    "F1 - View selected node front input\n"
-    "\n"
-    "F2 - View selected node back input\n"
-    "\n"
-    "F3 - View selected node alpha input\n"
-    "\n"
-    "F4 - Toggle between selected node RGB output and alpha output\n"
-    "\n"
-    "Delete - Delete selected node\n"
-    "\n"
-    "Ctrl + Left Click - Reset slider to default\n",
+    "Cascade Image Editor",
+    QString("Version %1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD),
     QSize(600, 400)
 };
 
@@ -120,7 +109,7 @@ const static MessageBoxProperties failedInitializationBoxProperties =
 
 const static std::unordered_map<MessageBoxType, MessageBoxProperties> messageBoxes =
 {
-    { MESSAGEBOX_SHORTCUTS, shortcutsBoxProperties },
+    { MESSAGEBOX_ABOUT, aboutBoxProperties },
     { MESSAGEBOX_NO_GPU_FOUND, noGpuFoundBoxProperties },
     { MESSAGEBOX_DEVICE_LOST, deviceLostBoxProperties },
     { MESSAGEBOX_FILE_SAVE_SUCCESS, fileSaveSuccessBoxProperties },

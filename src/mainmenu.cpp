@@ -126,10 +126,10 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     helpMenu = new QMenu("Help");
     this->addMenu(helpMenu);
 
-    shortcutsAction = new QAction("Shortcuts", helpMenu);
-    helpMenu->addAction(shortcutsAction);
-    connect(shortcutsAction, &QAction::triggered,
-            mainWindow, &MainWindow::handleShortcutsAction);
+    aboutAction = new QAction("About", helpMenu);
+    helpMenu->addAction(aboutAction);
+    connect(aboutAction, &QAction::triggered,
+            mainWindow, &MainWindow::handleAboutAction);
 }
 
 MainMenu::~MainMenu()

@@ -57,8 +57,6 @@ public:
     ~MainWindow();
 
 private:
-    void displayShortcuts();
-
     Ui::MainWindow *ui;
     VulkanView* vulkanView;
     NodeGraph* nodeGraph;
@@ -87,7 +85,7 @@ public slots:
     void handleSaveProjectAsAction();
     void handleExitAction();
     void handlePreferencesAction();
-    void handleShortcutsAction();
+    void handleAboutAction();
 
     void closeEvent(QCloseEvent* event);
 
