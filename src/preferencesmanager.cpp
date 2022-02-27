@@ -39,14 +39,34 @@ void PreferencesManager::setUp()
 
 void PreferencesManager::loadPreferences()
 {
-    QFile file(":/cascade.prefs");
+    QFile prefs("cascade.prefs");
+    QByteArray prefsData;
 
-    if (!file.open(QIODevice::ReadOnly))
+    // If preferences file doesn't exist, create it with default
+    if (!prefs.exists())
     {
-        CS_LOG_WARNING("Couldn't open preferences file.");
-    }
+        QFile defaultPrefs(":/default.prefs");
 
-    QByteArray prefsData = file.readAll();
+        if (!defaultPrefs.open(QIODevice::ReadOnly))
+            CS_LOG_WARNING("Couldn't open default preferences file.");
+
+        prefsData = defaultPrefs.readAll();
+
+        if (!prefs.open(QIODevice::ReadWrite))
+            CS_LOG_WARNING("Couldn't open preferences file.");
+
+        prefs.write(prefsData);
+
+        defaultPrefs.close();
+    }
+    else
+    {
+        if (!prefs.open(QIODevice::ReadWrite))
+            CS_LOG_WARNING("Couldn't open preferences file.");
+
+        prefsData = prefs.readAll();
+    }
+    prefs.close();
 
     QJsonDocument prefsDocument(QJsonDocument::fromJson(prefsData));
 

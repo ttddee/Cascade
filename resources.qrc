@@ -56,6 +56,6 @@
         <file>shaders/extractcolor_comp.spv</file>
         <file>shaders/contours_comp.spv</file>
         <file>shaders/smartdenoise_comp.spv</file>
-        <file>cascade.prefs</file>
+        <file>default.prefs</file>
     </qresource>
 </RCC>
