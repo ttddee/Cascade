@@ -1,4 +1,14 @@
-# Cascade Image Editor
+<hr>
+
+<p align="center">
+  <img src="design/logo/cascade-logo-full.png" width="500">
+</p>
+
+<h3 align="center">
+  Node-based Image Editor
+</h3>
+
+<hr>
 
 ![Cascade](screenshots/csc-screen03.jpg)   
 
