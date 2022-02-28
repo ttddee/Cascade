@@ -318,7 +318,7 @@ void NodeProperties::handleFileSaveRequest(
     emit parentNode->nodeRequestFileSave(parentNode, path, fileType, batchRender);
 }
 
-const int NodeProperties::getNumImages()
+int NodeProperties::getNumImages()
 {
     auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
 

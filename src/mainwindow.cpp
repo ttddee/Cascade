@@ -41,6 +41,10 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
       ui(new Ui::MainWindow)
 {
+    // OCIO needs the locale to be set here
+    std::setlocale(LC_NUMERIC, "C");
+    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+
     ui->setupUi(this);
 
     dockManager = new CDockManager(this);

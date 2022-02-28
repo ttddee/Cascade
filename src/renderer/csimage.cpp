@@ -145,7 +145,7 @@ const vk::UniqueDeviceMemory& CsImage::getMemory() const
     return memory;
 }
 
-const vk::ImageLayout CsImage::getLayout() const
+vk::ImageLayout CsImage::getLayout() const
 {
     return currentLayout;
 }
@@ -154,7 +154,7 @@ void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout la
 {
     // Note: The command buffer must be active
     vk::ImageMemoryBarrier barrier(
-                vk::AccessFlagBits::eNoneKHR,
+                vk::AccessFlagBits::eMemoryRead,
                 vk::AccessFlagBits::eShaderRead |
                 vk::AccessFlagBits::eShaderWrite,
                 currentLayout,

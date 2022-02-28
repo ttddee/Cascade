@@ -27,7 +27,7 @@ ListItem::ListItem()
 
 }
 
-const bool ListItem::valid()
+bool ListItem::valid()
 {
     return this->isValid;
 }
@@ -131,13 +131,13 @@ void FileBoxEntity::loadPropertyValues(const QString &values)
     addEntries(split);
 }
 
-const bool FileBoxEntity::fileExists(const QString& path)
+bool FileBoxEntity::fileExists(const QString& path)
 {
     QFileInfo checkFile(path);
     return checkFile.exists() && checkFile.isFile();
 }
 
-const int FileBoxEntity::getNumImages()
+int FileBoxEntity::getNumImages()
 {
     return ui->fileListWidget->count();
 }

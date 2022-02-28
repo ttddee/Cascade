@@ -46,7 +46,7 @@ public:
     const vk::UniqueImageView& getImageView() const;
     const vk::UniqueDeviceMemory& getMemory() const;
 
-    const vk::ImageLayout getLayout() const;
+    vk::ImageLayout getLayout() const;
     void transitionLayoutTo(vk::UniqueCommandBuffer& cb,
                             vk::ImageLayout layout);
     void setLayout(const vk::ImageLayout& layout);

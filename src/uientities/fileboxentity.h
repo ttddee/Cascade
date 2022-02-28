@@ -39,7 +39,7 @@ class ListItem : public QListWidgetItem
 public:
     ListItem();
 
-    const bool valid();
+    bool valid();
     void setValid(const bool b);
 
     ~ListItem();
@@ -61,7 +61,7 @@ public:
 
     void loadPropertyValues(const QString& values) override;
 
-    const int getNumImages();
+    int getNumImages();
     void switchToFirstImage();
     void switchToNextImage();
 
@@ -70,7 +70,7 @@ public:
 private:
     void addEntries(const QStringList& entries);
     void deleteCurrentEntry();
-    const bool fileExists(const QString& path);
+    bool fileExists(const QString& path);
 
     Ui::FileBoxEntity *ui;
 

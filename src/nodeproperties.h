@@ -43,7 +43,7 @@ public:
 
     void loadNodePropertyValues(const QMap<int, QString>& values);
 
-    const int getNumImages();
+    int getNumImages();
     void switchToFirstImage();
     void switchToNextImage();
 

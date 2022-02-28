@@ -240,16 +240,16 @@ linux-g++ {
     LIBS += -L$$PWD/external/glslang/lib -lOGLCompiler
     LIBS += -L$$PWD/external/glslang/lib -lGenericCodeGen
 
-    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD
-    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD
+    CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
+    CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
 
-#    COPIES += ocio
-#    ocio.files += $$files(ocio/config.ocio)
-#    ocio.path = $$DESTDIR/ocio
+    COPIES += ocio
+    ocio.files += $$files(ocio/config.ocio)
+    ocio.path = $$DESTDIR/ocio
 
-#    COPIES += luts
-#    luts.files += $$files(ocio/luts/*)
-#    luts.path = $$DESTDIR/ocio/luts
+    COPIES += luts
+    luts.files += $$files(ocio/luts/*)
+    luts.path = $$DESTDIR/ocio/luts
 }
 
 win32-msvc* {

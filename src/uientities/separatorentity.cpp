@@ -34,7 +34,7 @@ QString SeparatorEntity::getValuesAsString()
 
 void SeparatorEntity::loadPropertyValues(const QString &values)
 {
-
+    Q_UNUSED(values);
 }
 
 SeparatorEntity::~SeparatorEntity()

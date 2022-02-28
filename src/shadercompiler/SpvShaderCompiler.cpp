@@ -8,7 +8,7 @@
     #include "DirStackFileIncluder.h"
     #include "glslang/Include/ResourceLimits.h"
 #elif __linux__
-	#include <glslang/Public/ShaderLang.h>
+    #include <glslang/Public/ShaderLang.h>
 	#include <glslang/SPIRV/GlslangToSpv.h>
     #include "DirStackFileIncluder.h"
 	#include <glslang/Include/ResourceLimits.h>
