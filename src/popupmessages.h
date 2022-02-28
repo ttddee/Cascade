@@ -36,7 +36,6 @@ struct MessageBoxProperties
 
 enum MessageBoxType
 {
-    MESSAGEBOX_ABOUT,
     MESSAGEBOX_NO_GPU_FOUND,
     MESSAGEBOX_DEVICE_LOST,
     MESSAGEBOX_FILE_SAVE_SUCCESS,
@@ -44,13 +43,6 @@ enum MessageBoxType
     MESSAGEBOX_FILE_SAVE_PROBLEM,
     MESSAGEBOX_NO_FOLDER_SET,
     MESSAGEBOX_FAILED_INITIALIZATION
-};
-
-const static MessageBoxProperties aboutBoxProperties =
-{
-    "Cascade Image Editor",
-    QString("Version %1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD),
-    QSize(600, 400)
 };
 
 const static MessageBoxProperties noGpuFoundBoxProperties =
@@ -109,7 +101,6 @@ const static MessageBoxProperties failedInitializationBoxProperties =
 
 const static std::unordered_map<MessageBoxType, MessageBoxProperties> messageBoxes =
 {
-    { MESSAGEBOX_ABOUT, aboutBoxProperties },
     { MESSAGEBOX_NO_GPU_FOUND, noGpuFoundBoxProperties },
     { MESSAGEBOX_DEVICE_LOST, deviceLostBoxProperties },
     { MESSAGEBOX_FILE_SAVE_SUCCESS, fileSaveSuccessBoxProperties },

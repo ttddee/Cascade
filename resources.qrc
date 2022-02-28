@@ -57,5 +57,6 @@
         <file>shaders/contours_comp.spv</file>
         <file>shaders/smartdenoise_comp.spv</file>
         <file>default.prefs</file>
+        <file>design/logo/cascade-logo-full.png</file>
     </qresource>
 </RCC>

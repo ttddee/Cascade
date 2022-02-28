@@ -25,6 +25,7 @@ RC_ICONS = cascade.ico
 DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
+    src/aboutdialog.cpp \
     src/codeeditor/QCXXHighlighter.cpp \
     src/codeeditor/QCodeEditor.cpp \
     src/codeeditor/QFramedTextAttribute.cpp \
@@ -106,6 +107,7 @@ SOURCES += \
     src/windowmanager.cpp
 
 HEADERS += \
+    src/aboutdialog.h \
     src/benchmark.h \
     src/codeeditor/QCXXHighlighter.hpp \
     src/codeeditor/QCodeEditor.hpp \

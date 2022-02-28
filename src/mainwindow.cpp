@@ -32,6 +32,7 @@
 #include "log.h"
 #include "popupmessages.h"
 #include "preferencesdialog.h"
+#include "aboutdialog.h"
 
 using namespace ads;
 using namespace Cascade;
@@ -170,13 +171,14 @@ void MainWindow::handleExitAction()
 
 void MainWindow::handlePreferencesAction()
 {
-    auto prefs = new PreferencesDialog();
+    auto prefs = new PreferencesDialog(this);
     prefs->show();
 }
 
 void MainWindow::handleAboutAction()
 {
-    executeMessageBox(MESSAGEBOX_ABOUT);
+    auto about = new AboutDialog(this);
+    about->show();
 }
 
 void MainWindow::closeEvent(QCloseEvent *event)

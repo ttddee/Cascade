@@ -26,7 +26,8 @@
 #include "preferencesmanager.h"
 #include "log.h"
 
-PreferencesDialog::PreferencesDialog(QWidget *parent)
+PreferencesDialog::PreferencesDialog(QWidget *parent) :
+    QDialog(parent)
 {
     tabWidget = new QTabWidget;
     tabWidget->addTab(new QWidget(), tr("General"));

@@ -448,12 +448,12 @@ QProgressBar {
     font-weight: bold;
 }
 
-PreferencesDialog {
+QDialog {
     background-color: #282d31;
 }
 
-PreferencesDialog QPushButton {
-    padding: 3 5 3 5;
+QDialog QPushButton {
+    padding: 3 7 3 5;
 }
 
 QTableWidget {
