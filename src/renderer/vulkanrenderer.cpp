@@ -785,9 +785,9 @@ bool VulkanRenderer::writeLinearImage(
                                       layout.size,
                                       {},
                                       reinterpret_cast<void **>(&p));
-    if (err != vk::Result::eSuccess) {
+    if (err != vk::Result::eSuccess)
+    {
         CS_LOG_WARNING("Failed to map memory for linear image.");
-        CS_LOG_CONSOLE("Failed to map memory for linear image.");
         return false;
     }
 
@@ -796,11 +796,13 @@ bool VulkanRenderer::writeLinearImage(
     // TODO: Parallelize this
     float* pixels = imgStart;
     int lineWidth = imgSize.width() * 16; // 4 channels * 4 bytes
-    for (int y = 0; y < imgSize.height(); ++y)
+    int w = imgSize.width();
+    int h = imgSize.height();
+    for (int y = 0; y < h; ++y)
     {
         memcpy(p, pixels, lineWidth);
-        pixels += imgSize.width() * 4;
-        p += imgSize.width() * 4 + pad;
+        pixels += w * 4;
+        p += w * 4 + pad;
     }
 
     device.unmapMemory(*image->getMemory());
