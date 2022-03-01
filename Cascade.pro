@@ -316,7 +316,7 @@ win32-msvc* {
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libx265.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/lcms2.dll)
         dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/yaml-cppd.dll)
-        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libexpatd.dll)
+        dlls.files += $$files($$DEPENDENCY_ROOT/debug/bin/libexpatd.dll)      
 
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qdirect2dd.dll)
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qminimald.dll)
@@ -383,6 +383,13 @@ win32-msvc* {
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qoffscreen.dll)
         platforms.files += $$files($$QT_ROOT/plugins/platforms/qwindows.dll)
     }
+
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/concrt140.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/msvcp140.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/msvcp140_1.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/msvcp140_2.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/vcruntime140.dll)
+    dlls.files += $$files($$DEPENDENCY_ROOT/../../windows/vcruntime140_1.dll)
 
     dlls.path = $$DESTDIR
     platforms.path = $$DESTDIR/platforms
