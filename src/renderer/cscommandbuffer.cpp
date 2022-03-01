@@ -46,7 +46,7 @@ void CsCommandBuffer::createComputeQueue()
 {
     auto queueFamilyProperties = physicalDevice->getQueueFamilyProperties();
 
-    for (auto i = 0; i < queueFamilyProperties.size(); ++i)
+    for (unsigned int i = 0; i < queueFamilyProperties.size(); ++i)
     {
         if (queueFamilyProperties[i].queueFlags & vk::QueueFlagBits::eCompute)
         {
@@ -384,7 +384,7 @@ void CsCommandBuffer::createBuffer(
                     vk::BufferUsageFlagBits::eUniformBuffer),
                 vk::SharingMode::eExclusive);
 
-    buffer = device->createBufferUnique(bufferInfo);
+    buffer = device->createBufferUnique(bufferInfo).value;
 
 #ifdef QT_DEBUG
     {
