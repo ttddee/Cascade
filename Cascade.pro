@@ -229,6 +229,7 @@ linux-g++ {
     LIBS += -L/usr/local/lib -lOpenImageIO
     LIBS += -L/usr/local/lib -lOpenImageIO_Util
     LIBS += -L$$PWD/external/OpenColorIO/install -lOpenColorIO
+    LIBS += -L/usr/lib/x86_64-linux-gnu -ldl
     LIBS += -L/usr/lib/x86_64-linux-gnu -ltbb
     # The link order of the following libs is important
     LIBS += -L$$PWD/external/glslang/lib -lSPIRV
