@@ -96,7 +96,7 @@ void VulkanRenderer::initResources()
     // Load OCIO config
     try
     {
-        const char* file = "ocio/config.ocio";
+        const char* file = QCoreApplication::applicationDirPath().toLocal8Bit() + "/ocio/config.ocio";
         ocioConfig = OCIO::Config::CreateFromFile(file);
     }
     catch(OCIO::Exception& exception)
