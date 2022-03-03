@@ -24,6 +24,7 @@
 #include <QApplication>
 #include <QFontDatabase>
 #include <QFile>
+#include <QDir>
 
 #include "log.h"
 
@@ -52,6 +53,27 @@ int main(int argc, char *argv[])
     f.open(QFile::ReadOnly);
     QString style = QLatin1String(f.readAll());
     a.setStyleSheet(style);
+
+    // Copy the OCIO config from the resources to disk.
+    // We do this so that they end up in the right place when
+    // running from an AppImage.
+    if (!QDir("ocio").exists())
+    {
+        QDir().mkdir("ocio");
+        QDir().mkdir("ocio/luts");
+
+        QFile::copy(":/ocio/config.ocio", "ocio/config.ocio");
+        QFile::copy(":/ocio/luts/alexalogc.spi1d", "ocio/luts/alexalogc.spi1d");
+        QFile::copy(":/ocio/luts/cineon.spi1d", "ocio/luts/cineon.spi1d");
+        QFile::copy(":/ocio/luts/panalog.spi1d", "ocio/luts/panalog.spi1d");
+        QFile::copy(":/ocio/luts/ploglin.spi1d", "ocio/luts/ploglin.spi1d");
+        QFile::copy(":/ocio/luts/rec709.spi1d", "ocio/luts/rec709.spi1d");
+        QFile::copy(":/ocio/luts/redlog.spi1d", "ocio/luts/redlog.spi1d");
+        QFile::copy(":/ocio/luts/slog.spi1d", "ocio/luts/slog.spi1d");
+        QFile::copy(":/ocio/luts/srgb.spi1d", "ocio/luts/srgb.spi1d");
+        QFile::copy(":/ocio/luts/srgbf.spi1d", "ocio/luts/srgbf.spi1d");
+        QFile::copy(":/ocio/luts/viperlog.spi1d", "ocio/luts/viperlog.spi1d");
+    }
 
     // Create window
     MainWindow w;

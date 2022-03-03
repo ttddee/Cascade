@@ -58,5 +58,16 @@
         <file>shaders/smartdenoise_comp.spv</file>
         <file>default.prefs</file>
         <file>design/logo/cascade-logo-full.png</file>
+        <file>ocio/config.ocio</file>
+        <file>ocio/luts/alexalogc.spi1d</file>
+        <file>ocio/luts/cineon.spi1d</file>
+        <file>ocio/luts/panalog.spi1d</file>
+        <file>ocio/luts/ploglin.spi1d</file>
+        <file>ocio/luts/rec709.spi1d</file>
+        <file>ocio/luts/redlog.spi1d</file>
+        <file>ocio/luts/slog.spi1d</file>
+        <file>ocio/luts/srgb.spi1d</file>
+        <file>ocio/luts/srgbf.spi1d</file>
+        <file>ocio/luts/viperlog.spi1d</file>
     </qresource>
 </RCC>

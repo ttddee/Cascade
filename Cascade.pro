@@ -244,14 +244,6 @@ linux-g++ {
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
-
-    COPIES += ocio
-    ocio.files += $$files(ocio/config.ocio)
-    ocio.path = $$DESTDIR/ocio
-
-    COPIES += luts
-    luts.files += $$files(ocio/luts/*)
-    luts.path = $$DESTDIR/ocio/luts
 }
 
 win32-msvc* {
@@ -395,14 +387,6 @@ win32-msvc* {
 
     dlls.path = $$DESTDIR
     platforms.path = $$DESTDIR/platforms
-
-    COPIES += ocio
-    ocio.files += $$files(ocio/config.ocio)
-    ocio.path = $$DESTDIR/ocio
-
-    COPIES += luts
-    luts.files += $$files(ocio/luts/*)
-    luts.path = $$DESTDIR/ocio/luts
 
     COPIES += license
     license.files += $$files(LICENSE)
