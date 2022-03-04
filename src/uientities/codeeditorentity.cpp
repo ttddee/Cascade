@@ -77,7 +77,7 @@ CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
             "{\n"
             "    // Your code goes here\n"
             "\n"
-            "    vec4 result = inputBack;"
+            "    vec4 result = pixelBack;"
             "\n"
             "    imageStore(outputImage, pixelCoords, result);\n"
             "}");
