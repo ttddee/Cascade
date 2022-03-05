@@ -25,9 +25,7 @@ Cascade is a node-based image editor with GPU-acceleration.
 
 ## Download
 
-Cascade is free software. If you want to try it out, the latest binaries for Windows are [here](https://github.com/ttddee/Cascade/releases).
-
-The release has been tested on Windows 10 and NVIDIA GPUs.
+Cascade is free software. If you want to try it out, the latest binaries for Windows and a Linux AppImage are [here](https://github.com/ttddee/Cascade/releases).
 
 If you want to get involved or have questions, please join our [Discord](https://discord.gg/SHPHqgKtFM) or create an issue here on Github.
 
