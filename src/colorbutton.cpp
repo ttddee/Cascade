@@ -50,7 +50,11 @@ void ColorButton::setColor(QColor c)
 
 void ColorButton::handleButtonClicked()
 {
-    QColor c = QColorDialog::getColor(this->getColor());
+    QColor c = QColorDialog::getColor(
+                this->getColor(),
+                nullptr,
+                QString(),
+                QColorDialog::ShowAlphaChannel);
 
     if (c.isValid())
         setColor(c);
@@ -62,7 +66,9 @@ void ColorButton::paintEvent(QPaintEvent *e)
     QPainter painter(this);
 
     QRect r(3, 3, 24, 14);
-    painter.setBrush(this->getColor());
+    auto c = this->getColor();
+    c.setAlpha(255);
+    painter.setBrush(c);
     painter.setPen(Qt::NoPen);
     painter.drawRect(r);
 }

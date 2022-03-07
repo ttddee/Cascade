@@ -58,7 +58,7 @@ private slots:
     void handleColorChanged(QColor);
 
 signals:
-    void valueChanged(QColor);
+    void valueChanged();
 };
 
 #endif // COLORBUTTONENTITY_H

@@ -29,6 +29,7 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 0) float red;
     layout(offset = 4) float green;
     layout(offset = 8) float blue;
+	layout(offset = 12) float alpha;
 } sb;
 
 float linThresh = 0.0404482362771082;
@@ -40,6 +41,7 @@ void main()
     float r = sb.red / 255;
     float g = sb.green / 255;
     float b = sb.blue / 255;
+	float a = sb.alpha / 255;
 
     if (r <= linThresh)
     {
@@ -67,8 +69,17 @@ void main()
     {
         b = pow(((b + 0.055) / 1.055), 2.4);
     }
+	
+	if (a <= linThresh)
+    {
+        a /= 12.92;
+    }
+    else
+    {
+        a = pow(((a + 0.055) / 1.055), 2.4);
+    }
             
-    vec4 pixel = vec4(vec3(r, g, b), 1.0);
+    vec4 pixel = vec4(r, g, b, a);
 
     imageStore(resultImage, pixelCoords, pixel);
 
