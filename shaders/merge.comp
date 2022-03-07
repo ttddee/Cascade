@@ -41,62 +41,32 @@ void main()
     vec4 back = imageLoad(inputImageBack, pixelCoords).rgba;
 
     vec4 front = imageLoad(inputImageFront, targetCoords).rgba;
+	
+	vec4 result = back;
 
     if(sb.mode == 0.0) // Over
     {
-        back = (front * sb.opacity)  + back * (1.0 - front.a);
+        result = front + back * (1.0 - front.a);
+		result = mix(back,  result, sb.opacity);
     }
     else if (sb.mode == 1.0) // Add
     {
-        back += (front * sb.opacity);
+        result = back + (front * sb.opacity);
     }
     else if (sb.mode == 2.0) // Divide
     {
-        if (front.r <= 0.0)
-        {
-            back.r = 0;
-        }
-        else
-        {
-            if (sb.opacity != 0.0)
-            {
-                back.r = ((1.0 - sb.opacity) * back.r) + ((back.r / front.r) * sb.opacity);
-            }
-        }
-        if (front.g <= 0.0)
-        {
-            back.g = 0;
-        }
-        else
-        {
-            if (sb.opacity != 0.0)
-            {
-                back.g = ((1.0 - sb.opacity) * back.g) + ((back.g / front.g) * sb.opacity);
-            }
-        }
-        if (front.b <= 0.0)
-        {
-            back.b = 0;
-        }
-        else
-        {
-            if (sb.opacity != 0.0)
-            {
-                back.b = ((1.0 - sb.opacity) * back.b) + ((back.b / front.b) * sb.opacity);
-            }
-        }
+		result = mix(back, front / back, sb.opacity);
     }
     else if (sb.mode == 3.0) // Minus
     {
-        back -= (front * sb.opacity);
+        result = mix(back, front - back, sb.opacity);
     }
     else if (sb.mode == 4.0) // Multiply
     {
         if (sb.opacity != 0.0)
         {
-            back = ((1.0 - sb.opacity) * back) + (back * front * sb.opacity);
+            result = ((1.0 - sb.opacity) * back) + (back * front * sb.opacity);
         }
     }
-
-	imageStore(resultImage, pixelCoords, back);                                
+	imageStore(resultImage, pixelCoords, result);                                
 } 
