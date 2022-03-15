@@ -22,6 +22,7 @@ Cascade is a node-based image editor with GPU-acceleration.
 - All image processing is done on the GPU
 - 32 bit linear color pipeline
 - Support for the most common color spaces and file formats
+- You can write your own image processing effects using GLSL. A quick introduction on how to do that is [here](https://cascadedocs.readthedocs.io/en/latest/writingshader.html)
 
 ## Download
 
@@ -60,7 +61,7 @@ git clone https://github.com/microsoft/vcpkg
 Now you can install all other dependencies using the command below:
 
 ```
-.\vcpkg\vcpkg --feature-flags="versions" install --triplet=x64-windows
+.\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
 ```
 
 It will take a while to compile but upon completion you should be able to open the project in Qt Creator, configure your compiler and build.
