@@ -115,6 +115,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 void RenderManager::handleNodeFileSaveRequest(
         NodeBase* node,
         const QString& path,
+        const QMap<std::string, std::string>& attributes,
         const bool isBatch,
         const bool isLast)
 {
@@ -132,7 +133,7 @@ void RenderManager::handleNodeFileSaveRequest(
 //            });
 //            bool success = handle.get();
 
-            if(renderer->saveImageToDisk(image, path, parts.last().toInt()))
+            if(renderer->saveImageToDisk(image, path, attributes, parts.last().toInt()))
             {
                 if (!isBatch)
                 {

@@ -313,9 +313,10 @@ void NodeProperties::handleSomeValueChanged()
 void NodeProperties::handleFileSaveRequest(
         const QString& path,
         const QString& fileType,
+        const QMap<std::string, std::string>& attributes,
         const bool batchRender)
 {
-    emit parentNode->nodeRequestFileSave(parentNode, path, fileType, batchRender);
+    emit parentNode->nodeRequestFileSave(parentNode, path, fileType, attributes, batchRender);
 }
 
 int NodeProperties::getNumImages()

@@ -127,6 +127,7 @@ signals:
     void requestNodeFileSave(
             NodeBase* node,
             const QString& path,
+            const QMap<std::string, std::string>& attributes,
             const bool isBatch = false,
             const bool isLast = false);
     void requestClearScreen();
@@ -142,6 +143,7 @@ public slots:
             NodeBase* node,
             const QString& path,
             const QString& fileType,
+            const QMap<std::string, std::string>& attributes,
             const bool batchRender);
     void handleConnectedNodeInputClicked(Connection* c);
 };

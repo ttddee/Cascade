@@ -63,6 +63,7 @@ public slots:
     void handleNodeFileSaveRequest(
             NodeBase* node,
             const QString& path,
+            const QMap<std::string, std::string>& attributes,
             const bool isBatch,
             const bool isLast);
     void handleClearScreenRequest();

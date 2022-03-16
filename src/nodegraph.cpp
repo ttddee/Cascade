@@ -322,6 +322,7 @@ void NodeGraph::handleFileSaveRequest(
         NodeBase* node,
         const QString& path,
         const QString& fileType,
+        const QMap<std::string, std::string>& attributes,
         const bool batchRender)
 {
     if (batchRender)
@@ -380,6 +381,7 @@ void NodeGraph::handleFileSaveRequest(
                         QString::number(i).rightJustified(digits, '0') +
                         "." +
                         fileType,
+                        attributes,
                         batchRender,
                         isLast);
             for (auto& n : readNodes)
@@ -389,7 +391,7 @@ void NodeGraph::handleFileSaveRequest(
     else
     {
         viewNode(node);
-        emit requestNodeFileSave(node, path + "." + fileType);
+        emit requestNodeFileSave(node, path + "." + fileType, attributes);
     }
 }
 

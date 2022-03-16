@@ -200,6 +200,7 @@ signals:
             NodeBase* node,
             const QString& path,
             const QString& fileType,
+            const QMap<std::string, std::string>& attributes,
             const bool batchRender);
     void nodeHasMoved();
 };

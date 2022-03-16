@@ -37,6 +37,13 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
         ui->fileTypeBox->addItem(t);
     }
 
+    jpegCompressionSlider = new CsSliderBoxEntity(
+                UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                this);
+    jpegCompressionSlider->setName("Quality");
+    jpegCompressionSlider->setMinMaxStepValue(1, 100, 1, 100);
+    ui->verticalLayout->insertWidget(4, jpegCompressionSlider);
+
     connect(ui->fileNameEdit, &QLineEdit::textChanged,
             this, &WritePropertiesEntity::handleFileNametextChanged);
     connect(ui->setFolderButton, &QPushButton::clicked,
@@ -44,7 +51,11 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
     connect(ui->saveImageButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSaveFileButtonClicked);
     connect(ui->fileTypeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
-            this, &WritePropertiesEntity::updateFileNameLabel);
+            this, &WritePropertiesEntity::handleFileTypeChanged);
+    connect(jpegCompressionSlider, &CsSliderBoxEntity::valueChanged,
+            this, &WritePropertiesEntity::updateAttributes);
+
+    updateAttributes();
 
 #ifdef QT_DEBUG
     //setFolder("/tmp");
@@ -66,6 +77,8 @@ QString WritePropertiesEntity::getValuesAsString()
     str.append(fileName),
     str.append(","),
     str.append(QString::number(ui->batchCheckBox->isChecked()));
+    str.append(","),
+    str.append(jpegCompressionSlider->getValuesAsString());
 
     return str;
 }
@@ -81,6 +94,7 @@ void WritePropertiesEntity::loadPropertyValues(const QString &values)
     ui->fileTypeBox->setCurrentIndex(split[1].toInt());
     setFileName(split[2]);
     ui->batchCheckBox->setChecked(split[3].toInt());
+    jpegCompressionSlider->setMinMaxStepValue(1, 100, 1, split[4].toInt());
 }
 
 void WritePropertiesEntity::setFileName(const QString& f)
@@ -104,9 +118,36 @@ void WritePropertiesEntity::updateFileNameLabel()
     ui->fileNameLabel->setText(text);
 }
 
+void WritePropertiesEntity::updateAttributes()
+{
+    attributes.clear();
+    if (ui->fileTypeBox->currentText() == "jpg")
+    {
+        attributes.insert("Compression", "jpeg:" +
+            jpegCompressionSlider->getValuesAsString().toStdString());
+    }
+}
+
+void WritePropertiesEntity::hideAllAttributeElements()
+{
+    jpegCompressionSlider->setVisible(false);
+}
+
 void WritePropertiesEntity::handleFileNametextChanged()
 {
     setFileName(ui->fileNameEdit->text());
+}
+
+void WritePropertiesEntity::handleFileTypeChanged()
+{
+    this->hideAllAttributeElements();
+    if (ui->fileTypeBox->currentText() == "jpg")
+    {
+        jpegCompressionSlider->setVisible(true);
+    }
+
+    updateFileNameLabel();
+    updateAttributes();
 }
 
 void WritePropertiesEntity::handleSetFolderButtonClicked()
@@ -128,6 +169,7 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
         emit requestFileSave(
                     folder + "/" + fileName,
                     ui->fileTypeBox->currentText(),
+                    attributes,
                     ui->batchCheckBox->isChecked());
     }
     else

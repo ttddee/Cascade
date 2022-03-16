@@ -68,6 +68,7 @@ public:
     bool saveImageToDisk(
             CsImage* const inputImage,
             const QString& path,
+            const QMap<std::string, std::string>& attributes,
             const int colorSpace);
     void displayNode(
             const NodeBase* node);

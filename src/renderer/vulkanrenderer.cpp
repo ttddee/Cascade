@@ -841,6 +841,7 @@ void VulkanRenderer::setDisplayMode(const DisplayMode mode)
 bool VulkanRenderer::saveImageToDisk(
         CsImage* const inputImage,
         const QString &path,
+        const QMap<std::string, std::string>& attributes,
         const int colorSpace)
 {
     bool success = true;
@@ -872,6 +873,11 @@ bool VulkanRenderer::saveImageToDisk(
     parallelArrayCopy(pInput, pOutput, width, height);
 
     ImageSpec spec(width, height, 4, TypeDesc::FLOAT);
+    QMap<std::string, std::string>::const_iterator it;
+    for (it = attributes.begin(); it != attributes.end(); ++it)
+    {
+        spec.attribute(it.key(), it.value());
+    }
     std::unique_ptr<ImageBuf> saveImage =
             std::unique_ptr<ImageBuf>(new ImageBuf(spec, output));
 

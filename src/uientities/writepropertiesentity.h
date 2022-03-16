@@ -23,6 +23,7 @@
 #include <QWidget>
 
 #include "uientity.h"
+#include "cssliderboxentity.h"
 
 class NodeProperties;
 
@@ -49,23 +50,30 @@ private:
     void setFileName(const QString& f);
     void setFolder(const QString& f);
     void updateFileNameLabel();
+    void updateAttributes();
+    void hideAllAttributeElements();
 
     Ui::WritePropertiesEntity *ui;
+
+    CsSliderBoxEntity* jpegCompressionSlider;
 
     QString fileName = "unnamed";
     QString folder = "";
     QStringList filetypes = { "jpg", "jp2", "png", "tga", "tif", "exr" };
+    QMap<std::string, std::string> attributes;
 
 signals:
     void requestFileSave(
             const QString& path,
             const QString& fileType,
+            const QMap<std::string, std::string>& attributes,
             const bool batchRender);
 
 public slots:
     void handleFileNametextChanged();
     void handleSetFolderButtonClicked();
     void handleSaveFileButtonClicked();
+    void handleFileTypeChanged();
 };
 
 #endif // WRITEPROPERTIESENTITY_H
