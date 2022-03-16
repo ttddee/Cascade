@@ -54,7 +54,7 @@ private:
 
     QString fileName = "unnamed";
     QString folder = "";
-    QStringList filetypes = { "jpg", "png", "tga", "tif", "exr" };
+    QStringList filetypes = { "jpg", "jp2", "png", "tga", "tif", "exr" };
 
 signals:
     void requestFileSave(

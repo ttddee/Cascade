@@ -64,7 +64,7 @@ void FileBoxEntity::handleLoadButtonClicked()
 {
     QFileDialog dialog(nullptr);
     dialog.setFileMode(QFileDialog::ExistingFiles);
-    dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.jpeg *.png *.tga *.tif *exr)"));
+    dialog.setNameFilter(tr("Images (*.bmp *.gif *.jpg *.jpeg *.jp2 *.j2k *.j2c *.png *.tga *.tif *exr)"));
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
