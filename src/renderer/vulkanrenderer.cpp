@@ -1126,7 +1126,6 @@ void VulkanRenderer::processNode(
         {
             pipeline = computePipelineNoop.get();
         }
-
     }
 
     int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;

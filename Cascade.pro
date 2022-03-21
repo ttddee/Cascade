@@ -61,6 +61,7 @@ SOURCES += \
     src/docking/IconProvider.cpp \
     src/docking/ads_globals.cpp \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
+    src/isfmanager.cpp \
     src/log.cpp \
     src/main.cpp \
     src/mainmenu.cpp \
@@ -148,6 +149,7 @@ HEADERS += \
     src/docking/ads_globals.h \
     src/docking/linux/FloatingWidgetTitleBar.h \
     src/global.h \
+    src/isfmanager.h \
     src/log.h \
     src/mainmenu.h \
     src/mainwindow.h \
@@ -402,6 +404,10 @@ win32-msvc* {
 
 
 }
+
+COPIES += isf
+isf.files += $$files($$PWD/shaders/isf/*.fs)
+isf.path = $$DESTDIR/isf
 
 RESOURCES += \
     ads.qrc \

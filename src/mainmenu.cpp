@@ -70,7 +70,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     this->addMenu(editMenu);
 
     auto createNodeMenu = editMenu->addMenu("Create Node");
-    QMapIterator<NodeType, QString> i(nodeStrings);
 
     // Populate menu with submenus aka categories
     QMap<NodeCategory, QMenu*> categories;
@@ -85,7 +84,10 @@ MainMenu::MainMenu(MainWindow* mainWindow)
             submenu->setFixedWidth(120);
         }
     }
+
+    // Add nodes to corresponding submenus
     auto graph = mainWindow->getNodeGraph();
+    QMapIterator<NodeType, QString> i(nodeStrings);
     while (i.hasNext())
     {
         i.next();

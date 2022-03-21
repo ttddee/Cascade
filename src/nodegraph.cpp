@@ -363,16 +363,20 @@ void NodeGraph::handleFileSaveRequest(
         progress.setMinimumSize(QSize(350, 100));
 
         progress.setValue(0);
+        progress.show();
 
         for (int i = 0; i < numImagesToRender; ++i)
         {
-            progress.setValue(i + 1);
+            progress.setValue(i);
+            QCoreApplication::processEvents();
             if (progress.wasCanceled())
                 break;
 
             bool isLast = false;
             if (i == numImagesToRender - 1)
+            {
                 isLast = true;
+            }
             viewNode(node);
             emit requestNodeFileSave(
                         node,
