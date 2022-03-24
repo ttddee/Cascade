@@ -36,11 +36,13 @@
 #include "uientities/uientity.h"
 #include "log.h"
 #include "projectmanager.h"
+#include "isfmanager.h"
 
 NodeBase::NodeBase(
         const NodeType type,
         const NodeGraph* graph,
-        QWidget *parent)
+        QWidget *parent,
+        const QString& customName)
     : QWidget(parent),
       nodeType(type),
       ui(new Ui::NodeBase),
@@ -49,7 +51,7 @@ NodeBase::NodeBase(
 {
     ui->setupUi(this);
 
-    this->setUpNode(type);
+    this->setUpNode(type, customName);
 
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeBase::nodeHasMoved,
@@ -58,11 +60,22 @@ NodeBase::NodeBase(
     wManager = &WindowManager::getInstance();
 }
 
-void NodeBase::setUpNode(const NodeType nodeType)
+void NodeBase::setUpNode(
+        const NodeType nodeType,
+        const QString& customName)
 {
     NodeInitProperties props;
 
-    props = Cascade::getPropertiesForType(nodeType);
+    if (nodeType != NODE_TYPE_ISF)
+    {
+        props = Cascade::getPropertiesForType(nodeType);
+    }
+    else
+    {
+        auto isfManager = &ISFManager::getInstance();
+        props = isfManager->getNodeProperties().at(customName);
+        this->setShaderCode(isfManager->getShaderCode(customName));
+    }
 
     QString label = props.title.toUpper();
     ui->NodeTitleLabel->setText(label);
@@ -70,8 +83,7 @@ void NodeBase::setUpNode(const NodeType nodeType)
     this->createInputs(props);
     this->createOutputs(props);
 
-    // TODO: Use unique_ptr
-    nodeProperties = new NodeProperties(nodeType, this);
+    nodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -526,7 +538,7 @@ bool NodeBase::canBeRendered() const
 
 NodeProperties* NodeBase::getProperties() const
 {
-    return nodeProperties;
+    return nodeProperties.get();
 }
 
 void NodeBase::updateConnectionPositions()

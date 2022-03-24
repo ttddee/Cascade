@@ -58,7 +58,8 @@ public:
     explicit NodeBase(
             const NodeType type,
             const NodeGraph* graph,
-            QWidget *parent = nullptr);
+            QWidget *parent = nullptr,
+            const QString& customName = "");
 
     const NodeType nodeType;
 
@@ -131,7 +132,7 @@ private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes);
 
-    void setUpNode(const NodeType nodeType);
+    void setUpNode(const NodeType nodeType, const QString& customName = "");
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
@@ -164,7 +165,7 @@ private:
     NodeInput* rgbaFrontIn = nullptr;
     NodeOutput* rgbaOut = nullptr;
 
-    NodeProperties* nodeProperties;
+    std::unique_ptr<NodeProperties> nodeProperties;
 
     WindowManager* wManager;
 

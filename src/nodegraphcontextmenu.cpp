@@ -24,6 +24,7 @@
 #include "nodedefinitions.h"
 #include "nodegraph.h"
 #include "log.h"
+#include "isfmanager.h"
 
 using namespace Cascade;
 
@@ -34,7 +35,6 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
 
     // Populate menu with submenus aka categories
     QMap<NodeCategory, QMenu*> categories;
-
     {
         QMapIterator<NodeCategory, QString> i(categoryStrings);
         while (i.hasNext())
@@ -42,12 +42,14 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
             i.next();
             auto submenu = this->addMenu(categoryStrings[i.key()]);
             categories[i.key()] = submenu;
-            submenu->setFixedWidth(150);
+            submenu->setFixedWidth(180);
         }
     }
 
     // Add nodes to corresponding submenus
-    QMapIterator<NodeType, QString> i(nodeStrings);
+    auto nodes = nodeStrings;
+    nodes.remove(NODE_TYPE_ISF);
+    QMapIterator<NodeType, QString> i(nodes);
     while (i.hasNext())
     {
         i.next();
@@ -65,6 +67,44 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                         t,
                         QPoint(parent->mapToScene(parent->lastMousePos).x(),
                                parent->mapToScene(parent->lastMousePos).y())); });
+    }
+
+
+    // Add ISF categories
+    auto isfManager = &ISFManager::getInstance();
+    std::set<QString> isfCategoryStrings = isfManager->getCategories();
+
+    QMap<QString, QMenu*> isfCategories;
+    {
+        for (auto& cat : isfCategoryStrings)
+        {
+            auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
+            isfCategories[cat] = submenu;
+            submenu->setFixedWidth(150);
+        }
+    }
+
+    // Add ISF nodes
+    auto isfNodeProperties = isfManager->getNodeProperties();
+    for (auto& prop : isfNodeProperties)
+    {
+        QString nodeName = prop.second.title;
+        auto a = new QAction();
+        actions.push_back(a);
+        a->setText(nodeName);
+        auto t = NODE_TYPE_ISF;
+        isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
+
+        QObject::connect(
+                    a,
+                    &QAction::triggered,
+                    parent,
+                    [parent, t, nodeName]{ parent->createNode(
+                        t,
+                        QPoint(parent->mapToScene(parent->lastMousePos).x(),
+                               parent->mapToScene(parent->lastMousePos).y()),
+                        true,
+                        nodeName); });
     }
 }
 

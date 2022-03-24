@@ -55,7 +55,8 @@ public:
     void createNode(
             const NodeType type,
             const QPoint pos,
-            const bool view = true);
+            const bool view = true,
+            const QString& customName = "");
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
     void createProject();

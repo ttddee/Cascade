@@ -39,6 +39,7 @@ public:
     explicit NodeProperties(
             const NodeType t,
             NodeBase* parentNode,
+            const NodeInitProperties& initProps,
             QWidget *parent = nullptr);
 
     void loadNodePropertyValues(const QMap<int, QString>& values);

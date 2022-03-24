@@ -48,13 +48,12 @@
 NodeProperties::NodeProperties(
         const NodeType t,
         NodeBase* parentNode,
+        const NodeInitProperties& initProps,
         QWidget *parent)
         : QWidget(parent),
           nodeType(t),
           parentNode(parentNode)
 {
-    NodeInitProperties props = Cascade::getPropertiesForType(t);
-
     layout = new QVBoxLayout();
     layout->setAlignment(Qt::AlignTop);
     layout->setContentsMargins(QMargins(0,0,0,0));
@@ -64,7 +63,7 @@ NodeProperties::NodeProperties(
     connect(this, &NodeProperties::projectIsDirty,
             pm, &ProjectManager::handleProjectIsDirty);
 
-    foreach (auto& elem, props.uiElements)
+    foreach (auto& elem, initProps.uiElements)
     {
         if(elem.first == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
         {

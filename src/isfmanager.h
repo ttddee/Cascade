@@ -20,10 +20,15 @@
 #ifndef ISFMANAGER_H
 #define ISFMANAGER_H
 
+#include <set>
+
 #include <QObject>
 #include <QJsonDocument>
 
 #include "shadercompiler/SpvShaderCompiler.h"
+#include "nodedefinitions.h"
+
+using namespace Cascade;
 
 class ISFManager : public QObject
 {
@@ -36,15 +41,33 @@ public:
 
     void setUp();
 
+    const std::vector<unsigned int>& getShaderCode(const QString& nodeName);
+    const std::set<QString>& getCategories() const;
+    const std::map<QString, NodeInitProperties>& getNodeProperties() const;
+    const QString getCategoryPerNode(const QString& name) const;
+
 private:
     ISFManager() {}
 
-    bool convertISFToCompute(const QString& shader);
+    const QString convertISFShaderToCompute(
+            QString& shader,
+            const QJsonDocument& properties);
+
+    NodeInitProperties createISFNodeProperties(
+            const QJsonDocument& json,
+            const QString& name);
+
+    const std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(
+            const QString& nodeName,
+            const QJsonObject& json);
 
     SpvCompiler compiler;
 
     std::map<QString, QJsonDocument> isfProperties;
     std::map<QString, std::vector<unsigned int>> isfShaderCode;
+    std::set<QString> isfNodeCategories;
+    std::map<QString, NodeInitProperties> isfNodeProperties;
+    std::map<QString, QString> isfCategoryPerNode;
 };
 
 #endif // ISFMANAGER_H

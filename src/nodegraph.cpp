@@ -70,9 +70,10 @@ void NodeGraph::createProject()
 void NodeGraph::createNode(
         const NodeType type,
         const QPoint pos,
-        const bool view)
+        const bool view,
+        const QString& customName)
 {
-    NodeBase* n = new NodeBase(type, this);
+    NodeBase* n = new NodeBase(type, this, nullptr, customName);
     scene->addWidget(n);
     n->move(pos);
     nodes.push_back(n);

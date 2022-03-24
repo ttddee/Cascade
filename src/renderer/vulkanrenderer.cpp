@@ -1112,7 +1112,7 @@ void VulkanRenderer::processNode(
 
     auto pipeline = pipelines[node->nodeType].get();
 
-    if (node->nodeType == NODE_TYPE_SHADER)
+    if (node->nodeType == NODE_TYPE_SHADER || node->nodeType == NODE_TYPE_ISF)
     {
         if (node->getShaderCode().size() != 0)
         {

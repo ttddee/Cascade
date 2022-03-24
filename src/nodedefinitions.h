@@ -87,8 +87,6 @@ namespace Cascade
     enum UIElementType
     {
         UI_ELEMENT_TYPE_PROPERTIES_HEADING,
-        UI_ELEMENT_TYPE_SLIDERSPIN_INT,
-        UI_ELEMENT_TYPE_SLIDERSPIN_DOUBLE,
         UI_ELEMENT_TYPE_SPINBOX,
         UI_ELEMENT_TYPE_FILEBOX,
         UI_ELEMENT_TYPE_COLOR_BUTTON,
@@ -122,6 +120,7 @@ namespace Cascade
         NODE_CATEGORY_MERGE,
         NODE_CATEGORY_TRANSFORM,
         NODE_CATEGORY_CHANNEL,
+        NODE_CATEGORY_ISF,
         NODE_CATEGORY_MAX
     };
 
@@ -137,7 +136,8 @@ namespace Cascade
         { NODE_CATEGORY_EFFECTS, "Effects" },
         { NODE_CATEGORY_MERGE, "Merge" },
         { NODE_CATEGORY_TRANSFORM, "Transform" },
-        { NODE_CATEGORY_CHANNEL, "Channel" }
+        { NODE_CATEGORY_CHANNEL, "Channel" },
+        { NODE_CATEGORY_ISF, "ISF" }
     };
 
     ////////////////////////////////////
@@ -180,6 +180,7 @@ namespace Cascade
         NODE_TYPE_SOLARIZE,
         NODE_TYPE_UNPREMULT,
         NODE_TYPE_WRITE,
+        NODE_TYPE_ISF,
         NODE_TYPE_MAX
     };
 
@@ -207,6 +208,7 @@ namespace Cascade
         { NODE_TYPE_FLIP, "Flip" },
         { NODE_TYPE_HUE_SATURATION, "Hue Saturation" },
         { NODE_TYPE_INVERT, "Invert" },
+        { NODE_TYPE_ISF, "ISF" },
         { NODE_TYPE_LEVELS, "Levels" },
         { NODE_TYPE_MERGE, "Merge" },
         { NODE_TYPE_NOISE, "Noise" },
@@ -990,6 +992,24 @@ namespace Cascade
         1
     };
 
+    const static NodeInitProperties isfNodeInitProperties =
+    {
+        NODE_TYPE_ISF,
+        nodeStrings[NODE_TYPE_ISF],
+        NODE_CATEGORY_ISF,
+        { NODE_INPUT_TYPE_RGB_BACK },
+        { NODE_OUTPUT_TYPE_RGB },
+        {
+            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ISF] }
+        },
+        FRONT_INPUT_ALWAYS_CLEAR,
+        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ALPHA_INPUT_ALWAYS_CLEAR,
+        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        ":/shaders/noop_comp.spv",
+        1
+    };
+
     // TODO: Use std::map instead of QMap, then we don't need the lookup function
     [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
     {
@@ -1132,6 +1152,10 @@ namespace Cascade
         else if(t == NODE_TYPE_SMART_DENOISE)
         {
             return smartDenoiseNodeInitProperties;
+        }
+        else if(t == NODE_TYPE_ISF)
+        {
+            return isfNodeInitProperties;
         }
         throw std::runtime_error("Node type not found.");
     }

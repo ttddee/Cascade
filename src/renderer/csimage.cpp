@@ -43,25 +43,26 @@ CsImage::CsImage(
     isLinear ? currentLayout = vk::ImageLayout::eUndefined :
                currentLayout = vk::ImageLayout::ePreinitialized;
 
-    vk::ImageCreateInfo imageInfo({},
-                                  vk::ImageType::e2D,
-                                  vk::Format::eR32G32B32A32Sfloat,
-                                  vk::Extent3D(width, height, 1),
-                                  1,
-                                  1,
-                                  vk::SampleCountFlagBits::e1,
-                                  isLinear ? vk::ImageTiling::eLinear :
-                                             vk::ImageTiling::eOptimal,
-                                  isLinear ? vk::ImageUsageFlagBits::eSampled |
-                                             vk::ImageUsageFlagBits::eTransferSrc :
-                                             vk::ImageUsageFlagBits::eSampled |
-                                             vk::ImageUsageFlagBits::eStorage |
-                                             vk::ImageUsageFlagBits::eTransferSrc |
-                                             vk::ImageUsageFlagBits::eTransferDst,
-                                  vk::SharingMode::eExclusive,
-                                  {},
-                                  {},
-                                  currentLayout);
+    vk::ImageCreateInfo imageInfo(
+                {},
+                vk::ImageType::e2D,
+                vk::Format::eR32G32B32A32Sfloat,
+                vk::Extent3D(width, height, 1),
+                1,
+                1,
+                vk::SampleCountFlagBits::e1,
+                isLinear ? vk::ImageTiling::eLinear :
+                           vk::ImageTiling::eOptimal,
+                isLinear ? vk::ImageUsageFlagBits::eSampled |
+                           vk::ImageUsageFlagBits::eTransferSrc :
+                           vk::ImageUsageFlagBits::eSampled |
+                           vk::ImageUsageFlagBits::eStorage |
+                           vk::ImageUsageFlagBits::eTransferSrc |
+                           vk::ImageUsageFlagBits::eTransferDst,
+                vk::SharingMode::eExclusive,
+                {},
+                {},
+                currentLayout);
 
     image = device->createImageUnique(imageInfo).value;
 
