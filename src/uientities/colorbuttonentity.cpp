@@ -39,7 +39,12 @@ QColor ColorButtonEntity::getColor()
 
 void ColorButtonEntity::setColor(QColor c)
 {
-    ui->colorButton->setColor(c);
+    QColor intColor(
+             c.red() * 255,
+             c.green() * 255,
+             c.blue() * 255,
+             c.alpha() * 255);
+    ui->colorButton->setColor(intColor);
 }
 
 const QString ColorButtonEntity::name()
@@ -55,26 +60,30 @@ void ColorButtonEntity::setName(const QString &s)
 void ColorButtonEntity::handleColorChanged(QColor c)
 {
     emit valueChanged();
+
+    Q_UNUSED(c);
 }
 
 QString ColorButtonEntity::getValuesAsString()
 {
     QString s;
-    s.append(QString::number(getColor().red()));
+    s.append(QString::number(getColor().red() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().green()));
+    s.append(QString::number(getColor().green() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().blue()));
+    s.append(QString::number(getColor().blue() / 255.0));
     s.append(",");
-    s.append(QString::number(getColor().alpha()));
-
+    s.append(QString::number(getColor().alpha() / 255.0));
     return s;
 }
 
 void ColorButtonEntity::loadPropertyValues(const QString &values)
 {
     auto split = values.split(",");
-    QColor c(split[0].toInt(), split[1].toInt(), split[2].toInt(), split[3].toInt());
+    QColor c(split[0].toInt(),
+             split[1].toInt(),
+             split[2].toInt(),
+             split[3].toInt());
     setColor(c);
 }
 

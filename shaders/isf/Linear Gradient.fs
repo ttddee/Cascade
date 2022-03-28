@@ -8,6 +8,8 @@
 		{
 			"NAME": "offset",
 			"TYPE": "float",
+			"MAX": 1.0,
+			"MIN": 0.0,
 			"DEFAULT": 0.5
 		},
 		{

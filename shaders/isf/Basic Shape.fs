@@ -70,61 +70,21 @@
             "NAME": "invertMask",
             "TYPE": "bool"
         },
-        {
+		{
             "DEFAULT": 1,
             "LABEL": "Horizontal Repeat",
-            "LABELS": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9"
-            ],
+            "MAX": 9,
+            "MIN": 1,
             "NAME": "horizontalRepeat",
-            "TYPE": "long",
-            "VALUES": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9
-            ]
+            "TYPE": "int"
         },
         {
             "DEFAULT": 1,
             "LABEL": "Vertical Repeat",
-            "LABELS": [
-                "1",
-                "2",
-                "3",
-                "4",
-                "5",
-                "6",
-                "7",
-                "8",
-                "9"
-            ],
+            "MAX": 9,
+            "MIN": 1,
             "NAME": "verticalRepeat",
-            "TYPE": "long",
-            "VALUES": [
-                1,
-                2,
-                3,
-                4,
-                5,
-                6,
-                7,
-                8,
-                9
-            ]
+            "TYPE": "int"
         }
     ],
     "ISFVSN": "2"

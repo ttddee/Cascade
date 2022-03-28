@@ -88,7 +88,7 @@ void ISFManager::setUp()
             // Convert and compile shader
             QString shader = convertISFShaderToCompute(split.last(), jsonData);
 
-            if (name == "ISF ASCII Art")
+            if (name == "ISF Linear Gradient")
                 CS_LOG_CONSOLE(shader);
 
             if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
@@ -109,6 +109,8 @@ void ISFManager::setUp()
             }
             else
             {
+                CS_LOG_WARNING("Compilation failed for:");
+                CS_LOG_WARNING(name);
                 CS_LOG_WARNING(QString::fromStdString(compiler.getError()));
                 failure++;
             }
@@ -141,8 +143,21 @@ NodeInitProperties ISFManager::createISFNodeProperties(
         ":/shaders/noop_comp.spv",
         1
     };
-
     return props;
+}
+
+const int ISFManager::getRenderpassesFromJson(
+        const QJsonObject &json) const
+{
+    // TODO: This does not work
+
+    int passes = 1;
+    QJsonArray passesArray = json.value("PASSES").toArray();
+    if (int size = passesArray.size() > 0)
+    {
+        passes = size;
+    }
+    return passes;
 }
 
 const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElementsFromJson(
@@ -172,13 +187,89 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
                     ",0.01," +
                     QString::number(property["DEFAULT"].toDouble())
                 });
-            CS_LOG_CONSOLE(property["NAME"].toString());
-            CS_LOG_CONSOLE(QString::number(property["DEFAULT"].toDouble()));
+        }
+        if (propType == "color")
+        {
+            auto array = property["DEFAULT"].toArray();
+            elements.push_back(
+                {
+                    UI_ELEMENT_TYPE_COLOR_BUTTON,
+                    property["NAME"].toString() +
+                    "," +
+                    QString::number(array.at(0).toDouble()) +
+                    "," +
+                    QString::number(array.at(1).toDouble()) +
+                    "," +
+                    QString::number(array.at(2).toDouble()) +
+                    "," +
+                    QString::number(array.at(3).toDouble())
+                });
+        }
+        if (propType == "bool")
+        {
+            elements.push_back(
+                {
+                   UI_ELEMENT_TYPE_CHECKBOX,
+                   name + "," + QString::number(property["DEFAULT"].toInt())
+                });
+        }
+        if (propType == "int")
+        {
+            elements.push_back(
+                {
+                   UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                   name + "," +
+                   QString::number(property["MIN"].toInt()) +
+                   "," +
+                   QString::number(property["MAX"].toInt()) +
+                   ",1," +
+                   QString::number(property["DEFAULT"].toInt())
+                });
+        }
+        if (propType == "point2D")
+        {
+            auto min = property["MIN"].toArray();
+            auto max = property["MAX"].toArray();
+            auto def = property["DEFAULT"].toArray();
+            elements.push_back(
+                {
+                    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                    name + " X," +
+                    QString::number(min.first().toDouble()) +
+                    "," +
+                    QString::number(max.first().toDouble()) +
+                    ",0.01," +
+                    QString::number(def.first().toDouble())
+                });
+            elements.push_back(
+                {
+                    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                    name + " Y," +
+                    QString::number(min.last().toDouble()) +
+                    "," +
+                    QString::number(max.last().toDouble()) +
+                    ",0.01," +
+                    QString::number(def.last().toDouble())
+                });
+        }
+        if (propType == "long")
+        {
+            auto array = property["LABELS"].toArray();
+            QString labels;
+            for (int i = 0; i < array.size(); ++i)
+            {
+                labels.append(array[i].toString() + ",");
+            }
+            elements.push_back(
+                {
+                   UI_ELEMENT_TYPE_COMBOBOX,
+                   property["LABEL"].toString() + "," +
+                   labels +
+                   QString::number(property["DEFAULT"].toInt())
+                });
         }
     }
-    //auto credit = json.value("CREDIT").toObject();
-    CS_LOG_CONSOLE(json.value("CREDIT").toString());
-    elements.push_back({ UI_ELEMENT_TYPE_TEXTBOX, "Credit: " + json.value("CREDIT").toString() });
+    elements.push_back({ UI_ELEMENT_TYPE_TEXTBOX, json.value("CREDIT").toString() });
     return elements;
 }
 
@@ -196,7 +287,7 @@ const QString ISFManager::convertISFShaderToCompute(
         "\n"
         "ivec2 imgSize = imageSize(inputBack);\n"
         "ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);\n"
-        "vec2 pixelCoordsNorm = pixelCoords / imgSize;\n"
+        "vec2 pixelCoordsNorm = float(pixelCoords) / imgSize;\n"
         "\n"
         "vec4 result;\n"
         "\n"
@@ -205,69 +296,137 @@ const QString ISFManager::convertISFShaderToCompute(
         "    return imageLoad(inputBack, ivec2(imgSize * uv));\n"
         "}\n"
         "\n"
-        "layout(set = 0, binding = 3) uniform InputBuffer\n"
-        "{\n");
+        );
     QJsonObject propObject = properties.object();
     QJsonArray inputsArray = propObject.value("INPUTS").toArray();
+    // Remove inputImage
+    int index = getIndexFromArray(inputsArray, "inputImage");
+    if (index >= 0)
+    {
+        inputsArray.removeAt(index);
+    }
+    CS_LOG_CONSOLE("inputsArray size:");
+    CS_LOG_CONSOLE(QString::number(inputsArray.size()));
+    if (inputsArray.size() > 0)
+    {
+        // Remove whitespace at start and end
+        shader = shader.trimmed();
 
-    int offset = 0;
-    std::vector<QString> floatProps;
-    std::vector<QString> colorProps;
-    std::vector<QString> boolProps;
-    for (int i = 0; i < inputsArray.size(); i++)
-    {
-        QJsonObject property = inputsArray.at(i).toObject();
-        QString name = property["NAME"].toString();
-        if (property["TYPE"] == "float")
+        compute.append("layout(set = 0, binding = 3) uniform InputBuffer\n"
+                       "{\n");
+
+        int offset = 0;
+        std::vector<QString> floatProps;
+        std::vector<QString> colorProps;
+        std::vector<QString> boolProps;
+        std::vector<QString> pointProps;
+        std::vector<QString> intProps;
+        std::vector<QString> longProps;
+        for (int i = 0; i < inputsArray.size(); i++)
         {
-            floatProps.push_back(name);
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
-            offset += 4;
+            QJsonObject property = inputsArray.at(i).toObject();
+            QString name = property["NAME"].toString();
+            if (property["TYPE"] == "float")
+            {
+                floatProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
+                offset += 4;
+            }
+            if (property["TYPE"] == "color")
+            {
+                colorProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "R;\n");
+                offset += 4;
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "G;\n");
+                offset += 4;
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "B;\n");
+                offset += 4;
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "A;\n");
+                offset += 4;
+            }
+            if (property["TYPE"] == "bool")
+            {
+                boolProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
+                offset += 4;
+            }
+            if (property["TYPE"] == "point2D")
+            {
+                pointProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "X;\n");
+                offset += 4;
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "Y;\n");
+                offset += 4;
+            }
+            if (property["TYPE"] == "int")
+            {
+                intProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
+                offset += 4;
+            }
+            if (property["TYPE"] == "long")
+            {
+                longProps.push_back(name);
+                compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
+                offset += 4;
+            }
         }
-        if (property["TYPE"] == "color")
+        compute.append("} sb;\n\n");
+        for (auto& f : floatProps)
         {
-            colorProps.push_back(name);
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "R;\n");
-            offset += 4;
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "G;\n");
-            offset += 4;
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "B;\n");
-            offset += 4;
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + "A;\n");
-            offset += 4;
+            compute.append("float " + f + " = sb." + f + ";\n");
         }
-        if (property["TYPE"] == "bool")
+        for (auto& c : colorProps)
         {
-            boolProps.push_back(name);
-            compute.append("    layout(offset = " + QString::number(offset) + ") float " + name + ";\n");
-            offset += 4;
+            compute.append("vec4 " + c + " = vec4(sb." + c + "R, sb." + c + "G, sb." + c + "B, sb." + c + "A);\n");
         }
-    }
-    compute.append("} sb;\n\n");
-    for (auto& f : floatProps)
-    {
-        compute.append("float " + f + " = sb." + f + ";\n");
-    }
-    for (auto& c : colorProps)
-    {
-        compute.append("vec4 " + c + " = vec4(sb." + c + "R, sb." + c + "G, sb." + c + "B, sb." + c + "A);\n");
-    }
-    for (auto& b : boolProps)
-    {
-        compute.append("bool " + b + " = bool(sb." + b + ");\n");
+        for (auto& b : boolProps)
+        {
+            compute.append("bool " + b + " = bool(sb." + b + ");\n");
+        }
+        for (auto& p : pointProps)
+        {
+            compute.append("vec2 " + p + " = vec2(sb." + p + "X, sb." + p + "Y);\n");
+        }
+        for (auto& i : intProps)
+        {
+            compute.append("int " + i + " = int(sb." + i + ");\n");
+        }
+        for (auto& l : longProps)
+        {
+            compute.append("int " + l + " = int(sb." + l + ");\n");
+        }
     }
 
     shader.replace("IMG_THIS_PIXEL(inputImage)", "imageLoad(inputBack, pixelCoords).rgba", Qt::CaseSensitive);
     shader.replace("IMG_NORM_PIXEL(inputImage, ", "imageLoadNorm(", Qt::CaseSensitive);
     shader.replace("RENDERSIZE", "imgSize", Qt::CaseSensitive);
     shader.replace("gl_FragColor", "result", Qt::CaseSensitive);
-    shader.replace("gl_FragCoord", "pixelCoordsNorm", Qt::CaseSensitive);
-    shader.chop(2);
+    shader.replace("gl_FragCoord", "pixelCoords", Qt::CaseSensitive);
+    shader.replace("isf_FragNormCoord", "pixelCoordsNorm", Qt::CaseSensitive);
+    // TODO: Make this a control
+    shader.replace("TIME", "1000", Qt::CaseSensitive);
+
+    // Chop the closing brace
+    shader.chop(1);
 
     compute.append(shader);
     compute.append(
+        "\n"
         "imageStore(resultImage, pixelCoords, result);\n"
         "}");
 
     return compute;
+}
+
+const int ISFManager::getIndexFromArray(const QJsonArray& array, const QString& value) const
+{
+    for (int i = 0; i < array.size(); ++i)
+    {
+        if (array[i].toObject()["NAME"].toString() == value)
+        {
+            return i;
+        }
+    }
+    return -1;
 }

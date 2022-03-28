@@ -61,6 +61,10 @@ private:
             const QString& nodeName,
             const QJsonObject& json);
 
+    const int getRenderpassesFromJson(const QJsonObject& json) const;
+
+    const int getIndexFromArray(const QJsonArray& array, const QString& value) const;
+
     SpvCompiler compiler;
 
     std::map<QString, QJsonDocument> isfProperties;

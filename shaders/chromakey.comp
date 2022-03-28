@@ -33,7 +33,7 @@ layout(set = 0, binding = 3) uniform InputBuffer
     layout(offset = 20) float rangeB;
 } sb;
 
-vec4 keyColor = vec4(sb.keyR / 256, sb.keyG / 256, sb.keyB / 256, 1);
+vec4 keyColor = vec4(sb.keyR, sb.keyG, sb.keyB, 1);
 
 vec2 alphaRange = vec2(sb.rangeA, sb.rangeB);
 

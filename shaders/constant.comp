@@ -38,10 +38,10 @@ void main()
 {   
     ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);   
      
-    float r = sb.red / 255;
-    float g = sb.green / 255;
-    float b = sb.blue / 255;
-	float a = sb.alpha / 255;
+    float r = sb.red;
+    float g = sb.green;
+    float b = sb.blue;
+	float a = sb.alpha;
 
     if (r <= linThresh)
     {

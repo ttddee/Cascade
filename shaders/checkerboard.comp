@@ -36,8 +36,6 @@ void main()
             * (mod(pixelCoords.y / sb.size * exp( sb.aspect) - sb.phaseY, 2.0) - 1.0);
 
 	vec4 result = (m < 0.0) ? vec4(sb.aRed, sb.aGreen, sb.aBlue, sb.aAlpha) : vec4(sb.bRed, sb.bGreen, sb.bBlue, sb.bAlpha);
-	
-	result = result / 255.0;
 
 	imageStore(resultImage, pixelCoords, result);
     
