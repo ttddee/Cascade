@@ -39,12 +39,7 @@ QColor ColorButtonEntity::getColor()
 
 void ColorButtonEntity::setColor(QColor c)
 {
-    QColor intColor(
-             c.red() * 255,
-             c.green() * 255,
-             c.blue() * 255,
-             c.alpha() * 255);
-    ui->colorButton->setColor(intColor);
+    ui->colorButton->setColor(c);
 }
 
 const QString ColorButtonEntity::name()
@@ -80,10 +75,10 @@ QString ColorButtonEntity::getValuesAsString()
 void ColorButtonEntity::loadPropertyValues(const QString &values)
 {
     auto split = values.split(",");
-    QColor c(split[0].toInt(),
-             split[1].toInt(),
-             split[2].toInt(),
-             split[3].toInt());
+    QColor c(split[0].toInt() * 255.0,
+             split[1].toInt() * 255.0,
+             split[2].toInt() * 255.0,
+             split[3].toInt() * 255.0);
     setColor(c);
 }
 

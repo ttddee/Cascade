@@ -437,16 +437,6 @@ vec4 patternForType(vec2 coord, int pType, vec2 seed)	{
 		else if (pt == 2)	{
 			pt = 4 + int(f * 5.99);
 		}
-		/*
-		if (patternSeed < 0.25)
-			pt = 2 + int(4.999 * rand(seed));
-		else if (patternSeed < 0.5)
-			pt = 2 + int(4.999 * rand(vec2(seed.x*floor(coord.x/(RENDERSIZE.x/4.0)),seed.x*floor(coord.y/(RENDERSIZE.y/4.0)))));
-		else if (patternSeed < 0.75)
-			pt = 2 + int(4.999 * rand(vec2(seed.x*floor(coord.x/(RENDERSIZE.x/10.0)),seed.x*floor(coord.y/(RENDERSIZE.y/10.0)))));
-		else
-			pt = 2 + int(4.999 * rand(vec2(seed.x*floor(coord.x/(RENDERSIZE.x/100.0)),seed.x*floor(coord.y/(RENDERSIZE.y/100.0)))));
-		*/
 	}
 	
 	vec2	flickCoord = coord;
@@ -651,10 +641,3 @@ void main(){
 	
 	gl_FragColor = returnMe;
 }
-
-
-
-
-// The MIT License
-// Copyright © 2013 Inigo Quilez
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions: The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software. THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.

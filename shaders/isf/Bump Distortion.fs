@@ -1,67 +1,62 @@
 /*{
-    "CATEGORIES": [
-        "Distortion Effect"
-    ],
-    "CREDIT": "by carter rosenberg",
-    "DESCRIPTION": "Bends and distorts the image",
-    "INPUTS": [
-        {
-            "NAME": "inputImage",
-            "TYPE": "image"
-        },
-        {
-            "DEFAULT": 0.5,
-            "MAX": 1,
-            "MIN": -1,
-            "NAME": "level",
-            "TYPE": "float"
-        },
-        {
-            "DEFAULT": 0.25,
-            "MAX": 1,
-            "MIN": 0,
-            "NAME": "radius",
-            "TYPE": "float"
-        },
-        {
-            "DEFAULT": [
-                0.5,
-                0.5
-            ],
-            "MAX": [
-                1,
-                1
-            ],
-            "MIN": [
-                0,
-                0
-            ],
-            "NAME": "center",
-            "TYPE": "point2D"
-        }
-    ],
-    "ISFVSN": "2"
-}
-*/
+  "CREDIT": "by carter rosenberg",
+  "CATEGORIES": [
+    "Distortion Effect"
+  ],
+  "INPUTS": [
+    {
+      "NAME": "inputImage",
+      "TYPE": "image"
+    },
+    {
+      "NAME": "level",
+      "TYPE": "float",
+	  "LABEL": "Level",
+      "MIN": -1,
+      "MAX": 1,
+      "DEFAULT": 0.5
+    },
+    {
+      "NAME": "radius",
+      "TYPE": "float",
+	  "LABEL": "Radius",
+      "MIN": 0,
+      "MAX": 1,
+      "DEFAULT": 0.25
+    },
+    {
+      "NAME": "center",
+      "TYPE": "point2D",
+	  "LABEL": "Center",
+      "DEFAULT": [
+        0.5,
+        0.5
+      ],
+      "MIN": [
+        0.0,
+        0.0
+      ],
+      "MAX": [
+        1.0,
+        1.0
+      ]
+    }
+  ]
+}*/
 
 const float pi = 3.14159265359;
 
-#ifndef GL_ES
-float distance (vec2 inCenter, vec2 pt)
-{
-	float tmp = pow(inCenter.x-pt.x,2.0)+pow(inCenter.y-pt.y,2.0);
-	return pow(tmp,0.5);
-}
-#endif
 
-void main() {
-	vec2		uv = isf_FragNormCoord.xy;
-	vec2		texSize = RENDERSIZE.xy;
-	vec2		tc = uv * texSize;
-	vec2		modifiedCenter = center * texSize;
-	float		r = distance(modifiedCenter, tc);
-	float		a = atan ((tc.y-modifiedCenter.y),(tc.x-modifiedCenter.x));
-	float		radius_sized = radius * length(RENDERSIZE);
+
+void main() 
+{
+	vec2 uv = vec2(isf_FragNormCoord[0],isf_FragNormCoord[1]);
+	vec2 texSize = RENDERSIZE;
+	vec2 tc = uv * texSize;
+	vec2 modifiedCenter = center * texSize;
+	float r = distance(modifiedCenter, tc);
+	float a = atan ((tc.y-modifiedCenter.y),(tc.x-modifiedCenter.x));
+	float radius_sized = radius * length(RENDERSIZE);
 	
 	tc -= modifiedCenter;
 

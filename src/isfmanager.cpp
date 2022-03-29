@@ -88,7 +88,7 @@ void ISFManager::setUp()
             // Convert and compile shader
             QString shader = convertISFShaderToCompute(split.last(), jsonData);
 
-            if (name == "ISF Linear Gradient")
+            if (name == "ISF Bump Distortion")
                 CS_LOG_CONSOLE(shader);
 
             if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
@@ -172,7 +172,12 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
     for (int i = 0; i < inputsArray.size(); i++)
     {
         QJsonObject property = inputsArray.at(i).toObject();
-        QString name = property["NAME"].toString();
+        QString label = property["LABEL"].toString();
+        // If control is missing the label, use the name
+        if (label == "")
+        {
+            label = property["NAME"].toString();
+        }
         QString propType = property["TYPE"].toString();
 
         if (propType == "float")
@@ -180,7 +185,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                     UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
-                    name + "," +
+                    label + "," +
                     QString::number(property["MIN"].toDouble()) +
                     "," +
                     QString::number(property["MAX"].toDouble()) +
@@ -194,7 +199,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                     UI_ELEMENT_TYPE_COLOR_BUTTON,
-                    property["NAME"].toString() +
+                    label +
                     "," +
                     QString::number(array.at(0).toDouble()) +
                     "," +
@@ -210,7 +215,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                    UI_ELEMENT_TYPE_CHECKBOX,
-                   name + "," + QString::number(property["DEFAULT"].toInt())
+                   label + "," + QString::number(property["DEFAULT"].toInt())
                 });
         }
         if (propType == "int")
@@ -218,7 +223,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                    UI_ELEMENT_TYPE_SLIDER_BOX_INT,
-                   name + "," +
+                   label + "," +
                    QString::number(property["MIN"].toInt()) +
                    "," +
                    QString::number(property["MAX"].toInt()) +
@@ -234,7 +239,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                     UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
-                    name + " X," +
+                    label + " X," +
                     QString::number(min.first().toDouble()) +
                     "," +
                     QString::number(max.first().toDouble()) +
@@ -244,7 +249,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                     UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
-                    name + " Y," +
+                    label + " Y," +
                     QString::number(min.last().toDouble()) +
                     "," +
                     QString::number(max.last().toDouble()) +
@@ -263,13 +268,13 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             elements.push_back(
                 {
                    UI_ELEMENT_TYPE_COMBOBOX,
-                   property["LABEL"].toString() + "," +
+                   label + "," +
                    labels +
                    QString::number(property["DEFAULT"].toInt())
                 });
         }
     }
-    elements.push_back({ UI_ELEMENT_TYPE_TEXTBOX, json.value("CREDIT").toString() });
+    elements.push_back({ UI_ELEMENT_TYPE_TEXTBOX, "CREDIT: " + json.value("CREDIT").toString() });
     return elements;
 }
 
@@ -287,11 +292,16 @@ const QString ISFManager::convertISFShaderToCompute(
         "\n"
         "ivec2 imgSize = imageSize(inputBack);\n"
         "ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);\n"
-        "vec2 pixelCoordsNorm = float(pixelCoords) / imgSize;\n"
+        "vec2 pixelCoordsNorm = vec2(float(pixelCoords.x) / imgSize.x, float(pixelCoords.y) / imgSize.y);\n"
         "\n"
         "vec4 result;\n"
         "\n"
-        "vec4 imageLoadNorm(vec2 uv)\n"
+        "vec4 csImageLoad(vec2 coords)\n"
+        "{\n"
+        "    return imageLoad(inputBack, ivec2(coords));\n"
+        "}\n"
+        "\n"
+        "vec4 csImageLoadNorm(vec2 uv)\n"
         "{\n"
         "    return imageLoad(inputBack, ivec2(imgSize * uv));\n"
         "}\n"
@@ -305,8 +315,6 @@ const QString ISFManager::convertISFShaderToCompute(
     {
         inputsArray.removeAt(index);
     }
-    CS_LOG_CONSOLE("inputsArray size:");
-    CS_LOG_CONSOLE(QString::number(inputsArray.size()));
     if (inputsArray.size() > 0)
     {
         // Remove whitespace at start and end
@@ -399,7 +407,8 @@ const QString ISFManager::convertISFShaderToCompute(
     }
 
     shader.replace("IMG_THIS_PIXEL(inputImage)", "imageLoad(inputBack, pixelCoords).rgba", Qt::CaseSensitive);
-    shader.replace("IMG_NORM_PIXEL(inputImage, ", "imageLoadNorm(", Qt::CaseSensitive);
+    shader.replace("IMG_PIXEL(inputImage,", "csImageLoad(", Qt::CaseSensitive);
+    shader.replace("IMG_NORM_PIXEL(inputImage,", "csImageLoadNorm(", Qt::CaseSensitive);
     shader.replace("RENDERSIZE", "imgSize", Qt::CaseSensitive);
     shader.replace("gl_FragColor", "result", Qt::CaseSensitive);
     shader.replace("gl_FragCoord", "pixelCoords", Qt::CaseSensitive);

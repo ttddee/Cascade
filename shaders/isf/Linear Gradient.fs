@@ -8,13 +8,15 @@
 		{
 			"NAME": "offset",
 			"TYPE": "float",
+			"LABEL": "Offset",
 			"MAX": 1.0,
 			"MIN": 0.0,
-			"DEFAULT": 0.5
+			"DEFAULT": 0.0
 		},
 		{
 			"NAME": "frequency",
 			"TYPE": "float",
+			"LABEL": "Frequency",
 			"MAX": 16.0,
 			"MIN": 1.0,
 			"DEFAULT": 1.0
@@ -22,6 +24,7 @@
 		{
 			"NAME": "curve",
 			"TYPE": "long",
+			"LABEL": "Curve",
 			"VALUES": [
 				0,
 				1,
@@ -36,12 +39,14 @@
 		},
 		{
 			"NAME": "vertical",
+			"LABEL": "Vertical",
 			"TYPE": "bool",
 			"DEFAULT": 0.0
 		},
 		{
 			"NAME": "startColor",
 			"TYPE": "color",
+			"LABEL": "Start Color",
 			"DEFAULT": [
 				1.0,
 				0.75,
@@ -52,6 +57,7 @@
 		{
 			"NAME": "endColor",
 			"TYPE": "color",
+			"LABEL": "End Color",
 			"DEFAULT": [
 				0.0,
 				0.25,
@@ -74,10 +80,10 @@ void main() {
 	float phase = offset;
 	
 	if (vertical)	{
-		mixAmount = phase + frequency * isf_FragNormCoord[1];
+		mixAmount = (phase + frequency - 0.5) * isf_FragNormCoord[1];
 	}
 	else	{
-		mixAmount = phase + frequency * isf_FragNormCoord[0];
+		mixAmount = (phase + frequency - 0.5) * isf_FragNormCoord[0];
 	}
 	
 	if (curve == 0)	{

@@ -40,6 +40,9 @@
    </property>
    <item row="0" column="0">
     <layout class="QGridLayout" name="gridLayout">
+     <property name="horizontalSpacing">
+      <number>9</number>
+     </property>
      <item row="0" column="1">
       <widget class="ColorButton" name="colorButton">
        <property name="maximumSize">
@@ -60,7 +63,7 @@
       <widget class="QLabel" name="label">
        <property name="minimumSize">
         <size>
-         <width>50</width>
+         <width>80</width>
          <height>0</height>
         </size>
        </property>
