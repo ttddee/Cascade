@@ -20,6 +20,8 @@
 #include "checkboxentity.h"
 #include "ui_checkboxentity.h"
 
+namespace Cascade {
+
 CheckBoxEntity::CheckBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::CheckBoxEntity)
@@ -72,3 +74,5 @@ CheckBoxEntity::~CheckBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

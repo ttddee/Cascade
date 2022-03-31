@@ -19,14 +19,12 @@
 
 #include "nodegraphcontextmenu.h"
 
-#include <iostream>
-
 #include "nodedefinitions.h"
 #include "nodegraph.h"
 #include "log.h"
 #include "isfmanager.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
     : QMenu(parent)
@@ -115,3 +113,5 @@ NodeGraphContextMenu::~NodeGraphContextMenu()
         delete action;
     }
 }
+
+} // namespace Cascade

@@ -27,6 +27,8 @@
 #include "../shadercompiler/SpvShaderCompiler.h"
 #include "uientity.h"
 
+namespace Cascade {
+
 class NodeProperties;
 
 class CodeEditorEntity : public UiEntity
@@ -63,5 +65,7 @@ signals:
 public slots:
     void handleTextChanged();
 };
+
+} // namespace Cascade
 
 #endif // CODEEDITORENTITY_H

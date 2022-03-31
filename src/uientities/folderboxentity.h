@@ -24,11 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class FolderBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class FolderBoxEntity : public UiEntity
 {
@@ -57,5 +59,7 @@ signals:
 public slots:
     void handleFolderButtonClicked();
 };
+
+} // namespace Cascade
 
 #endif // FOLDERBOXENTITY_H

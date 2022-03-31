@@ -20,6 +20,8 @@
 #include "comboboxentity.h"
 #include "ui_comboboxentity.h"
 
+namespace Cascade {
+
 ComboBoxEntity::ComboBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::ComboBoxEntity)
@@ -69,3 +71,5 @@ ComboBoxEntity::~ComboBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

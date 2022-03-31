@@ -26,13 +26,13 @@
 #include "../nodedefinitions.h"
 #include "uientity.h"
 
-class NodeProperties;
-
-using namespace Cascade;
-
 namespace Ui {
 class FileBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class ListItem : public QListWidgetItem
 {
@@ -81,5 +81,7 @@ private slots:
     void handleLoadButtonClicked();
     void handleDeleteButtonClicked();
 };
+
+} // namespace Cascade
 
 #endif // FILEBOXENTITY_H

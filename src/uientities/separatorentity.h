@@ -24,11 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class SeparatorEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class SeparatorEntity : public UiEntity
 {
@@ -46,5 +48,7 @@ public:
 private:
     Ui::SeparatorEntity *ui;
 };
+
+} // namespace Cascade
 
 #endif // SEPARATORENTITY_H

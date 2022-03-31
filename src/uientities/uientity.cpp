@@ -19,6 +19,8 @@
 
 #include "uientity.h"
 
+namespace Cascade {
+
 UiEntity::UiEntity(UIElementType et, QWidget *parent)
     : QWidget(parent),
       elementType(et)
@@ -30,4 +32,6 @@ const QString UiEntity::name()
 {
     return "";
 }
+
+} // namespace Cascade
 

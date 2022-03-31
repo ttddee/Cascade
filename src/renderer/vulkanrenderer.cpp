@@ -19,8 +19,6 @@
 
 #include "vulkanrenderer.h"
 
-#include <iostream>
-
 #include <QVulkanFunctions>
 #include <QCoreApplication>
 #include <QFile>
@@ -37,8 +35,7 @@
 #include "../log.h"
 #include "renderutility.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 // Use a triangle strip to get a quad.
 static float vertexData[] = { // Y up, front = CW
@@ -491,7 +488,7 @@ bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpace)
 {
     cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
-    bool ok = cpuImage->read(0, 0, 0, 4, true, TypeDesc::FLOAT);
+    bool ok = cpuImage->read(0, 0, 0, 4, true, OIIO::TypeDesc::FLOAT);
     if (!ok)
     {
         CS_LOG_WARNING("There was a problem reading the image from disk.");
@@ -505,7 +502,7 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
         std::string channelnames[] = { "R", "G", "B", "A" };
 
-        *cpuImage = ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
+        *cpuImage = OIIO::ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
     transformColorSpace(colorSpaces.at(colorSpace), "linear", *cpuImage);
@@ -872,7 +869,7 @@ bool VulkanRenderer::saveImageToDisk(
 
     parallelArrayCopy(pInput, pOutput, width, height);
 
-    ImageSpec spec(width, height, 4, TypeDesc::FLOAT);
+    OIIO::ImageSpec spec(width, height, 4, OIIO::TypeDesc::FLOAT);
     QMap<std::string, std::string>::const_iterator it;
     for (it = attributes.begin(); it != attributes.end(); ++it)
     {

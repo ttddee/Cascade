@@ -27,7 +27,7 @@
 #include "../nodeproperties.h"
 #include "../log.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 class UiEntity : public QWidget
 {
@@ -44,5 +44,7 @@ public:
 
     const UIElementType elementType;
 };
+
+} // namespace Cascade
 
 #endif // UIENTITY_H

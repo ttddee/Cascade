@@ -19,8 +19,6 @@
 
 #include "windowmanager.h"
 
-#include <iostream>
-
 #include <QKeyEvent>
 
 #include "vulkanwindow.h"
@@ -29,6 +27,8 @@
 #include "viewerstatusbar.h"
 #include "nodebase.h"
 #include "rendermanager.h"
+
+namespace Cascade {
 
 WindowManager& WindowManager::getInstance()
 {
@@ -168,4 +168,4 @@ void WindowManager::handleViewerStatusBarValueChanged()
     }
 }
 
-
+} // namespace Cascade

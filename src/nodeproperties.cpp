@@ -19,8 +19,6 @@
 
 #include "nodeproperties.h"
 
-#include <iostream>
-
 #include <QLabel>
 
 #include "nodebase.h"
@@ -44,6 +42,8 @@
 #include "uientities/uientity.h"
 #include "uientities/resizepropertiesentity.h"
 #include "uientities/codeeditorentity.h"
+
+namespace Cascade {
 
 NodeProperties::NodeProperties(
         const NodeType t,
@@ -338,3 +338,5 @@ void NodeProperties::switchToNextImage()
 
     entity->switchToNextImage();
 }
+
+} // namespace Cascade

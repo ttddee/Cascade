@@ -21,8 +21,6 @@
 
 #include "ui_cssliderboxentity.h"
 
-#include <iostream>
-
 #include <QWidget>
 #include <QLabel>
 #include <QSpinBox>
@@ -31,13 +29,15 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 #define DOUBLE_MULT 100.0
 
 namespace Ui {
 class CsSliderBox;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class CsSliderBoxEntity : public UiEntity
 {
@@ -176,5 +176,7 @@ private slots:
     void handleSliderValueChanged();
     void handleSpinBoxValueChanged();
 };
+
+} // namespace Cascade
 
 #endif // CSSLIDERBOX_H

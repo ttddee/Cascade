@@ -26,6 +26,8 @@
 
 #include "nodeproperties.h"
 
+namespace Cascade {
+
 class PropertiesView : public QWidget
 {
     Q_OBJECT
@@ -41,5 +43,7 @@ private:
     NodeProperties* currentProperties = nullptr;
 
 };
+
+} // namespace Cascade
 
 #endif // PROPERTIESVIEW_H

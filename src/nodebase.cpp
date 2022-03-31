@@ -20,7 +20,6 @@
 #include "nodebase.h"
 #include "ui_nodebase.h"
 
-#include <iostream>
 #include <math.h>
 
 #include <QPainter>
@@ -37,6 +36,8 @@
 #include "log.h"
 #include "projectmanager.h"
 #include "isfmanager.h"
+
+namespace Cascade {
 
 NodeBase::NodeBase(
         const NodeType type,
@@ -632,3 +633,5 @@ NodeBase::~NodeBase()
 {
     delete ui;
 }
+
+} // namespace Cascade

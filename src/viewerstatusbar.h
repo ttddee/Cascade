@@ -29,6 +29,8 @@ namespace Ui {
 class ViewerStatusBar;
 }
 
+namespace Cascade {
+
 class ViewerStatusBar : public QWidget
 {
     Q_OBJECT
@@ -68,5 +70,7 @@ public slots:
     void handleValueChanged();
     void handleViewerModeCheckBoxChanged();
 };
+
+} // namespace Cascade
 
 #endif // VIEWERSTATUSBAR_H

@@ -19,14 +19,14 @@
 
 #include "rendermanager.h"
 
-#include <iostream>
-
 #include <QFile>
 
 #include "uientities/uientity.h"
 #include "uientities/fileboxentity.h"
 #include "renderer/vulkanrenderer.h"
 #include "popupmessages.h"
+
+namespace Cascade {
 
 RenderManager& RenderManager::getInstance()
 {
@@ -225,3 +225,5 @@ void RenderManager::renderNode(NodeBase *node)
     }
     node->needsUpdate = false;
 }
+
+} // namespace Cascade

@@ -24,13 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
-using namespace Cascade;
-
 namespace Ui {
 class SpinBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class SpinBoxEntity : public UiEntity
 {
@@ -61,5 +61,7 @@ private:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // SPINBOXENTITY_H

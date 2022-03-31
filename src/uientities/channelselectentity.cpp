@@ -20,7 +20,7 @@
 #include "channelselectentity.h"
 #include "ui_channelselectentity.h"
 
-#include <iostream>
+namespace Cascade {
 
 ChannelSelectEntity::ChannelSelectEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
@@ -76,3 +76,5 @@ ChannelSelectEntity::~ChannelSelectEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

@@ -19,8 +19,6 @@
 
 #include "colorbutton.h"
 
-#include <iostream>
-
 #include <QColorDialog>
 #include <QPainter>
 #include <QPaintEvent>

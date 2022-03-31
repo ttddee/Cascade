@@ -22,8 +22,7 @@
 #include "../log.h"
 #include "renderconfig.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 CsImage::CsImage(
         VulkanWindow* win,

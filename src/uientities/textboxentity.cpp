@@ -20,6 +20,8 @@
 #include "textboxentity.h"
 #include "ui_textboxentity.h"
 
+namespace Cascade {
+
 TextBoxEntity::TextBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::TextBoxEntity)
@@ -48,3 +50,5 @@ TextBoxEntity::~TextBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

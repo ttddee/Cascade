@@ -19,13 +19,15 @@
 
 #include "vulkanwindow.h"
 
-#include <iostream>
-
 #include <QMouseEvent>
 #include <QLabel>
 
 #include "renderer/vulkanrenderer.h"
 #include "log.h"
+
+using Cascade::Renderer::VulkanRenderer;
+
+namespace Cascade {
 
 QVulkanWindowRenderer *VulkanWindow::createRenderer()
 {
@@ -135,4 +137,6 @@ VulkanWindow::~VulkanWindow()
 {
     CS_LOG_INFO("Destroying VulkanWindow.");
 }
+
+} // namespace Cascade
 

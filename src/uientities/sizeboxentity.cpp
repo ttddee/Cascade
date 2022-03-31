@@ -20,6 +20,8 @@
 #include "sizeboxentity.h"
 #include "ui_sizeboxentity.h"
 
+namespace Cascade {
+
 SizeBoxEntity::SizeBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::SizeBoxEntity)
@@ -146,3 +148,5 @@ SizeBoxEntity::~SizeBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

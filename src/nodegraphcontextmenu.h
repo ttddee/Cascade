@@ -22,6 +22,8 @@
 
 #include <QMenu>
 
+namespace Cascade {
+
 class NodeGraph;
 
 class NodeGraphContextMenu : public QMenu
@@ -34,5 +36,7 @@ public:
 private:
     std::vector<QAction*> actions;
 };
+
+} // namespace Cascade
 
 #endif // NODEGRAPHCONTEXTMENU_H

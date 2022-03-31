@@ -26,7 +26,7 @@
 
 #include "nodedefinitions.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 class NodeBase;
 class UiEntity;
@@ -66,5 +66,7 @@ public slots:
             const QMap<std::string, std::string>& attributes,
             const bool batchRender);
 };
+
+} // namespace Cascade
 
 #endif // NODEPROPERTIES_H

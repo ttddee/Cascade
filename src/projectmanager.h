@@ -25,6 +25,8 @@
 
 #include "nodegraph.h"
 
+namespace Cascade {
+
 class ProjectManager : public QObject
 {
     Q_OBJECT
@@ -63,5 +65,7 @@ signals:
 public slots:
     void handleProjectIsDirty();
 };
+
+} // namespace Cascade
 
 #endif // PROJECTMANAGER_H

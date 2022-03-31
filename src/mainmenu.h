@@ -22,11 +22,14 @@
 
 #include <QMenuBar>
 
+namespace Cascade {
+
 class MainWindow;
 
 class MainMenu : public QMenuBar
 {
     Q_OBJECT
+
 public:
     MainMenu(MainWindow* mainWindow);
 
@@ -50,5 +53,7 @@ private:
 
     std::vector<QAction*> createNodeActions;
 };
+
+} // namespace Cascade
 
 #endif // MAINMENU_H

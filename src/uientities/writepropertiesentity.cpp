@@ -24,6 +24,8 @@
 
 #include "../popupmessages.h"
 
+namespace Cascade {
+
 WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::WritePropertiesEntity)
@@ -182,3 +184,5 @@ WritePropertiesEntity::~WritePropertiesEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

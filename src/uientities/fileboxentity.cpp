@@ -22,6 +22,8 @@
 
 #include <QFileDialog>
 
+namespace Cascade {
+
 ListItem::ListItem()
 {
 
@@ -163,3 +165,5 @@ FileBoxEntity::~FileBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

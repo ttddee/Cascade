@@ -20,6 +20,8 @@
 #include "spinboxentity.h"
 #include "ui_spinboxentity.h"
 
+namespace Cascade {
+
 SpinBoxEntity::SpinBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::SpinBoxEntity)
@@ -77,3 +79,5 @@ SpinBoxEntity::~SpinBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

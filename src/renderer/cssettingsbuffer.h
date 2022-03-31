@@ -26,8 +26,7 @@
 
 #include "vulkanhppinclude.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 class CsSettingsBuffer
 {

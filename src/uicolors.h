@@ -22,12 +22,13 @@
 
 #include <QColor>
 
-namespace Cascade
-{
-    static const QColor frontColor = QColor("#e5463d"); // Red
-    static const QColor backColor = QColor("#35e257"); // Green
-    static const QColor alphaColor = QColor("#2372ef"); // Blue
-    static const QColor outputColor = QColor("#35e257"); // Green
-}
+namespace Cascade {
+
+static const QColor frontColor = QColor("#e5463d"); // Red
+static const QColor backColor = QColor("#35e257"); // Green
+static const QColor alphaColor = QColor("#2372ef"); // Blue
+static const QColor outputColor = QColor("#35e257"); // Green
+
+} // namespace Cascade
 
 #endif // UICOLORS_H

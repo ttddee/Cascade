@@ -26,8 +26,7 @@
 
 #include <vulkan/vulkan.hpp>
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 inline const VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 {
@@ -60,6 +59,6 @@ inline const std::vector<char> uintVecToCharVec(const std::vector<unsigned int>&
     return out;
 }
 
-} // end namespace Cascade::Renderer
+} // namespace Cascade::Renderer
 
 #endif // RENDERUTILITY_H

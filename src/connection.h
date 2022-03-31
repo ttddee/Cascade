@@ -26,6 +26,8 @@
 #include "nodebase.h"
 #include "uicolors.h"
 
+namespace Cascade {
+
 class Connection : public QObject, public QGraphicsLineItem
 {
     Q_OBJECT
@@ -51,5 +53,7 @@ private:
     const QPen alphaConnectedPen = QPen(alphaColor, 1);
 
 };
+
+} // namespace Cascade
 
 #endif // CONNECTION_H

@@ -27,43 +27,42 @@
 
 #define NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(type, x) reinterpret_cast<uint64_t>(static_cast<type>(x))
 
-namespace Cascade::Renderer
+namespace Cascade::Renderer {
+
+inline const QByteArrayList instanceLayers =
 {
-    inline const QByteArrayList instanceLayers =
-    {
-        "VK_LAYER_KHRONOS_validation"
-    };
+    "VK_LAYER_KHRONOS_validation"
+};
 
-    inline const QByteArrayList instanceExtensions =
-    {
-    #ifdef QT_DEBUG
-        "VK_EXT_debug_utils"
-    #endif
-    };
+inline const QByteArrayList instanceExtensions =
+{
+#ifdef QT_DEBUG
+    "VK_EXT_debug_utils"
+#endif
+};
 
-    inline constexpr vk::Format globalImageFormat(vk::Format::eR32G32B32A32Sfloat);
+inline constexpr vk::Format globalImageFormat(vk::Format::eR32G32B32A32Sfloat);
 
-    inline const vk::ClearColorValue clearColor(std::array<float, 4>(
-                                              { 0.05f, 0.05f, 0.05f, 0.0f }));
+inline const vk::ClearColorValue clearColor(std::array<float, 4>({ 0.05f, 0.05f, 0.05f, 0.0f }));
 
-    inline constexpr int uniformDataSize = 16 * sizeof(float);
+inline constexpr int uniformDataSize = 16 * sizeof(float);
 
-    inline const std::unordered_map<int, QString> colorSpaces =
-    {
-        { 0, "sRGB" },
-        { 1, "linear" },
-        { 2, "rec709" },
-        { 3, "Gamma1.8" },
-        { 4, "Gamma2.2" },
-        { 5, "Panalog" },
-        { 6, "REDLog" },
-        { 7, "ViperLog" },
-        { 8, "AlexaV3LogC" },
-        { 9, "PLogLin" },
-        { 10, "SLog" },
-        { 11, "raw" }
-    };
+inline const std::unordered_map<int, QString> colorSpaces =
+{
+    { 0, "sRGB" },
+    { 1, "linear" },
+    { 2, "rec709" },
+    { 3, "Gamma1.8" },
+    { 4, "Gamma2.2" },
+    { 5, "Panalog" },
+    { 6, "REDLog" },
+    { 7, "ViperLog" },
+    { 8, "AlexaV3LogC" },
+    { 9, "PLogLin" },
+    { 10, "SLog" },
+    { 11, "raw" }
+};
 
-} // end namespace Cascade::Renderer
+} // namespace Cascade::Renderer
 
 #endif // RENDERCONFIG_H

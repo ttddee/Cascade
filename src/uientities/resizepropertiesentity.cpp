@@ -22,6 +22,8 @@
 
 #include "../nodebase.h"
 
+namespace Cascade {
+
 ResizePropertiesEntity::ResizePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::ResizePropertiesEntity)
@@ -219,3 +221,5 @@ ResizePropertiesEntity::~ResizePropertiesEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

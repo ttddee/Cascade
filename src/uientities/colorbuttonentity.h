@@ -24,11 +24,14 @@
 
 #include "uientity.h"
 
-class NodeProperties;
 
 namespace Ui {
 class ColorButtonEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class ColorButtonEntity : public UiEntity
 {
@@ -60,5 +63,7 @@ private slots:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // COLORBUTTONENTITY_H

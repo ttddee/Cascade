@@ -25,14 +25,14 @@
 #include "nodebase.h"
 #include "nodedefinitions.h"
 
-class NodeGraph;
-
 namespace Cascade::Renderer
 {
     class VulkanRenderer;
 }
 
-using namespace Cascade::Renderer;
+namespace Cascade {
+
+class NodeGraph;
 
 class RenderManager : public QObject
 {
@@ -68,5 +68,7 @@ public slots:
             const bool isLast);
     void handleClearScreenRequest();
 };
+
+} // namespace Cascade
 
 #endif // RENDERMANAGER_H

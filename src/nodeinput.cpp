@@ -19,10 +19,10 @@
 
 #include "nodeinput.h"
 
-#include <iostream>
-
 #include <QMouseEvent>
 #include <QUuid>
+
+namespace Cascade {
 
 NodeInput::NodeInput(NodeInputType t, QWidget *parent)
     : QPushButton (parent),
@@ -110,4 +110,4 @@ void NodeInput::mousePressEvent(QMouseEvent *event)
     }
 }
 
-
+} // namespace Cascade

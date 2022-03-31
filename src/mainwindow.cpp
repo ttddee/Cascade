@@ -20,8 +20,6 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-#include <iostream>
-
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
@@ -34,8 +32,11 @@
 #include "preferencesdialog.h"
 #include "aboutdialog.h"
 
-using namespace ads;
-using namespace Cascade;
+using ads::CDockManager;
+using ads::CDockWidget;
+using ads::DockWidgetArea;
+
+namespace Cascade {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
@@ -201,4 +202,6 @@ MainWindow::~MainWindow()
 {
     delete ui;
 }
+
+} // namespace Cascade
 

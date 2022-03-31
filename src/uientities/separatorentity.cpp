@@ -20,6 +20,8 @@
 #include "separatorentity.h"
 #include "ui_separatorentity.h"
 
+namespace Cascade {
+
 SeparatorEntity::SeparatorEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::SeparatorEntity)
@@ -41,3 +43,5 @@ SeparatorEntity::~SeparatorEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

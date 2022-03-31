@@ -24,8 +24,7 @@
 #include <QMap>
 #include <QMessageBox>
 
-namespace Cascade
-{
+namespace Cascade {
 
 struct MessageBoxProperties
 {
@@ -120,6 +119,6 @@ inline void executeMessageBox(const MessageBoxType type)
     box.exec();
 }
 
-} // end namespace Cascade
+} // namespace Cascade
 
 #endif // POPUPMESSAGES_H

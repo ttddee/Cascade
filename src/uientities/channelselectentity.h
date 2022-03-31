@@ -24,11 +24,14 @@
 
 #include "uientity.h"
 
-class NodeProperties;
 
 namespace Ui {
 class ChannelSelectEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class ChannelSelectEntity : public UiEntity
 {
@@ -53,5 +56,7 @@ private:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // CHANNELSELECTENTITY_H

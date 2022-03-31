@@ -24,11 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class TextBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class TextBoxEntity : public UiEntity
 {
@@ -48,5 +50,7 @@ public:
 private:
     Ui::TextBoxEntity *ui;
 };
+
+} // namespace Cascade
 
 #endif // TEXTBOXENTITY_H

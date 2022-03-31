@@ -30,6 +30,8 @@ namespace Ui {
 class CheckBoxEntity;
 }
 
+namespace Cascade {
+
 class CheckBoxEntity : public UiEntity
 {
     Q_OBJECT
@@ -57,5 +59,7 @@ private:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // CHECKBOXENTITY_H

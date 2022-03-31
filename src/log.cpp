@@ -24,80 +24,80 @@
 #include <QLoggingCategory>
 #include <QFile>
 
-namespace Cascade
+namespace Cascade {
+
+Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
+
+std::shared_ptr<Log> Log::logger;
+QFile Log::outFile;
+QTextStream Log::stream;
+
+void Log::messageHandler(
+        QtMsgType type,
+        const QMessageLogContext& context,
+        const QString & msg)
 {
-    Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
+    QString txt = QString("[VULKAN] %1").arg(msg);
+    writeToFile(txt);
+    console(txt);
+}
 
-    std::shared_ptr<Log> Log::logger;
-    QFile Log::outFile;
-    QTextStream Log::stream;
+void Log::Init()
+{
+    QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
 
-    void Log::messageHandler(
-            QtMsgType type,
-            const QMessageLogContext& context,
-            const QString & msg)
-    {
-        QString txt = QString("[VULKAN] %1").arg(msg);
-        writeToFile(txt);
-        console(txt);
-    }
+    QFile::remove("Cascade.log");
 
-    void Log::Init()
-    {
-        QLoggingCategory::setFilterRules(QStringLiteral("qt.vulkan=true"));
+    outFile.setFileName("Cascade.log");
+    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    stream.setDevice(&outFile);
 
-        QFile::remove("Cascade.log");
+    qInstallMessageHandler(messageHandler);
+}
 
-        outFile.setFileName("Cascade.log");
-        outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-        stream.setDevice(&outFile);
+void Log::debug(const QString &s)
+{
+    QString txt = QString("[DEBUG] %1").arg(s);
+    writeToFile(txt);
+    console(txt);
+}
 
-        qInstallMessageHandler(messageHandler);
-    }
+void Log::info(const QString &s)
+{
+    QString txt = QString("[INFO] %1").arg(s);
+    writeToFile(txt);
+    console(txt);
+}
 
-    void Log::debug(const QString &s)
-    {
-        QString txt = QString("[DEBUG] %1").arg(s);
-        writeToFile(txt);
-        console(txt);
-    }
+void Log::warning(const QString &s)
+{
+    QString txt = QString("[WARNING] %1").arg(s);
+    writeToFile(txt);
+    console(txt);
+}
 
-    void Log::info(const QString &s)
-    {
-        QString txt = QString("[INFO] %1").arg(s);
-        writeToFile(txt);
-        console(txt);
-    }
+void Log::critical(const QString &s)
+{
+    QString txt = QString("[CRITICAL] %1").arg(s);
+    writeToFile(txt);
+    console(txt);
+}
 
-    void Log::warning(const QString &s)
-    {
-        QString txt = QString("[WARNING] %1").arg(s);
-        writeToFile(txt);
-        console(txt);
-    }
+void Log::fatal(const QString &s)
+{
+    QString txt = QString("[FATAL] %1").arg(s);
+    writeToFile(txt);
+    console(txt);
+}
 
-    void Log::critical(const QString &s)
-    {
-        QString txt = QString("[CRITICAL] %1").arg(s);
-        writeToFile(txt);
-        console(txt);
-    }
+void Log::console(const QString &s)
+{
+    std::cout << s.toStdString() << "\n";
+}
 
-    void Log::fatal(const QString &s)
-    {
-        QString txt = QString("[FATAL] %1").arg(s);
-        writeToFile(txt);
-        console(txt);
-    }
-
-    void Log::console(const QString &s)
-    {
-        std::cout << s.toStdString() << std::endl;
-    }
-
-    void Log::writeToFile(const QString &s)
-    {
-        stream << s << "\n";
-        stream.flush();
-    }
+void Log::writeToFile(const QString &s)
+{
+    stream << s << "\n";
+    stream.flush();
+}
 }

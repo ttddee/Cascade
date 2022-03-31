@@ -33,16 +33,18 @@
 #include "windowmanager.h"
 #include "uicolors.h"
 
-using namespace Cascade::Renderer;
+namespace Ui {
+class NodeBase;
+}
+
+namespace Cascade {
+
+using Renderer::CsImage;
 
 class NodeInput;
 class NodeOutput;
 class NodeGraph;
 class Connection;
-
-namespace Ui {
-class NodeBase;
-}
 
 enum DisplayMode
 {
@@ -205,5 +207,8 @@ signals:
             const bool batchRender);
     void nodeHasMoved();
 };
+
+} // namespace Cascade
+
 
 #endif // NODEBASE_H

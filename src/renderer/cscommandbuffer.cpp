@@ -22,8 +22,7 @@
 #include "../log.h"
 #include "renderconfig.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 CsCommandBuffer::CsCommandBuffer(
         const vk::Device* d,
@@ -439,4 +438,4 @@ CsCommandBuffer::~CsCommandBuffer()
     CS_LOG_INFO("Destroying command buffer.");
 }
 
-} // end namespace Cascade::Renderer
+} // namespace Cascade::Renderer

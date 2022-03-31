@@ -32,7 +32,7 @@
 #include "windowmanager.h"
 #include "rendermanager.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 struct NodePersistentProperties
 {
@@ -148,5 +148,7 @@ public slots:
             const bool batchRender);
     void handleConnectedNodeInputClicked(Connection* c);
 };
+
+} // namespace Cascade
 
 #endif // NODEGRAPH_H

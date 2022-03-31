@@ -32,7 +32,9 @@ namespace Cascade::Renderer
     class VulkanRenderer;
 }
 
-using namespace Cascade::Renderer;
+using Cascade::Renderer::VulkanRenderer;
+
+namespace Cascade {
 
 class VulkanWindow : public QVulkanWindow
 {
@@ -77,5 +79,7 @@ public slots:
     void handleZoomResetRequest();
 
 };
+
+} // namespace Cascade
 
 #endif // VULKANWINDOW_H

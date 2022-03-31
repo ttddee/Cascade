@@ -25,11 +25,13 @@
 #include "uientity.h"
 #include "cssliderboxentity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class WritePropertiesEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class WritePropertiesEntity : public UiEntity
 {
@@ -75,5 +77,7 @@ public slots:
     void handleSaveFileButtonClicked();
     void handleFileTypeChanged();
 };
+
+} // namespace Cascade
 
 #endif // WRITEPROPERTIESENTITY_H

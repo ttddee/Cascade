@@ -25,6 +25,8 @@
 
 #include "../nodebase.h"
 
+namespace Cascade {
+
 CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent)
 {
@@ -127,4 +129,6 @@ void CodeEditorEntity::setParentNode(NodeBase* node)
 {
     parentNode = node;
 }
+
+} // namespace Cascade
 

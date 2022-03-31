@@ -38,14 +38,13 @@
 #include "csimage.h"
 #include "cscommandbuffer.h"
 
-using namespace Cascade;
-using namespace OIIO;
 namespace OCIO = OCIO_NAMESPACE;
+
+using OIIO::ImageBuf;
 
 class VulkanWindow;
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 class VulkanRenderer : public QVulkanWindowRenderer
 {

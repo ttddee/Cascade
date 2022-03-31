@@ -22,6 +22,8 @@
 
 #include <QFileDialog>
 
+namespace Cascade {
+
 FolderBoxEntity::FolderBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::FolderBoxEntity)
@@ -76,3 +78,5 @@ FolderBoxEntity::~FolderBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

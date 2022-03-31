@@ -22,8 +22,7 @@
 
 #include "csimage.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 class CsCommandBuffer
 {
@@ -98,6 +97,6 @@ private:
     vk::UniqueDeviceMemory outputStagingBufferMemory;
 };
 
-} // end namespace Cascade::Renderer
+} // namespace Cascade::Renderer
 
 #endif // CSCOMMANDBUFFER_H

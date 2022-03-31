@@ -20,6 +20,8 @@
 #include "lineeditentity.h"
 #include "ui_lineeditentity.h"
 
+namespace Cascade {
+
 LineEditEntity::LineEditEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::LineEditEntity)
@@ -65,3 +67,5 @@ LineEditEntity::~LineEditEntity()
 {
     delete ui;
 }
+
+} //namespace Cascade

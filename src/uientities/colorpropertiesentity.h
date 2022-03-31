@@ -29,6 +29,8 @@ namespace Ui {
 class ColorPropertiesEntity;
 }
 
+namespace Cascade {
+
 class ColorPropertiesEntity : public UiEntity
 {
     Q_OBJECT
@@ -55,5 +57,7 @@ signals:
 public slots:
     void handleValueChanged();
 };
+
+} // namespace Cascade
 
 #endif // COLORPROPERTIESENTITY_H

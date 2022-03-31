@@ -17,10 +17,10 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <iostream>
-
 #include "viewerstatusbar.h"
 #include "ui_viewerstatusbar.h"
+
+namespace Cascade {
 
 ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     QWidget(parent),
@@ -168,3 +168,5 @@ ViewerStatusBar::~ViewerStatusBar()
 {
     delete ui;
 }
+
+} // namespace Cascade

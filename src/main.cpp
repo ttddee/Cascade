@@ -19,8 +19,6 @@
 
 #include "mainwindow.h"
 
-#include <iostream>
-
 #include <QApplication>
 #include <QFontDatabase>
 #include <QFile>
@@ -39,7 +37,7 @@ int main(int argc, char *argv[])
 
     QString title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
 
-    Log::Init();
+    Cascade::Log::Init();
 
     CS_LOG_INFO(title);
 
@@ -79,7 +77,7 @@ int main(int argc, char *argv[])
     }
 
     // Create window
-    MainWindow w;
+    Cascade::MainWindow w;
     w.setWindowState(Qt::WindowMaximized);
 
     w.setWindowTitle(title);

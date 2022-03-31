@@ -24,11 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class LineEditEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class LineEditEntity : public UiEntity
 {
@@ -57,5 +59,7 @@ private:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // LINEEDITENTITY_H

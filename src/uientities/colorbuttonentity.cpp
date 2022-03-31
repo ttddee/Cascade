@@ -20,7 +20,7 @@
 #include "colorbuttonentity.h"
 #include "ui_colorbuttonentity.h"
 
-#include <iostream>
+namespace Cascade {
 
 ColorButtonEntity::ColorButtonEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
@@ -92,3 +92,5 @@ ColorButtonEntity::~ColorButtonEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

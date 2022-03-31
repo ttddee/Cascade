@@ -26,6 +26,8 @@
 #include "nodebase.h"
 #include "connection.h"
 
+namespace Cascade {
+
 class NodeInput : public QPushButton
 {
     Q_OBJECT
@@ -63,5 +65,7 @@ private:
 signals:
     void connectedNodeInputClicked(Connection* c);
 };
+
+} // namespace Cascade
 
 #endif // NODEIN_H

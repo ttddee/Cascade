@@ -24,13 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
-using namespace Cascade;
-
 namespace Ui {
 class ComboBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class ComboBoxEntity : public UiEntity
 {
@@ -58,5 +58,7 @@ private:
 signals:
     void valueChanged();
 };
+
+} // namespace Cascade
 
 #endif // COMBOBOXENTITY_H

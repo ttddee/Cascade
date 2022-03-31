@@ -27,12 +27,14 @@
 
 #include <gtest/gtest_prod.h>
 
-class NodeProperties;
-class NodeBase;
-
 namespace Ui {
 class ResizePropertiesEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
+class NodeBase;
 
 class ResizePropertiesEntity : public UiEntity
 {
@@ -100,5 +102,7 @@ signals:
 public slots:
     void handleNodeRequestUpdate();
 };
+
+} // namespace Cascade
 
 #endif // RESIZEPROPERTIESENTITY_H

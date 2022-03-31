@@ -28,7 +28,7 @@
 #include "shadercompiler/SpvShaderCompiler.h"
 #include "nodedefinitions.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 class ISFManager : public QObject
 {
@@ -73,5 +73,7 @@ private:
     std::map<QString, NodeInitProperties> isfNodeProperties;
     std::map<QString, QString> isfCategoryPerNode;
 };
+
+} // end namespace Cascade
 
 #endif // ISFMANAGER_H

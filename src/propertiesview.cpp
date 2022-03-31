@@ -19,7 +19,7 @@
 
 #include "propertiesview.h"
 
-#include <iostream>
+namespace Cascade {
 
 PropertiesView::PropertiesView(QWidget *parent)
     : QWidget(parent)
@@ -46,3 +46,5 @@ void PropertiesView::loadProperties(NodeProperties *prop)
     currentProperties = prop;
     currentProperties->show();
 }
+
+} // namespace Cascade

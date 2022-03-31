@@ -24,11 +24,13 @@
 
 #include "uientity.h"
 
-class NodeProperties;
-
 namespace Ui {
 class SizeBoxEntity;
 }
+
+namespace Cascade {
+
+class NodeProperties;
 
 class SizeBoxEntity : public UiEntity
 {
@@ -73,5 +75,7 @@ signals:
 public slots:
     void handleSelectionChanged();
 };
+
+} // namespace Cascade
 
 #endif // SIZEBOXENTITY_H

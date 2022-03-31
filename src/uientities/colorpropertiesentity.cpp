@@ -20,7 +20,7 @@
 #include "colorpropertiesentity.h"
 #include "ui_colorpropertiesentity.h"
 
-#include <iostream>
+namespace Cascade {
 
 ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
@@ -265,3 +265,5 @@ ColorPropertiesEntity::~ColorPropertiesEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

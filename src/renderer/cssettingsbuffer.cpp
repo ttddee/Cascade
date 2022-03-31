@@ -20,15 +20,13 @@
 #include "cssettingsbuffer.h"
 
 #include <stdexcept>
-#include <iostream>
 
 #include <QString>
 #include <QStringList>
 
 #include "../log.h"
 
-namespace Cascade::Renderer
-{
+namespace Cascade::Renderer {
 
 CsSettingsBuffer::CsSettingsBuffer(
         vk::Device* d,

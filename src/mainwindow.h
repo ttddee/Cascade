@@ -40,8 +40,12 @@
 #include "isfmanager.h"
 
 QT_BEGIN_NAMESPACE
-namespace Ui { class MainWindow; }
+namespace Ui {
+class MainWindow;
+}
 QT_END_NAMESPACE
+
+namespace Cascade {
 
 class MainWindow : public QMainWindow
 {
@@ -92,4 +96,7 @@ public slots:
     void closeEvent(QCloseEvent* event);
 
 };
+
+} // namespace Cascade
+
 #endif // MAINWINDOW_H

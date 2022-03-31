@@ -23,6 +23,8 @@
 
 #include "../nodeproperties.h"
 
+namespace Cascade {
+
 CsSliderBoxEntity::CsSliderBoxEntity(
         UIElementType et,
         QWidget *parent,
@@ -203,3 +205,5 @@ CsSliderBoxEntity::~CsSliderBoxEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

@@ -22,7 +22,7 @@
 #include "mainwindow.h"
 #include "nodedefinitions.h"
 
-using namespace Cascade;
+namespace Cascade {
 
 MainMenu::MainMenu(MainWindow* mainWindow)
 {
@@ -141,3 +141,5 @@ MainMenu::~MainMenu()
         delete action;
     }
 }
+
+} // namespace Cascade

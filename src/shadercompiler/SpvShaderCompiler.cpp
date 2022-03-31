@@ -210,7 +210,7 @@ EShLanguage SpvCompiler::Impl::getShaderStage(const std::string& fileExtension)
 	}
 	else
 	{
-		std::cout << "getShaderStage: " << fileExtension << std::endl;
+        std::cout << "getShaderStage: " << fileExtension << "\n";
 		throw std::runtime_error("File extension doesn't match any known shader stage.");
 	}
 }
@@ -255,9 +255,9 @@ bool SpvCompiler::Impl::compile(
 
 	if (!shader.preprocess(&resources, defaultVersion, ENoProfile, false, false, messages, &preprocessedGLSL, includer))
 	{
-		std::cout << "GLSL Preprocessing Failed for:" << std::endl;
-		std::cout << shader.getInfoLog() << std::endl;
-		std::cout << shader.getInfoDebugLog() << std::endl;
+        std::cout << "GLSL Preprocessing Failed for:" << "\n";
+        std::cout << shader.getInfoLog() << "\n";
+        std::cout << shader.getInfoDebugLog() << "\n";
 		error.append(shader.getInfoLog());
 
 		return false;
@@ -269,9 +269,9 @@ bool SpvCompiler::Impl::compile(
 	// Parse shader
 	if (!shader.parse(&resources, 100, false, messages))
 	{
-		std::cout << "GLSL parsing failed." << std::endl;
-		std::cout << shader.getInfoLog() << std::endl;
-		std::cout << shader.getInfoDebugLog() << std::endl;
+        std::cout << "GLSL parsing failed." << "\n";
+        std::cout << shader.getInfoLog() << "\n";
+        std::cout << shader.getInfoDebugLog() << "\n";
 		error.append(shader.getInfoLog());
 
 		return false;
@@ -283,9 +283,9 @@ bool SpvCompiler::Impl::compile(
 
 	if (!program.link(messages))
 	{
-		std::cout << "GLSL Linking Failed." << std::endl;
-		std::cout << shader.getInfoLog() << std::endl;
-		std::cout << shader.getInfoDebugLog() << std::endl;
+        std::cout << "GLSL Linking Failed." << "\n";
+        std::cout << shader.getInfoLog() << "\n";
+        std::cout << shader.getInfoDebugLog() << "\n";
 		error.append(shader.getInfoLog());
 
 		return false;

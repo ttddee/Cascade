@@ -19,8 +19,6 @@
 
 #include "nodegraph.h"
 
-#include <iostream>
-
 #include <QMouseEvent>
 #include <QScrollBar>
 #include <QGraphicsProxyWidget>
@@ -32,6 +30,8 @@
 #include "nodeinput.h"
 #include "nodeoutput.h"
 #include "log.h"
+
+namespace Cascade {
 
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
@@ -600,3 +600,5 @@ void NodeGraph::wheelEvent(QWheelEvent* event)
         viewScale *= factor;
     }
 }
+
+} // namespace Cascade

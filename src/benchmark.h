@@ -24,8 +24,7 @@
 #include <string>
 #include <iostream>
 
-namespace Cascade
-{
+namespace Cascade {
 
 static std::chrono::steady_clock::time_point timerBegin;
 static std::chrono::steady_clock::time_point timerEnd;
@@ -39,7 +38,7 @@ void stopTimerAndPrint(const std::string& s)
 {
     timerEnd = std::chrono::steady_clock::now();
 
-    std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count() << "[milliseconds]" << std::endl;
+    std::cout << s + " " << std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count() << "[milliseconds]" << "\n";
 }
 
 }

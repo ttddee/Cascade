@@ -24,14 +24,14 @@
 
 #include "global.h"
 
+namespace Cascade {
+
 class VulkanWindow;
 class NodeGraph;
 class PropertiesView;
 class ViewerStatusBar;
 class NodeBase;
 class RenderManager;
-
-using namespace Cascade;
 
 class WindowManager : public QObject
 {
@@ -73,5 +73,7 @@ public slots:
     void handleClearPropertiesRequest();
     void handleViewerModeChanged(const Cascade::ViewerMode mode);
 };
+
+} // namespace Cascade
 
 #endif // WINDOWMANAGER_H

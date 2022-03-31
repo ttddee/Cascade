@@ -29,6 +29,8 @@
 #include "popupmessages.h"
 #include "renderer/renderconfig.h"
 
+namespace Cascade {
+
 VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     : QWidget(parent)
 {
@@ -37,8 +39,8 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
-    instance.setLayers(instanceLayers);
-    instance.setExtensions(instanceExtensions);
+    instance.setLayers(Renderer::instanceLayers);
+    instance.setExtensions(Renderer::instanceExtensions);
 
     // Set up Dynamic Dispatch Loader to use with vulkan.hpp
     vk::DynamicLoader dl;
@@ -81,3 +83,5 @@ VulkanView::~VulkanView()
 {
     delete vulkanWindow;
 }
+
+} // namespace Cascade

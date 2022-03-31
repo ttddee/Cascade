@@ -18,13 +18,15 @@
 */
 
 #include "nodeoutput.h"
+
 #include <QMouseEvent>
-#include <iostream>
 #include <QGraphicsLineItem>
 #include <QPen>
 #include <QColor>
 
 #include "log.h"
+
+namespace Cascade {
 
 NodeOutput::NodeOutput(QWidget *parent)
     : QPushButton (parent)
@@ -74,4 +76,6 @@ std::vector<Connection*> NodeOutput::getConnections()
 {
     return outConnections;
 }
+
+} // namespace Cascade
 

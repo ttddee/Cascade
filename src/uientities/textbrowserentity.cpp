@@ -20,6 +20,8 @@
 #include "textbrowserentity.h"
 #include "ui_textbrowserentity.h"
 
+namespace Cascade {
+
 TextBrowserEntity::TextBrowserEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
     ui(new Ui::TextBrowserEntity)
@@ -54,3 +56,5 @@ TextBrowserEntity::~TextBrowserEntity()
 {
     delete ui;
 }
+
+} // namespace Cascade

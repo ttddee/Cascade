@@ -25,6 +25,8 @@
 
 #include "log.h"
 
+namespace Cascade {
+
 ISFManager& ISFManager::getInstance()
 {
     static ISFManager instance;
@@ -439,3 +441,5 @@ const int ISFManager::getIndexFromArray(const QJsonArray& array, const QString& 
     }
     return -1;
 }
+
+} // namespace Cascade

@@ -20,7 +20,6 @@
 #include "connection.h"
 
 #include <math.h>
-#include <iostream>
 
 #include <QPen>
 #include <QColor>
@@ -37,6 +36,8 @@
 #ifndef M_PI
     #define M_PI 3.14159265358979323846
 #endif
+
+namespace Cascade {
 
 Connection::Connection(NodeOutput* source)
     : QGraphicsLineItem(),
@@ -125,6 +126,7 @@ void Connection::updatePosition(const QPoint end)
                       end.x() - 5,
                       end.y() - 3);
     }
-
 }
+
+} //namespace Cascade
 

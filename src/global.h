@@ -3,8 +3,8 @@
 
 #include <QMap>
 
-namespace Cascade
-{
+namespace Cascade {
+
 enum ViewerMode
 {
     VIEWER_MODE_FRONT_RGB,
@@ -26,7 +26,8 @@ static const QMap<ViewerMode, QString> viewerModeText =
     namespace Renderer
     {
 
-    }
-}
+    } // namespace Cascade::Renderer
+
+} // namepsace Cascade
 
 #endif // GLOBAL_H

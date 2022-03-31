@@ -24,6 +24,8 @@
 
 #include "vulkanwindow.h"
 
+namespace Cascade {
+
 class ViewerStatusBar;
 
 class VulkanView : public QWidget
@@ -42,5 +44,7 @@ private:
     VulkanWindow* vulkanWindow;
     QVulkanInstance instance;
 };
+
+} // namespace Cascade
 
 #endif // VULKANVIEW_H

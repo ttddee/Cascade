@@ -26,40 +26,41 @@
 #include <QFile>
 #include <QTextStream>
 
-namespace Cascade
+namespace Cascade {
+
+class Log
 {
-    class Log
+public:
+    static void Init();
+
+    static std::shared_ptr<Log>& getLogger()
     {
-    public:
-        static void Init();
+        return logger;
+    }
 
-        static std::shared_ptr<Log>& getLogger()
-        {
-            return logger;
-        }
+    static void messageHandler(
+            QtMsgType type,
+            const QMessageLogContext& context,
+            const QString & msg);
 
-        static void messageHandler(
-                QtMsgType type,
-                const QMessageLogContext& context,
-                const QString & msg);
+    static void debug(const QString& s);
+    static void info(const QString& s);
+    static void warning(const QString& s);
+    static void critical(const QString& s);
+    static void fatal(const QString& s);
 
-        static void debug(const QString& s);
-        static void info(const QString& s);
-        static void warning(const QString& s);
-        static void critical(const QString& s);
-        static void fatal(const QString& s);
+    static void console(const QString& s);
 
-        static void console(const QString& s);
+private:
+    static void writeToFile(const QString& s);
 
-    private:
-        static void writeToFile(const QString& s);
+    static std::shared_ptr<Log> logger;
 
-        static std::shared_ptr<Log> logger;
+    static QFile outFile;
+    static QTextStream stream;
+};
 
-        static QFile outFile;
-        static QTextStream stream;
-    };
-}
+} // namespace Cascade
 
 #define CS_LOG_DEBUG(...)     ::Cascade::Log::getLogger()->debug(__VA_ARGS__);
 #define CS_LOG_INFO(...)      ::Cascade::Log::getLogger()->info(__VA_ARGS__);

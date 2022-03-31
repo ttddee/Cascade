@@ -28,6 +28,8 @@ namespace Ui {
 class TextBrowserEntity;
 }
 
+namespace Cascade {
+
 class TextBrowserEntity : public UiEntity
 {
     Q_OBJECT
@@ -46,5 +48,7 @@ public:
 private:
     Ui::TextBrowserEntity *ui;
 };
+
+} // namespace Cascade
 
 #endif // TEXTBROWSERENTITY_H

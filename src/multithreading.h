@@ -18,11 +18,10 @@
 #endif // Q_MOC_RUN
 
 namespace OCIO = OCIO_NAMESPACE;
-using namespace OIIO;
-using namespace tbb;
 
-namespace Cascade
-{
+using tbb::blocked_range;
+
+namespace Cascade {
 
 void copyRow(const float* source, float* dst, size_t width, size_t i)
 {

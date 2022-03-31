@@ -28,6 +28,8 @@
 #include "log.h"
 #include "nodedefinitions.h"
 
+namespace Cascade {
+
 ProjectManager& ProjectManager::getInstance()
 {
     static ProjectManager instance;
@@ -208,3 +210,5 @@ QJsonObject ProjectManager::getJsonFromNodeGraph()
 
     return jsonProject;
 }
+
+} // namespace Cascade

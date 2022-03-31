@@ -27,6 +27,8 @@
 #include "nodebase.h"
 #include "connection.h"
 
+namespace Cascade {
+
 class NodeOutput : public QPushButton
 {
     Q_OBJECT
@@ -53,5 +55,7 @@ signals:
     void nodeOutputLeftMouseClicked(NodeOutput* nodeOuptput);
 
 };
+
+} // namespace Cascade
 
 #endif // NODEOUT_H
