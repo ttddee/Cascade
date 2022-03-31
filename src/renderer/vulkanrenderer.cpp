@@ -896,8 +896,6 @@ bool VulkanRenderer::saveImageToDisk(
 
 void VulkanRenderer::createRenderPass()
 {
-    CS_LOG_INFO("Creating Render Pass.");
-
     vk::CommandBuffer cb = window->currentCommandBuffer();
 
     const QSize sz = window->swapChainImageSize();
@@ -1004,7 +1002,6 @@ void VulkanRenderer::createRenderPass()
                 1,
                 &scissor);
 
-    CS_LOG_INFO("Drawing");
     cb.draw(4, 1, 0, 0);
 
     cb.endRenderPass();
@@ -1056,8 +1053,6 @@ void VulkanRenderer::processReadNode(NodeBase *node)
                     &pipelines[NODE_TYPE_READ].get());
 
         computeCommandBuffer->submitImageLoad();
-
-        CS_LOG_INFO("Moving render target.");
 
         node->setCachedImage(std::move(computeRenderTarget));
 
@@ -1206,7 +1201,6 @@ void VulkanRenderer::displayNode(const NodeBase *node)
     if(CsImage* image = node->getCachedImage())
     {
         // Execute a NoOp shader on the node
-        CS_LOG_INFO("Displaying node.");
         clearScreen = false;
 
         updateVertexData(image->getWidth(), image->getHeight());
@@ -1252,7 +1246,6 @@ void VulkanRenderer::doClearScreen()
 
 void VulkanRenderer::startNextFrame()
 {
-    CS_LOG_INFO("Starting next frame.");
     if (clearScreen)
     {
         const QSize sz = window->swapChainImageSize();

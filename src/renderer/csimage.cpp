@@ -205,8 +205,7 @@ CsImage::~CsImage()
 {
     // Need to make sure this image is not used by any command buffer
     auto result = device->waitIdle();
-
-    CS_LOG_INFO("Destroying image.");
+    Q_UNUSED(result);
 }
 
 } // end namespace Cascade::Renderer
