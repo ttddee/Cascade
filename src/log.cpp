@@ -92,7 +92,7 @@ void Log::fatal(const QString &s)
 
 void Log::console(const QString &s)
 {
-    std::cout << s.toStdString() << "\n";
+    std::cout << s.toStdString() << std::endl;
 }
 
 void Log::writeToFile(const QString &s)

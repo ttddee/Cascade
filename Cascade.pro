@@ -412,7 +412,6 @@ isf.files += $$files($$PWD/shaders/isf/*.fs)
 isf.path = $$DESTDIR/isf
 
 RESOURCES += \
-    ads.qrc \
     resources.qrc \
     src/codeeditor/qcodeeditor_resources.qrc
 
