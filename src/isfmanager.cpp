@@ -111,17 +111,14 @@ void ISFManager::setUp()
             }
             else
             {
-                CS_LOG_WARNING("Compilation failed for:");
-                CS_LOG_WARNING(name);
+                CS_LOG_WARNING("Compilation failed for:" + name);
                 CS_LOG_WARNING(QString::fromStdString(compiler.getError()));
                 failure++;
             }
         }
     }
-    CS_LOG_INFO("Successfully compiled ISF shaders:");
-    CS_LOG_INFO(QString::number(success));
-    CS_LOG_WARNING("Compilation failed for:");
-    CS_LOG_WARNING(QString::number(failure));
+    CS_LOG_INFO("Successfully compiled ISF shaders:" + QString::number(success));
+    CS_LOG_WARNING("Compilation failed for:" + QString::number(failure));
 }
 
 NodeInitProperties ISFManager::createISFNodeProperties(

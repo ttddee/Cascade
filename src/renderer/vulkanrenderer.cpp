@@ -176,6 +176,7 @@ void VulkanRenderer::createVertexBuffer()
     device.unmapMemory(vertexBufferMemory.get());
 
     result = device.bindBufferMemory(*vertexBuffer, *vertexBufferMemory, 0);
+    Q_UNUSED(result);
 }
 
 void VulkanRenderer::createSampler()
@@ -660,6 +661,7 @@ void VulkanRenderer::updateComputeDescriptors(
         const CsImage* const outputImage)
 {
     auto result = device.waitIdle();
+    Q_UNUSED(result);
 
     vk::DescriptorImageInfo sourceInfoBack(
                 *sampler,
@@ -821,8 +823,6 @@ void VulkanRenderer::updateVertexData(const int w, const int h)
 
 void VulkanRenderer::initSwapChainResources()
 {
-    CS_LOG_INFO("Initializing swapchain resources.");
-
     // Projection matrix
     projection = window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
     const QSize sz = window->swapChainImageSize();
@@ -1058,6 +1058,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
         // Delete the staging image
         auto result = device.waitIdle();
+        Q_UNUSED(result);
 
         loadImageStaging = nullptr;
     }

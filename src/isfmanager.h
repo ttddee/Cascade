@@ -74,6 +74,6 @@ private:
     std::map<QString, QString> isfCategoryPerNode;
 };
 
-} // end namespace Cascade
+} // namespace Cascade
 
 #endif // ISFMANAGER_H

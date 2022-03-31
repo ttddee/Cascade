@@ -155,6 +155,7 @@ void CsCommandBuffer::recordGeneric(
     }
 
     result = commandBufferGeneric->end();
+    Q_UNUSED(result);
 }
 
 void CsCommandBuffer::recordImageLoad(
@@ -273,6 +274,7 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
     result = commandBufferImageSave->end();
+    Q_UNUSED(result);
 
     return &outputStagingBufferMemory.get();
 }
@@ -354,6 +356,7 @@ vk::Queue* CsCommandBuffer::getQueue()
 vk::CommandBuffer* CsCommandBuffer::getGeneric()
 {
     auto result = computeQueue.waitIdle();
+    Q_UNUSED(result);
 
     return &(*commandBufferGeneric);
 }
@@ -361,6 +364,7 @@ vk::CommandBuffer* CsCommandBuffer::getGeneric()
 vk::CommandBuffer* CsCommandBuffer::getImageLoad()
 {
     auto result = computeQueue.waitIdle();
+    Q_UNUSED(result);
 
     return &(*commandBufferImageLoad);
 }
@@ -392,6 +396,7 @@ void CsCommandBuffer::createBuffer(
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *buffer),
                     "Output Staging Buffer");
         auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        Q_UNUSED(result);
     }
 #endif
 
@@ -415,10 +420,12 @@ void CsCommandBuffer::createBuffer(
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *bufferMemory),
                     "Output Staging Buffer Memory");
         auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        Q_UNUSED(result);
     }
 #endif
 
     auto result = device->bindBufferMemory(*buffer, *bufferMemory, 0);
+    Q_UNUSED(result);
 }
 
 uint32_t CsCommandBuffer::findMemoryType(uint32_t typeFilter, vk::MemoryPropertyFlags properties)
