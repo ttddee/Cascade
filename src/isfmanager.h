@@ -54,7 +54,7 @@ private:
             const QJsonDocument& properties);
 
     NodeInitProperties createISFNodeProperties(
-            const QJsonDocument& json,
+            const QJsonObject& json,
             const QString& name);
 
     const std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(

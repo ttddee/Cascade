@@ -90,8 +90,8 @@ void ISFManager::setUp()
             // Convert and compile shader
             QString shader = convertISFShaderToCompute(split.last(), jsonData);
 
-            if (name == "ISF Bump Distortion")
-                CS_LOG_CONSOLE(shader);
+            if (name == "ISF Dot Screen")
+                CS_LOG_INFO(shader);
 
             if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
             {
@@ -105,7 +105,7 @@ void ISFManager::setUp()
                 isfCategoryPerNode[name] = categoryName;
 
                 // Create properties for the creation of the node
-                isfNodeProperties[name] = createISFNodeProperties(jsonData, name);
+                isfNodeProperties[name] = createISFNodeProperties(propObject, name);
 
                 this->isfShaderCode[name] = compiler.getSpirV();
             }
@@ -122,10 +122,10 @@ void ISFManager::setUp()
 }
 
 NodeInitProperties ISFManager::createISFNodeProperties(
-        const QJsonDocument& json,
+        const QJsonObject& json,
         const QString& name)
 {
-    QJsonObject propObject = json.object();
+    CS_LOG_INFO("NUM PASSES: " + QString::number(getRenderpassesFromJson(json)));
 
     NodeInitProperties props =
     {
@@ -134,7 +134,7 @@ NodeInitProperties ISFManager::createISFNodeProperties(
         NODE_CATEGORY_ISF,
         { NODE_INPUT_TYPE_RGB_BACK },
         { NODE_OUTPUT_TYPE_RGB },
-        createUIElementsFromJson(name, propObject),
+        createUIElementsFromJson(name, json),
         FRONT_INPUT_ALWAYS_CLEAR,
         BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
         ALPHA_INPUT_ALWAYS_CLEAR,
@@ -148,8 +148,6 @@ NodeInitProperties ISFManager::createISFNodeProperties(
 const int ISFManager::getRenderpassesFromJson(
         const QJsonObject &json) const
 {
-    // TODO: This does not work
-
     int passes = 1;
     QJsonArray passesArray = json.value("PASSES").toArray();
     if (int size = passesArray.size() > 0)
@@ -292,6 +290,7 @@ const QString ISFManager::convertISFShaderToCompute(
         "ivec2 imgSize = imageSize(inputBack);\n"
         "ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);\n"
         "vec2 pixelCoordsNorm = vec2(float(pixelCoords.x) / imgSize.x, float(pixelCoords.y) / imgSize.y);\n"
+        "vec2 imgSizeNorm = 1.0 / imgSize;\n"
         "\n"
         "vec4 result;\n"
         "\n"
@@ -405,6 +404,7 @@ const QString ISFManager::convertISFShaderToCompute(
         }
     }
 
+    // Replace
     shader.replace("IMG_THIS_PIXEL(inputImage)", "imageLoad(inputBack, pixelCoords).rgba", Qt::CaseSensitive);
     shader.replace("IMG_PIXEL(inputImage,", "csImageLoad(", Qt::CaseSensitive);
     shader.replace("IMG_NORM_PIXEL(inputImage,", "csImageLoadNorm(", Qt::CaseSensitive);
@@ -412,6 +412,14 @@ const QString ISFManager::convertISFShaderToCompute(
     shader.replace("gl_FragColor", "result", Qt::CaseSensitive);
     shader.replace("gl_FragCoord", "pixelCoords", Qt::CaseSensitive);
     shader.replace("isf_FragNormCoord", "pixelCoordsNorm", Qt::CaseSensitive);
+    shader.replace("in vec2 left_coord;", "vec2 left_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(-imgSizeNorm.x, 0)), 0.0, 1.0);\n");
+    shader.replace("in vec2 right_coord;", "vec2 right_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(imgSizeNorm.x, 0)), 0.0, 1.0);\n");
+    shader.replace("in vec2 above_coord;", "vec2 above_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(0, imgSizeNorm.y)), 0.0, 1.0);\n");
+    shader.replace("in vec2 below_coord;", "vec2 below_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(0, -imgSizeNorm.y)), 0.0, 1.0);\n");
+    shader.replace("in vec2 lefta_coord;", "vec2 lefta_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(-imgSizeNorm.x, imgSizeNorm.x)), 0.0, 1.0);\n");
+    shader.replace("in vec2 righta_coord;", "vec2 righta_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(imgSizeNorm.x, imgSizeNorm.x)), 0.0, 1.0);\n");
+    shader.replace("in vec2 leftb_coord;", "vec2 leftb_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(-imgSizeNorm.x, -imgSizeNorm.x)), 0.0, 1.0);\n");
+    shader.replace("in vec2 rightb_coord;", "vec2 rightb_coord = clamp(vec2(pixelCoordsNorm.xy + vec2(imgSizeNorm.x, -imgSizeNorm.x)), 0.0, 1.0);\n");
     // TODO: Make this a control
     shader.replace("TIME", "1000", Qt::CaseSensitive);
 

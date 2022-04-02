@@ -14,6 +14,7 @@
             "MAX": 10,
             "MIN": 0,
             "NAME": "sharpness",
+			"LABEL": "Sharpness",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 2,
             "MIN": 0,
             "NAME": "scale",
+			"LABEL": "Scale",
             "TYPE": "float"
         },
         {
@@ -35,6 +38,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "colorize",
+			"LABEL": "Colorize",
             "TYPE": "float"
         },
         {
@@ -51,6 +55,7 @@
                 0
             ],
             "NAME": "center",
+			"LABEL": "Center",
             "TYPE": "point2D"
         }
     ],

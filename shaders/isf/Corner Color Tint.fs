@@ -12,6 +12,7 @@
     },
     {
       "NAME" : "color1",
+	  "LABEL": "Color 1",
       "TYPE" : "color",
       "DEFAULT" : [
         1,
@@ -22,6 +23,7 @@
     },
     {
       "NAME" : "color2",
+	  "LABEL": "Color 2",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -32,6 +34,7 @@
     },
     {
       "NAME" : "color3",
+	  "LABEL": "Color 3",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -42,6 +45,7 @@
     },
     {
       "NAME" : "color4",
+	  "LABEL": "Color 4",
       "TYPE" : "color",
       "DEFAULT" : [
         1,
@@ -52,6 +56,7 @@
     },
     {
       "NAME" : "rotationAngle",
+	  "LABEL": "Rotation Angle",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,

@@ -14,6 +14,7 @@
             "MAX": 0.5,
             "MIN": 0,
             "NAME": "radius",
+			"LABEL": "Radius",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 2,
             "MIN": 0,
             "NAME": "width",
+			"LABEL": "Width",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "resultRotation",
+			"LABEL": "Rotation",
             "TYPE": "float"
         }
     ],
