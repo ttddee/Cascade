@@ -145,6 +145,7 @@ const static QMap<NodeCategory, QString> categoryStrings =
 ////////////////////////////////////
 enum NodeType
 {
+    NODE_TYPE_BLOOM,
     NODE_TYPE_BLUR,
     NODE_TYPE_CHANNEL_COPY,
     NODE_TYPE_CHECKERBOARD,
@@ -189,6 +190,7 @@ enum NodeType
 ////////////////////////////////////
 const static QMap<NodeType, QString> nodeStrings =
 {
+    { NODE_TYPE_BLOOM, "Bloom" },
     { NODE_TYPE_BLUR, "Blur" },
     { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
     { NODE_TYPE_CHECKERBOARD, "Checkerboard" },
@@ -686,7 +688,7 @@ const static NodeInitProperties riverStyxNodeInitProperties =
 {
     NODE_TYPE_RIVER_STYX,
     nodeStrings[NODE_TYPE_RIVER_STYX],
-    NODE_CATEGORY_EFFECTS,
+    NODE_CATEGORY_GENERATE,
     { NODE_INPUT_TYPE_RGB_BACK },
     { NODE_OUTPUT_TYPE_RGB },
     {
@@ -1010,6 +1012,26 @@ const static NodeInitProperties isfNodeInitProperties =
     1
 };
 
+const static NodeInitProperties bloomNodeInitProperties =
+{
+    NODE_TYPE_BLOOM,
+    nodeStrings[NODE_TYPE_BLOOM],
+    NODE_CATEGORY_EFFECTS,
+    { NODE_INPUT_TYPE_RGB_BACK },
+    { NODE_OUTPUT_TYPE_RGB },
+    {
+        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLOOM] },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blur,0.0,10.0,0.01,0.5" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity,0.01,10.0,0.01,0.5" }
+    },
+    FRONT_INPUT_ALWAYS_CLEAR,
+    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+    ALPHA_INPUT_ALWAYS_CLEAR,
+    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    ":/shaders/bloom_comp.spv",
+    1
+};
+
 // TODO: Use std::map instead of QMap, then we don't need the lookup function
 [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
 {
@@ -1156,6 +1178,10 @@ const static NodeInitProperties isfNodeInitProperties =
     else if(t == NODE_TYPE_ISF)
     {
         return isfNodeInitProperties;
+    }
+    else if(t == NODE_TYPE_BLOOM)
+    {
+        return bloomNodeInitProperties;
     }
     throw std::runtime_error("Node type not found.");
 }

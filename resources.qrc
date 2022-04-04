@@ -69,5 +69,6 @@
         <file>ocio/luts/srgb.spi1d</file>
         <file>ocio/luts/srgbf.spi1d</file>
         <file>ocio/luts/viperlog.spi1d</file>
+        <file>shaders/bloom_comp.spv</file>
     </qresource>
 </RCC>

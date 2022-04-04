@@ -1,0 +1,67 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D resultImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float blurSize;
+    layout(offset = 4) float intensity;
+} sb;
+
+ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+ivec2 imgSize = imageSize(inputBack);
+vec2 pixelCoordsNorm = vec2(float(pixelCoords.x) / imgSize.x, float(pixelCoords.y) / imgSize.y);
+
+void main()
+{   
+    vec4 sum = vec4(0);
+    vec2 texcoord = pixelCoords;
+    int j;
+    int i;
+
+    sum += imageLoad(inputBack, ivec2(texcoord.x - 4.0*sb.blurSize, texcoord.y)) * 0.05;
+    sum += imageLoad(inputBack, ivec2(texcoord.x - 3.0*sb.blurSize, texcoord.y)) * 0.09;
+    sum += imageLoad(inputBack, ivec2(texcoord.x - 2.0*sb.blurSize, texcoord.y)) * 0.12;
+    sum += imageLoad(inputBack, ivec2(texcoord.x - sb.blurSize, texcoord.y)) * 0.15;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y)) * 0.16;
+    sum += imageLoad(inputBack, ivec2(texcoord.x + sb.blurSize, texcoord.y)) * 0.15;
+    sum += imageLoad(inputBack, ivec2(texcoord.x + 2.0*sb.blurSize, texcoord.y)) * 0.12;
+    sum += imageLoad(inputBack, ivec2(texcoord.x + 3.0*sb.blurSize, texcoord.y)) * 0.09;
+    sum += imageLoad(inputBack, ivec2(texcoord.x + 4.0*sb.blurSize, texcoord.y)) * 0.05;
+	
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y - 4.0*sb.blurSize)) * 0.05;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y - 3.0*sb.blurSize)) * 0.09;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y - 2.0*sb.blurSize)) * 0.12;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y - sb.blurSize)) * 0.15;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y)) * 0.16;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y + sb.blurSize)) * 0.15;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y + 2.0*sb.blurSize)) * 0.12;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y + 3.0*sb.blurSize)) * 0.09;
+    sum += imageLoad(inputBack, ivec2(texcoord.x, texcoord.y + 4.0*sb.blurSize)) * 0.05;
+ 
+    vec4 result = sum * sb.intensity + imageLoad(inputBack, ivec2(texcoord));
+
+    imageStore(resultImage, pixelCoords, result);
+}
