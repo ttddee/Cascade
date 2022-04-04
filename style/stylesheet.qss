@@ -367,7 +367,7 @@ QLabel#propHeading {
 QLabel#NodeTitleLabel {
     color: #b9b9b9;
     background-color: none;
-    font: 11px "Open Sans";
+    font: 10px "Open Sans";
     font-weight: bold;
 }
 QLabel#folderLabel {

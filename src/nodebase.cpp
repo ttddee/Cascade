@@ -92,7 +92,7 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     for (size_t i = 0; i < props.nodeInputs.size(); i++)
     {
         auto nodeIn = new NodeInput(props.nodeInputs[i], this);
-        nodeIn->move(-2, 32 + 28 * i);
+        nodeIn->move(-2, 42 + 28 * i);
         nodeInputs.push_back(nodeIn);
 
         QLabel *label;
@@ -127,7 +127,7 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     for (size_t i = 0; i < props.nodeOutputs.size(); i++)
     {
         auto nodeOut = new NodeOutput(this);
-        nodeOut->move(112, 32);
+        nodeOut->move(112, 42);
         nodeOutputs.push_back(nodeOut);
 
         QLabel *label;
@@ -488,7 +488,7 @@ void NodeBase::paintEvent(QPaintEvent *event)
 
     if (isSelected)
     {
-        painter.setClipRect(0, 0, 120, 23, Qt::ReplaceClip);
+        painter.setClipRect(0, 0, 120, 33, Qt::ReplaceClip);
         painter.fillPath(path, selectedColorBrush);
     }
 

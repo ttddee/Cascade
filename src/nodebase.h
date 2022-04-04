@@ -196,11 +196,11 @@ private:
     const QPen defaultColorPen = QPen(QColor(0x62, 0x69, 0x71), 3);
 
 signals:
-    void nodeWasLeftClicked(NodeBase* node);
-    void nodeWasDoubleClicked(NodeBase* node);
-    void nodeRequestUpdate(NodeBase* node);
+    void nodeWasLeftClicked(Cascade::NodeBase* node);
+    void nodeWasDoubleClicked(Cascade::NodeBase* node);
+    void nodeRequestUpdate(Cascade::NodeBase* node);
     void nodeRequestFileSave(
-            NodeBase* node,
+            Cascade::NodeBase* node,
             const QString& path,
             const QString& fileType,
             const QMap<std::string, std::string>& attributes,
