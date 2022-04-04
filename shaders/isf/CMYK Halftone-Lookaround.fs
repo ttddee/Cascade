@@ -14,6 +14,7 @@
             "MAX": 256,
             "MIN": 1,
             "NAME": "gridSize",
+			"LABEL": "Grid Size",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "smoothing",
+			"LABEL": "Smoothing",
             "TYPE": "float"
         }
     ],
@@ -41,13 +43,6 @@ vec2		originOffsets[4];
 
 vec4 RGBAtoCMYK(vec4 inColor)
 {
-	/*
-	vec4	cmyk;
-	cmyk.xyz = 1.0 - inColor.xyz;
-	cmyk.w = min(cmyk.x, min(cmyk.y, cmyk.z)); // Create K
-	cmyk.xyz -= cmyk.w; // Subtract K equivalent from CMY
-	return cmyk;
-	*/
 	vec4		ret;
 	ret.w = 1.0 - max(max(inColor.x, inColor.y), inColor.z);
 	ret.x = (1.0-inColor.x-ret.w)/(1.0-ret.w);

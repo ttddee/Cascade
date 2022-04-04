@@ -9,6 +9,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rotation",
+			"LABEL": "Rotation",
             "TYPE": "float"
         },
         {
@@ -16,6 +17,7 @@
             "MAX": 50,
             "MIN": 0.1,
             "NAME": "count",
+			"LABEL": "Count",
             "TYPE": "float"
         },
         {
@@ -23,6 +25,7 @@
             "MAX": 0.25,
             "MIN": 0,
             "NAME": "width",
+			"LABEL": "Width",
             "TYPE": "float"
         },
         {
@@ -30,6 +33,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "softness",
+			"LABEL": "Softness",
             "TYPE": "float"
         },
         {
@@ -40,6 +44,7 @@
                 0
             ],
             "NAME": "color1",
+			"LABEL": "Color 1",
             "TYPE": "color"
         },
         {
@@ -50,6 +55,7 @@
                 1
             ],
             "NAME": "color2",
+			"LABEL": "Color 2",
             "TYPE": "color"
         }
     ],

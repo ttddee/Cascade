@@ -11,7 +11,7 @@
 		},
 		{
 			"NAME": "slideAmt",
-			"LABEL": "slide amount",
+			"LABEL": "Slide Amount",
 			"TYPE": "color",
 			"DEFAULT": [
 				0.0,
@@ -22,6 +22,7 @@
 		},
 		{
 			"NAME": "reflection",
+			"LABEL": "Reflection",
 			"TYPE": "bool",
 			"DEFAULT": 0.0
 		}

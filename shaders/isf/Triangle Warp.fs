@@ -23,6 +23,7 @@
                 0
             ],
             "NAME": "peakPoint",
+			"LABEL": "Peak Point",
             "TYPE": "point2D"
         },
         {
@@ -30,6 +31,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "distortX",
+			"LABEL": "Distort X",
             "TYPE": "float"
         }
     ],

@@ -12,6 +12,7 @@
     },
     {
       "NAME" : "master_zoom",
+	  "LABEL": "Master Zoom",
       "TYPE" : "float",
       "MAX" : 2,
       "DEFAULT" : 1,
@@ -19,6 +20,7 @@
     },
     {
       "NAME" : "red_zoom",
+	  "LABEL": "Red Zoom",
       "TYPE" : "float",
       "MAX" : 1.5,
       "DEFAULT" : 1,
@@ -26,6 +28,7 @@
     },
     {
       "NAME" : "green_zoom",
+	  "LABEL": "Green Zoom",
       "TYPE" : "float",
       "MAX" : 1.5,
       "DEFAULT" : 1,
@@ -33,6 +36,7 @@
     },
     {
       "NAME" : "blue_zoom",
+	  "LABEL": "Blue Zoom",
       "TYPE" : "float",
       "MAX" : 1.5,
       "DEFAULT" : 1,
@@ -40,6 +44,7 @@
     },
     {
       "NAME" : "center",
+	  "LABEL": "Center",
       "TYPE" : "point2D",
       "MAX" : [
         1,

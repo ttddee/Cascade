@@ -12,6 +12,7 @@
     },
     {
       "NAME" : "smokeColor",
+	  "LABEL": "Smoke Color",
       "TYPE" : "color",
       "DEFAULT" : [
         0.75,
@@ -22,6 +23,7 @@
     },
     {
       "NAME" : "smokeIntensity",
+	  "LABEL": "Smoke Intensity",
       "TYPE" : "float",
       "MAX" : 10,
       "DEFAULT" : 1,
@@ -29,6 +31,7 @@
     },
     {
       "NAME" : "smokeDirection",
+	  "LABEL": "Smoke Direction",
       "TYPE" : "point2D",
       "MAX" : [
         1,

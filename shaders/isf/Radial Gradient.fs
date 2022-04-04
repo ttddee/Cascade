@@ -7,12 +7,18 @@
         {
             "DEFAULT": 0.1,
             "NAME": "radius1",
-            "TYPE": "float"
+			"LABEL": "Radius 1",
+            "TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 1.0
         },
         {
             "DEFAULT": 0.25,
             "NAME": "radius2",
-            "TYPE": "float"
+			"LABEL": "Radius 2",
+            "TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 1.0
         },
         {
             "DEFAULT": [
@@ -22,6 +28,7 @@
                 1
             ],
             "NAME": "startColor",
+			"LABEL": "Start Color",
             "TYPE": "color"
         },
         {
@@ -32,6 +39,7 @@
                 1
             ],
             "NAME": "endColor",
+			"LABEL": "End Color",
             "TYPE": "color"
         },
         {
@@ -48,6 +56,7 @@
                 0
             ],
             "NAME": "location",
+			"LABEL": "Location",
             "TYPE": "point2D"
         }
     ],

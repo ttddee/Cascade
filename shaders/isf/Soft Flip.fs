@@ -14,6 +14,7 @@
             "MAX": 1,
             "MIN": -1,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -30,6 +31,7 @@
                 0
             ],
             "NAME": "centerPt",
+			"LABEL": "Center Point",
             "TYPE": "point2D"
         },
         {
@@ -37,16 +39,19 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "lineWidth",
+			"LABEL": "Line Width",
             "TYPE": "float"
         },
         {
             "DEFAULT": 1,
             "NAME": "flipH",
+			"LABEL": "Flip H",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 1,
             "NAME": "flipV",
+			"LABEL": "Flip V",
             "TYPE": "bool"
         }
     ],

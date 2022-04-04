@@ -15,6 +15,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "colorize",
+			"LABEL": "Colorize",
             "TYPE": "float"
         },
         {
@@ -25,6 +26,7 @@
                 "8x8"
             ],
             "NAME": "matrixMode",
+			"LABEL": "Marix Mode",
             "TYPE": "long",
             "VALUES": [
                 0,

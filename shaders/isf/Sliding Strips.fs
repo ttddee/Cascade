@@ -12,6 +12,7 @@
     },
     {
       "NAME" : "xShiftAmount",
+	  "LABEL": "Shift Amount X",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -19,6 +20,7 @@
     },
     {
       "NAME" : "yShiftAmount",
+	  "LABEL": "Shift Amount Y",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -26,6 +28,7 @@
     },
     {
       "NAME" : "xTileSize",
+	  "LABEL": "Tile Size X",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.25,
@@ -33,6 +36,7 @@
     },
     {
       "NAME" : "yTileSize",
+	  "LABEL": "Tile Size Y",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.25,

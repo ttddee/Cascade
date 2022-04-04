@@ -11,6 +11,7 @@
 		},
 		{
 			"NAME": "brightColor",
+			"LABEL": "Bright Color",
 			"TYPE": "color",
 			"DEFAULT": [
 				1.0,
@@ -21,6 +22,7 @@
 		},
 		{
 			"NAME": "darkColor",
+			"LABEL": "Dark Color",
 			"TYPE": "color",
 			"DEFAULT": [
 				0.3,

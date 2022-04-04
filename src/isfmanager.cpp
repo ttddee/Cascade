@@ -90,8 +90,8 @@ void ISFManager::setUp()
             // Convert and compile shader
             QString shader = convertISFShaderToCompute(split.last(), jsonData);
 
-            if (name == "ISF Dot Screen")
-                CS_LOG_INFO(shader);
+            //if (name == "ISF Noise Pixellate")
+                //CS_LOG_INFO(shader);
 
             if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
             {
@@ -125,8 +125,6 @@ NodeInitProperties ISFManager::createISFNodeProperties(
         const QJsonObject& json,
         const QString& name)
 {
-    CS_LOG_INFO("NUM PASSES: " + QString::number(getRenderpassesFromJson(json)));
-
     NodeInitProperties props =
     {
         NODE_TYPE_ISF,
@@ -150,9 +148,9 @@ const int ISFManager::getRenderpassesFromJson(
 {
     int passes = 1;
     QJsonArray passesArray = json.value("PASSES").toArray();
-    if (int size = passesArray.size() > 0)
+    for (auto pass : passesArray)
     {
-        passes = size;
+        passes++;
     }
     return passes;
 }

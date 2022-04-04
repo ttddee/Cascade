@@ -13,13 +13,15 @@
             "MAX": 0.5,
             "MIN": 0.001,
             "NAME": "cell_size",
+			"LABEL": "Cell Size",
             "TYPE": "float"
         },
         {
-            "DEFAULT": 0.05000000074505806,
+            "DEFAULT": 0.05,
             "MAX": 0.5,
             "MIN": 0.001,
             "NAME": "min_cell_size",
+			"LABEL": "Min Cell Size",
             "TYPE": "float"
         },
         {
@@ -27,6 +29,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rSeed",
+			"LABEL": "Seed",
             "TYPE": "float"
         },
         {
@@ -36,6 +39,7 @@
                 "Rectangle"
             ],
             "NAME": "shape",
+			"LABEL": "Shape",
             "TYPE": "long",
             "VALUES": [
                 0,
@@ -51,6 +55,7 @@
                 "5"
             ],
             "NAME": "round_to_divisions",
+			"LABEL": "Round To",
             "TYPE": "long",
             "VALUES": [
                 0,
@@ -63,14 +68,6 @@
     "ISFVSN": "2"
 }
 */
-
-#ifndef GL_ES
-float distance (vec2 center, vec2 pt)
-{
-	float tmp = pow(center.x-pt.x,2.0)+pow(center.y-pt.y,2.0);
-	return pow(tmp,0.5);
-}
-#endif
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);

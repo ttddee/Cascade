@@ -1,4 +1,3 @@
-
 /*{
 	"CREDIT": "by VIDVOX",
 	"ISFVSN": "2",
@@ -12,6 +11,7 @@
 		},
 		{
 			"NAME": "normalEdgeThreshold",
+			"LABEL": "Normal Edge Threshold",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 0.1,
@@ -19,6 +19,7 @@
 		},
 		{
 			"NAME": "qLevel",
+			"LABEL": "Level",
 			"TYPE": "float",
 			"MIN": 2.0,
 			"MAX": 64.0,

@@ -8,6 +8,7 @@
   "INPUTS" : [
     {
       "NAME" : "bgColor",
+	  "LABEL": "BG Color",
       "TYPE" : "color",
       "DEFAULT" : [
         0.93999999761581421,
@@ -18,6 +19,7 @@
     },
     {
       "NAME" : "lineColor",
+	  "LABEL": "Line Color",
       "TYPE" : "color",
       "DEFAULT" : [
         0.63999998569488525,
@@ -47,6 +49,7 @@
         "16"
       ],
       "NAME" : "majorDivisions",
+	  "LABEL": "Major Divisions",
       "TYPE" : "long",
       "DEFAULT" : 3,
       "VALUES" : [
@@ -82,6 +85,7 @@
         "8"
       ],
       "NAME" : "minorHDivisions",
+	  "LABEL": "Minor H Divisions",
       "TYPE" : "long",
       "DEFAULT" : 2,
       "VALUES" : [
@@ -109,6 +113,7 @@
         "8"
       ],
       "NAME" : "minorVDivisions",
+	  "LABEL": "Minor V Divisions",
       "TYPE" : "long",
       "DEFAULT" : 2,
       "VALUES" : [
@@ -125,6 +130,7 @@
     },
     {
       "NAME" : "majorDivisionLineWidth",
+	  "LABEL": "Major Line Width",
       "TYPE" : "float",
       "MAX" : 5,
       "DEFAULT" : 3,
@@ -132,6 +138,7 @@
     },
     {
       "NAME" : "square",
+	  "LABEL": "Square",
       "TYPE" : "bool",
       "DEFAULT" : true
     }

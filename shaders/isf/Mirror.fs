@@ -11,11 +11,13 @@
 		},
 		{
 			"NAME": "horizontal",
+			"LABEL": "Horizontal",
 			"TYPE": "bool",
 			"DEFAULT": 1.0
 		},
 		{
 			"NAME": "vertical",
+			"LABEL": "Vertical",
 			"TYPE": "bool",
 			"DEFAULT": 0.0
 		}

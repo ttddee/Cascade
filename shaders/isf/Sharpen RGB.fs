@@ -11,6 +11,7 @@
 		},
 		{
 			"NAME": "intensityR",
+			"LABEL": "Intensity R",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 10.0,
@@ -18,6 +19,7 @@
 		},
 		{
 			"NAME": "intensityG",
+			"LABEL": "Intensity G",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 10.0,
@@ -25,6 +27,7 @@
 		},
 		{
 			"NAME": "intensityB",
+			"LABEL": "Intensity B",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 10.0,

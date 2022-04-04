@@ -12,6 +12,7 @@
     },
     {
       "NAME" : "flickerLevel",
+	  "LABEL": "Flicker Level",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -106,6 +107,7 @@
     },
     {
       "NAME" : "tintBrightness",
+	  "LABEL": "Tint Brightness",
       "TYPE" : "float",
       "MAX" : 4,
       "DEFAULT" : 4,
@@ -113,6 +115,7 @@
     },
     {
       "NAME" : "tintRadius",
+	  "LABEL": "Tint Radius",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.22620739042758942,
@@ -120,6 +123,7 @@
     },
     {
       "NAME" : "tintBrightnessCurve",
+	  "LABEL": "Tint Brightness Curve",
       "TYPE" : "float",
       "MAX" : 4,
       "DEFAULT" : 1.2606533765792847,
@@ -127,6 +131,7 @@
     },
     {
       "NAME" : "tintSeed",
+	  "LABEL": "Tint Seed",
       "TYPE" : "float",
       "MAX" : 20,
       "DEFAULT" : 0,
@@ -134,6 +139,7 @@
     },
     {
       "NAME" : "tintColor1",
+	  "LABEL": "Tint Color 1",
       "TYPE" : "color",
       "DEFAULT" : [
         0.90196079015731812,
@@ -144,6 +150,7 @@
     },
     {
       "NAME" : "tintColor2",
+	  "LABEL": "Tint Color 2",
       "TYPE" : "color",
       "DEFAULT" : [
         0.25098040699958801,
@@ -154,6 +161,7 @@
     },
     {
       "NAME" : "tintScale",
+	  "LABEL": "Tint Scale",
       "TYPE" : "float",
       "MAX" : 100,
       "DEFAULT" : 4,
@@ -161,6 +169,7 @@
     },
     {
       "NAME" : "rowGlitchLevel",
+	  "LABEL": "Row Glitch Level",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.0099999997764825821,
@@ -168,6 +177,7 @@
     },
     {
       "NAME" : "rowFlickerLevel",
+	  "LABEL": "Row Flicker Level",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -175,6 +185,7 @@
     },
     {
       "NAME" : "rowGlitchSeed",
+	  "LABEL": "Row Glitch Seed",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.34099999070167542,

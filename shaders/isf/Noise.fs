@@ -1,4 +1,3 @@
-
 /*{
 	"CREDIT": "by VIDVOX",
 	"ISFVSN": "2",
@@ -31,12 +30,6 @@
 			"DEFAULT": 0.0
 		},
 		{
-			"NAME": "use_time",
-			"LABEL": "Animated",
-			"TYPE": "bool",
-			"DEFAULT": 1.0
-		},
-		{
 			"NAME": "color_mode",
 			"LABEL": "Color Mode",
 			"TYPE": "long",
@@ -65,9 +58,6 @@ void main()
 {
 // CALCULATE EDGES OF CURRENT CELL
 	float tmpSeed = seed;
-	if (use_time)	{
-		tmpSeed = max(mod(tmpSeed * TIME,1.0),0.01);
-	}
 	
 	//	if the size is 0.0 do this for every pixel
 	if (cell_size == 0.0)	{

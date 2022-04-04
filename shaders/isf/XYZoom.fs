@@ -13,6 +13,7 @@
             "MAX": 10,
             "MIN": 0.01,
             "NAME": "levelX",
+			"LABEL": "Level X",
             "TYPE": "float"
         },
         {
@@ -20,6 +21,7 @@
             "MAX": 10,
             "MIN": 0.01,
             "NAME": "levelY",
+			"LABEL": "Level Y",
             "TYPE": "float"
         },
         {
@@ -36,6 +38,7 @@
                 0
             ],
             "NAME": "center",
+			"LABEL": "Center",
             "TYPE": "point2D"
         }
     ],

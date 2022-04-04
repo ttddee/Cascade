@@ -14,6 +14,7 @@
             "MAX": 32,
             "MIN": 1,
             "NAME": "sides",
+			"LABEL": "Sides",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": -1,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "slidex",
+			"LABEL": "Slide X",
             "TYPE": "float"
         },
         {
@@ -35,12 +38,13 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "slidey",
+			"LABEL": "Slide Y",
             "TYPE": "float"
         },
         {
             "DEFAULT": [
-                0,
-                0
+                0.5,
+                0.5
             ],
             "MAX": [
                 1,
@@ -51,6 +55,7 @@
                 0
             ],
             "NAME": "center",
+			"LABEL": "Center",
             "TYPE": "point2D"
         }
     ],

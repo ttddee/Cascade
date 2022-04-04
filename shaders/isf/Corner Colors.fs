@@ -13,6 +13,7 @@
                 1
             ],
             "NAME": "color1",
+			"LABEL": "Color 1",
             "TYPE": "color"
         },
         {
@@ -23,6 +24,7 @@
                 1
             ],
             "NAME": "color2",
+			"LABEL": "Color 2",
             "TYPE": "color"
         },
         {
@@ -33,6 +35,7 @@
                 1
             ],
             "NAME": "color3",
+			"LABEL": "Color 3",
             "TYPE": "color"
         },
         {
@@ -43,6 +46,7 @@
                 1
             ],
             "NAME": "color4",
+			"LABEL": "Color 4",
             "TYPE": "color"
         },
         {
@@ -50,6 +54,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rotationAngle",
+			"LABEL": "Rotation Angle",
             "TYPE": "float"
         }
     ],

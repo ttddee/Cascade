@@ -14,7 +14,8 @@
             "MAX": 30,
             "MIN": 2,
             "NAME": "levels",
-            "TYPE": "float"
+			"LABEL": "Levels",
+            "TYPE": "int"
         }
     ],
     "ISFVSN": "2"

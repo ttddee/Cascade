@@ -12,6 +12,7 @@
 		},
 		{
 			"NAME": "size",
+			"LABEL": "Size",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -19,6 +20,7 @@
 		},
 		{
 			"NAME": "gamma",
+			"LABEL": "Gamma",
 			"TYPE": "float",
 			"DEFAULT": 1.0,
 			"MIN": 0.5,
@@ -26,6 +28,7 @@
 		},
 		{
 			"NAME": "tint",
+			"LABEL": "Tint",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -33,6 +36,7 @@
 		},
 		{
 			"NAME": "tintColor",
+			"LABEL": "Tint Color",
 			"TYPE": "color",
 			"DEFAULT": [
 				0.0,
@@ -43,6 +47,7 @@
 		},
 		{
 			"NAME": "alphaMode",
+			"LABEL": "Alpha Mode",
 			"TYPE": "bool",
 			"DEFAULT": 0.0
 		}

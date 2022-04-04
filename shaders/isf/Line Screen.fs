@@ -11,6 +11,7 @@
 		},
 		{
 			"NAME": "sharpness",
+			"LABEL": "Sharpness",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 10.0,
@@ -18,6 +19,7 @@
 		},
 		{
 			"NAME": "offset",
+			"LABEL": "Offset",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -25,6 +27,7 @@
 		},
 		{
 			"NAME": "angle",
+			"LABEL": "Angle",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -32,6 +35,7 @@
 		},
 		{
 			"NAME": "scale",
+			"LABEL": "Scale",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 2.0,
@@ -39,6 +43,7 @@
 		},
 		{
 			"NAME": "colorize",
+			"LABEL": "Colorize",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -46,6 +51,7 @@
 		},
 		{
 			"NAME": "fill",
+			"LABEL": "Fill",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,

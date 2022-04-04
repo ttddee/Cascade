@@ -13,6 +13,7 @@
             "MAX": 32,
             "MIN": 0.1,
             "NAME": "level",
+			"LABEL": "Level",
             "TYPE": "float"
         },
         {
@@ -20,6 +21,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "offset",
+			"LABEL": "Offset",
             "TYPE": "float"
         },
         {
@@ -27,6 +29,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "x_smear",
+			"LABEL": "X Smear",
             "TYPE": "float"
         },
         {
@@ -34,6 +37,7 @@
             "MAX": 1,
             "MIN": 0.01,
             "NAME": "y_smear",
+			"LABEL": "Y Smear",
             "TYPE": "float"
         },
         {
@@ -50,6 +54,7 @@
                 0
             ],
             "NAME": "center",
+			"LABEL": "Center",
             "TYPE": "point2D"
         },
         {
@@ -59,6 +64,7 @@
                 "Double"
             ],
             "NAME": "mode",
+			"LABEL": "Mode",
             "TYPE": "long",
             "VALUES": [
                 0,
@@ -73,7 +79,7 @@
 const float pi = 3.14159265359;
 
 #ifndef GL_ES
-float distance (vec2 inCenter, vec2 pt)
+float dist (vec2 inCenter, vec2 pt)
 {
 	float tmp = pow(inCenter.x-pt.x,2.0)+pow(inCenter.y-pt.y,2.0);
 	return pow(tmp,0.5);
@@ -85,7 +91,7 @@ void main() {
 	vec2 texSize = RENDERSIZE;
 	vec2 tc = uv * texSize;
 	vec2 modifiedCenter = center * RENDERSIZE;
-	float r = distance(modifiedCenter, tc);
+	float r = dist(modifiedCenter, tc);
 	float a = atan ((tc.y-modifiedCenter.y),(tc.x-modifiedCenter.x));
 	float radius = 1.0;
 	float radius_sized = radius * length(RENDERSIZE);

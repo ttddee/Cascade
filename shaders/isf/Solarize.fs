@@ -12,6 +12,7 @@
 		},
 		{
 			"NAME": "centerBrightness",
+			"LABEL": "Center Brightness",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -19,6 +20,7 @@
 		},
 		{
 			"NAME": "powerCurve",
+			"LABEL": "Power Curve",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 4.0,
@@ -26,6 +28,7 @@
 		},
 		{
 			"NAME": "colorize",
+			"LABEL": "Colorize",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -33,6 +36,7 @@
 		},
 		{
 			"NAME": "inverse",
+			"LABEL": "Invert",
 			"TYPE": "bool",
 			"DEFAULT": 1.0
 		}

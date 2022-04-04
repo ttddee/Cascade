@@ -14,6 +14,7 @@
             "MAX": 1.2,
             "MIN": 0.8,
             "NAME": "contrast",
+			"LABEL": "Contrast",
             "TYPE": "float"
         }
     ],

@@ -15,7 +15,7 @@
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
-			"DEFAULT": 0.0
+			"DEFAULT": 0.1
 		},
 		{
 			"NAME": "angle",
@@ -28,19 +28,13 @@
 		{
 			"NAME": "quality",
 			"LABEL": "Quality",
-			"VALUES": [
-				12,
-				8,
-				4,
-				2
-			],
 			"LABELS": [
-				"Low",
-				"Mid",
+				"Best",
 				"High",
-				"Best"
+				"Mid",
+				"Low"
 			],
-			"DEFAULT": 4,
+			"DEFAULT": 0,
 			"TYPE": "long"
 		}
 	]

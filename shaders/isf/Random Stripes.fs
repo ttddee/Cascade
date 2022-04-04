@@ -10,6 +10,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "width",
+			"LABEL": "Width",
             "TYPE": "float"
         },
         {
@@ -17,6 +18,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "offset",
+			"LABEL": "Offset",
             "TYPE": "float"
         },
         {
@@ -24,6 +26,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "hue",
+			"LABEL": "Hue",
             "TYPE": "float"
         },
         {
@@ -31,6 +34,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "saturation",
+			"LABEL": "Saturation",
             "TYPE": "float"
         },
         {
@@ -38,31 +42,37 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "brightness",
+			"LABEL": "Brightness",
             "TYPE": "float"
         },
         {
             "DEFAULT": 0,
             "NAME": "vertical",
+			"LABEL": "Vertical",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 1,
             "NAME": "randHue",
+			"LABEL": "Random Hue",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 0,
             "NAME": "randSaturation",
+			"LABEL": "Random Saturation",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 0,
             "NAME": "randBright",
+			"LABEL": "Random Brightness",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 0,
             "NAME": "randAlpha",
+			"LABEL": "Random Alpha",
             "TYPE": "bool"
         },
         {
@@ -70,6 +80,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rSeed",
+			"LABEL": "Seed",
             "TYPE": "float"
         }
     ],

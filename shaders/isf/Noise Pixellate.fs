@@ -1,4 +1,3 @@
-
 /*{
 	"CREDIT": "by VIDVOX",
 	"ISFVSN": "2",
@@ -12,6 +11,7 @@
 		},
 		{
 			"NAME": "cell_size",
+			"LABEL": "Cell Size",
 			"TYPE": "float",
 			"MIN": 0.001,
 			"MAX": 0.5,
@@ -19,6 +19,7 @@
 		},
 		{
 			"NAME": "sigGain",
+			"LABEL": "Sig Gain",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -26,6 +27,7 @@
 		},
 		{
 			"NAME": "mode",
+			"LABEL": "Mode",
 			"VALUES": [
 				0,
 				1
@@ -39,6 +41,7 @@
 		},
 		{
 			"NAME": "shape",
+			"LABEL": "Shape",
 			"VALUES": [
 				0,
 				1
@@ -52,14 +55,6 @@
 		}
 	]
 }*/
-
-#ifndef GL_ES
-float distance (vec2 center, vec2 pt)
-{
-	float tmp = pow(center.x-pt.x,2.0)+pow(center.y-pt.y,2.0);
-	return pow(tmp,0.5);
-}
-#endif
 
 float rand(vec2 co){
     return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);

@@ -54,7 +54,7 @@ void main ()	{
 	colors[7] = vec4(1.0,0.5,0.0,1.0);		//	orange
 	colors[8] = vec4(1.0,0.0,0.0,1.0);		//	red
 	
-	vec4 color = IMG_THIS_NORM_PIXEL(inputImage);
+	vec4 color = IMG_NORM_PIXEL(inputImage, pixelCoordsNorm);
 	vec4 colorL = IMG_NORM_PIXEL(inputImage, left_coord);
 	vec4 colorR = IMG_NORM_PIXEL(inputImage, right_coord);
 	vec4 colorA = IMG_NORM_PIXEL(inputImage, above_coord);

@@ -12,6 +12,7 @@
 		},
 		{
 			"NAME": "horizontal_magnitude",
+			"LABEL": "Horizontal",
 			"TYPE": "float",
 			"MIN": 0.00,
 			"MAX": 1.0,
@@ -19,6 +20,7 @@
 		},
 		{
 			"NAME": "vertical_magnitude",
+			"LABEL": "Vertical",
 			"TYPE": "float",
 			"MIN": 0.00,
 			"MAX": 1.0,
@@ -26,6 +28,7 @@
 		},
 		{
 			"NAME": "color_magnitude",
+			"LABEL": "Color",
 			"TYPE": "float",
 			"MIN": 0.00,
 			"MAX": 2.0,
@@ -33,6 +36,7 @@
 		},
 		{
 			"NAME": "mode",
+			"LABEL": "Mode",
 			"VALUES": [
 				0,
 				1,

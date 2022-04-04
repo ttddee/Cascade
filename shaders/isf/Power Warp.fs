@@ -14,6 +14,7 @@
             "MAX": 4,
             "MIN": 0.25,
             "NAME": "power_x",
+			"LABEL": "Power X",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 4,
             "MIN": 0.25,
             "NAME": "power_y",
+			"LABEL": "Power Y",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "shift_x",
+			"LABEL": "Shift X",
             "TYPE": "float"
         },
         {
@@ -35,6 +38,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "shift_y",
+			"LABEL": "Shift Y",
             "TYPE": "float"
         },
         {
@@ -44,6 +48,7 @@
                 "Style 2"
             ],
             "NAME": "mode_x",
+			"LABEL": "Mode X",
             "TYPE": "long",
             "VALUES": [
                 0,
@@ -57,6 +62,7 @@
                 "Style 2"
             ],
             "NAME": "mode_y",
+			"LABEL": "Mode Y",
             "TYPE": "long",
             "VALUES": [
                 0,

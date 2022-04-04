@@ -14,6 +14,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "intensity",
+			"LABEL": "Intensity",
             "TYPE": "float"
         },
         {
@@ -24,6 +25,7 @@
                 1
             ],
             "NAME": "color",
+			"LABEL": "Color",
             "TYPE": "color"
         }
     ],

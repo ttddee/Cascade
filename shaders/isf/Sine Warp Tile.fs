@@ -14,6 +14,7 @@
             "MAX": 0.5,
             "MIN": 0,
             "NAME": "size",
+			"LABEL": "Size",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rotation",
+			"LABEL": "Rotation",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -44,6 +47,7 @@
                 0
             ],
             "NAME": "shift",
+			"LABEL": "Shift",
             "TYPE": "point2D"
         }
     ],

@@ -11,6 +11,7 @@
 		 },
 		 {
 			 "NAME": "slidetop",
+			 "LABEL": "Slide Top",
 			 "TYPE": "float",
 			 "MIN": 0.0,
 			 "MAX": 2.0,
@@ -18,6 +19,7 @@
 		 },
 		 {
 			 "NAME": "shifttop",
+			 "LABEL": "Shift Top",
 			 "TYPE": "float",
 			 "MIN": 0.0,
 			 "MAX": 2.0,
@@ -25,6 +27,7 @@
 		 },
 		 {
 			 "NAME": "mirrorHorizontaltop",
+			 "LABEL": "Mirror Horizontal Top",
 			 "TYPE": "bool",
 			 "MIN": false,
 			 "MAX": true,
@@ -32,6 +35,7 @@
 		 },
 		 {
 			 "NAME": "mirrorVerticaltop",
+			 "LABEL": "Mirror Vertical Top",
 			 "TYPE": "bool",
 			 "MIN": false,
 			 "MAX": true,
@@ -39,6 +43,7 @@
 		 },
 		 {
 			 "NAME": "slidebot",
+			 "LABEL": "Slide Bottom",
 			 "TYPE": "float",
 			 "MIN": 0.0,
 			 "MAX": 2.0,
@@ -46,6 +51,7 @@
 		 },
 		 {
 			 "NAME": "shiftbot",
+			 "LABEL": "Shift Bottom",
 			 "TYPE": "float",
 			 "MIN": 0.0,
 			 "MAX": 2.0,
@@ -53,6 +59,7 @@
 		 },
 		 {
 			 "NAME": "mirrorHorizontalbot",
+			 "LABEL": "Mirror Horizontal Bottom",
 			 "TYPE": "bool",
 			 "MIN": false,
 			 "MAX": true,
@@ -60,6 +67,7 @@
 		 },
 		 {
 			 "NAME": "mirrorVerticalbot",
+			 "LABEL": "Mirror Vertical Bottom",
 			 "TYPE": "bool",
 			 "MIN": false,
 			 "MAX": true,

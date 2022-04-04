@@ -13,6 +13,7 @@
             "MAX": 1,
             "MIN": 0.01,
             "NAME": "seed",
+			"LABEL": "Seed",
             "TYPE": "float"
         },
         {
@@ -20,16 +21,19 @@
             "MAX": 1,
             "MIN": 0.01,
             "NAME": "cell_size",
+			"LABEL": "Cell Size",
             "TYPE": "float"
         },
         {
             "DEFAULT": 1,
             "NAME": "allow_flips_h",
+			"LABEL": "Allow Flips H",
             "TYPE": "bool"
         },
         {
             "DEFAULT": 0,
             "NAME": "allow_flips_v",
+			"LABEL": "Allow Flips V",
             "TYPE": "bool"
         }
     ],
@@ -59,13 +63,13 @@ void main()
 		float CellWidth = cell_size;
 		float CellHeight = cell_size;
 		
-		/*
-		float x1 = floor(xy.x / CellWidth)*CellWidth;
-		float x2 = clamp((ceil(xy.x / CellWidth)*CellWidth), 0.0, 1.0);
+
+		//float x1 = floor(xy.x / CellWidth)*CellWidth;
+		//float x2 = clamp((ceil(xy.x / CellWidth)*CellWidth), 0.0, 1.0);
 		// Top and bottom of tile
-		float y1 = floor(xy.y / CellHeight)*CellHeight;
-		float y2 = clamp((ceil(xy.y / CellHeight)*CellHeight), 0.0, 1.0);
-		*/
+		//float y1 = floor(xy.y / CellHeight)*CellHeight;
+		//float y2 = clamp((ceil(xy.y / CellHeight)*CellHeight), 0.0, 1.0);
+
 		
 		//	divide 1 by the cell width and cell height to determine the count
 		float rows = floor(1.0/CellHeight);

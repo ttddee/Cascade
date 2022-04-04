@@ -14,6 +14,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "centerX",
+			"LABEL": "Center X",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 2,
             "MIN": 0,
             "NAME": "scrollAmount",
+			"LABEL": "Scroll Amount",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rightScrollOffset",
+			"LABEL": "Right Scroll Offset",
             "TYPE": "float"
         },
         {
@@ -36,11 +39,13 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "midHeight",
+			"LABEL": "Mid Height",
             "TYPE": "float"
         },
         {
             "DEFAULT": 1,
             "NAME": "seamless",
+			"LABEL": "Seamless",
             "TYPE": "bool"
         }
     ],

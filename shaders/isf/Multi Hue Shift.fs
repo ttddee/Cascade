@@ -12,6 +12,7 @@
 		},
 		{
 			"NAME": "shiftLow",
+			"LABEL": "Shift Low",
 			"TYPE": "float",
 			"DEFAULT": 0.0,
 			"MIN": 0.0,
@@ -19,6 +20,7 @@
 		},
 		{
 			"NAME": "shiftMid",
+			"LABEL": "Shift Mid",
 			"TYPE": "float",
 			"DEFAULT": 0.0,
 			"MIN": 0.0,
@@ -26,6 +28,7 @@
 		},
 		{
 			"NAME": "shiftHigh",
+			"LABEL": "Shift High",
 			"TYPE": "float",
 			"DEFAULT": 0.0,
 			"MIN": 0.0,

@@ -127,10 +127,10 @@ vec4 ColorForPtIndex(vec2 index1, vec2 index2, float sizeAmount, float theSeed, 
 
 void main() {	
 	vec4		result = vec4(0.0);
-	vec2		thisPoint = vv_FragNormCoord - vec2(0.5);
+	vec2		thisPoint = isf_FragNormCoord - vec2(0.5);
 	float		inSpread = sizeSpread;
 	vec2		ptIndex = floor(thisPoint / inSpread);
-	vec4		original = IMG_THIS_NORM_PIXEL(inputImage);
+	vec4		original = IMG_NORM_PIXEL(inputImage, pixelCoordsNorm);
 	float		pointCount = MaxPointCount + float(sampleMode);
 	
 	if (sizeSpread > 0.0)	{		

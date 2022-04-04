@@ -12,7 +12,8 @@
         },
         {
             "DEFAULT": 1,
-            "NAME": "autoScan",
+            "NAME": "Auto Scan",
+			"LABEL": "Width",
             "TYPE": "bool"
         },
         {
@@ -20,6 +21,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "xScanline",
+			"LABEL": "X Scanline",
             "TYPE": "float"
         },
         {
@@ -27,6 +29,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "xScanline2",
+			"LABEL": "X Scanline 2",
             "TYPE": "float"
         },
         {
@@ -34,6 +37,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "yScanline",
+			"LABEL": "Y Scanline",
             "TYPE": "float"
         },
         {
@@ -41,6 +45,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "xScanlineSize",
+			"LABEL": "X Scanline Size",
             "TYPE": "float"
         },
         {
@@ -48,6 +53,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "xScanlineSize2",
+			"LABEL": "X Scanline Size 2",
             "TYPE": "float"
         },
         {
@@ -55,6 +61,7 @@
             "MAX": 1,
             "MIN": -1,
             "NAME": "yScanlineAmount",
+			"LABEL": "Y Scanline Amount",
             "TYPE": "float"
         },
         {
@@ -62,11 +69,13 @@
             "MAX": 3,
             "MIN": 0,
             "NAME": "grainLevel",
+			"LABEL": "Grain Level",
             "TYPE": "float"
         },
         {
             "DEFAULT": 1,
             "NAME": "scanFollow",
+			"LABEL": "Scan Follow",
             "TYPE": "bool"
         },
         {
@@ -74,6 +83,7 @@
             "MAX": 10,
             "MIN": 0,
             "NAME": "analogDistort",
+			"LABEL": "Analog Distort",
             "TYPE": "float"
         },
         {
@@ -81,6 +91,7 @@
             "MAX": 3,
             "MIN": 0,
             "NAME": "bleedAmount",
+			"LABEL": "Bleed Amount",
             "TYPE": "float"
         },
         {
@@ -88,6 +99,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "bleedDistort",
+			"LABEL": "Bleed Distort",
             "TYPE": "float"
         },
         {
@@ -95,6 +107,7 @@
             "MAX": 2,
             "MIN": 0,
             "NAME": "bleedRange",
+			"LABEL": "Bleed Range",
             "TYPE": "float"
         },
         {
@@ -105,6 +118,7 @@
                 1
             ],
             "NAME": "colorBleedL",
+			"LABEL": "Color Bleed L",
             "TYPE": "color"
         },
         {
@@ -115,6 +129,7 @@
                 1
             ],
             "NAME": "colorBleedC",
+			"LABEL": "Color Bleed C",
             "TYPE": "color"
         },
         {
@@ -125,14 +140,13 @@
                 1
             ],
             "NAME": "colorBleedR",
+			"LABEL": "Color Bleed R",
             "TYPE": "color"
         }
     ],
     "ISFVSN": "2"
 }
 */
-
-
 
 
 //	Based on https://github.com/staffantan/unity-vhsglitch

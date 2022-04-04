@@ -14,6 +14,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle1",
+			"LABEL": "Angle 1",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle2",
+			"LABEL": "Angle 2",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle3",
+			"LABEL": "Angle 3",
             "TYPE": "float"
         },
         {
@@ -35,6 +38,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle4",
+			"LABEL": "Angle 4",
             "TYPE": "float"
         },
         {
@@ -42,6 +46,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "radius1",
+			"LABEL": "Radius 1",
             "TYPE": "float"
         },
         {
@@ -49,6 +54,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "radius2",
+			"LABEL": "Radius 2",
             "TYPE": "float"
         },
         {
@@ -56,6 +62,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "radius3",
+			"LABEL": "Radius 3",
             "TYPE": "float"
         }
     ],

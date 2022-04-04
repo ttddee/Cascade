@@ -1,6 +1,5 @@
 /*{
     "CATEGORIES": [
-        "Retro",
         "Stylize",
         "Color Effect"
     ],

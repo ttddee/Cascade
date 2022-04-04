@@ -14,6 +14,7 @@
             "MAX": 2,
             "MIN": 0,
             "NAME": "size",
+			"LABEL": "Size",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 32,
             "MIN": 1,
             "NAME": "sides",
+			"LABEL": "Sides",
             "TYPE": "float"
         },
         {
@@ -28,6 +30,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "rotation",
+			"LABEL": "Rotation",
             "TYPE": "float"
         },
         {
@@ -35,6 +38,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -51,6 +55,7 @@
                 0
             ],
             "NAME": "slide1",
+			"LABEL": "Slide 1",
             "TYPE": "point2D"
         },
         {
@@ -67,6 +72,7 @@
                 0
             ],
             "NAME": "slide2",
+			"LABEL": "Slide 2",
             "TYPE": "point2D"
         },
         {
@@ -83,6 +89,7 @@
                 0
             ],
             "NAME": "shift",
+			"LABEL": "Shift",
             "TYPE": "point2D"
         }
     ],

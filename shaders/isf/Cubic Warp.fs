@@ -10,6 +10,7 @@
     },
     {
       "NAME": "level",
+	  "LABEL": "Level",
       "TYPE": "float",
       "MIN": 0,
       "MAX": 100,
@@ -17,6 +18,7 @@
     },
     {
       "NAME" : "center",
+	  "LABEL": "Center",
       "TYPE" : "point2D",
       "MAX" : [
         1,
@@ -35,16 +37,6 @@
 }*/
 
 const float pi = 3.14159265359;
-
-
-#ifndef GL_ES
-float distance (vec2 center, vec2 pt)
-{
-	float tmp = pow(center.x-pt.x,2.0)+pow(center.y-pt.y,2.0);
-	return pow(tmp,0.5);
-}
-#endif
-
 
 void main() {
 	vec2		loc;

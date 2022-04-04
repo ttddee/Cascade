@@ -13,6 +13,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "radius",
+			"LABEL": "Radius",
             "TYPE": "float"
         },
         {
@@ -20,6 +21,7 @@
             "MAX": 10,
             "MIN": -10,
             "NAME": "amount",
+			"LABEL": "Amount",
             "TYPE": "float"
         },
         {
@@ -36,6 +38,7 @@
                 0
             ],
             "NAME": "center",
+			"LABEL": "Center",
             "TYPE": "point2D"
         }
     ],

@@ -14,6 +14,7 @@
             "MAX": 256,
             "MIN": 1,
             "NAME": "gridSize",
+			"LABEL": "Grid Size",
             "TYPE": "float"
         },
         {
@@ -21,6 +22,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "smoothing",
+			"LABEL": "Smoothing",
             "TYPE": "float"
         }
     ],

@@ -1,85 +1,120 @@
 /*{
-    "CATEGORIES": [
-        "Dissolve"
-    ],
-    "CREDIT": "Automatically converted from https://www.github.com/gl-transitions/gl-transitions/tree/master/crosshatch.glsl",
-    "DESCRIPTION": "",
-    "INPUTS": [
-        {
-            "NAME": "startImage",
-            "TYPE": "image"
-        },
-        {
-            "NAME": "endImage",
-            "TYPE": "image"
-        },
-        {
-            "DEFAULT": 0,
-            "MAX": 1,
-            "MIN": 0,
-            "NAME": "progress",
-            "TYPE": "float"
-        },
-        {
-            "NAME": "fadeEdge",
-            "TYPE": "float"
-        },
-        {
-            "DEFAULT": [
-                0.5,
-                0.5
-            ],
-            "MAX": [
-                1,
-                1
-            ],
-            "MIN": [
-                0,
-                0
-            ],
-            "NAME": "center",
-            "TYPE": "point2D"
-        },
-        {
-            "DEFAULT": 3,
-            "MAX": 10,
-            "MIN": 0,
-            "NAME": "threshold",
-            "TYPE": "float"
-        }
-    ],
-    "ISFVSN": "2",
-    "VSN": ""
-}
-*/
+	"CREDIT": "by v002",
+	"ISFVSN": "2",
+	"CATEGORIES": [
+		"Halftone Effect", "v002"
+	],
+	"INPUTS": [
+		{
+			"NAME": "inputImage",
+			"TYPE": "image"
+		},
+		{
+			"NAME": "invert",
+			"LABEL": "Invert",
+			"TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 1.0,
+			"DEFAULT": 0.0
+		},
+		{
+			"NAME": "separation",
+			"LABEL": "Separation",
+			"TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 0.5,
+			"DEFAULT": 0.25
+		},
+		{
+			"NAME": "greyscale",
+			"LABEL": "Greyscale",
+			"TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 1.0,
+			"DEFAULT": 0.75
+		},
+		{
+			"NAME": "thickness",
+			"LABEL": "Thickness",
+			"TYPE": "float",
+			"MIN": 0.5,
+			"MAX": 1.0,
+			"DEFAULT": 0.75
+		},
+		{
+			"NAME": "front",
+			"LABEL": "Front",
+			"TYPE": "color",
+			"DEFAULT": [
+				0.5,
+				0.0,
+				0.25,
+				1.0
+			]
+		},
+		{
+			"NAME": "back",
+			"LABEL": "Back",
+			"TYPE": "color",
+			"DEFAULT": [
+				0.2,
+				0.75,
+				0.5,
+				1.0
+			]
+		}
+	]
+}*/
+
+
+//Original Source
+//http://learningwebgl.com/blog/?p=2858
+
+//	Based on https://github.com/v002/v002-Half-Tones/
 
 
 
-vec4 getFromColor(vec2 inUV)	{
-	return IMG_NORM_PIXEL(startImage, inUV);
-}
-vec4 getToColor(vec2 inUV)	{
-	return IMG_NORM_PIXEL(endImage, inUV);
-}
+
+const vec4 lumacoeff = vec4(0.2126, 0.7152, 0.0722, 0.0);
 
 
+void main()
+{
+    vec4 color = IMG_THIS_PIXEL(inputImage);
+    float lum = dot(color, lumacoeff);
+    vec2 coord = gl_FragCoord.xy;
+    
+    vec4 colora = mix(front, back, invert);
+    vec4 colorb = mix(back, front, invert);
+    
+    colora.a *= color.a;
+    colorb.a *= color.a;
+    
+    vec4 cout = mix(color,colora, greyscale);
 
-// License: MIT
-// Author: pthrasher
-// adapted by gre from https://gist.github.com/pthrasher/04fd9a7de4012cbb03f6
-
-
-float rand(vec2 co) {
-  return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
-}
-vec4 transition(vec2 p) {
-  float dist = distance(center, p) / threshold;
-  float r = progress - min(rand(vec2(p.y, 0.0)), rand(vec2(0.0, p.x)));
-  return mix(getFromColor(p), getToColor(p), mix(0.0, mix(step(dist, r), 1.0, smoothstep(1.0-fadeEdge, 1.0, progress)), smoothstep(0.0, fadeEdge, progress)));    
-}
-
-
-
-void main()	{
-	gl_FragColor = transition(isf_FragNormCoord.xy);
+    gl_FragColor = colorb;
+    
+    if (lum > 1.00)
+    {
+        if (mod(coord.x + coord.y, thickness) >= separation)
+            gl_FragColor = cout;
+    }
+    
+    if (lum > 0.75)
+    {
+        if (mod(coord.x - coord.y, thickness) >= separation )
+            gl_FragColor = cout;
+    }
+    
+    if (lum > 0.50)
+    {
+        if (mod(coord.x + coord.y - (thickness * 0.5), thickness) >= separation)
+            gl_FragColor = cout;
+    }
+    
+    if (lum > 0.3)
+    {
+        if (mod(coord.x - coord.y - (thickness * 0.5), thickness) >= separation)
+            gl_FragColor = cout;
+    }
 }

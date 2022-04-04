@@ -11,7 +11,7 @@
             "MAX": 60,
             "MIN": 1,
             "NAME": "lineCount",
-            "TYPE": "float"
+            "TYPE": "int"
         },
         {
             "DEFAULT": 0.025,
@@ -167,35 +167,9 @@ float distance_from_point_to_line(vec2 pt, vec2 l1, vec2 l2){
 		float perp_intercept2 = right_line_pt.y - perpm * right_line_pt.x;
 		
 		if (m > 0.0)	{
-			/*
-			if (is_point_above_line(pt, perpm, perp_intercept1)==false)	{
-				//returnMe = distance(pt, left_line_pt);
-				returnMe = -1.0;
-			}
-			else if (is_point_above_line(pt, perpm, perp_intercept2)==true)	{
-				//returnMe = distance(pt, right_line_pt);
-				returnMe = -1.0;
-			}
-			else	{
-				returnMe = abs(a * pt.x - b * pt.y + l2.x * l1.y - l2.y * l1.x) / sqrt(a*a + b*b);
-			}
-			*/
 			returnMe = abs(a * pt.x - b * pt.y + l2.x * l1.y - l2.y * l1.x) / sqrt(a*a + b*b);
 		}
 		else	{
-			/*
-			if (is_point_above_line(pt, perpm, perp_intercept1)==true)	{
-				//returnMe = distance(pt, left_line_pt);
-				returnMe = -1.0;
-			}
-			else if (is_point_above_line(pt, perpm, perp_intercept2)==false)	{
-				//returnMe = distance(pt, right_line_pt);
-				returnMe = -1.0;
-			}
-			else	{
-				returnMe = abs(a * pt.x - b * pt.y + l2.x * l1.y - l2.y * l1.x) / sqrt(a*a + b*b);
-			}
-			*/
 			returnMe = abs(a * pt.x - b * pt.y + l2.x * l1.y - l2.y * l1.x) / sqrt(a*a + b*b);
 		}
 	}

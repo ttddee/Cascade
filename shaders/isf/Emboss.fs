@@ -11,6 +11,7 @@
 		},
 		{
 			"NAME": "intensity",
+			"LABEL": "Intensity",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 10.0,
@@ -18,6 +19,7 @@
 		},
 		{
 			"NAME": "colorize",
+			"LABEL": "Colorize",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 1.0,
@@ -25,6 +27,7 @@
 		},
 		{
 			"NAME": "brightness",
+			"LABEL": "Brightness",
 			"TYPE": "float",
 			"MIN": 0.25,
 			"MAX": 0.75,

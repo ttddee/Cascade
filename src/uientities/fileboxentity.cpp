@@ -51,7 +51,7 @@ FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     ui->setupUi(this);
 
 #ifdef QT_DEBUG
-    //addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
+    addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
 #endif
 
     connect(ui->loadButton, &QPushButton::clicked,

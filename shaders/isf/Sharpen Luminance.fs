@@ -11,6 +11,7 @@
 		},
 		{
 			"NAME": "intensity",
+			"LABEL": "Intensity",
 			"TYPE": "float",
 			"MIN": 0.0,
 			"MAX": 2.0,

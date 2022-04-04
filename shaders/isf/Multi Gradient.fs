@@ -6,11 +6,12 @@
   "ISFVSN" : "2",
   "INPUTS" : [
   	{
-  	  "NAME" : "lookupImage",
+  	  "NAME" : "inputImage",
   	  "TYPE" : "image"
   	},
     {
       "NAME" : "frequency1",
+	  "LABEL": "Frequency 1",
       "TYPE" : "float",
       "MAX" : 16,
       "DEFAULT" : 1.0,
@@ -18,6 +19,7 @@
     },
     {
       "NAME" : "phase1",
+	  "LABEL": "Phase 1",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -25,6 +27,7 @@
     },
     {
       "NAME" : "amplitude1",
+	  "LABEL": "Amplitude 1",
       "TYPE" : "float",
       "MAX" : 2,
       "DEFAULT" : 1,
@@ -32,6 +35,7 @@
     },
     {
       "NAME" : "offset1",
+	  "LABEL": "Offset 1",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -39,6 +43,7 @@
     },
     {
       "NAME" : "angle1",
+	  "LABEL": "Angle 1",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -53,6 +58,7 @@
         4
       ],
       "NAME" : "curve1",
+	  "LABEL": "Curve 1",
       "TYPE" : "long",
       "DEFAULT" : 0,
       "LABELS" : [
@@ -65,6 +71,7 @@
     },
     {
       "NAME" : "mixLevel1",
+	  "LABEL": "Mix Level 1",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 1,
@@ -72,6 +79,7 @@
     },
     {
       "NAME" : "startColor1",
+	  "LABEL": "Start Color 1",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -82,6 +90,7 @@
     },
     {
       "NAME" : "endColor1",
+	  "LABEL": "End Color 1",
       "TYPE" : "color",
       "DEFAULT" : [
         1,
@@ -92,6 +101,7 @@
     },
     {
       "NAME" : "frequency2",
+	  "LABEL": "Frequency 2",
       "TYPE" : "float",
       "MAX" : 16,
       "DEFAULT" : 1.0,
@@ -99,6 +109,7 @@
     },
     {
       "NAME" : "phase2",
+	  "LABEL": "Phase 2",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -106,6 +117,7 @@
     },
     {
       "NAME" : "amplitude2",
+	  "LABEL": "Amplitude 2",
       "TYPE" : "float",
       "MAX" : 2,
       "DEFAULT" : 1,
@@ -113,6 +125,7 @@
     },
     {
       "NAME" : "offset2",
+	  "LABEL": "Offset 2",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -120,6 +133,7 @@
     },
     {
       "NAME" : "angle2",
+	  "LABEL": "Angle 2",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.75,
@@ -134,6 +148,7 @@
         4
       ],
       "NAME" : "curve2",
+	  "LABEL": "Curve 2",
       "TYPE" : "long",
       "DEFAULT" : 0,
       "LABELS" : [
@@ -146,6 +161,7 @@
     },
     {
       "NAME" : "mixLevel2",
+	  "LABEL": "Mix Level 2",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 1,
@@ -153,6 +169,7 @@
     },
     {
       "NAME" : "startColor2",
+	  "LABEL": "Start Color 2",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -163,6 +180,7 @@
     },
     {
       "NAME" : "endColor2",
+	  "LABEL": "End Color 2",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -173,6 +191,7 @@
     },
     {
       "NAME" : "frequency3",
+	  "LABEL": "Frequency 3",
       "TYPE" : "float",
       "MAX" : 16,
       "DEFAULT" : 2.0,
@@ -180,6 +199,7 @@
     },
     {
       "NAME" : "phase3",
+	  "LABEL": "Phase 3",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -187,6 +207,7 @@
     },
     {
       "NAME" : "amplitude3",
+	  "LABEL": "Amplitude 3",
       "TYPE" : "float",
       "MAX" : 2,
       "DEFAULT" : 1,
@@ -194,6 +215,7 @@
     },
     {
       "NAME" : "offset3",
+	  "LABEL": "Offset 3",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -201,6 +223,7 @@
     },
     {
       "NAME" : "angle3",
+	  "LABEL": "Angle 3",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0,
@@ -215,6 +238,7 @@
         4
       ],
       "NAME" : "curve3",
+	  "LABEL": "Curve 3",
       "TYPE" : "long",
       "DEFAULT" : 0,
       "LABELS" : [
@@ -227,6 +251,7 @@
     },
     {
       "NAME" : "mixLevel3",
+	  "LABEL": "Mix Level 3",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 1,
@@ -234,6 +259,7 @@
     },
     {
       "NAME" : "startColor3",
+	  "LABEL": "Start Color 3",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -244,6 +270,7 @@
     },
     {
       "NAME" : "endColor3",
+	  "LABEL": "End Color 3",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -283,7 +310,7 @@ float doMath(int curve, float freq, float phase, float val)	{
 	}
 	else if (curve == 4)	{
 		vec2	loc = mod(returnMe+isf_FragNormCoord,1.0);
-		vec4	tmp = IMG_NORM_PIXEL(lookupImage,loc);
+		vec4	tmp = IMG_NORM_PIXEL(inputImage,loc);
 		returnMe = (tmp.r+tmp.g+tmp.b)*tmp.a/3.0;
 	}
 	return returnMe;	

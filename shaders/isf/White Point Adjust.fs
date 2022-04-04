@@ -12,6 +12,7 @@
 		},
 		{
 			"NAME": "newWhite",
+			"LABEL": "New White",
 			"TYPE": "color",
 			"DEFAULT": [
 				1.0,

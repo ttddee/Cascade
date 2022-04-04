@@ -8,6 +8,7 @@
   "INPUTS" : [
     {
       "NAME" : "brickSize",
+	  "LABEL": "Brick Size",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.2,
@@ -15,6 +16,7 @@
     },
     {
       "NAME" : "fillSize",
+	  "LABEL": "Fill Size",
       "TYPE" : "float",
       "MAX" : 1,
       "DEFAULT" : 0.9,
@@ -22,6 +24,7 @@
     },
     {
       "NAME" : "brickOffset",
+	  "LABEL": "Brick Offset",
       "TYPE" : "point2D",
       "MAX" : [
         1,
@@ -38,6 +41,7 @@
     },
     {
       "NAME" : "fillColor",
+	  "LABEL": "Fill Color",
       "TYPE" : "color",
       "DEFAULT" : [
         0,
@@ -48,6 +52,7 @@
     },
     {
       "NAME" : "brickColor",
+	  "LABEL": "Brick Color",
       "TYPE" : "color",
       "DEFAULT" : [
         1,

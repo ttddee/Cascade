@@ -18,6 +18,7 @@
                 0
             ],
             "NAME": "pt1",
+			"LABEL": "Point 1",
             "TYPE": "point2D"
         },
         {
@@ -34,6 +35,7 @@
                 0
             ],
             "NAME": "pt2",
+			"LABEL": "Point 2",
             "TYPE": "point2D"
         },
         {
@@ -50,6 +52,7 @@
                 0
             ],
             "NAME": "pt3",
+			"LABEL": "Point 3",
             "TYPE": "point2D"
         },
         {
@@ -60,6 +63,7 @@
                 1
             ],
             "NAME": "fillColor",
+			"LABEL": "Fill Color",
             "TYPE": "color"
         },
         {
@@ -70,6 +74,7 @@
                 0
             ],
             "NAME": "bgColor",
+			"LABEL": "BG Color",
             "TYPE": "color"
         }
     ],

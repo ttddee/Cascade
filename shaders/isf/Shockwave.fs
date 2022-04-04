@@ -11,6 +11,7 @@
     },
     {
       "NAME": "positionVal",
+	  "LABEL": "Position",
       "TYPE": "float",
       "MIN": 0,
       "MAX": 1,
@@ -18,6 +19,7 @@
     },
     {
       "NAME": "distortion",
+	  "LABEL": "Distortion",
       "TYPE": "float",
       "MIN": 1,
       "MAX": 20,
@@ -25,6 +27,7 @@
     },
     {
       "NAME": "magnitude",
+	  "LABEL": "Magnitude",
       "TYPE": "float",
       "MIN": 0,
       "MAX": 0.2,
@@ -32,6 +35,7 @@
     },
     {
       "NAME" : "center",
+	  "LABEL": "Center",
       "TYPE" : "point2D",
       "MAX" : [
         1,
@@ -48,6 +52,7 @@
     },
     {
       "NAME": "background",
+	  "LABEL": "Background",
       "TYPE": "bool",
       "DEFAULT": 1
     }

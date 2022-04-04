@@ -9,6 +9,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "spacing",
+			"LABEL": "Spacing",
             "TYPE": "float"
         },
         {
@@ -16,6 +17,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "line_width",
+			"LABEL": "Line Width",
             "TYPE": "float"
         },
         {
@@ -23,6 +25,7 @@
             "MAX": 1,
             "MIN": -1,
             "NAME": "angle",
+			"LABEL": "Angle",
             "TYPE": "float"
         },
         {
@@ -30,6 +33,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "shift",
+			"LABEL": "Shift",
             "TYPE": "float"
         },
         {
@@ -40,6 +44,7 @@
                 1
             ],
             "NAME": "color1",
+			"LABEL": "Color 1",
             "TYPE": "color"
         },
         {
@@ -50,6 +55,7 @@
                 1
             ],
             "NAME": "color2",
+			"LABEL": "Color 2",
             "TYPE": "color"
         }
     ],

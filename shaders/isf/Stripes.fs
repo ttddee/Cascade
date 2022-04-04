@@ -7,16 +7,23 @@
         {
             "DEFAULT": 0.25,
             "NAME": "width",
-            "TYPE": "float"
+			"LABEL": "Width",
+            "TYPE": "float",
+			"MIN": 0.01,
+			"MAX": 1.0
         },
         {
             "DEFAULT": 0,
             "NAME": "offset",
-            "TYPE": "float"
+			"LABEL": "Offset",
+            "TYPE": "float",
+			"MIN": 0.01,
+			"MAX": 1.0
         },
         {
             "DEFAULT": 0,
             "NAME": "vertical",
+			"LABEL": "Vertical",
             "TYPE": "bool"
         },
         {
@@ -27,6 +34,7 @@
                 1
             ],
             "NAME": "color1",
+			"LABEL": "Color 1",
             "TYPE": "color"
         },
         {
@@ -37,6 +45,7 @@
                 1
             ],
             "NAME": "color2",
+			"LABEL": "Color 2",
             "TYPE": "color"
         },
         {
@@ -44,6 +53,7 @@
             "MAX": 1,
             "MIN": 0,
             "NAME": "splitPos",
+			"LABEL": "Split Position",
             "TYPE": "float"
         }
     ],

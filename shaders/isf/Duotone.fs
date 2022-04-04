@@ -11,18 +11,23 @@
 		},
 		{
 			"NAME": "threshold",
+			"LABEL": "Threshold",
 			"TYPE": "float",
+			"MIN": 0.0,
+			"MAX": 1.0,
 			"DEFAULT": 0.50
 		},
 		{
 			"NAME": "softness",
+			"LABEL": "Softness",
 			"TYPE": "float",
 			"MIN": 0.0,
-			"MAX": 1,
+			"MAX": 1.0,
 			"DEFAULT": 0.0
 		},
 		{
 			"NAME": "brightColor",
+			"LABEL": "Bright Color",
 			"TYPE": "color",
 			"DEFAULT": [
 				1.0,
@@ -33,6 +38,7 @@
 		},
 		{
 			"NAME": "darkColor",
+			"LABEL": "Dark Color",
 			"TYPE": "color",
 			"DEFAULT": [
 				0.0,
@@ -68,18 +74,5 @@ void main() {
 		else	{
 			gl_FragColor = mix(darkColor, midColor, smoothstep(threshold-((1.0-threshold)*softness), threshold, luminance));
 		}
-		
-		/*
-		//	'softness' is the absolute width (in luminance) on either side of the threshold to be interpolated
-		//	e.g.: if softness is 0.25 and threshold is 0.5, vals < 0.25 are "dark", vals from 0.25-0.75 are "smoothed", and vals > 0.75 are "light"
-		vec4		midColor = (brightColor+darkColor)/vec4(2.0);
-		vec4		dstPixel;
-		if (luminance>=threshold)	{
-			gl_FragColor = mix(midColor, brightColor, smoothstep(threshold, threshold+softness, luminance));
-		}
-		else	{
-			gl_FragColor = mix(darkColor, midColor, smoothstep(threshold-softness, threshold, luminance));
-		}
-		*/
 	}
 }
