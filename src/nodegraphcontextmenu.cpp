@@ -78,7 +78,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         {
             auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
             isfCategories[cat] = submenu;
-            submenu->setFixedWidth(150);
+            submenu->setFixedWidth(190);
         }
     }
 
