@@ -90,7 +90,7 @@ void ISFManager::setUp()
             // Convert and compile shader
             QString shader = convertISFShaderToCompute(split.last(), jsonData);
 
-            //if (name == "ISF Noise Pixellate")
+            //if (name == "ISF VHS Glitch")
                 //CS_LOG_INFO(shader);
 
             if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
@@ -111,7 +111,7 @@ void ISFManager::setUp()
             }
             else
             {
-                CS_LOG_WARNING("Compilation failed for:" + name);
+                CS_LOG_INFO("Compilation failed for:" + name);
                 CS_LOG_WARNING(QString::fromStdString(compiler.getError()));
                 failure++;
             }
@@ -147,11 +147,11 @@ const int ISFManager::getRenderpassesFromJson(
         const QJsonObject &json) const
 {
     int passes = 1;
-    QJsonArray passesArray = json.value("PASSES").toArray();
-    for (auto pass : passesArray)
-    {
-        passes++;
-    }
+//    QJsonArray passesArray = json.value("PASSES").toArray();
+//    for (auto pass : passesArray)
+//    {
+//        passes++;
+//    }
     return passes;
 }
 

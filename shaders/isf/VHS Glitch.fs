@@ -12,8 +12,8 @@
         },
         {
             "DEFAULT": 1,
-            "NAME": "Auto Scan",
-			"LABEL": "Width",
+            "NAME": "autoScan",
+			"LABEL": "Auto Scan",
             "TYPE": "bool"
         },
         {
