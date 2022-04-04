@@ -187,7 +187,7 @@ void CsSliderBoxEntity::mouseMoveEvent(QMouseEvent* event)
     {
         float dx = QCursor::pos().x() - lastPos.x();
         int lastValue = ui->slider->value();
-        float offset = dx * (ui->slider->singleStep() * ((ui->slider->maximum() - ui->slider->minimum()) / 500.0));
+        float offset = dx * (ui->slider->singleStep() * ((ui->slider->maximum() - ui->slider->minimum()) / 200.0));
         if (offset > 0.0 && offset  < 1.0)
             offset = 1.0;
         else if (offset > -1.0 && offset < 0.0)
