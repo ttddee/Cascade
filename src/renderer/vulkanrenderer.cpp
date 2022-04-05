@@ -495,7 +495,6 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
         CS_LOG_WARNING("There was a problem reading the image from disk.");
         CS_LOG_WARNING(QString::fromStdString(cpuImage->geterror()));
     }
-
     // Add alpha channel if it doesn't exist
     if (cpuImage->nchannels() == 3)
     {
@@ -536,10 +535,8 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
                 loadImageStaging))
     {
         CS_LOG_WARNING("Failed to write linear image");
-        CS_LOG_CONSOLE("Failed to write linear image");
         return false;
     }
-
     return true;
 }
 

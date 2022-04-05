@@ -26,6 +26,7 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
     src/aboutdialog.cpp \
+    src/benchmark.cpp \
     src/codeeditor/QCXXHighlighter.cpp \
     src/codeeditor/QCodeEditor.cpp \
     src/codeeditor/QFramedTextAttribute.cpp \

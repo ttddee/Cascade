@@ -200,11 +200,11 @@ void RenderManager::renderNode(NodeBase *node)
         }
     }
     // A node that has an output size different to the size of its input
-    if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
+    else if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
     {
         renderer->processNode(node, nullptr, nullptr, node->getTargetSize());
     }
-    if (node->getUpstreamNodeBack() && node->needsUpdate)
+    else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
         CsImage* inputImageBack = nullptr;
         CsImage* inputImageFront = nullptr;

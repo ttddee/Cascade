@@ -21,6 +21,7 @@
 
 #include "../log.h"
 #include "renderconfig.h"
+#include "../benchmark.h"
 
 namespace Cascade::Renderer {
 
@@ -62,7 +63,6 @@ CsImage::CsImage(
                 {},
                 {},
                 currentLayout);
-
     image = device->createImageUnique(imageInfo).value;
 
 #ifdef QT_DEBUG
@@ -96,7 +96,6 @@ CsImage::CsImage(
     }
 
     vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
-
     memory = device->allocateMemoryUnique(allocInfo).value;
 
 #ifdef QT_DEBUG

@@ -91,7 +91,6 @@ void FileBoxEntity::addEntries(const QStringList& entries)
             item->setForeground(QBrush(QColor(229, 70, 61)));
         }
     }
-    emit valueChanged();
 }
 
 void FileBoxEntity::deleteCurrentEntry()

@@ -17,25 +17,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef BENCHMARK_H
-#define BENCHMARK_H
-
-#include <chrono>
-#include <string>
-#include <iostream>
-
-#include "log.h"
+#include "benchmark.h"
 
 namespace Cascade {
 
-class Profiler
+std::chrono::steady_clock::time_point timerBegin;
+std::chrono::steady_clock::time_point timerEnd;
+
+void Profiler::startTimer()
 {
-public:
-    static void startTimer();
-
-    static void stopTimerAndPrint(const std::string& s);
-};
-
+    timerBegin = std::chrono::steady_clock::now();
 }
 
-#endif // BENCHMARK_H
+void Profiler::stopTimerAndPrint(const std::string &s)
+{
+    timerEnd = std::chrono::steady_clock::now();
+
+    QString output = QString::fromStdString(s);
+    output.append(" ");
+    output.append(QString::number(std::chrono::duration_cast<std::chrono::milliseconds>(timerEnd - timerBegin).count()));
+    output.append("[milliseconds]");
+
+    CS_LOG_INFO(output);
+}
+
+}
