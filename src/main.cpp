@@ -23,6 +23,7 @@
 #include <QFontDatabase>
 #include <QFile>
 #include <QDir>
+#include <QSplashScreen>
 
 #include "log.h"
 
@@ -37,12 +38,6 @@ int main(int argc, char *argv[])
 
     QApplication a(argc, argv);
 
-    QString title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
-
-    Cascade::Log::Init();
-
-    CS_LOG_INFO(title);
-
     // Load font
     int fontId = QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Regular.ttf");
     QFontDatabase::addApplicationFont(":/fonts/opensans/OpenSans-Bold.ttf");
@@ -56,6 +51,19 @@ int main(int argc, char *argv[])
     f.open(QFile::ReadOnly);
     QString style = QLatin1String(f.readAll());
     a.setStyleSheet(style);
+
+    // Splash
+    QPixmap splashImage(":/design/cascade-splash.png");
+    QSplashScreen splash(splashImage);
+    splash.setWindowFlag(Qt::WindowStaysOnTopHint);
+    splash.show();
+    splash.showMessage("Starting up...", Qt::AlignCenter, Qt::white);
+
+    QString title = QString("Cascade Image Editor - v%1.%2.%3").arg(VERSION_MAJOR).arg(VERSION_MINOR).arg(VERSION_BUILD);
+
+    Cascade::Log::Init();
+
+    CS_LOG_INFO(title);
 
     // Copy the OCIO config from the resources to disk.
     // We do this so that they end up in the right place when
@@ -84,6 +92,8 @@ int main(int argc, char *argv[])
 
     w.setWindowTitle(title);
     w.show();
+
+    splash.finish(&w);
 
     return a.exec();
 }
