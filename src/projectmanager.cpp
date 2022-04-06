@@ -79,7 +79,7 @@ const bool ProjectManager::checkIfDiscardChanges()
 
 void ProjectManager::loadProject()
 {
-    if (checkIfDiscardChanges())
+    if (checkIfDiscardChanges() || !projectIsDirty)
     {
         QFileDialog dialog(nullptr);
         dialog.setFileMode(QFileDialog::ExistingFile);

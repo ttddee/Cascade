@@ -197,10 +197,12 @@ void NodeGraph::deleteNode(NodeBase *node)
     if (node == viewedNode)
     {
         emit requestClearScreen();
+        viewedNode = nullptr;
     }
-    if (node == selectedNode)
+    if (node == activeNode)
     {
         emit requestClearProperties();
+        activeNode = nullptr;
     }
 
     delete node;

@@ -115,18 +115,22 @@ private:
 
     float viewScale = 1.0f;
 
+    // The selected node
     NodeBase* selectedNode = nullptr;
+    // The node with active properties
     NodeBase* activeNode = nullptr;
+    // The node that is being displayed
     NodeBase* viewedNode = nullptr;
+
     Connection* openConnection = nullptr;
 
     const int viewWidth = 60000;
     const int viewHeight = 60000;
 
 signals:
-    void requestNodeDisplay(NodeBase* node);
+    void requestNodeDisplay(Cascade::NodeBase* node);
     void requestNodeFileSave(
-            NodeBase* node,
+            Cascade::NodeBase* node,
             const QString& path,
             const QMap<std::string, std::string>& attributes,
             const bool isBatch = false,
@@ -136,17 +140,17 @@ signals:
     void projectIsDirty();
 
 public slots:
-    void handleNodeLeftClicked(NodeBase* node);
-    void handleNodeDoubleClicked(NodeBase* node);
-    void handleNodeOutputLeftClicked(NodeOutput* nodeOut);
-    void handleNodeUpdateRequest(NodeBase* node);
+    void handleNodeLeftClicked(Cascade::NodeBase* node);
+    void handleNodeDoubleClicked(Cascade::NodeBase* node);
+    void handleNodeOutputLeftClicked(Cascade::NodeOutput* nodeOut);
+    void handleNodeUpdateRequest(Cascade::NodeBase* node);
     void handleFileSaveRequest(
-            NodeBase* node,
+            Cascade::NodeBase* node,
             const QString& path,
             const QString& fileType,
             const QMap<std::string, std::string>& attributes,
             const bool batchRender);
-    void handleConnectedNodeInputClicked(Connection* c);
+    void handleConnectedNodeInputClicked(Cascade::Connection* c);
 };
 
 } // namespace Cascade

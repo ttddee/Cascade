@@ -168,6 +168,7 @@ enum NodeType
     NODE_TYPE_LEVELS,
     NODE_TYPE_MERGE,
     NODE_TYPE_NOISE,
+    NODE_TYPE_OLD_FILM,
     NODE_TYPE_PIXELATE,
     NODE_TYPE_PREMULT,
     NODE_TYPE_READ,
@@ -214,6 +215,7 @@ const static QMap<NodeType, QString> nodeStrings =
     { NODE_TYPE_LEVELS, "Levels" },
     { NODE_TYPE_MERGE, "Merge" },
     { NODE_TYPE_NOISE, "Noise" },
+    { NODE_TYPE_OLD_FILM, "Old Film" },
     { NODE_TYPE_PIXELATE, "Pixelate" },
     { NODE_TYPE_PREMULT, "Premult" },
     { NODE_TYPE_READ, "Read Image" },
@@ -1032,6 +1034,30 @@ const static NodeInitProperties bloomNodeInitProperties =
     1
 };
 
+const static NodeInitProperties oldFilmNodeInitProperties =
+{
+    NODE_TYPE_OLD_FILM,
+    nodeStrings[NODE_TYPE_OLD_FILM],
+    NODE_CATEGORY_EFFECTS,
+    { NODE_INPUT_TYPE_RGB_BACK },
+    { NODE_OUTPUT_TYPE_RGB },
+    {
+        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_OLD_FILM] },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Lines Seed,0.01,1.0,0.01,0.7" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Lines Intensity,0.0,1.0,0.01,0.5" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blotches Seed,0.01,1.0,0.01,0.7" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blotches Intensity,0.0,1.0,0.01,0.5" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Vignette Intensity,0.0,1.0,0.01,0.5" },
+        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Grain Intensity,0.0,1.0,0.01,0.25" },
+    },
+    FRONT_INPUT_ALWAYS_CLEAR,
+    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
+    ALPHA_INPUT_ALWAYS_CLEAR,
+    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    ":/shaders/oldfilm_comp.spv",
+    1
+};
+
 // TODO: Use std::map instead of QMap, then we don't need the lookup function
 [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
 {
@@ -1182,6 +1208,10 @@ const static NodeInitProperties bloomNodeInitProperties =
     else if(t == NODE_TYPE_BLOOM)
     {
         return bloomNodeInitProperties;
+    }
+    else if(t == NODE_TYPE_OLD_FILM)
+    {
+        return oldFilmNodeInitProperties;
     }
     throw std::runtime_error("Node type not found.");
 }

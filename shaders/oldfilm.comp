@@ -1,0 +1,141 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+// Adpated from https://www.shadertoy.com/view/Xdl3D8
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D outputImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float linesSeed;
+    layout(offset = 4) float linesIntensity;
+	layout(offset = 8) float blotchesSeed;
+	layout(offset = 12) float blotchesIntensity;
+	layout(offset = 16) float vignetteIntensity;
+	layout(offset = 20) float grainIntensity;
+} sb;
+
+ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+ivec2 imgSize = imageSize(inputBack);
+vec2 pixelCoordsNorm = vec2(float(pixelCoords.x) / imgSize.x, float(pixelCoords.y) / imgSize.y);
+
+vec4 pixelBack = imageLoad(inputBack, pixelCoords).rgba;
+vec4 pixelFront = imageLoad(inputFront, pixelCoords).rgba;
+
+#define FREQUENCY 15.0
+
+vec2 uv = pixelCoordsNorm;
+
+float rand(vec2 co){
+    return fract(sin(dot(co.xy ,vec2(12.9898,78.233))) * 43758.5453);
+}
+
+float rand(float c){
+    return rand(vec2(c,1.0));
+}
+
+float randomLine(float seed)
+{
+    float b = 0.01 * rand(seed);
+    float a = rand(seed+1.0);
+    float c = rand(seed+2.0) - 0.5;
+    float mu = rand(seed+3.0);
+	
+    float l = 1.0;
+	
+    if ( mu > 0.2)
+        l = pow(  abs(a * uv.x + b * uv.y + c ), 1.0/8.0 );
+    else
+        l = 2.0 - pow( abs(a * uv.x + b * uv.y + c), 1.0/8.0 );				
+	
+    return mix(abs(1.0 - sb.linesIntensity), 1.0, l);
+}
+
+// Generate some blotches.
+float randomBlotch(float seed)
+{
+    float x = rand(seed);
+    float y = rand(seed+1.0);
+    float s = 0.01 * rand(seed+2.0);
+	
+    vec2 p = vec2(x,y) - uv;
+    p.x *= imgSize.x / imgSize.y;
+    float a = atan(p.y,p.x);
+    float v = 1.0;
+    float ss = s*s * (sin(6.2831*a*x)*0.1 + 1.0);
+	    
+    if ( dot(p,p) < ss ) 
+        v = 0.2;
+    else
+        v = pow(dot(p,p) - ss, 1.0/16.0);
+	
+    return mix(0.3 + 0.2 * (1.0 - (s / 0.02 * sb.blotchesIntensity * 5)), 1.0, v);
+}
+
+void main()
+{	
+    // Set frequency of global effect to 15 variations per second
+    float t = float(int(1.0 * FREQUENCY));
+    
+    // Get the image
+    vec3 image = pixelBack.xyz;
+		
+    // Convert it to B/W
+    float luma = dot( vec3(0.2126, 0.7152, 0.0722), image );
+    vec3 oldImage = luma * vec3(1.0);
+		
+    // Add a fixed vignetting
+    float vI = 16.0 * (uv.x * (1.0-uv.x) * uv.y * (1.0-uv.y));
+    vI *= pow(32.0 * uv.x * (1.0-uv.x) * uv.y * (1.0-uv.y), sb.vignetteIntensity);
+		
+    // Add some random lines (and some multiplicative flicker. Oh well.)
+    int l = int(8.0 * rand(t+7.0));
+		
+    if ( 0 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed);
+    if ( 1 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 1);
+    if ( 2 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 2);		
+    if ( 3 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 3);
+    if ( 4 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 4);
+    if ( 5 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 5);
+    if ( 6 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 6);
+    if ( 7 < l ) vI *= randomLine( t+6.0+17.* sb.linesSeed + 7);
+		
+    // Add some random blotches.
+    int s = int( max(8.0 * rand(t+18.0) -2.0, 0.0 ));
+
+    if ( 0 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed);
+    if ( 1 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed + 1);
+    if ( 2 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed + 2);
+    if ( 3 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed + 3);
+    if ( 4 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed + 4);
+    if ( 5 < s ) vI *= randomBlotch( t+6.0+19.* sb.blotchesSeed + 5);
+	
+    // Show the image modulated by the defects
+    vec4 result = vec4(oldImage * vI, pixelBack.a);
+		
+    // Add some grain (thanks, Jose!)
+    result.xyz *= (1.0+(rand(uv+t*.01)-.2)* sb.grainIntensity);			
+
+    imageStore(outputImage, pixelCoords, result);
+}

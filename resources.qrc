@@ -71,5 +71,6 @@
         <file>ocio/luts/viperlog.spi1d</file>
         <file>shaders/bloom_comp.spv</file>
         <file>design/cascade-splash.png</file>
+        <file>shaders/oldfilm_comp.spv</file>
     </qresource>
 </RCC>
