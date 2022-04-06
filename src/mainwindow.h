@@ -93,7 +93,7 @@ public slots:
     void handlePreferencesAction();
     void handleAboutAction();
 
-    void closeEvent(QCloseEvent* event);
+    void closeEvent(QCloseEvent* event) override;
 
 };
 
