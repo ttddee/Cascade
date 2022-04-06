@@ -79,40 +79,45 @@ const bool ProjectManager::checkIfDiscardChanges()
 
 void ProjectManager::loadProject()
 {
-    QFileDialog dialog(nullptr);
-    dialog.setFileMode(QFileDialog::ExistingFile);
-    dialog.setNameFilter(tr("CSC Project (*.csc)"));
-    dialog.setViewMode(QFileDialog::Detail);
-    QStringList files;
-    if (dialog.exec())
+    if (checkIfDiscardChanges())
     {
-        files = dialog.selectedFiles();
-
-        QFile loadFile(files.first());
-
-        if (!loadFile.open(QIODevice::ReadOnly))
+        QFileDialog dialog(nullptr);
+        dialog.setFileMode(QFileDialog::ExistingFile);
+        dialog.setNameFilter(tr("CSC Project (*.csc)"));
+        dialog.setViewMode(QFileDialog::Detail);
+        QStringList files;
+        if (dialog.exec())
         {
-            CS_LOG_WARNING("Couldn't open project file.");
+            nodeGraph->clear();
+
+            files = dialog.selectedFiles();
+
+            QFile loadFile(files.first());
+
+            if (!loadFile.open(QIODevice::ReadOnly))
+            {
+                CS_LOG_WARNING("Couldn't open project file.");
+            }
+
+            QByteArray projectData = loadFile.readAll();
+
+            QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
+
+            QJsonObject jsonProject = projectDocument.object();
+            QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
+            QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
+            QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
+            QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
+            QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
+
+            nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
+
+            currentProjectPath = files.first();
+            currentProject = files.first().split("/").last();
+
+            projectIsDirty = false;
+            updateProjectName();
         }
-
-        QByteArray projectData = loadFile.readAll();
-
-        QJsonDocument projectDocument(QJsonDocument::fromJson(projectData));
-
-        QJsonObject jsonProject = projectDocument.object();
-        QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
-        QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
-        QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
-        QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
-        QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
-
-        nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
-
-        currentProjectPath = files.first();
-        currentProject = files.first().split("/").last();
-
-        projectIsDirty = false;
-        updateProjectName();
     }
 }
 

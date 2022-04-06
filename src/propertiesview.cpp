@@ -33,8 +33,9 @@ void PropertiesView::clear()
 {
     if (currentProperties)
     {
-        layout->removeWidget(currentProperties);
         currentProperties->hide();
+        layout->removeWidget(currentProperties);
+        currentProperties = nullptr;
     }
 }
 
