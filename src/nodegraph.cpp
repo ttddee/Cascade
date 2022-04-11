@@ -121,10 +121,15 @@ void NodeGraph::connectNodeSignals(NodeBase* n)
     }
 }
 
-void NodeGraph::loadProject(
-        const QJsonArray& jsonNodesArray,
-        const QJsonArray& jsonConnectionsArray)
+void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
 {
+    QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
+    QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
+    QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
+    QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
+
+    this->clear();
+
     for (int i = 0; i < jsonNodesArray.size(); i++)
     {
         QJsonObject jsonNode = jsonNodesArray.at(i).toObject();
@@ -477,6 +482,30 @@ void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
     auto sourceOut = c->sourceOutput;
     createOpenConnection(sourceOut);
     deleteConnection(c);
+}
+
+void NodeGraph::handleDeleteKeyPressed()
+{
+    if (auto node = this->getSelectedNode())
+    {
+        deleteNode(node);
+    }
+}
+
+void NodeGraph::handleCreateStartupProject()
+{
+    this->createProject();
+}
+
+void NodeGraph::handleCreateNewProject()
+{
+    this->clear();
+    this->createProject();
+}
+
+void NodeGraph::handleLoadProject(const QJsonArray& jsonNodeGraph)
+{
+    this->loadProject(jsonNodeGraph);
 }
 
 void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)

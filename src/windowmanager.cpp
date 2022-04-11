@@ -53,6 +53,7 @@ void WindowManager::setUp(
     propertiesView->installEventFilter(this);
     viewerStatusBar->installEventFilter(this);
 
+    // Incoming
     connect(vulkanWindow, &VulkanWindow::requestZoomTextUpdate,
             this, &WindowManager::handleZoomTextUpdateRequest);
     connect(viewerStatusBar, &ViewerStatusBar::requestZoomReset,
@@ -63,6 +64,10 @@ void WindowManager::setUp(
             this, &WindowManager::handleViewerStatusBarValueChanged);
     connect(viewerStatusBar, &ViewerStatusBar::viewerModeChanged,
             this, &WindowManager::handleViewerModeChanged);
+
+    // Outgoing
+    connect(this, &WindowManager::deleteKeyPressed,
+            nodeGraph, &NodeGraph::handleDeleteKeyPressed);
 
     rManager = &RenderManager::getInstance();
 }
@@ -105,7 +110,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_Delete)
         {
-            nodeGraph->deleteNode(nodeGraph->getSelectedNode());
+            emit deleteKeyPressed();
         }
         return true;
     }

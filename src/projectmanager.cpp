@@ -41,21 +41,29 @@ void ProjectManager::setUp(NodeGraph* ng)
 {
     nodeGraph = ng;
 
+    // Incoming
     connect(nodeGraph, &NodeGraph::projectIsDirty,
             this, &ProjectManager::handleProjectIsDirty);
+
+    // Outgoing
+    connect(this, &ProjectManager::requestCreateStartupProject,
+            nodeGraph, &NodeGraph::handleCreateStartupProject);
+    connect(this, &ProjectManager::requestCreateNewProject,
+            nodeGraph, &NodeGraph::handleCreateNewProject);
+    connect(this, &ProjectManager::requestLoadProject,
+            nodeGraph, &NodeGraph::handleLoadProject);
 }
 
 void ProjectManager::createStartupProject()
 {
-    nodeGraph->createProject();
+    emit requestCreateStartupProject();
 }
 
 void ProjectManager::createNewProject()
 {
     if (checkIfDiscardChanges())
     {
-        nodeGraph->clear();
-        nodeGraph->createProject();
+        emit requestCreateNewProject();
     }
 }
 
@@ -88,8 +96,6 @@ void ProjectManager::loadProject()
         QStringList files;
         if (dialog.exec())
         {
-            nodeGraph->clear();
-
             files = dialog.selectedFiles();
 
             QFile loadFile(files.first());
@@ -105,12 +111,8 @@ void ProjectManager::loadProject()
 
             QJsonObject jsonProject = projectDocument.object();
             QJsonArray jsonNodeGraph = jsonProject.value("nodegraph").toArray();
-            QJsonObject jsonNodesHeading = jsonNodeGraph.at(0).toObject();
-            QJsonArray jsonNodesArray = jsonNodesHeading.value("nodes").toArray();
-            QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
-            QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
 
-            nodeGraph->loadProject(jsonNodesArray, jsonConnectionsArray);
+            emit requestLoadProject(jsonNodeGraph);
 
             currentProjectPath = files.first();
             currentProject = files.first().split("/").last();

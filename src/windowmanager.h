@@ -65,8 +65,11 @@ private:
 
     ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
 
+signals:
+    void deleteKeyPressed();
+
 public slots:
-    void handleNodeDoubleClicked(NodeBase* node);
+    void handleNodeDoubleClicked(Cascade::NodeBase* node);
     void handleZoomTextUpdateRequest(float f);
     void handleRenderTargetCreated(int w, int h);
     void handleViewerStatusBarValueChanged();

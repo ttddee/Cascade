@@ -58,10 +58,6 @@ public:
             const bool view = true,
             const QString& customName = "");
     void viewNode(NodeBase* node);
-    void deleteNode(NodeBase* node);
-    void createProject();
-    void loadProject(const QJsonArray& jsonNodesArray,
-                     const QJsonArray& jsonConnectionsArray);
 
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
@@ -71,8 +67,6 @@ public:
     void getNodeGraphAsJson(QJsonArray& jsonNodeGraph);
 
     void flushCacheAllNodes();
-
-    void clear();
 
     QPoint lastMousePos;
     QPoint lastCreatedNodePos = QPoint(29700, 29920);
@@ -85,6 +79,11 @@ protected:
 
 private:
     void showContextMenu();
+
+    void deleteNode(NodeBase* node);
+    void createProject();
+    void loadProject(const QJsonArray& jsonNodeGraph);
+    void clear();
 
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
@@ -151,6 +150,11 @@ public slots:
             const QMap<std::string, std::string>& attributes,
             const bool batchRender);
     void handleConnectedNodeInputClicked(Cascade::Connection* c);
+
+    void handleDeleteKeyPressed();
+    void handleCreateStartupProject();
+    void handleCreateNewProject();
+    void handleLoadProject(const QJsonArray& jsonNodeGraph);
 };
 
 } // namespace Cascade

@@ -61,6 +61,9 @@ private:
 
 signals:
     void projectTitleChanged(const QString& t);
+    void requestCreateStartupProject();
+    void requestCreateNewProject();
+    void requestLoadProject(const QJsonArray& jsonNodeGraph);
 
 public slots:
     void handleProjectIsDirty();
