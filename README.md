@@ -23,6 +23,7 @@ Cascade is a node-based image editor with GPU-acceleration.
 - 32 bit linear color pipeline
 - Support for the most common color spaces and file formats
 - You can write your own image processing effects using GLSL. A quick introduction on how to do that is [here](https://cascadedocs.readthedocs.io/en/latest/writingshader.html)
+- Or you can use existing [ISF shaders](https://editor.isf.video/shaders?q=&category=&sort=Date+Created+%E2%86%93&page=0) to add effects to your images.
 
 ## Download
 
