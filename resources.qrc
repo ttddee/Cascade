@@ -72,5 +72,115 @@
         <file>shaders/bloom_comp.spv</file>
         <file>design/cascade-splash.png</file>
         <file>shaders/oldfilm_comp.spv</file>
+        <file>shaders/isf/ASCII Art.fs</file>
+        <file>shaders/isf/Bad TV.fs</file>
+        <file>shaders/isf/Basic Shape.fs</file>
+        <file>shaders/isf/Bleach Bypass.fs</file>
+        <file>shaders/isf/Brick Pattern.fs</file>
+        <file>shaders/isf/Broken LCD.fs</file>
+        <file>shaders/isf/Bulge.fs</file>
+        <file>shaders/isf/Bump Distortion.fs</file>
+        <file>shaders/isf/Candy Warp.fs</file>
+        <file>shaders/isf/Channel Slide.fs</file>
+        <file>shaders/isf/Chroma Zoom.fs</file>
+        <file>shaders/isf/Circle Warp.fs</file>
+        <file>shaders/isf/Circle Wrap Distortion.fs</file>
+        <file>shaders/isf/Circular Screen.fs</file>
+        <file>shaders/isf/CMYK Halftone-Lookaround.fs</file>
+        <file>shaders/isf/Collage.fs</file>
+        <file>shaders/isf/Color Bars.fs</file>
+        <file>shaders/isf/Color Diffusion Flow.fs</file>
+        <file>shaders/isf/Color Monochrome.fs</file>
+        <file>shaders/isf/Color Posterize.fs</file>
+        <file>shaders/isf/Color Schemes.fs</file>
+        <file>shaders/isf/Color Test Grid.fs</file>
+        <file>shaders/isf/Convergence.fs</file>
+        <file>shaders/isf/Corner Colors.fs</file>
+        <file>shaders/isf/Corner Color Tint.fs</file>
+        <file>shaders/isf/Crosshatch.fs</file>
+        <file>shaders/isf/CRT-Displacement.fs</file>
+        <file>shaders/isf/Cubic Warp.fs</file>
+        <file>shaders/isf/Deinterlace.fs</file>
+        <file>shaders/isf/Diagonal Blur.fs</file>
+        <file>shaders/isf/Diagonalize.fs</file>
+        <file>shaders/isf/Dither-Bayer.fs</file>
+        <file>shaders/isf/Dot Screen.fs</file>
+        <file>shaders/isf/Double Vision.fs</file>
+        <file>shaders/isf/Dual Side Scroller And Flip.fs</file>
+        <file>shaders/isf/Duotone.fs</file>
+        <file>shaders/isf/Edges.fs</file>
+        <file>shaders/isf/Emboss.fs</file>
+        <file>shaders/isf/Exposure Adjust.fs</file>
+        <file>shaders/isf/False Color.fs</file>
+        <file>shaders/isf/Frosted Glass.fs</file>
+        <file>shaders/isf/Graph Paper.fs</file>
+        <file>shaders/isf/Heart.fs</file>
+        <file>shaders/isf/Hyperspace.fs</file>
+        <file>shaders/isf/Interlace Mirror.fs</file>
+        <file>shaders/isf/Kaleidoscope.fs</file>
+        <file>shaders/isf/Kaleidoscope Tile.fs</file>
+        <file>shaders/isf/Linear Gradient.fs</file>
+        <file>shaders/isf/Lines.fs</file>
+        <file>shaders/isf/Line Screen.fs</file>
+        <file>shaders/isf/Maximum Component.fs</file>
+        <file>shaders/isf/Median.fs</file>
+        <file>shaders/isf/Minimum Component.fs</file>
+        <file>shaders/isf/Mirror.fs</file>
+        <file>shaders/isf/Multi Gradient.fs</file>
+        <file>shaders/isf/Multi Hue Shift.fs</file>
+        <file>shaders/isf/Multi-Pixellate.fs</file>
+        <file>shaders/isf/Neon.fs</file>
+        <file>shaders/isf/Noise.fs</file>
+        <file>shaders/isf/Noise Displace.fs</file>
+        <file>shaders/isf/Noise Pixellate.fs</file>
+        <file>shaders/isf/Normal Map.fs</file>
+        <file>shaders/isf/Pixellate.fs</file>
+        <file>shaders/isf/Pixel Shifter.fs</file>
+        <file>shaders/isf/Poly Glitch.fs</file>
+        <file>shaders/isf/Poly Star.fs</file>
+        <file>shaders/isf/Posterize.fs</file>
+        <file>shaders/isf/Power Warp.fs</file>
+        <file>shaders/isf/Quad Mask.fs</file>
+        <file>shaders/isf/Quad Tile.fs</file>
+        <file>shaders/isf/Radial Gradient.fs</file>
+        <file>shaders/isf/Random Checkerboard.fs</file>
+        <file>shaders/isf/Random Lines.fs</file>
+        <file>shaders/isf/Random Stripes.fs</file>
+        <file>shaders/isf/RGB Halftone.fs</file>
+        <file>shaders/isf/RGB Halftone-lookaround.fs</file>
+        <file>shaders/isf/Ripples.fs</file>
+        <file>shaders/isf/Sepia Tone.fs</file>
+        <file>shaders/isf/Shape Mask.fs</file>
+        <file>shaders/isf/Sharpen Luminance.fs</file>
+        <file>shaders/isf/Sharpen RGB.fs</file>
+        <file>shaders/isf/Shockwave.fs</file>
+        <file>shaders/isf/Sine Warp Gradient.fs</file>
+        <file>shaders/isf/Sine Warp Tile.fs</file>
+        <file>shaders/isf/Sketch.fs</file>
+        <file>shaders/isf/Sliding Strips.fs</file>
+        <file>shaders/isf/Smoke Screen.fs</file>
+        <file>shaders/isf/Soft Flip.fs</file>
+        <file>shaders/isf/Solarize.fs</file>
+        <file>shaders/isf/Sphere Map.fs</file>
+        <file>shaders/isf/Spiral.fs</file>
+        <file>shaders/isf/Star.fs</file>
+        <file>shaders/isf/Stripes.fs</file>
+        <file>shaders/isf/Technicolor.fs</file>
+        <file>shaders/isf/Thermal Camera.fs</file>
+        <file>shaders/isf/Toon.fs</file>
+        <file>shaders/isf/Trapezoid Distortion.fs</file>
+        <file>shaders/isf/Triangle.fs</file>
+        <file>shaders/isf/Triangles.fs</file>
+        <file>shaders/isf/Triangle Warp.fs</file>
+        <file>shaders/isf/Trio Tone.fs</file>
+        <file>shaders/isf/Triple Rotate.fs</file>
+        <file>shaders/isf/Truchet Tile.fs</file>
+        <file>shaders/isf/Twirl.fs</file>
+        <file>shaders/isf/Unsharp Mask.fs</file>
+        <file>shaders/isf/VHS Glitch.fs</file>
+        <file>shaders/isf/Vignette.fs</file>
+        <file>shaders/isf/White Point Adjust.fs</file>
+        <file>shaders/isf/XYZoom.fs</file>
+        <file>shaders/isf/Zoom.fs</file>
     </qresource>
 </RCC>

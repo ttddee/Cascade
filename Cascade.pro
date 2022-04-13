@@ -404,13 +404,7 @@ win32-msvc* {
     COPIES += styles
     styles.files += $$files($$QT_ROOT/plugins/styles/qwindowsvistastyle.dll)
     styles.path = $$DESTDIR/styles
-
-
 }
-
-COPIES += isf
-isf.files += $$files($$PWD/shaders/isf/*.fs)
-isf.path = $$DESTDIR/isf
 
 RESOURCES += \
     resources.qrc \

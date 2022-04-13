@@ -24,6 +24,7 @@
 #include <QFile>
 #include <QDir>
 #include <QSplashScreen>
+#include <QDirIterator>
 
 #include "log.h"
 
@@ -90,9 +91,14 @@ int main(int argc, char *argv[])
     if (!dstDir.exists())
     {
         QDir().mkdir("isf");
-        foreach (QString d, dstDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        QDir srcDir(":/shaders/isf");
+        QDirIterator it(srcDir, QDirIterator::Subdirectories);
+        while (it.hasNext())
         {
-            QFile::copy(d, dstDir.path() + QDir::separator() + d);
+            QFile f(it.next());
+            auto split = f.fileName().split("/");
+            QString dstName = "isf/" + split.last();
+            f.copy(dstName);
         }
     }
 
