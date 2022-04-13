@@ -70,6 +70,9 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     this->addMenu(editMenu);
 
     auto createNodeMenu = editMenu->addMenu("Create Node");
+    createNodeMenu->setFixedWidth(150);
+
+    // TODO: This is doubled in nodegraphcontextmenu
 
     // Populate menu with submenus aka categories
     QMap<NodeCategory, QMenu*> categories;
@@ -81,13 +84,15 @@ MainMenu::MainMenu(MainWindow* mainWindow)
             i.next();
             auto submenu = createNodeMenu->addMenu(categoryStrings[i.key()]);
             categories[i.key()] = submenu;
-            submenu->setFixedWidth(120);
+            submenu->setFixedWidth(180);
         }
     }
 
     // Add nodes to corresponding submenus
+    auto nodes = nodeStrings;
+    nodes.remove(NODE_TYPE_ISF);
     auto graph = mainWindow->getNodeGraph();
-    QMapIterator<NodeType, QString> i(nodeStrings);
+    QMapIterator<NodeType, QString> i(nodes);
     while (i.hasNext())
     {
         i.next();
@@ -106,6 +111,44 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                         QPoint(graph->lastCreatedNodePos.x(),
                                graph->lastCreatedNodePos.y()) +
                         QPoint(100, 30)); });
+    }
+
+    // Add ISF categories
+    auto isfManager = &ISFManager::getInstance();
+    std::set<QString> isfCategoryStrings = isfManager->getCategories();
+
+    QMap<QString, QMenu*> isfCategories;
+    {
+        for (auto& cat : isfCategoryStrings)
+        {
+            auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
+            isfCategories[cat] = submenu;
+            submenu->setFixedWidth(190);
+        }
+    }
+
+    // Add ISF nodes
+    auto isfNodeProperties = isfManager->getNodeProperties();
+    for (auto& prop : isfNodeProperties)
+    {
+        QString nodeName = prop.second.title;
+        auto a = new QAction();
+        createNodeActions.push_back(a);
+        a->setText(nodeName);
+        auto t = NODE_TYPE_ISF;
+        isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
+
+        QObject::connect(
+                    a,
+                    &QAction::triggered,
+                    graph,
+                    [graph, t, nodeName]{ graph->createNode(
+                        t,
+                        QPoint(graph->lastCreatedNodePos.x(),
+                               graph->lastCreatedNodePos.y()) +
+                        QPoint(100, 30),
+                        true,
+                        nodeName); });
     }
 
     editMenu->addSeparator();

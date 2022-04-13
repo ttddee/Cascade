@@ -31,6 +31,8 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
 {
     this->setFixedWidth(150);
 
+    // TODO: This is doubled in mainmenu
+
     // Populate menu with submenus aka categories
     QMap<NodeCategory, QMenu*> categories;
     {
@@ -66,7 +68,6 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                         QPoint(parent->mapToScene(parent->lastMousePos).x(),
                                parent->mapToScene(parent->lastMousePos).y())); });
     }
-
 
     // Add ISF categories
     auto isfManager = &ISFManager::getInstance();
