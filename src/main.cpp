@@ -85,6 +85,16 @@ int main(int argc, char *argv[])
         QFile::copy(":/ocio/luts/srgbf.spi1d", "ocio/luts/srgbf.spi1d");
         QFile::copy(":/ocio/luts/viperlog.spi1d", "ocio/luts/viperlog.spi1d");
     }
+    // Same for the ISF shaders
+    QDir dstDir("isf");
+    if (!dstDir.exists())
+    {
+        QDir().mkdir("isf");
+        foreach (QString d, dstDir.entryList(QDir::Dirs | QDir::NoDotAndDotDot))
+        {
+            QFile::copy(d, dstDir.path() + QDir::separator() + d);
+        }
+    }
 
     // Create window
     Cascade::MainWindow w;
