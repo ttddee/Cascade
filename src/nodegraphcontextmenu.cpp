@@ -29,8 +29,6 @@ namespace Cascade {
 NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
     : QMenu(parent)
 {
-    this->setFixedWidth(150);
-
     // TODO: This is doubled in mainmenu
 
     // Populate menu with submenus aka categories
@@ -42,7 +40,6 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
             i.next();
             auto submenu = this->addMenu(categoryStrings[i.key()]);
             categories[i.key()] = submenu;
-            submenu->setFixedWidth(180);
         }
     }
 
@@ -79,7 +76,6 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         {
             auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
             isfCategories[cat] = submenu;
-            submenu->setFixedWidth(190);
         }
     }
 

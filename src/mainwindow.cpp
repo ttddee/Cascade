@@ -111,6 +111,9 @@ MainWindow::MainWindow(QWidget *parent)
                 QDir::currentPath());
 
     projectManager->createStartupProject();
+
+    // Bring window to front, just in case it isn't
+    this->setWindowState(Qt::WindowActive);
 }
 
 NodeGraph* MainWindow::getNodeGraph() const

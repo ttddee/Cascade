@@ -70,7 +70,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     this->addMenu(editMenu);
 
     auto createNodeMenu = editMenu->addMenu("Create Node");
-    createNodeMenu->setFixedWidth(150);
 
     // TODO: This is doubled in nodegraphcontextmenu
 
@@ -84,7 +83,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
             i.next();
             auto submenu = createNodeMenu->addMenu(categoryStrings[i.key()]);
             categories[i.key()] = submenu;
-            submenu->setFixedWidth(180);
         }
     }
 
@@ -123,7 +121,6 @@ MainMenu::MainMenu(MainWindow* mainWindow)
         {
             auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
             isfCategories[cat] = submenu;
-            submenu->setFixedWidth(190);
         }
     }
 
