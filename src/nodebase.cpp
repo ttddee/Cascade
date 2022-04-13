@@ -63,7 +63,7 @@ NodeBase::NodeBase(
 
 void NodeBase::setUpNode(
         const NodeType nodeType,
-        const QString& customName)
+        const QString& cName)
 {
     NodeInitProperties props;
 
@@ -74,8 +74,9 @@ void NodeBase::setUpNode(
     else
     {
         auto isfManager = &ISFManager::getInstance();
-        props = isfManager->getNodeProperties().at(customName);
-        this->setShaderCode(isfManager->getShaderCode(customName));
+        props = isfManager->getNodeProperties().at(cName);
+        this->setShaderCode(isfManager->getShaderCode(cName));
+        customName = cName;
     }
 
     QString label = props.title.toUpper();
@@ -355,7 +356,8 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
         { "posx", this->pos().x() },
         { "posy", this->pos().y() },
         { "properties", jsonProps },
-        { "inputs", jsonInputs }
+        { "inputs", jsonInputs },
+        { "customname", customName }
     };
 
     jsonNodesArray.push_back(jsonNode);

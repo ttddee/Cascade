@@ -90,7 +90,7 @@ void NodeGraph::createNode(
 
 NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
 {
-    NodeBase* n = new NodeBase(p.nodeType, this);
+    NodeBase* n = new NodeBase(p.nodeType, this, nullptr, p.customName);
     scene->addWidget(n);
     n->move(p.pos);
     n->setID(p.uuid);
@@ -139,6 +139,7 @@ void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
         p.nodeType = nodeStrings.key(jsonNode["type"].toString());
         p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
         p.uuid = jsonNode["uuid"].toString();
+        p.customName = jsonNode["customname"].toString();
 
         // Get UUID for Node Inputs
         QJsonObject ins = jsonNode["inputs"].toObject();

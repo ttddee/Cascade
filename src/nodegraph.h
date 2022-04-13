@@ -41,6 +41,7 @@ struct NodePersistentProperties
     QString uuid;
     QMap<int, QString> inputs;
     QMap<int, QString> properties;
+    QString customName;
 };
 
 class NodeGraph : public QGraphicsView

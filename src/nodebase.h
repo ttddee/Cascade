@@ -129,7 +129,7 @@ private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes);
 
-    void setUpNode(const NodeType nodeType, const QString& customName = "");
+    void setUpNode(const NodeType nodeType, const QString& cName = "");
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
@@ -166,6 +166,7 @@ private:
 
     WindowManager* wManager;
 
+    QString customName = "";
     std::vector<unsigned int> shaderCode;
 
     bool isSelected = false;
