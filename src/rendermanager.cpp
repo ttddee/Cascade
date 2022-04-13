@@ -192,6 +192,7 @@ bool RenderManager::renderNodes(NodeBase *node)
 
 void RenderManager::renderNode(NodeBase *node)
 {
+    // Read node
     if (node->nodeType == NODE_TYPE_READ && node->needsUpdate)
     {
         if (node->canBeRendered())
@@ -199,11 +200,7 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processReadNode(node);
         }
     }
-    // A node that has an output size different to the size of its input
-    else if (node->getHasCustomSize() && node->getCustomSize() != "" && node->needsUpdate)
-    {
-        renderer->processNode(node, nullptr, nullptr, node->getTargetSize());
-    }
+    // All other nodes
     else if (node->getUpstreamNodeBack() && node->needsUpdate)
     {
         CsImage* inputImageBack = nullptr;

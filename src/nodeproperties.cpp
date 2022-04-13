@@ -206,7 +206,6 @@ NodeProperties::NodeProperties(
             item->selfConnectToValueChanged(this);
             layout->addWidget(item);
             widgets.push_back(item);
-            parentNode->setHasCustomSize(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_TEXTBOX)
         {
@@ -276,7 +275,6 @@ NodeProperties::NodeProperties(
             item->setParentNode(parentNode);
             layout->addWidget(item);
             widgets.push_back(item);
-            parentNode->setHasCustomSize(item);
 
             connect(parentNode, &NodeBase::nodeRequestUpdate,
                     item, &ResizePropertiesEntity::handleNodeRequestUpdate);

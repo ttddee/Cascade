@@ -285,23 +285,6 @@ void NodeBase::requestUpdate()
     emit nodeRequestUpdate(this);
 }
 
-QString NodeBase::getCustomSize() const
-{
-    CS_LOG_CONSOLE(sizeSource->getValuesAsString());
-    return sizeSource->getValuesAsString();
-}
-
-bool NodeBase::getHasCustomSize() const
-{
-    return hasCustomSize;
-}
-
-void NodeBase::setHasCustomSize(UiEntity* source)
-{
-    hasCustomSize = true;
-    sizeSource = source;
-}
-
 QSize NodeBase::getInputSize() const
 {
     auto upstreamNode = getUpstreamNodeBack();
@@ -323,20 +306,6 @@ QSize NodeBase::getInputSize() const
 QSize NodeBase::getTargetSize() const
 {
     QSize size(0, 0);
-
-//    if (hasCustomSize)
-//    {
-//        auto s = getCustomSize();
-
-//        if (s != "")
-//        {
-//            auto parts = s.split(",");
-//            QSize size(parts.at(0).toInt(), parts.at(1).toInt());
-
-//            return size;
-//        }
-//    }
-
     size = getInputSize();
 
     if (nodeType == NODE_TYPE_CROP)
@@ -527,11 +496,7 @@ bool NodeBase::canBeRendered() const
             return false;
         }
     }
-    if (hasCustomSize && getCustomSize() != "")
-    {
-        return true;
-    }
-    if (rgbaBackIn && !rgbaBackIn->hasConnection())
+    else if (rgbaBackIn && !rgbaBackIn->hasConnection())
     {
         return false;
     }

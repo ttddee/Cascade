@@ -97,11 +97,6 @@ public:
 
     void requestUpdate();
 
-    QString getCustomSize() const;
-
-    bool getHasCustomSize() const;
-    void setHasCustomSize(UiEntity* source);
-
     NodeInput* getOpenInput() const;
     QSize getInputSize() const;
 
