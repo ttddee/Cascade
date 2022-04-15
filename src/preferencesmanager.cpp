@@ -25,6 +25,8 @@
 
 #include "log.h"
 
+namespace Cascade {
+
 PreferencesManager& PreferencesManager::getInstance()
 {
     static PreferencesManager instance;
@@ -73,12 +75,41 @@ void PreferencesManager::loadPreferences()
     QJsonObject jsonProject = prefsDocument.object();
     QJsonArray jsonPrefs = jsonProject.value("prefs").toArray();
     QJsonObject jsonGeneralHeading = jsonPrefs.at(0).toObject();
-    jsonGeneralPrefsArray = jsonGeneralHeading.value("general").toArray();
+
     QJsonObject jsonKeysHeading = jsonPrefs.at(1).toObject();
-    jsonKeysPrefsArray = jsonKeysHeading.value("keys").toArray();
+    QJsonArray jsonKeysArray = jsonKeysHeading.value("keys").toArray();
+
+    QJsonObject jsonGeneralKeysHeading = jsonKeysArray.at(0).toObject();
+    QJsonArray generalKeys = jsonGeneralKeysHeading.value("general").toArray();
+    QJsonArray nodeGraphKeys = jsonGeneralKeysHeading.value("nodegraph").toArray();
+    QJsonArray viewerKeys = jsonGeneralKeysHeading.value("viewer").toArray();
+
+    keyCategories.push_back(
+                jsonArrayToKeysCategory("general", generalKeys));
+    keyCategories.push_back(
+                jsonArrayToKeysCategory("nodegraph", nodeGraphKeys));
+    keyCategories.push_back(
+                jsonArrayToKeysCategory("viewer", viewerKeys));
 }
 
-const QJsonArray& PreferencesManager::getKeys()
+KeysCategory PreferencesManager::jsonArrayToKeysCategory(
+        const QString& name,
+        const QJsonArray &arr)
 {
-    return jsonKeysPrefsArray;
+    KeysCategory cat;
+    cat.name = name;
+    foreach (auto value, arr)
+    {
+        auto obj = value.toObject();
+        cat.keys.push_back(std::pair<QString, QString>(
+                            obj["function"].toString(), obj["key"].toString()));
+    }
+    return cat;
 }
+
+const std::vector<KeysCategory>& PreferencesManager::getKeys()
+{
+    return keyCategories;
+}
+
+} // namespace Cascade

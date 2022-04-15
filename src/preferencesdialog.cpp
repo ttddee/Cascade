@@ -26,6 +26,8 @@
 #include "preferencesmanager.h"
 #include "log.h"
 
+namespace Cascade {
+
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent)
 {
@@ -53,9 +55,9 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
 void PreferencesDialog::loadKeys()
 {
     auto prefsManager = &PreferencesManager::getInstance();
-    auto jsonKeys = prefsManager->getKeys();
+    auto keyCategories = prefsManager->getKeys();
 
-    keysWidget = new QTableWidget(jsonKeys.size(), 2);
+    keysWidget = new QTableWidget(0, 2);
     QStringList labels({ "Function", "Key" });
     keysWidget->setHorizontalHeaderLabels(labels);
     keysWidget->horizontalHeader()->setStretchLastSection(true);
@@ -63,22 +65,29 @@ void PreferencesDialog::loadKeys()
     keysWidget->setShowGrid(false);
     keysWidget->verticalHeader()->hide();
     keysWidget->setColumnWidth(0, 200);
-    keysWidget->setAlternatingRowColors(true);
 
-    CS_LOG_CONSOLE(QString::number(jsonKeys.size()));
+    QFont bold;
+    bold.setBold(true);
 
-
-    for (int i = 0; i < jsonKeys.size(); ++i)
+    for (auto& category : keyCategories)
     {
-        QJsonObject jsonKey = jsonKeys.at(i).toObject();
-        CS_LOG_CONSOLE(jsonKey["function"].toString());
-        CS_LOG_CONSOLE(jsonKey["key"].toString());
-        QTableWidgetItem *f = new QTableWidgetItem(jsonKey["function"].toString());
-        f->setFlags(f->flags() ^ Qt::ItemIsEditable);
-        keysWidget->setItem(i, 0, f);
-        QTableWidgetItem *k = new QTableWidgetItem(jsonKey["key"].toString());
-        keysWidget->setItem(i, 1, k);
+        keysWidget->insertRow(keysWidget->rowCount());
+        QTableWidgetItem* heading = new QTableWidgetItem(category.name.toUpper());
+        heading->setFont(bold);
+        keysWidget->setItem(keysWidget->rowCount() - 1, 0, heading);
+        //std::map<QString, QString>::iterator it = category.keys.begin();
+        for (auto& pair : category.keys)
+        {
+            keysWidget->insertRow(keysWidget->rowCount());
+            QTableWidgetItem* k = new QTableWidgetItem(pair.first);
+            keysWidget->setItem(keysWidget->rowCount() - 1, 0, k);
+            QTableWidgetItem* v = new QTableWidgetItem(pair.second);
+            keysWidget->setItem(keysWidget->rowCount() - 1, 1, v);
+        }
+        keysWidget->insertRow(keysWidget->rowCount());
     }
 
     tabWidget->addTab(keysWidget, tr("Keys"));
 }
+
+} // namespace Cascade

@@ -25,6 +25,8 @@
 #include <QDialogButtonBox>
 #include <QTableWidget>
 
+namespace Cascade {
+
 class PreferencesDialog : public QDialog
 {
     Q_OBJECT
@@ -40,5 +42,7 @@ private:
 
     QTableWidget* keysWidget;
 };
+
+} // namespace Cascade
 
 #endif // PREFERENCESDIALOG_H

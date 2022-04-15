@@ -107,8 +107,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
                 setViewerMode(VIEWER_MODE_OUTPUT_RGB);
             }
         }
-
-        if (keyEvent->key() == Qt::Key_Delete)
+        else if (keyEvent->key() == Qt::Key_Delete)
         {
             emit deleteKeyPressed();
         }

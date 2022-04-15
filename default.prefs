@@ -9,25 +9,50 @@
         {
             "keys": [
 				{
-                    "function": "View Front Input",
-					"key": "F1"
-				},
-				{
-                    "function": "View Back Input",
-					"key": "F2"
-				},
-				{
-                    "function": "View Alpha Input",
-					"key": "F3"
-				},
-				{
-                    "function": "View RGB/Alpha Output",
-					"key": "F4"
-				},
-				{
-                    "function": "Delete Selected Node",
-					"key": "Delete"
+					"general": [
+						{
+							"function": "New Project",
+							"key": "Ctrl+N"
+						},
+						{
+							"function": "Open Project",
+							"key": "Ctrl+O"
+						},
+						{
+							"function": "Save Project",
+							"key": "Ctrl+S"
+						},
+						{
+							"function": "Save Project As",
+							"key": "Ctrl+Shift+S"
+						}
+					],
+					"nodegraph": [
+						{
+							"function": "Delete Selected Node",
+							"key": "Delete"
+						}
+					],
+					"viewer": [
+						{
+							"function": "View Front Input",
+							"key": "F1"
+						},
+						{
+							"function": "View Back Input",
+							"key": "F2"
+						},
+						{
+							"function": "View Alpha Input",
+							"key": "F3"
+						},
+						{
+							"function": "View RGB/Alpha Output",
+							"key": "F4"
+						}
+					]
 				}
+				
             ]
         }
     ]

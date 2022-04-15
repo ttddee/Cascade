@@ -23,6 +23,15 @@
 #include <QObject>
 #include <QJsonArray>
 
+namespace Cascade {
+
+struct KeysCategory
+{
+    QString name;
+    // vector instead of map so that the order is preserved
+    std::vector<std::pair<QString, QString>> keys;
+};
+
 class PreferencesManager : public QObject
 {
     Q_OBJECT
@@ -34,15 +43,19 @@ public:
 
     void setUp();
 
-    const QJsonArray& getKeys();
+    const std::vector<KeysCategory>& getKeys();
 
 private:
     PreferencesManager() {}
 
     void loadPreferences();
+    KeysCategory jsonArrayToKeysCategory(
+            const QString& name,
+            const QJsonArray& arr);
 
-    QJsonArray jsonGeneralPrefsArray;
-    QJsonArray jsonKeysPrefsArray;
+    std::vector<KeysCategory> keyCategories;
 };
+
+} // namespace Cascade
 
 #endif // PREFERENCESMANAGER_H
