@@ -17,21 +17,22 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef NODEGRAPHCONTEXTMENU_H
-#define NODEGRAPHCONTEXTMENU_H
+#ifndef NODECONTEXTMENU_H
+#define NODECONTEXTMENU_H
 
 #include <QMenu>
 
 namespace Cascade {
 
 class NodeGraph;
+class NodeBase;
 
-class NodeGraphContextMenu : public QMenu
+class NodeContextMenu : public QMenu
 {
 public:
-    NodeGraphContextMenu(NodeGraph* parent);
+    NodeContextMenu(NodeGraph* parent, NodeBase* node);
 
-    virtual ~NodeGraphContextMenu();
+    virtual ~NodeContextMenu();
 
 private:
     std::vector<QAction*> actions;
@@ -39,4 +40,4 @@ private:
 
 } // namespace Cascade
 
-#endif // NODEGRAPHCONTEXTMENU_H
+#endif // NODECONTEXTMENU_H

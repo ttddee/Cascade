@@ -68,6 +68,7 @@ SOURCES += \
     src/mainmenu.cpp \
     src/mainwindow.cpp \
     src/nodebase.cpp \
+    src/nodecontextmenu.cpp \
     src/nodegraph.cpp \
     src/nodegraphcontextmenu.cpp \
     src/nodeinput.cpp \
@@ -156,6 +157,7 @@ HEADERS += \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodebase.h \
+    src/nodecontextmenu.h \
     src/nodedefinitions.h \
     src/nodegraph.h \
     src/nodegraphcontextmenu.h \

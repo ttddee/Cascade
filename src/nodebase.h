@@ -32,6 +32,7 @@
 #include "renderer/csimage.h"
 #include "windowmanager.h"
 #include "uicolors.h"
+#include "nodecontextmenu.h"
 
 namespace Ui {
 class NodeBase;
@@ -59,7 +60,7 @@ class NodeBase : public QWidget
 public:
     explicit NodeBase(
             const NodeType type,
-            const NodeGraph* graph,
+            NodeGraph* graph,
             QWidget *parent = nullptr,
             const QString& customName = "");
 
@@ -138,6 +139,8 @@ private:
     void updateCropSizes();
     void updateRotation();
 
+    void showContextMenu();
+
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
@@ -148,7 +151,9 @@ private:
     std::unique_ptr<CsImage> cachedImage;
 
     Ui::NodeBase *ui;
-    const NodeGraph* nodeGraph;
+    NodeGraph* nodeGraph;
+
+    static NodeContextMenu* contextMenu;
 
     QString id;
 

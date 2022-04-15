@@ -59,6 +59,7 @@ public:
             const bool view = true,
             const QString& customName = "");
     void viewNode(NodeBase* node);
+    void deleteNode(NodeBase* node);
 
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
@@ -81,7 +82,6 @@ protected:
 private:
     void showContextMenu();
 
-    void deleteNode(NodeBase* node);
     void createProject();
     void loadProject(const QJsonArray& jsonNodeGraph);
     void clear();

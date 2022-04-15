@@ -562,7 +562,13 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
     }
     if (event->button() == Qt::RightButton)
     {
-        showContextMenu();
+        // Check if we clicked on something
+        // Show context menu if not
+        auto item = getWidgetFromGraphicsItem(getObjectUnderCursor());
+        if (!item)
+        {
+            showContextMenu();
+        }
     }
     else if (event->button() == Qt::MiddleButton)
     {

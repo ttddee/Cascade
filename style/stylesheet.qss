@@ -413,7 +413,7 @@ QMenuBar::item:pressed {
 }
 
 QMenu {
-    background-color: #181b1e;
+    background-color: #1d2024;
     font: 12px "Open Sans";
     color: #c5c5c5;
 }

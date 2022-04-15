@@ -39,9 +39,11 @@
 
 namespace Cascade {
 
+NodeContextMenu* Cascade::NodeBase::contextMenu = nullptr;
+
 NodeBase::NodeBase(
         const NodeType type,
-        const NodeGraph* graph,
+        NodeGraph* graph,
         QWidget *parent,
         const QString& customName)
     : QWidget(parent),
@@ -537,6 +539,12 @@ void NodeBase::updateRotation()
     rotation = vals[0].toInt();
 }
 
+void NodeBase::showContextMenu()
+{
+    contextMenu = new NodeContextMenu(nodeGraph, this);
+    contextMenu->exec(QCursor::pos());
+}
+
 void NodeBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -547,6 +555,11 @@ void NodeBase::mousePressEvent(QMouseEvent *event)
             oldPos = event->globalPos();
         }
         emit nodeWasLeftClicked(this);
+    }
+    else if (event->button() == Qt::RightButton)
+    {
+        this->showContextMenu();
+        event->accept();
     }
 }
 

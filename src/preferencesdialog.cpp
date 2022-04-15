@@ -75,7 +75,6 @@ void PreferencesDialog::loadKeys()
         QTableWidgetItem* heading = new QTableWidgetItem(category.name.toUpper());
         heading->setFont(bold);
         keysWidget->setItem(keysWidget->rowCount() - 1, 0, heading);
-        //std::map<QString, QString>::iterator it = category.keys.begin();
         for (auto& pair : category.keys)
         {
             keysWidget->insertRow(keysWidget->rowCount());
