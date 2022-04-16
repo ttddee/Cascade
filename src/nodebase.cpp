@@ -545,6 +545,26 @@ void NodeBase::showContextMenu()
     contextMenu->exec(QCursor::pos());
 }
 
+void NodeBase::flushCache()
+{
+    cachedImage = nullptr;
+}
+
+const int NodeBase::getNumImages()
+{
+    return nodeProperties->getNumImages();
+}
+
+void NodeBase::switchToFirstImage()
+{
+    nodeProperties->switchToFirstImage();
+}
+
+void NodeBase::switchToNextImage()
+{
+    nodeProperties->switchToNextImage();
+}
+
 void NodeBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
@@ -588,26 +608,6 @@ void NodeBase::mouseDoubleClickEvent(QMouseEvent *event)
     emit nodeWasDoubleClicked(this);
 
     Q_UNUSED(event);
-}
-
-void NodeBase::flushCache()
-{
-    cachedImage = nullptr;
-}
-
-const int NodeBase::getNumImages()
-{
-    return nodeProperties->getNumImages();
-}
-
-void NodeBase::switchToFirstImage()
-{
-    nodeProperties->switchToFirstImage();
-}
-
-void NodeBase::switchToNextImage()
-{
-    nodeProperties->switchToNextImage();
 }
 
 NodeBase::~NodeBase()
