@@ -5,7 +5,7 @@
 </p>
 
 <h3 align="center">
-  Node-based Image Editor
+  node-based image editor
 </h3>
 
 <hr>
