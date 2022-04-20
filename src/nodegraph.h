@@ -31,18 +31,9 @@
 #include "connection.h"
 #include "windowmanager.h"
 #include "rendermanager.h"
+#include "nodegraphutility.h"
 
 namespace Cascade {
-
-struct NodePersistentProperties
-{
-    NodeType mNodeType;
-    QPoint mPos;
-    QString mUuid;
-    QMap<int, QString> mInputs;
-    QMap<int, QString> mProperties;
-    QString mCustomName;
-};
 
 class NodeGraph : public QGraphicsView
 {
@@ -53,17 +44,8 @@ friend class NodeBaseTest;
 public:
     NodeGraph(QWidget* parent = nullptr);
 
-    void createNode(
-            const NodeType type,
-            const QPoint pos,
-            const bool view = true,
-            const QString& customName = "");
-    void viewNode(NodeBase* node);
-
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
-    const QPoint getLastMousePosition();
-    const QPoint getLastCreatedNodePosition();
 
     float getViewScale() const;
 
@@ -76,6 +58,13 @@ private:
     void clearGraph();
 
     // Nodes
+    void createNode(
+            const NodeType type,
+            const NodeGraphPosition position,
+            const QString& customName = "",
+            const QPoint coords = QPoint(0, 0),
+            const bool view = true);
+    void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
     void selectNode(NodeBase* node);
     void activateNode(NodeBase* node);
@@ -94,6 +83,7 @@ private:
     // Graphics Scene
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
+    const QPoint getCoordinatesForPosition(const NodeGraphPosition pos);
 
     // Misc
     void mousePressEvent(QMouseEvent*) override;
@@ -137,16 +127,21 @@ signals:
             const QMap<std::string, std::string>& attributes,
             const bool isBatch = false,
             const bool isLast = false);
-    void requestClearScreen(); // Check this
+    void requestClearScreen();
     void requestClearProperties();
     void projectIsDirty();
 
 public slots:
     // Nodes
+    void handleNodeCreationRequest(
+            const Cascade::NodeType type,
+            const Cascade::NodeGraphPosition pos,
+            const QString& customName = "");
     void handleNodeLeftClicked(Cascade::NodeBase* node);
     void handleNodeDoubleClicked(Cascade::NodeBase* node);
     void handleNodeOutputLeftClicked(Cascade::NodeOutput* nodeOut);
     void handleNodeUpdateRequest(Cascade::NodeBase* node);
+    void handleNodeDisplayRequest(Cascade::NodeBase* node);
     void handleConnectedNodeInputClicked(Cascade::Connection* c);
     void handleFileSaveRequest(
             Cascade::NodeBase* node,

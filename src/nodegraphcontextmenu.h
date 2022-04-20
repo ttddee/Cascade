@@ -22,19 +22,29 @@
 
 #include <QMenu>
 
+#include "nodegraphutility.h"
+
 namespace Cascade {
 
 class NodeGraph;
 
 class NodeGraphContextMenu : public QMenu
 {
+    Q_OBJECT
+
 public:
     NodeGraphContextMenu(NodeGraph* parent);
 
     virtual ~NodeGraphContextMenu();
 
 private:
-    std::vector<QAction*> actions;
+    std::vector<QAction*> mActions;
+
+signals:
+    void requestNodeCreation(
+            const Cascade::NodeType type,
+            const Cascade::NodeGraphPosition,
+            const QString& customName = "");
 };
 
 } // namespace Cascade

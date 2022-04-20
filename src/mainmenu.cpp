@@ -32,48 +32,48 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     // Otherwise we would have to delete them manually.
 
     // File Menu
-    fileMenu = new QMenu("File");
-    this->addMenu(fileMenu);
+    mFileMenu = new QMenu("File");
+    this->addMenu(mFileMenu);
 
-    newProjectAction = new QAction("New Project" , fileMenu);
-    newProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
-    fileMenu->addAction(newProjectAction);
-    connect(newProjectAction, &QAction::triggered,
+    mNewProjectAction = new QAction("New Project" , mFileMenu);
+    mNewProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_N));
+    mFileMenu->addAction(mNewProjectAction);
+    connect(mNewProjectAction, &QAction::triggered,
             mainWindow, &MainWindow::handleNewProjectAction);
 
-    fileMenu->addSeparator();
+    mFileMenu->addSeparator();
 
-    openProjectAction = new QAction("Open Project" , fileMenu);
-    openProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
-    fileMenu->addAction(openProjectAction);
-    connect(openProjectAction, &QAction::triggered,
+    mOpenProjectAction = new QAction("Open Project" , mFileMenu);
+    mOpenProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_O));
+    mFileMenu->addAction(mOpenProjectAction);
+    connect(mOpenProjectAction, &QAction::triggered,
             mainWindow, &MainWindow::handleOpenProjectAction);
 
-    saveProjectAction = new QAction("Save Project" , fileMenu);
-    saveProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
-    fileMenu->addAction(saveProjectAction);
-    connect(saveProjectAction, &QAction::triggered,
+    mSaveProjectAction = new QAction("Save Project" , mFileMenu);
+    mSaveProjectAction->setShortcut(QKeySequence(Qt::CTRL + Qt::Key_S));
+    mFileMenu->addAction(mSaveProjectAction);
+    connect(mSaveProjectAction, &QAction::triggered,
             mainWindow, &MainWindow::handleSaveProjectAction);
 
-    saveProjectAsAction = new QAction("Save Project As..." , fileMenu);
-    saveProjectAsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
-    fileMenu->addAction(saveProjectAsAction);
-    connect(saveProjectAsAction, &QAction::triggered,
+    mSaveProjectAsAction = new QAction("Save Project As..." , mFileMenu);
+    mSaveProjectAsAction->setShortcut(QKeySequence(Qt::CTRL + Qt::SHIFT + Qt::Key_S));
+    mFileMenu->addAction(mSaveProjectAsAction);
+    connect(mSaveProjectAsAction, &QAction::triggered,
             mainWindow, &MainWindow::handleSaveProjectAsAction);
 
-    fileMenu->addSeparator();
+    mFileMenu->addSeparator();
 
-    exitAction = new QAction("Exit" , fileMenu);
-    fileMenu->addAction(exitAction);
-    connect(exitAction, &QAction::triggered,
+    mExitAction = new QAction("Exit" , mFileMenu);
+    mFileMenu->addAction(mExitAction);
+    connect(mExitAction, &QAction::triggered,
             mainWindow, &MainWindow::handleExitAction,
             Qt::QueuedConnection);
 
     // Edit Menu
-    editMenu = new QMenu("Edit");
-    this->addMenu(editMenu);
+    mEditMenu = new QMenu("Edit");
+    this->addMenu(mEditMenu);
 
-    auto createNodeMenu = editMenu->addMenu("Create Node");
+    auto createNodeMenu = mEditMenu->addMenu("Create Node");
 
     // TODO: This is doubled in nodegraphcontextmenu
 
@@ -93,13 +93,12 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     // Add nodes to corresponding submenus
     auto nodes = nodeStrings;
     nodes.remove(NODE_TYPE_ISF);
-    auto graph = mainWindow->getNodeGraph();
     QMapIterator<NodeType, QString> i(nodes);
     while (i.hasNext())
     {
         i.next();
         auto a = new QAction();
-        createNodeActions.push_back(a);
+        mCreateNodeActions.push_back(a);
         a->setText(i.value());
         auto t = i.key();
         categories[getPropertiesForType(t).category]->addAction(a);
@@ -107,12 +106,9 @@ MainMenu::MainMenu(MainWindow* mainWindow)
         QObject::connect(
                     a,
                     &QAction::triggered,
-                    graph,
-                    [graph, t]{ graph->createNode(
-                        t,
-                        QPoint(graph->getLastCreatedNodePosition().x(),
-                               graph->getLastCreatedNodePosition().y()) +
-                        QPoint(100, 30)); });
+                    this,
+                    [this, t]{ emit requestNodeCreation(
+                        t, NodeGraphPosition::eRelativeToLastNode); });
     }
 
     // Add ISF categories
@@ -134,7 +130,7 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     {
         QString nodeName = prop.second.title;
         auto a = new QAction();
-        createNodeActions.push_back(a);
+        mCreateNodeActions.push_back(a);
         a->setText(nodeName);
         auto t = NODE_TYPE_ISF;
         isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
@@ -142,45 +138,45 @@ MainMenu::MainMenu(MainWindow* mainWindow)
         QObject::connect(
                     a,
                     &QAction::triggered,
-                    graph,
-                    [graph, t, nodeName]{ graph->createNode(
+                    this,
+                    [this, t, nodeName]{ emit requestNodeCreation(
                         t,
-                        QPoint(graph->getLastCreatedNodePosition().x(),
-                               graph->getLastCreatedNodePosition().y()) +
-                        QPoint(100, 30),
-                        true,
+                        NodeGraphPosition::eRelativeToLastNode,
                         nodeName); });
     }
+    auto graph = mainWindow->getNodeGraph();
+    connect(this, &MainMenu::requestNodeCreation,
+            graph, &NodeGraph::handleNodeCreationRequest);
 
-    editMenu->addSeparator();
+    mEditMenu->addSeparator();
 
-    preferencesAction = new QAction("Preferences..." , editMenu);
-    editMenu->addAction(preferencesAction);
-    connect(preferencesAction, &QAction::triggered,
+    mPreferencesAction = new QAction("Preferences..." , mEditMenu);
+    mEditMenu->addAction(mPreferencesAction);
+    connect(mPreferencesAction, &QAction::triggered,
             mainWindow, &MainWindow::handlePreferencesAction);
 
     // View Menu
-    viewMenu = new QMenu("View");
-    this->addMenu(viewMenu);
+    mViewMenu = new QMenu("View");
+    this->addMenu(mViewMenu);
 
-    viewMenu->addAction(mainWindow->nodeGraphDockWidget->toggleViewAction());
-    viewMenu->addAction(mainWindow->propertiesViewDockWidget->toggleViewAction());
+    mViewMenu->addAction(mainWindow->nodeGraphDockWidget->toggleViewAction());
+    mViewMenu->addAction(mainWindow->propertiesViewDockWidget->toggleViewAction());
 
-    viewMenu->addSeparator();
+    mViewMenu->addSeparator();
 
     // Help Menu
-    helpMenu = new QMenu("Help");
-    this->addMenu(helpMenu);
+    mHelpMenu = new QMenu("Help");
+    this->addMenu(mHelpMenu);
 
-    aboutAction = new QAction("About", helpMenu);
-    helpMenu->addAction(aboutAction);
-    connect(aboutAction, &QAction::triggered,
+    mAboutAction = new QAction("About", mHelpMenu);
+    mHelpMenu->addAction(mAboutAction);
+    connect(mAboutAction, &QAction::triggered,
             mainWindow, &MainWindow::handleAboutAction);
 }
 
 MainMenu::~MainMenu()
 {
-    foreach (auto& action, createNodeActions)
+    foreach (auto& action, mCreateNodeActions)
     {
         delete action;
     }

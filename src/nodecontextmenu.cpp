@@ -24,19 +24,22 @@
 namespace Cascade {
 
 NodeContextMenu::NodeContextMenu(
-        NodeGraph* parent,
+        NodeGraph* nodeGraph,
         NodeBase* node)
-    : QMenu(parent)
+    : QMenu(nodeGraph)
 {
     auto a = new QAction();
-    actions.push_back(a);
+    mActions.push_back(a);
     a->setText("View");
     this->addAction(a);
     QObject::connect(
                 a,
                 &QAction::triggered,
-                parent,
-                [parent, node]{ parent->viewNode(node); });
+                this,
+                [this, node]{ emit requestNodeDisplay(node); });
+
+    connect(this, &NodeContextMenu::requestNodeDisplay,
+            nodeGraph, &NodeGraph::handleNodeDisplayRequest);
 
 //    a = new QAction();
 //    actions.push_back(a);
@@ -51,7 +54,7 @@ NodeContextMenu::NodeContextMenu(
 
 NodeContextMenu::~NodeContextMenu()
 {
-    foreach (auto& action, actions)
+    foreach (auto& action, mActions)
     {
         delete action;
     }

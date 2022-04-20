@@ -17,32 +17,30 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef NODECONTEXTMENU_H
-#define NODECONTEXTMENU_H
+#ifndef NODEGRAPHUTILITY_H
+#define NODEGRAPHUTILITY_H
 
-#include <QMenu>
+#include "nodedefinitions.h"
 
 namespace Cascade {
 
-class NodeGraph;
-class NodeBase;
-
-class NodeContextMenu : public QMenu
+struct NodePersistentProperties
 {
-    Q_OBJECT
+    NodeType mNodeType;
+    QPoint mPos;
+    QString mUuid;
+    QMap<int, QString> mInputs;
+    QMap<int, QString> mProperties;
+    QString mCustomName;
+};
 
-public:
-    NodeContextMenu(NodeGraph* nodeGraph, NodeBase* node);
-
-    virtual ~NodeContextMenu();
-
-private:
-    std::vector<QAction*> mActions;
-
-signals:
-    void requestNodeDisplay(Cascade::NodeBase* node);
+enum class NodeGraphPosition
+{
+    eRelativeToLastNode,
+    eAtCursor,
+    eCustom
 };
 
 } // namespace Cascade
 
-#endif // NODECONTEXTMENU_H
+#endif // NODEGRAPHUTILITY_H

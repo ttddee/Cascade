@@ -20,9 +20,9 @@
 #include "nodegraphcontextmenu.h"
 
 #include "nodedefinitions.h"
-#include "nodegraph.h"
 #include "log.h"
 #include "isfmanager.h"
+#include "nodegraph.h"
 
 namespace Cascade {
 
@@ -51,7 +51,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
     {
         i.next();
         auto a = new QAction();
-        actions.push_back(a);
+        mActions.push_back(a);
         a->setText(i.value());
         auto t = i.key();
         categories[getPropertiesForType(t).category]->addAction(a);
@@ -59,11 +59,9 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         QObject::connect(
                     a,
                     &QAction::triggered,
-                    parent,
-                    [parent, t]{ parent->createNode(
-                        t,
-                        QPoint(parent->mapToScene(parent->getLastMousePosition()).x(),
-                               parent->mapToScene(parent->getLastMousePosition()).y())); });
+                    this,
+                    [this, t]{ emit requestNodeCreation(
+                        t, NodeGraphPosition::eAtCursor); });
     }
 
     // Add ISF categories
@@ -85,7 +83,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
     {
         QString nodeName = prop.second.title;
         auto a = new QAction();
-        actions.push_back(a);
+        mActions.push_back(a);
         a->setText(nodeName);
         auto t = NODE_TYPE_ISF;
         isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
@@ -93,19 +91,19 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         QObject::connect(
                     a,
                     &QAction::triggered,
-                    parent,
-                    [parent, t, nodeName]{ parent->createNode(
+                    this,
+                    [this, t, nodeName]{ emit requestNodeCreation(
                         t,
-                        QPoint(parent->mapToScene(parent->getLastMousePosition()).x(),
-                               parent->mapToScene(parent->getLastMousePosition()).y()),
-                        true,
+                        NodeGraphPosition::eAtCursor,
                         nodeName); });
     }
+    connect(this, &NodeGraphContextMenu::requestNodeCreation,
+            parent, &NodeGraph::handleNodeCreationRequest);
 }
 
 NodeGraphContextMenu::~NodeGraphContextMenu()
 {
-    foreach (auto& action, actions)
+    foreach (auto& action, mActions)
     {
         delete action;
     }

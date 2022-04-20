@@ -63,19 +63,29 @@ NodeGraph::NodeGraph(QWidget* parent)
 
 void NodeGraph::createProject()
 {
-    createNode(NODE_TYPE_READ, QPoint(29600, 29920), false);
-    createNode(NODE_TYPE_WRITE, QPoint(30200, 29920), false);
+    createNode(NODE_TYPE_READ, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
+    createNode(NODE_TYPE_WRITE, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
 }
 
 void NodeGraph::createNode(
         const NodeType type,
-        const QPoint pos,
-        const bool view,
-        const QString& customName)
+        const NodeGraphPosition position,
+        const QString& customName,
+        const QPoint coords,
+        const bool view)
 {
     NodeBase* n = new NodeBase(type, this, nullptr, customName);
     mScene->addWidget(n);
-    n->move(pos);
+
+    QPoint nodePos;
+
+    if (position == NodeGraphPosition::eCustom)
+        nodePos = coords;
+    else
+        nodePos = getCoordinatesForPosition(position);
+
+    n->move(nodePos);
+
     mNodes.push_back(n);
 
     connectNodeSignals(n);
@@ -83,7 +93,7 @@ void NodeGraph::createNode(
     if (view)
         viewNode(n);
 
-    mLastCreatedNodePos = pos;
+    mLastCreatedNodePos = nodePos;
 
     emit projectIsDirty();
 }
@@ -246,6 +256,22 @@ QWidget* NodeGraph::getWidgetFromGraphicsItem(QGraphicsItem *item)
     return nullptr;
 }
 
+const QPoint NodeGraph::getCoordinatesForPosition(const NodeGraphPosition pos)
+{
+    if (pos == NodeGraphPosition::eRelativeToLastNode)
+    {
+        return mLastCreatedNodePos + QPoint(100, 30);
+    }
+    else if (pos == NodeGraphPosition::eAtCursor)
+    {
+        return mapToScene(mLastMousePos).toPoint();
+    }
+    else
+    {
+        return QPoint(0, 0);
+    }
+}
+
 void NodeGraph::selectNode(NodeBase *node)
 {
     mSelectedNode = node;
@@ -295,6 +321,14 @@ NodeBase* NodeGraph::getViewedNode()
     return mViewedNode;
 }
 
+void NodeGraph::handleNodeCreationRequest(
+        const NodeType type,
+        const NodeGraphPosition pos,
+        const QString& customName)
+{
+    createNode(type, pos, customName);
+}
+
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)
 {
     selectNode(node);
@@ -325,6 +359,11 @@ void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
     {
         emit requestNodeDisplay(node);
     }
+}
+
+void NodeGraph::handleNodeDisplayRequest(NodeBase* node)
+{
+    viewNode(node);
 }
 
 void NodeGraph::handleFileSaveRequest(
@@ -485,16 +524,6 @@ void NodeGraph::deleteConnection(Connection* c)
 NodeBase* NodeGraph::getSelectedNode()
 {
     return mSelectedNode;
-}
-
-const QPoint NodeGraph::getLastMousePosition()
-{
-    return mLastMousePos;
-}
-
-const QPoint NodeGraph::getLastCreatedNodePosition()
-{
-    return mLastCreatedNodePos;
 }
 
 void NodeGraph::handleConnectedNodeInputClicked(Connection* c)

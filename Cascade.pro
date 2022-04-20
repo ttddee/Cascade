@@ -161,6 +161,7 @@ HEADERS += \
     src/nodedefinitions.h \
     src/nodegraph.h \
     src/nodegraphcontextmenu.h \
+    src/nodegraphutility.h \
     src/nodeinput.h \
     src/nodeoutput.h \
     src/nodeproperties.h \

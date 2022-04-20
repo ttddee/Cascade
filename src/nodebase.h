@@ -139,8 +139,6 @@ private:
     void updateCropSizes();
     void updateRotation();
 
-    void showContextMenu();
-
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
@@ -152,8 +150,6 @@ private:
 
     Ui::NodeBase *ui;
     NodeGraph* nodeGraph;
-
-    static NodeContextMenu* contextMenu;
 
     QString id;
 
@@ -198,6 +194,7 @@ private:
 
 signals:
     void nodeWasLeftClicked(Cascade::NodeBase* node);
+    void nodeWasRightClicked(Cascade::NodeBase* node);
     void nodeWasDoubleClicked(Cascade::NodeBase* node);
     void nodeRequestUpdate(Cascade::NodeBase* node);
     void nodeRequestFileSave(

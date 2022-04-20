@@ -39,8 +39,6 @@
 
 namespace Cascade {
 
-NodeContextMenu* Cascade::NodeBase::contextMenu = nullptr;
-
 NodeBase::NodeBase(
         const NodeType type,
         NodeGraph* graph,
@@ -539,12 +537,6 @@ void NodeBase::updateRotation()
     rotation = vals[0].toInt();
 }
 
-void NodeBase::showContextMenu()
-{
-    contextMenu = new NodeContextMenu(nodeGraph, this);
-    contextMenu->exec(QCursor::pos());
-}
-
 void NodeBase::flushCache()
 {
     cachedImage = nullptr;
@@ -578,8 +570,7 @@ void NodeBase::mousePressEvent(QMouseEvent *event)
     }
     else if (event->button() == Qt::RightButton)
     {
-        this->showContextMenu();
-        event->accept();
+        emit nodeWasRightClicked(this);
     }
 }
 

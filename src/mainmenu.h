@@ -22,6 +22,8 @@
 
 #include <QMenuBar>
 
+#include "nodegraphutility.h"
+
 namespace Cascade {
 
 class MainWindow;
@@ -36,22 +38,28 @@ public:
     ~MainMenu();
 
 private:
-    QMenu *fileMenu;
-    QMenu *editMenu;
-    QMenu *viewMenu;
-    QMenu *helpMenu;
+    QMenu* mFileMenu;
+    QMenu* mEditMenu;
+    QMenu* mViewMenu;
+    QMenu* mHelpMenu;
 
-    QAction* newProjectAction;
-    QAction* openProjectAction;
-    QAction* saveProjectAction;
-    QAction* saveProjectAsAction;
-    QAction* exitAction;
-    QAction* preferencesAction;
-    QAction* toggleNodeGraphAction;
-    QAction* togglePropertiesAction;
-    QAction* aboutAction;
+    QAction* mNewProjectAction;
+    QAction* mOpenProjectAction;
+    QAction* mSaveProjectAction;
+    QAction* mSaveProjectAsAction;
+    QAction* mExitAction;
+    QAction* mPreferencesAction;
+    QAction* mToggleNodeGraphAction;
+    QAction* mTogglePropertiesAction;
+    QAction* mAboutAction;
 
-    std::vector<QAction*> createNodeActions;
+    std::vector<QAction*> mCreateNodeActions;
+
+signals:
+    void requestNodeCreation(
+            const Cascade::NodeType type,
+            const Cascade::NodeGraphPosition,
+            const QString& customName = "");
 };
 
 } // namespace Cascade
