@@ -68,6 +68,10 @@ void WindowManager::setUp(
     // Outgoing
     connect(this, &WindowManager::deleteKeyPressed,
             nodeGraph, &NodeGraph::handleDeleteKeyPressed);
+    connect(this, &WindowManager::switchToViewerMode,
+            nodeGraph, &NodeGraph::handleSwitchToViewerMode);
+    connect(this, &WindowManager::switchToViewerMode,
+            viewerStatusBar, &ViewerStatusBar::handleSwitchToViewerMode);
 
     rManager = &RenderManager::getInstance();
 }
@@ -130,9 +134,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 void WindowManager::setViewerMode(const ViewerMode mode)
 {
     currentViewerMode = mode;
-    viewerStatusBar->setViewerMode(mode);
-    vulkanWindow->setViewerMode(mode);
-    nodeGraph->viewNode(nodeGraph->getSelectedNode());
+
+    emit switchToViewerMode(mode);
 }
 
 void WindowManager::handleClearPropertiesRequest()

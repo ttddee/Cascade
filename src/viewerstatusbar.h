@@ -41,7 +41,6 @@ public:
     void setZoomText(const QString& s);
     void setWidthText(const QString& s);
     void setHeightText(const QString& s);
-    void setViewerMode(const ViewerMode m);
 
     QString getViewerSettings();
 
@@ -69,6 +68,7 @@ public slots:
     void handleBwToggled();
     void handleValueChanged();
     void handleViewerModeCheckBoxChanged();
+    void handleSwitchToViewerMode(const Cascade::ViewerMode mode);
 };
 
 } // namespace Cascade

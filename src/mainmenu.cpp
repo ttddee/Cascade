@@ -110,8 +110,8 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                     graph,
                     [graph, t]{ graph->createNode(
                         t,
-                        QPoint(graph->lastCreatedNodePos.x(),
-                               graph->lastCreatedNodePos.y()) +
+                        QPoint(graph->getLastCreatedNodePosition().x(),
+                               graph->getLastCreatedNodePosition().y()) +
                         QPoint(100, 30)); });
     }
 
@@ -145,8 +145,8 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                     graph,
                     [graph, t, nodeName]{ graph->createNode(
                         t,
-                        QPoint(graph->lastCreatedNodePos.x(),
-                               graph->lastCreatedNodePos.y()) +
+                        QPoint(graph->getLastCreatedNodePosition().x(),
+                               graph->getLastCreatedNodePosition().y()) +
                         QPoint(100, 30),
                         true,
                         nodeName); });

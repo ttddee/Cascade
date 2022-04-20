@@ -36,29 +36,29 @@ namespace Cascade {
 NodeGraph::NodeGraph(QWidget* parent)
     : QGraphicsView(parent)
 {
-    scene = new QGraphicsScene();
-    this->setScene(scene);
+    mScene = new QGraphicsScene();
+    setScene(mScene);
 
-    this->setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
-    this->setResizeAnchor(QGraphicsView::AnchorUnderMouse);
-    this->setRenderHints(QPainter::Antialiasing |
+    setTransformationAnchor(QGraphicsView::AnchorUnderMouse);
+    setResizeAnchor(QGraphicsView::AnchorUnderMouse);
+    setRenderHints(QPainter::Antialiasing |
                          QPainter::SmoothPixmapTransform);
-    this->setSceneRect(0, 0, viewWidth, viewHeight);
-    this->centerOn(viewWidth / 2, viewHeight / 2);
+    setSceneRect(0, 0, mViewWidth, mViewHeight);
+    centerOn(mViewWidth / 2, mViewHeight / 2);
 
-    wManager = &WindowManager::getInstance();
-    rManager = &RenderManager::getInstance();
+    mWindowManager = &WindowManager::getInstance();
+    mRenderManager = &RenderManager::getInstance();
 
-    contextMenu = new NodeGraphContextMenu(this);
+    mContextMenu = new NodeGraphContextMenu(this);
 
     connect(this, &NodeGraph::requestNodeDisplay,
-            rManager, &RenderManager::handleNodeDisplayRequest);
+            mRenderManager, &RenderManager::handleNodeDisplayRequest);
     connect(this, &NodeGraph::requestNodeFileSave,
-            rManager, &RenderManager::handleNodeFileSaveRequest);
+            mRenderManager, &RenderManager::handleNodeFileSaveRequest);
     connect(this, &NodeGraph::requestClearScreen,
-            rManager, &RenderManager::handleClearScreenRequest);
+            mRenderManager, &RenderManager::handleClearScreenRequest);
     connect(this, &NodeGraph::requestClearProperties,
-            wManager, &WindowManager::handleClearPropertiesRequest);
+            mWindowManager, &WindowManager::handleClearPropertiesRequest);
 }
 
 void NodeGraph::createProject()
@@ -74,32 +74,32 @@ void NodeGraph::createNode(
         const QString& customName)
 {
     NodeBase* n = new NodeBase(type, this, nullptr, customName);
-    scene->addWidget(n);
+    mScene->addWidget(n);
     n->move(pos);
-    nodes.push_back(n);
+    mNodes.push_back(n);
 
     connectNodeSignals(n);
 
     if (view)
         viewNode(n);
 
-    lastCreatedNodePos = pos;
+    mLastCreatedNodePos = pos;
 
     emit projectIsDirty();
 }
 
 NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
 {
-    NodeBase* n = new NodeBase(p.nodeType, this, nullptr, p.customName);
-    scene->addWidget(n);
-    n->move(p.pos);
-    n->setID(p.uuid);
-    nodes.push_back(n);
+    NodeBase* n = new NodeBase(p.mNodeType, this, nullptr, p.mCustomName);
+    mScene->addWidget(n);
+    n->move(p.mPos);
+    n->setID(p.mUuid);
+    mNodes.push_back(n);
 
     connectNodeSignals(n);
 
-    n->setInputIDs(p.inputs);
-    n->loadNodePropertyValues(p.properties);
+    n->setInputIDs(p.mInputs);
+    n->loadNodePropertyValues(p.mProperties);
 
     return n;
 }
@@ -111,7 +111,7 @@ void NodeGraph::connectNodeSignals(NodeBase* n)
     connect(n, &NodeBase::nodeWasDoubleClicked,
             this, &NodeGraph::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
-            wManager, &WindowManager::handleNodeDoubleClicked);
+            mWindowManager, &WindowManager::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeRequestUpdate,
             this, &NodeGraph::handleNodeUpdateRequest);
     if (n->nodeType == NODE_TYPE_WRITE)
@@ -128,7 +128,7 @@ void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
     QJsonObject jsonConnectionsHeading = jsonNodeGraph.at(1).toObject();
     QJsonArray jsonConnectionsArray = jsonConnectionsHeading.value("connections").toArray();
 
-    this->clear();
+    clearGraph();
 
     for (int i = 0; i < jsonNodesArray.size(); i++)
     {
@@ -136,23 +136,23 @@ void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
 
         // Set properties to loaded values
         NodePersistentProperties p;
-        p.nodeType = nodeStrings.key(jsonNode["type"].toString());
-        p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
-        p.uuid = jsonNode["uuid"].toString();
-        p.customName = jsonNode["customname"].toString();
+        p.mNodeType = nodeStrings.key(jsonNode["type"].toString());
+        p.mPos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
+        p.mUuid = jsonNode["uuid"].toString();
+        p.mCustomName = jsonNode["customname"].toString();
 
         // Get UUID for Node Inputs
         QJsonObject ins = jsonNode["inputs"].toObject();
         for (int i = 0; i < ins.size(); i++)
         {
-            p.inputs[i] = ins.value(QString::number(i)).toString();
+            p.mInputs[i] = ins.value(QString::number(i)).toString();
         }
 
         // Load properties to array
         QJsonObject props = jsonNode["properties"].toObject();
         for (int i = 0; i < props.size(); i++)
         {
-            p.properties[i] = props.value(QString::number(i)).toString();
+            p.mProperties[i] = props.value(QString::number(i)).toString();
         }
 
         loadNode(p);
@@ -167,10 +167,10 @@ void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
         NodeBase* srcNode = nullptr;
         NodeInput* targetInput = nullptr;
         bool found = false;
-        if (NodeBase* n = findNode(src))
+        if (NodeBase* n = findNodeById(src))
         {
             srcNode = n;
-            if (NodeBase* n = findNode(dstNode))
+            if (NodeBase* n = findNodeById(dstNode))
             {
 
                 if (NodeInput* in = n->findNodeInput(dst))
@@ -196,41 +196,41 @@ void NodeGraph::deleteNode(NodeBase *node)
         deleteConnection(c);
     }
 
-    nodes.erase(remove(nodes.begin(), nodes.end(), node), nodes.end());
+    mNodes.erase(remove(mNodes.begin(), mNodes.end(), node), mNodes.end());
 
-    scene->removeItem(node->graphicsProxyWidget());
+    mScene->removeItem(node->graphicsProxyWidget());
 
-    if (node == viewedNode)
+    if (node == mViewedNode)
     {
         emit requestClearScreen();
-        viewedNode = nullptr;
+        mViewedNode = nullptr;
     }
-    if (node == activeNode)
+    if (node == mActiveNode)
     {
         emit requestClearProperties();
-        activeNode = nullptr;
+        mActiveNode = nullptr;
     }
 
     delete node;
 
-    selectedNode = nullptr;
+    mSelectedNode = nullptr;
 
     emit projectIsDirty();
 }
 
 float NodeGraph::getViewScale() const
 {
-    return viewScale;
+    return mViewScale;
 }
 
 void NodeGraph::showContextMenu()
 {
-    contextMenu->exec(QCursor::pos());
+    mContextMenu->exec(QCursor::pos());
 }
 
 QGraphicsItem* NodeGraph::getObjectUnderCursor()
 {
-    auto item = scene->itemAt(mapToScene(mapFromGlobal(QCursor::pos())), QTransform());
+    auto item = mScene->itemAt(mapToScene(mapFromGlobal(QCursor::pos())), QTransform());
 
     return item;
 }
@@ -248,8 +248,8 @@ QWidget* NodeGraph::getWidgetFromGraphicsItem(QGraphicsItem *item)
 
 void NodeGraph::selectNode(NodeBase *node)
 {
-    selectedNode = node;
-    foreach(NodeBase* n, nodes)
+    mSelectedNode = node;
+    foreach(NodeBase* n, mNodes)
     {
         n->setIsSelected(false);
     }
@@ -258,13 +258,13 @@ void NodeGraph::selectNode(NodeBase *node)
 
 void NodeGraph::activateNode(NodeBase *node)
 {
-    activeNode = node;
+    mActiveNode = node;
     node->setIsActive(true);
 }
 
-NodeBase* NodeGraph::findNode(const QString& id)
+NodeBase* NodeGraph::findNodeById(const QString& id)
 {
-    foreach(NodeBase* n, nodes)
+    foreach(NodeBase* n, mNodes)
     {
         if (n->getID() == id)
             return n;
@@ -276,9 +276,9 @@ void NodeGraph::viewNode(NodeBase *node)
 {
     if (node)
     {
-        viewedNode = node;
+        mViewedNode = node;
 
-        foreach(NodeBase* n, nodes)
+        foreach(NodeBase* n, mNodes)
         {
             n->setIsViewed(false);
             n->repaint();
@@ -292,7 +292,7 @@ void NodeGraph::viewNode(NodeBase *node)
 
 NodeBase* NodeGraph::getViewedNode()
 {
-    return viewedNode;
+    return mViewedNode;
 }
 
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)
@@ -308,13 +308,13 @@ void NodeGraph::handleNodeDoubleClicked(NodeBase* node)
     }
     else
     {
-        activeNode = nullptr;
+        mActiveNode = nullptr;
     }
 }
 
 void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 {
-    leftMouseIsDragging = true;
+    mLeftMouseIsDragging = true;
 
     createOpenConnection(nodeOut);
 }
@@ -341,7 +341,7 @@ void NodeGraph::handleFileSaveRequest(
         node->getAllUpstreamNodes(upstreamNodes);
 
         std::vector<NodeBase*> readNodes;
-        for (auto& n : nodes)
+        for (auto& n : mNodes)
         {
             if (n->nodeType == NODE_TYPE_READ)
                 readNodes.push_back(n);
@@ -408,13 +408,23 @@ void NodeGraph::handleFileSaveRequest(
     }
 }
 
+void NodeGraph::handleShutdownRequest()
+{
+    flushCacheAllNodes();
+}
+
+void NodeGraph::handleSwitchToViewerMode(const ViewerMode mode)
+{
+    viewNode(mSelectedNode);
+}
+
 Connection* NodeGraph::createOpenConnection(NodeOutput* nodeOut)
 {
     Connection* c = new Connection(nodeOut);
-    scene->addItem(c);
-    openConnection = c;
+    mScene->addItem(c);
+    mOpenConnection = c;
 
-    openConnection->updatePosition(
+    mOpenConnection->updatePosition(
                 QPoint(mapToScene(mapFromGlobal(QCursor::pos())).x(),
                        mapToScene(mapFromGlobal(QCursor::pos())).y()));
 
@@ -423,21 +433,21 @@ Connection* NodeGraph::createOpenConnection(NodeOutput* nodeOut)
 
 void NodeGraph::destroyOpenConnection()
 {
-    if(openConnection)
+    if(mOpenConnection)
     {
-        scene->removeItem(openConnection);
-        delete openConnection;
-        openConnection = nullptr;
+        mScene->removeItem(mOpenConnection);
+        delete mOpenConnection;
+        mOpenConnection = nullptr;
     }
 }
 
 void NodeGraph::establishConnection(NodeInput *nodeIn)
 {
-    openConnection->targetInput = nodeIn;
-    openConnection->sourceOutput->addConnection(openConnection);
-    connections.push_back(openConnection);
-    nodeIn->addInConnection(openConnection);
-    openConnection = nullptr;
+    mOpenConnection->targetInput = nodeIn;
+    mOpenConnection->sourceOutput->addConnection(mOpenConnection);
+    mConnections.push_back(mOpenConnection);
+    nodeIn->addInConnection(mOpenConnection);
+    mOpenConnection = nullptr;
 
     emit projectIsDirty();
 }
@@ -445,27 +455,27 @@ void NodeGraph::establishConnection(NodeInput *nodeIn)
 void NodeGraph::loadConnection(NodeOutput* src, NodeInput* dst)
 {
     Connection* c = new Connection(src);
-    scene->addItem(c);
+    mScene->addItem(c);
     c->targetInput = dst;
     c->sourceOutput->addConnection(c);
-    connections.push_back(c);
+    mConnections.push_back(c);
     dst->addInConnectionNoUpdate(c);
 }
 
 void NodeGraph::deleteConnection(Connection* c)
 {
-    for(size_t i = 0; i < connections.size(); ++i)
+    for(size_t i = 0; i < mConnections.size(); ++i)
     {
-        if (c == connections[i])
+        if (c == mConnections[i])
         {
-            connections.erase(connections.begin() + i);
+            mConnections.erase(mConnections.begin() + i);
         }
     }
 
     c->sourceOutput->removeConnection(c);
     c->targetInput->removeInConnection();
 
-    scene->removeItem(c);
+    mScene->removeItem(c);
     delete c;
     c = nullptr;
 
@@ -474,12 +484,22 @@ void NodeGraph::deleteConnection(Connection* c)
 
 NodeBase* NodeGraph::getSelectedNode()
 {
-    return selectedNode;
+    return mSelectedNode;
+}
+
+const QPoint NodeGraph::getLastMousePosition()
+{
+    return mLastMousePos;
+}
+
+const QPoint NodeGraph::getLastCreatedNodePosition()
+{
+    return mLastCreatedNodePos;
 }
 
 void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
 {
-    leftMouseIsDragging = true;
+    mLeftMouseIsDragging = true;
     auto sourceOut = c->sourceOutput;
     createOpenConnection(sourceOut);
     deleteConnection(c);
@@ -487,7 +507,7 @@ void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
 
 void NodeGraph::handleDeleteKeyPressed()
 {
-    if (auto node = this->getSelectedNode())
+    if (auto node = getSelectedNode())
     {
         deleteNode(node);
     }
@@ -495,25 +515,25 @@ void NodeGraph::handleDeleteKeyPressed()
 
 void NodeGraph::handleCreateStartupProject()
 {
-    this->createProject();
+    createProject();
 }
 
 void NodeGraph::handleCreateNewProject()
 {
-    this->clear();
-    this->createProject();
+    clearGraph();
+    createProject();
 }
 
 void NodeGraph::handleLoadProject(const QJsonArray& jsonNodeGraph)
 {
-    this->loadProject(jsonNodeGraph);
+    loadProject(jsonNodeGraph);
 }
 
 void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
 {
     QJsonArray jsonNodesArray;
 
-    foreach (const auto& node, nodes)
+    foreach (const auto& node, mNodes)
     {
         node->addNodeToJsonArray(jsonNodesArray);
     }
@@ -523,7 +543,7 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
     jsonNodeGraph.push_back(jsonNodesHeading);
 
     QJsonArray jsonConnectionsArray;
-    foreach (const auto& connection, connections)
+    foreach (const auto& connection, mConnections)
     {
         connection->addConnectionToJsonObject(jsonConnectionsArray);
     }
@@ -535,19 +555,19 @@ void NodeGraph::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
 
 void NodeGraph::flushCacheAllNodes()
 {
-    for (auto& n : nodes)
+    for (auto& n : mNodes)
         n->flushCache();
 }
 
-void NodeGraph::clear()
+void NodeGraph::clearGraph()
 {
-    foreach (const auto& connection, connections)
+    foreach (const auto& connection, mConnections)
     {
-        this->deleteConnection(connection);
+        deleteConnection(connection);
     }
-    foreach (const auto& node, nodes)
+    foreach (const auto& node, mNodes)
     {
-        this->deleteNode(node);
+        deleteNode(node);
     }
 }
 
@@ -555,7 +575,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        foreach(NodeBase* n, nodes)
+        foreach(NodeBase* n, mNodes)
         {
             n->setIsSelected(false);
         }
@@ -572,31 +592,31 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
     }
     else if (event->button() == Qt::MiddleButton)
     {
-        middleMouseIsDragging = true;
+        mMiddleMouseIsDragging = true;
     }
-    lastMousePos = event->pos();
+    mLastMousePos = event->pos();
     QGraphicsView::mousePressEvent(event);
 }
 
 void NodeGraph::mouseMoveEvent(QMouseEvent* event)
 {
-    if (middleMouseIsDragging)
+    if (mMiddleMouseIsDragging)
     // Scroll the whole scene
     {
-        auto t = event->pos() - lastMousePos;
-        this->horizontalScrollBar()->setValue(this->horizontalScrollBar()->value() - t.x());
-        this->verticalScrollBar()->setValue(this->verticalScrollBar()->value() - t.y());
+        auto t = event->pos() - mLastMousePos;
+        horizontalScrollBar()->setValue(horizontalScrollBar()->value() - t.x());
+        verticalScrollBar()->setValue(verticalScrollBar()->value() - t.y());
     }
-    else if(leftMouseIsDragging)
+    else if(mLeftMouseIsDragging)
     {
-        if(openConnection)
+        if(mOpenConnection)
         {
-            openConnection->updatePosition(
+            mOpenConnection->updatePosition(
                         QPoint(mapToScene(mapFromGlobal(QCursor::pos())).x() + 5,
                                mapToScene(mapFromGlobal(QCursor::pos())).y() + 3));
         }
     }
-    lastMousePos = event->pos();
+    mLastMousePos = event->pos();
 
     QGraphicsView::mouseMoveEvent(event);
 }
@@ -605,7 +625,7 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        leftMouseIsDragging = false;
+        mLeftMouseIsDragging = false;
 
         auto item = getObjectUnderCursor();
 
@@ -614,7 +634,7 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
         {
             if (auto in = node->getOpenInput())
             {
-                if (openConnection)
+                if (mOpenConnection)
                     establishConnection(in);
             }
         }
@@ -622,7 +642,7 @@ void NodeGraph::mouseReleaseEvent(QMouseEvent* event)
     }
     if (event->button() == Qt::MiddleButton)
     {
-        middleMouseIsDragging = false;
+        mMiddleMouseIsDragging = false;
     }
 
     QGraphicsView::mouseReleaseEvent(event);
@@ -632,10 +652,10 @@ void NodeGraph::wheelEvent(QWheelEvent* event)
 {
     QPoint scrollAmount = event->angleDelta();
     double factor = (scrollAmount.y() > 0) ? 1.2 : 1 / 1.2;
-    if (viewScale * factor > 0.1 && viewScale * factor < 10.0)
+    if (mViewScale * factor > 0.1 && mViewScale * factor < 10.0)
     {
-        this->scale(factor, factor);
-        viewScale *= factor;
+        scale(factor, factor);
+        mViewScale *= factor;
     }
 }
 

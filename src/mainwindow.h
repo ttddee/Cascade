@@ -78,6 +78,9 @@ private:
     PreferencesManager* preferencesManager;
     ISFManager* isfManager;
 
+signals:
+    void requestShutdown();
+
 public slots:
     void handleRendererHasBeenCreated();
     void handleNoGPUFound();

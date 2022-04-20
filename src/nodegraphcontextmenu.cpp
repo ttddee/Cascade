@@ -62,8 +62,8 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     parent,
                     [parent, t]{ parent->createNode(
                         t,
-                        QPoint(parent->mapToScene(parent->lastMousePos).x(),
-                               parent->mapToScene(parent->lastMousePos).y())); });
+                        QPoint(parent->mapToScene(parent->getLastMousePosition()).x(),
+                               parent->mapToScene(parent->getLastMousePosition()).y())); });
     }
 
     // Add ISF categories
@@ -96,8 +96,8 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     parent,
                     [parent, t, nodeName]{ parent->createNode(
                         t,
-                        QPoint(parent->mapToScene(parent->lastMousePos).x(),
-                               parent->mapToScene(parent->lastMousePos).y()),
+                        QPoint(parent->mapToScene(parent->getLastMousePosition()).x(),
+                               parent->mapToScene(parent->getLastMousePosition()).y()),
                         true,
                         nodeName); });
     }

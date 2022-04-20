@@ -45,9 +45,6 @@ public:
 
     VulkanRenderer* getRenderer();
 
-    ViewerMode getViewerMode();
-    void setViewerMode(const ViewerMode mode);
-
     ~VulkanWindow();
 
 private:
@@ -56,17 +53,14 @@ private:
     void mouseMoveEvent(QMouseEvent *) override;
     void wheelEvent(QWheelEvent *) override;
 
-    VulkanRenderer* renderer;
+    VulkanRenderer* mRenderer;
 
-    bool isDragging = false;
+    bool mIsDragging = false;
+    QPoint mLastPos;
 
-    QPoint lastPos;
-
-    float zoomFactor = 1.0f;
-    const float minZoom = 0.1f;
-    const float maxZoom = 10.0f;
-
-    ViewerMode viewerMode;
+    float mZoomFactor = 1.0f;
+    const float mMinZoom = 0.1f;
+    const float mMaxZoom = 10.0f;
 
 signals:
     void noGPUFound();

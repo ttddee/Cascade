@@ -36,12 +36,12 @@ namespace Cascade {
 
 struct NodePersistentProperties
 {
-    NodeType nodeType;
-    QPoint pos;
-    QString uuid;
-    QMap<int, QString> inputs;
-    QMap<int, QString> properties;
-    QString customName;
+    NodeType mNodeType;
+    QPoint mPos;
+    QString mUuid;
+    QMap<int, QString> mInputs;
+    QMap<int, QString> mProperties;
+    QString mCustomName;
 };
 
 class NodeGraph : public QGraphicsView
@@ -59,73 +59,75 @@ public:
             const bool view = true,
             const QString& customName = "");
     void viewNode(NodeBase* node);
-    void deleteNode(NodeBase* node);
 
     NodeBase* getViewedNode();
     NodeBase* getSelectedNode();
+    const QPoint getLastMousePosition();
+    const QPoint getLastCreatedNodePosition();
 
     float getViewScale() const;
 
     void getNodeGraphAsJson(QJsonArray& jsonNodeGraph);
 
-    void flushCacheAllNodes();
-
-    QPoint lastMousePos;
-    QPoint lastCreatedNodePos = QPoint(29700, 29920);
-
-protected:
-    void mousePressEvent(QMouseEvent*) override;
-    void mouseMoveEvent(QMouseEvent*) override;
-    void mouseReleaseEvent(QMouseEvent*) override;
-    void wheelEvent(QWheelEvent*) override;
-
 private:
-    void showContextMenu();
-
+    // Project
     void createProject();
     void loadProject(const QJsonArray& jsonNodeGraph);
-    void clear();
+    void clearGraph();
 
-    QGraphicsItem* getObjectUnderCursor();
-    QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
+    // Nodes
+    void deleteNode(NodeBase* node);
+    void selectNode(NodeBase* node);
+    void activateNode(NodeBase* node);
+    NodeBase* findNodeById(const QString& id);
+    NodeBase* loadNode(const NodePersistentProperties& p);
+    void connectNodeSignals(NodeBase* n);
+    void flushCacheAllNodes();
 
+    // Connections
     Connection* createOpenConnection(NodeOutput* nodeOut);
     void establishConnection(NodeInput* nodeIn);
     void destroyOpenConnection();
     void deleteConnection(Connection* c);
     void loadConnection(NodeOutput* src, NodeInput* dst);
 
-    void selectNode(NodeBase* node);
-    void activateNode(NodeBase* node);
-    NodeBase* findNode(const QString& id);
+    // Graphics Scene
+    QGraphicsItem* getObjectUnderCursor();
+    QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
 
-    NodeBase* loadNode(const NodePersistentProperties& p);
-    void connectNodeSignals(NodeBase* n);
+    // Misc
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void wheelEvent(QWheelEvent*) override;
+    void showContextMenu();
 
-    QGraphicsScene* scene;
-    WindowManager* wManager;
-    RenderManager* rManager;
-    NodeGraphContextMenu* contextMenu;
+    ////////////////////////////////////////
+    QGraphicsScene* mScene;
+    WindowManager* mWindowManager;
+    RenderManager* mRenderManager;
+    NodeGraphContextMenu* mContextMenu;
 
-    std::vector<NodeBase*> nodes;
-    std::vector<Connection*> connections;
-
-    bool leftMouseIsDragging = false;
-    bool middleMouseIsDragging = false;
-
-    float viewScale = 1.0f;
+    std::vector<NodeBase*> mNodes;
+    std::vector<Connection*> mConnections;
 
     // The selected node
-    NodeBase* selectedNode = nullptr;
+    NodeBase* mSelectedNode = nullptr;
     // The node with active properties
-    NodeBase* activeNode = nullptr;
+    NodeBase* mActiveNode = nullptr;
     // The node that is being displayed
-    NodeBase* viewedNode = nullptr;
+    NodeBase* mViewedNode = nullptr;
 
-    Connection* openConnection = nullptr;
+    // Mouse and zoom
+    const int mViewWidth = 60000;
+    const int mViewHeight = 60000;
+    float mViewScale = 1.0f;
+    bool mLeftMouseIsDragging = false;
+    bool mMiddleMouseIsDragging = false;
+    QPoint mLastMousePos;
+    QPoint mLastCreatedNodePos = QPoint(29700, 29920);
 
-    const int viewWidth = 60000;
-    const int viewHeight = 60000;
+    Connection* mOpenConnection = nullptr;
 
 signals:
     void requestNodeDisplay(Cascade::NodeBase* node);
@@ -135,27 +137,35 @@ signals:
             const QMap<std::string, std::string>& attributes,
             const bool isBatch = false,
             const bool isLast = false);
-    void requestClearScreen();
+    void requestClearScreen(); // Check this
     void requestClearProperties();
     void projectIsDirty();
 
 public slots:
+    // Nodes
     void handleNodeLeftClicked(Cascade::NodeBase* node);
     void handleNodeDoubleClicked(Cascade::NodeBase* node);
     void handleNodeOutputLeftClicked(Cascade::NodeOutput* nodeOut);
     void handleNodeUpdateRequest(Cascade::NodeBase* node);
+    void handleConnectedNodeInputClicked(Cascade::Connection* c);
     void handleFileSaveRequest(
             Cascade::NodeBase* node,
             const QString& path,
             const QString& fileType,
             const QMap<std::string, std::string>& attributes,
             const bool batchRender);
-    void handleConnectedNodeInputClicked(Cascade::Connection* c);
+    void handleSwitchToViewerMode(const Cascade::ViewerMode mode);
 
+    // Key presses
     void handleDeleteKeyPressed();
+
+    // Project management
     void handleCreateStartupProject();
     void handleCreateNewProject();
     void handleLoadProject(const QJsonArray& jsonNodeGraph);
+
+    // Application
+    void handleShutdownRequest();
 };
 
 } // namespace Cascade

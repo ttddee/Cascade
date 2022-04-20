@@ -98,12 +98,17 @@ MainWindow::MainWindow(QWidget *parent)
     preferencesManager = &PreferencesManager::getInstance();
     preferencesManager->setUp();
 
+    // Incoming
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
             this, &MainWindow::handleNoGPUFound);
     connect(vulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
             this, &MainWindow::handleDeviceLost);
+
+    // Outgoing
+    connect(this, &MainWindow::requestShutdown,
+            nodeGraph, &NodeGraph::handleShutdownRequest);
 
     QSettings::setPath(
                 QSettings::IniFormat,
@@ -194,7 +199,7 @@ void MainWindow::handleAboutAction()
 
 void MainWindow::closeEvent(QCloseEvent *event)
 {
-    nodeGraph->flushCacheAllNodes();
+    emit requestShutdown();
 
     vulkanView->getVulkanWindow()->getRenderer()->shutdown();
 

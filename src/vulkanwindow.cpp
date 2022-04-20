@@ -20,7 +20,6 @@
 #include "vulkanwindow.h"
 
 #include <QMouseEvent>
-#include <QLabel>
 
 #include "renderer/vulkanrenderer.h"
 #include "log.h"
@@ -35,6 +34,8 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
 
     // Make sure we keep our GPU resources when window loses focus
     this->setFlags(QVulkanWindow::PersistentResources);
+
+    // TODO: This does not work
 
     // If there is more than one GPU, pick the discrete one if possible
     auto props = availablePhysicalDevices();
@@ -59,7 +60,7 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
         }
         if(!discreteAvailable)
         {
-            qWarning("No discrete GPU found.");
+            CS_LOG_WARNING("No discrete GPU found.");
         }
     }
     else if (props.size() == 0)
@@ -67,70 +68,60 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
         emit noGPUFound();
     }
 
-    renderer = new VulkanRenderer(this);
+    mRenderer = new VulkanRenderer(this);
 
-    return renderer;
+    return mRenderer;
 }
 
 VulkanRenderer* VulkanWindow::getRenderer()
 {
-    return renderer;
+    return mRenderer;
 }
 
 void VulkanWindow::handleZoomResetRequest()
 {
-    zoomFactor = 1.0;
-    renderer->scale(1.0);
-}
-
-ViewerMode VulkanWindow::getViewerMode()
-{
-    return viewerMode;
-}
-
-void VulkanWindow::setViewerMode(const ViewerMode mode)
-{
-    viewerMode = mode;
+    mZoomFactor = 1.0;
+    mRenderer->scale(1.0);
 }
 
 void VulkanWindow::mousePressEvent(QMouseEvent *e)
 {
-    isDragging = true;
-    lastPos = e->pos();
+    mIsDragging = true;
+    mLastPos = e->pos();
 }
 
 void VulkanWindow::mouseReleaseEvent(QMouseEvent *)
 {
-    isDragging = false;
+    mIsDragging = false;
 }
 
 void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
 {
-    if (isDragging)
+    if (mIsDragging)
     {
-        float dx = e->pos().x() - lastPos.x();
-        float dy = e->pos().y() - lastPos.y();
+        float dx = e->pos().x() - mLastPos.x();
+        float dy = e->pos().y() - mLastPos.y();
 
-        renderer->translate(dx, dy);
+        mRenderer->translate(dx, dy);
     }
-    lastPos = e->pos();
+    mLastPos = e->pos();
 }
 
 void VulkanWindow::wheelEvent(QWheelEvent *e)
 {
     if(e->angleDelta().y() > 0)
     {
-        zoomFactor += zoomFactor * 0.1f;
+        mZoomFactor += mZoomFactor * 0.1f;
     }
     else
     {
-        zoomFactor -= zoomFactor * 0.1f;
+        mZoomFactor -= mZoomFactor * 0.1f;
     }
 
     //Limit the scale
-    zoomFactor = zoomFactor > minZoom ? zoomFactor : minZoom;
-    zoomFactor = zoomFactor < maxZoom ? zoomFactor : maxZoom;
-    renderer->scale(zoomFactor);
+    mZoomFactor = mZoomFactor > mMinZoom ? mZoomFactor : mMinZoom;
+    mZoomFactor = mZoomFactor < mMaxZoom ? mZoomFactor : mMaxZoom;
+    mRenderer->scale(mZoomFactor);
 }
 
 VulkanWindow::~VulkanWindow()

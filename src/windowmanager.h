@@ -67,6 +67,7 @@ private:
 
 signals:
     void deleteKeyPressed();
+    void switchToViewerMode(const Cascade::ViewerMode mode);
 
 public slots:
     void handleNodeDoubleClicked(Cascade::NodeBase* node);

@@ -94,11 +94,6 @@ void ViewerStatusBar::setHeightText(const QString &s)
     ui->heightLabel->setText(s);
 }
 
-void ViewerStatusBar::setViewerMode(const ViewerMode m)
-{
-    ui->viewerModeBox->setCurrentIndex(m);
-}
-
 void ViewerStatusBar::handleSplitToggled()
 {
     if(!split)
@@ -137,6 +132,11 @@ void ViewerStatusBar::handleViewerModeCheckBoxChanged()
     ui->viewerModeBox->clearFocus();
 
     emit valueChanged();
+}
+
+void ViewerStatusBar::handleSwitchToViewerMode(const ViewerMode mode)
+{
+    currentViewerMode = mode;
 }
 
 QString ViewerStatusBar::getViewerSettings()
