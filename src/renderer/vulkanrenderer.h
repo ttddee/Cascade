@@ -196,7 +196,7 @@ private:
     // TODO: Replace this with proper render states
     bool clearScreen = true;
 
-    DisplayMode displayMode = DISPLAY_MODE_RGB;
+    DisplayMode displayMode = DisplayMode::eRgb;
 
     std::unique_ptr<CsCommandBuffer> computeCommandBuffer;
 

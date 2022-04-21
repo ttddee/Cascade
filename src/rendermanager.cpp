@@ -50,13 +50,13 @@ void RenderManager::updateViewerPushConstants(const QString &s)
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
-    auto props = getPropertiesForType(node->nodeType);
+    auto props = getPropertiesForType(node->getType());
 
     auto viewerMode = wManager->getViewerMode();
 
-    renderer->setDisplayMode(DISPLAY_MODE_RGB);
+    renderer->setDisplayMode(DisplayMode::eRgb);
 
-    if (viewerMode == VIEWER_MODE_FRONT_RGB)
+    if (viewerMode == ViewerMode::eFrontRgb)
     {
         if (props.frontInputTrait == FRONT_INPUT_ALWAYS_CLEAR)
         {
@@ -67,7 +67,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(node->getUpstreamNodeFront());
         }
     }
-    else if (viewerMode == VIEWER_MODE_BACK_RGB)
+    else if (viewerMode == ViewerMode::eBackRgb)
     {
         if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
         {
@@ -78,7 +78,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
             displayNode(node->getUpstreamNodeBack());
         }
     }
-    else if (viewerMode == VIEWER_MODE_INPUT_ALPHA)
+    else if (viewerMode == ViewerMode::eInputAlpha)
     {
         if (props.alphaInputTrait == ALPHA_INPUT_ALWAYS_CLEAR)
         {
@@ -86,17 +86,17 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         }
         else if (props.alphaInputTrait == ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
+            renderer->setDisplayMode(DisplayMode::eAlpha);
             displayNode(node->getUpstreamNodeFront());
         }
     }
-    else if (viewerMode == VIEWER_MODE_OUTPUT_RGB || viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
+    else if (viewerMode == ViewerMode::eOutputRgb || viewerMode == ViewerMode::eOutputAlpha)
     {
         NodeBase* nodeToDisplay = node;
 
-        if (viewerMode == VIEWER_MODE_OUTPUT_ALPHA)
+        if (viewerMode == ViewerMode::eOutputAlpha)
         {
-            renderer->setDisplayMode(DISPLAY_MODE_ALPHA);
+            renderer->setDisplayMode(DisplayMode::eAlpha);
         }
         if (props.rgbOutputTrait == OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED)
         {
@@ -193,7 +193,7 @@ bool RenderManager::renderNodes(NodeBase *node)
 void RenderManager::renderNode(NodeBase *node)
 {
     // Read node
-    if (node->nodeType == NODE_TYPE_READ && node->needsUpdate)
+    if (node->getType() == NODE_TYPE_READ && node->getNeedsUpdate())
     {
         if (node->canBeRendered())
         {
@@ -201,7 +201,7 @@ void RenderManager::renderNode(NodeBase *node)
         }
     }
     // All other nodes
-    else if (node->getUpstreamNodeBack() && node->needsUpdate)
+    else if (node->getUpstreamNodeBack() && node->getNeedsUpdate())
     {
         CsImage* inputImageBack = nullptr;
         CsImage* inputImageFront = nullptr;
@@ -220,7 +220,7 @@ void RenderManager::renderNode(NodeBase *node)
             renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
         }
     }
-    node->needsUpdate = false;
+    node->setNeedsUpdate(false);
 }
 
 } // namespace Cascade

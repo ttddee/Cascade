@@ -137,15 +137,16 @@ void ViewerStatusBar::handleViewerModeCheckBoxChanged()
 void ViewerStatusBar::handleSwitchToViewerMode(const ViewerMode mode)
 {
     currentViewerMode = mode;
+    ui->viewerModeBox->setCurrentText(viewerModeText.value(mode));
 }
 
 QString ViewerStatusBar::getViewerSettings()
 {
     // Only use set split viewer on RGB Out or Alpha Out view
     bool viewerSplit = split;
-    if (currentViewerMode == VIEWER_MODE_BACK_RGB ||
-        currentViewerMode == VIEWER_MODE_FRONT_RGB ||
-        currentViewerMode == VIEWER_MODE_INPUT_ALPHA)
+    if (currentViewerMode == ViewerMode::eBackRgb ||
+        currentViewerMode == ViewerMode::eFrontRgb ||
+        currentViewerMode == ViewerMode::eInputAlpha)
     {
         viewerSplit = false;
     }

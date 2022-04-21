@@ -24,7 +24,6 @@
 #include <QGraphicsItem>
 
 #include "nodebase.h"
-#include "uicolors.h"
 
 namespace Cascade {
 
@@ -48,9 +47,9 @@ private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
     const QPen normalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
-    const QPen frontConnectedPen = QPen(frontColor, 1);
-    const QPen backConnectedPen = QPen(backColor, 1);
-    const QPen alphaConnectedPen = QPen(alphaColor, 1);
+    const QPen frontConnectedPen = QPen(Config::red, 1);
+    const QPen backConnectedPen = QPen(Config::green, 1);
+    const QPen alphaConnectedPen = QPen(Config::blue, 1);
 
 };
 

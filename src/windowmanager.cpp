@@ -89,26 +89,26 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_F1)
         {
-            setViewerMode(VIEWER_MODE_FRONT_RGB);
+            setViewerMode(ViewerMode::eFrontRgb);
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
-            setViewerMode(VIEWER_MODE_BACK_RGB);
+            setViewerMode(ViewerMode::eBackRgb);
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
-            setViewerMode(VIEWER_MODE_INPUT_ALPHA);
+            setViewerMode(ViewerMode::eInputAlpha);
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
             if (nodeGraph->getSelectedNode() == nodeGraph->getViewedNode() &&
-                currentViewerMode == VIEWER_MODE_OUTPUT_RGB)
+                currentViewerMode == ViewerMode::eOutputRgb)
             {
-                setViewerMode(VIEWER_MODE_OUTPUT_ALPHA);
+                setViewerMode(ViewerMode::eOutputAlpha);
             }
             else
             {
-                setViewerMode(VIEWER_MODE_OUTPUT_RGB);
+                setViewerMode(ViewerMode::eOutputRgb);
             }
         }
         else if (keyEvent->key() == Qt::Key_Delete)

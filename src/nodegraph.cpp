@@ -116,15 +116,25 @@ NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
 
 void NodeGraph::connectNodeSignals(NodeBase* n)
 {
+    // Node to graph
     connect(n, &NodeBase::nodeWasLeftClicked,
                 this, &NodeGraph::handleNodeLeftClicked);
     connect(n, &NodeBase::nodeWasDoubleClicked,
             this, &NodeGraph::handleNodeDoubleClicked);
-    connect(n, &NodeBase::nodeWasDoubleClicked,
-            mWindowManager, &WindowManager::handleNodeDoubleClicked);
     connect(n, &NodeBase::nodeRequestUpdate,
             this, &NodeGraph::handleNodeUpdateRequest);
-    if (n->nodeType == NODE_TYPE_WRITE)
+    // Graph to node
+    connect(this, &NodeGraph::requestSetNodeSelected,
+            n, &NodeBase::handleSetSelected);
+    connect(this, &NodeGraph::requestSetNodeActive,
+            n, &NodeBase::handleSetActive);
+    connect(this, &NodeGraph::requestSetNodeViewed,
+            n, &NodeBase::handleSetViewed);
+
+    connect(n, &NodeBase::nodeWasDoubleClicked,
+            mWindowManager, &WindowManager::handleNodeDoubleClicked);
+
+    if (n->getType() == NODE_TYPE_WRITE)
     {
         connect(n, &NodeBase::nodeRequestFileSave,
                 this, &NodeGraph::handleFileSaveRequest);
@@ -277,15 +287,15 @@ void NodeGraph::selectNode(NodeBase *node)
     mSelectedNode = node;
     foreach(NodeBase* n, mNodes)
     {
-        n->setIsSelected(false);
+        emit requestSetNodeSelected(n, false);
     }
-    node->setIsSelected(true);
+    emit requestSetNodeSelected(node, true);
 }
 
 void NodeGraph::activateNode(NodeBase *node)
 {
     mActiveNode = node;
-    node->setIsActive(true);
+    emit requestSetNodeActive(node, true);
 }
 
 NodeBase* NodeGraph::findNodeById(const QString& id)
@@ -306,12 +316,9 @@ void NodeGraph::viewNode(NodeBase *node)
 
         foreach(NodeBase* n, mNodes)
         {
-            n->setIsViewed(false);
-            n->repaint();
+            emit requestSetNodeViewed(n, false);
         }
-        node->setIsViewed(true);
-        node->repaint();
-
+        emit requestSetNodeViewed(node, false);
         emit requestNodeDisplay(node);
     }
 }
@@ -355,7 +362,7 @@ void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 
 void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 {
-    if (node->getIsViewed())
+    if (node->isViewed())
     {
         emit requestNodeDisplay(node);
     }
@@ -382,7 +389,7 @@ void NodeGraph::handleFileSaveRequest(
         std::vector<NodeBase*> readNodes;
         for (auto& n : mNodes)
         {
-            if (n->nodeType == NODE_TYPE_READ)
+            if (n->getType() == NODE_TYPE_READ)
                 readNodes.push_back(n);
         }
 
@@ -606,7 +613,7 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
     {
         foreach(NodeBase* n, mNodes)
         {
-            n->setIsSelected(false);
+            emit requestSetNodeSelected(n, false);
         }
     }
     if (event->button() == Qt::RightButton)

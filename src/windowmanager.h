@@ -63,7 +63,7 @@ private:
 
     RenderManager* rManager;
 
-    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
+    ViewerMode currentViewerMode = Config::defaultViewerMode;
 
 signals:
     void deleteKeyPressed();

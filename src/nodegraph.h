@@ -92,7 +92,6 @@ private:
     void wheelEvent(QWheelEvent*) override;
     void showContextMenu();
 
-    ////////////////////////////////////////
     QGraphicsScene* mScene;
     WindowManager* mWindowManager;
     RenderManager* mRenderManager;
@@ -127,8 +126,13 @@ signals:
             const QMap<std::string, std::string>& attributes,
             const bool isBatch = false,
             const bool isLast = false);
+    void requestSetNodeSelected(Cascade::NodeBase* node, const bool b);
+    void requestSetNodeActive(Cascade::NodeBase* node, const bool b);
+    void requestSetNodeViewed(Cascade::NodeBase* node, const bool b);
+
     void requestClearScreen();
     void requestClearProperties();
+
     void projectIsDirty();
 
 public slots:

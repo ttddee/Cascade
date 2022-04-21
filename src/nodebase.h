@@ -31,7 +31,7 @@
 #include "nodeproperties.h"
 #include "renderer/csimage.h"
 #include "windowmanager.h"
-#include "uicolors.h"
+#include "global.h"
 #include "nodecontextmenu.h"
 
 namespace Ui {
@@ -47,12 +47,6 @@ class NodeOutput;
 class NodeGraph;
 class Connection;
 
-enum DisplayMode
-{
-    DISPLAY_MODE_RGB,
-    DISPLAY_MODE_ALPHA
-};
-
 class NodeBase : public QWidget
 {
     Q_OBJECT
@@ -64,13 +58,7 @@ public:
             QWidget *parent = nullptr,
             const QString& customName = "");
 
-    const NodeType nodeType;
-
-    void setIsSelected(const bool b);
-    void setIsActive(const bool b);
-    void setIsViewed(const bool b);
-
-    bool getIsViewed() const;
+    const bool isViewed() const;
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);
 
@@ -101,6 +89,10 @@ public:
     NodeInput* getOpenInput() const;
     QSize getInputSize() const;
 
+    const NodeType getType() const;
+    const bool getNeedsUpdate() const;
+    void setNeedsUpdate(const bool b); // We don't want this in here
+
     QString getID() const;
     void setID(const QString& s);
 
@@ -123,8 +115,6 @@ public:
 
     virtual ~NodeBase();
 
-    bool needsUpdate = true;
-
 private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
@@ -146,51 +136,44 @@ private:
     void paintEvent(QPaintEvent*) override;
     void moveEvent(QMoveEvent*) override;
 
-    std::unique_ptr<CsImage> cachedImage;
+    const NodeType mNodeType;
+
+    std::unique_ptr<CsImage> mCachedImage;
 
     Ui::NodeBase *ui;
-    NodeGraph* nodeGraph;
+    NodeGraph* mNodeGraph;
 
-    QString id;
+    QString mId;
 
-    QPoint inAnchorPos;
-    QPoint outAnchorPos;
+    std::vector<NodeInput*> mNodeInputs;
+    std::vector<NodeOutput*> mNodeOutputs;
 
-    std::vector<NodeInput*> nodeInputs;
-    std::vector<NodeOutput*> nodeOutputs;
+    NodeInput* mRgbaBackIn = nullptr;
+    NodeInput* mRgbaFrontIn = nullptr;
+    NodeOutput* mRgbaOut = nullptr;
 
-    NodeInput* rgbaBackIn = nullptr;
-    NodeInput* rgbaFrontIn = nullptr;
-    NodeOutput* rgbaOut = nullptr;
+    std::unique_ptr<NodeProperties> mNodeProperties;
 
-    std::unique_ptr<NodeProperties> nodeProperties;
+    QString mCustomName = "";
+    std::vector<unsigned int> mShaderCode;
 
-    WindowManager* wManager;
+    bool mNeedsUpdate = true;
+    bool mIsSelected = false;
+    bool mIsActive = false;
+    bool mIsViewed = false;
+    bool mIsDragging = false;
 
-    QString customName = "";
-    std::vector<unsigned int> shaderCode;
+    QPoint mOldPos;
 
-    bool isSelected = false;
-    bool isActive = false;
-    bool isViewed = false;
-    bool isDragging = false;
+    int mLeftCrop = 0;
+    int mTopCrop = 0;
+    int mRightCrop = 0;
+    int mBottomCrop = 0;
 
-    QPoint oldPos;
+    int mRotation = 0;
 
-    bool hasCustomSize = false;
-    UiEntity* sizeSource;
-
-    int leftCrop = 0;
-    int topCrop = 0;
-    int rightCrop = 0;
-    int bottomCrop = 0;
-
-    int rotation = 0;
-
-    const int cornerRadius = 6;
-    const QBrush defaultColorBrush = QBrush(QColor(24, 27, 30));
-    const QBrush selectedColorBrush = QBrush(QColor(37, 74, 115));
-    const QPen defaultColorPen = QPen(QColor(0x62, 0x69, 0x71), 3);
+    const QBrush mDefaultColorBrush = QBrush(Config::defaultNodeColor);
+    const QBrush mSelectedColorBrush = QBrush(Config::selectedNodeColor);
 
 signals:
     void nodeWasLeftClicked(Cascade::NodeBase* node);
@@ -204,6 +187,11 @@ signals:
             const QMap<std::string, std::string>& attributes,
             const bool batchRender);
     void nodeHasMoved();
+
+public slots:
+    void handleSetSelected(Cascade::NodeBase* node, const bool b);
+    void handleSetActive(Cascade::NodeBase* node, const bool b);
+    void handleSetViewed(Cascade::NodeBase* node, const bool b);
 };
 
 } // namespace Cascade

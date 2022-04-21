@@ -949,7 +949,7 @@ void VulkanRenderer::createRenderPass()
 
     // Choose to either display RGB or Alpha
     vk::Pipeline* pl;
-    if (displayMode == DISPLAY_MODE_ALPHA)
+    if (displayMode == DisplayMode::eAlpha)
         pl = &graphicsPipelineAlpha.get();
     else
         pl = &graphicsPipelineRGB.get();
@@ -1100,9 +1100,11 @@ void VulkanRenderer::processNode(
         inputImageBack = tmpCacheImage.get();
     }
 
-    auto pipeline = pipelines[node->nodeType].get();
+    auto pipeline = pipelines[node->getType()].get();
 
-    if (node->nodeType == NODE_TYPE_SHADER || node->nodeType == NODE_TYPE_ISF)
+    auto nodeType = node->getType();
+
+    if (nodeType == NODE_TYPE_SHADER || nodeType == NODE_TYPE_ISF)
     {
         if (node->getShaderCode().size() != 0)
         {
@@ -1118,7 +1120,7 @@ void VulkanRenderer::processNode(
         }
     }
 
-    int numShaderPasses = getPropertiesForType(node->nodeType).numShaderPasses;
+    int numShaderPasses = getPropertiesForType(node->getType()).numShaderPasses;
     int currentShaderPass = 1;
 
     if (numShaderPasses == 1)

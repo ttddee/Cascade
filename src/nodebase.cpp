@@ -45,10 +45,10 @@ NodeBase::NodeBase(
         QWidget *parent,
         const QString& customName)
     : QWidget(parent),
-      nodeType(type),
+      mNodeType(type),
       ui(new Ui::NodeBase),
-      nodeGraph(graph),
-      id(QUuid::createUuid().toString(QUuid::WithoutBraces))
+      mNodeGraph(graph),
+      mId(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     ui->setupUi(this);
 
@@ -57,8 +57,6 @@ NodeBase::NodeBase(
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeBase::nodeHasMoved,
             pm, &ProjectManager::handleProjectIsDirty);
-
-    wManager = &WindowManager::getInstance();
 }
 
 void NodeBase::setUpNode(
@@ -76,7 +74,7 @@ void NodeBase::setUpNode(
         auto isfManager = &ISFManager::getInstance();
         props = isfManager->getNodeProperties().at(cName);
         this->setShaderCode(isfManager->getShaderCode(cName));
-        customName = cName;
+        mCustomName = cName;
     }
 
     QString label = props.title.toUpper();
@@ -85,7 +83,7 @@ void NodeBase::setUpNode(
     this->createInputs(props);
     this->createOutputs(props);
 
-    nodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
+    mNodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -94,7 +92,7 @@ void NodeBase::createInputs(const NodeInitProperties &props)
     {
         auto nodeIn = new NodeInput(props.nodeInputs[i], this);
         nodeIn->move(-2, 42 + 28 * i);
-        nodeInputs.push_back(nodeIn);
+        mNodeInputs.push_back(nodeIn);
 
         QLabel *label;
         label = new QLabel(this);
@@ -104,22 +102,22 @@ void NodeBase::createInputs(const NodeInitProperties &props)
 
         if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
         {
-            this->rgbaBackIn = nodeIn;
+            this->mRgbaBackIn = nodeIn;
             label->setText("RGB Back");
         }
         else if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_FRONT)
         {
-            this->rgbaFrontIn = nodeIn;
+            this->mRgbaFrontIn = nodeIn;
             label->setText("RGB Front");
         }
         else if (props.nodeInputs[i] == NODE_INPUT_TYPE_ALPHA)
         {
-            this->rgbaFrontIn = nodeIn;
+            this->mRgbaFrontIn = nodeIn;
             label->setText("Alpha");
         }
 
         connect(nodeIn, &NodeInput::connectedNodeInputClicked,
-                nodeGraph, &NodeGraph::handleConnectedNodeInputClicked);
+                mNodeGraph, &NodeGraph::handleConnectedNodeInputClicked);
     }
 }
 
@@ -129,7 +127,7 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     {
         auto nodeOut = new NodeOutput(this);
         nodeOut->move(112, 42);
-        nodeOutputs.push_back(nodeOut);
+        mNodeOutputs.push_back(nodeOut);
 
         QLabel *label;
         label = new QLabel(this);
@@ -140,70 +138,54 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
 
         if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
         {
-            this->rgbaOut = nodeOut;
+            this->mRgbaOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
-                nodeGraph, &NodeGraph::handleNodeOutputLeftClicked);
+                mNodeGraph, &NodeGraph::handleNodeOutputLeftClicked);
     }
 }
 
-bool NodeBase::getIsViewed() const
+const bool NodeBase::isViewed() const
 {
-    return isViewed;
-}
-
-void NodeBase::setIsSelected(const bool b)
-{
-    isSelected = b;
-    this->update();
-}
-
-void NodeBase::setIsActive(const bool b)
-{
-    isActive = b;
-}
-
-void NodeBase::setIsViewed(const bool b)
-{
-    isViewed = b;
+    return mIsViewed;
 }
 
 QString NodeBase::getID() const
 {
-    return id;
+    return mId;
 }
 
 void NodeBase::setID(const QString &s)
 {
-    id = s;
+    mId = s;
 }
 
 void NodeBase::setInputIDs(const QMap<int, QString>& ids)
 {
     for ( int i = 0; i < ids.size(); i++)
     {
-        nodeInputs[i]->setID(ids[i]);
+        mNodeInputs[i]->setID(ids[i]);
     }
 }
 
 const std::vector<unsigned int>& NodeBase::getShaderCode()
 {
-    return shaderCode;
+    return mShaderCode;
 }
 
 void NodeBase::setShaderCode(const std::vector<unsigned int> code)
 {
-    shaderCode = code;
+    mShaderCode = code;
 }
 
 void NodeBase::loadNodePropertyValues(const QMap<int, QString> &values)
 {
-    nodeProperties->loadNodePropertyValues(values);
+    mNodeProperties->loadNodePropertyValues(values);
 }
 
 NodeInput* NodeBase::findNodeInput(const QString& id)
 {
-    foreach(NodeInput* in, nodeInputs)
+    foreach(NodeInput* in, mNodeInputs)
     {
         if (in->getID() == id)
             return in;
@@ -213,45 +195,45 @@ NodeInput* NodeBase::findNodeInput(const QString& id)
 
 NodeInput* NodeBase::getRgbaBackIn() const
 {
-    if (rgbaBackIn)
+    if (mRgbaBackIn)
     {
-        return rgbaBackIn;
+        return mRgbaBackIn;
     }
     return nullptr;
 }
 
 NodeInput* NodeBase::getRgbaFrontIn() const
 {
-    if (rgbaFrontIn)
+    if (mRgbaFrontIn)
     {
-        return rgbaFrontIn;
+        return mRgbaFrontIn;
     }
     return nullptr;
 }
 
 NodeOutput* NodeBase::getRgbaOut() const
 {
-    if (rgbaOut)
+    if (mRgbaOut)
     {
-        return rgbaOut;
+        return mRgbaOut;
     }
     return nullptr;
 }
 
 NodeBase* NodeBase::getUpstreamNodeBack() const
 {
-    if(rgbaBackIn && rgbaBackIn->hasConnection())
+    if(mRgbaBackIn && mRgbaBackIn->hasConnection())
     {
-        return rgbaBackIn->inConnection->sourceOutput->parentNode;
+        return mRgbaBackIn->inConnection->sourceOutput->parentNode;
     }
     return nullptr;
 }
 
 NodeBase* NodeBase::getUpstreamNodeFront() const
 {
-    if(rgbaFrontIn && rgbaFrontIn->hasConnection())
+    if(mRgbaFrontIn && mRgbaFrontIn->hasConnection())
     {
-        return rgbaFrontIn->inConnection->sourceOutput->parentNode;
+        return mRgbaFrontIn->inConnection->sourceOutput->parentNode;
     }
     return nullptr;
 }
@@ -271,16 +253,16 @@ void NodeBase::getAllUpstreamNodes(std::vector<NodeBase*>& nodes)
 
 void NodeBase::requestUpdate()
 {
-    if (nodeType == NODE_TYPE_CROP)
+    if (mNodeType == NODE_TYPE_CROP)
     {
         updateCropSizes();
     }
-    else if (nodeType == NODE_TYPE_ROTATE)
+    else if (mNodeType == NODE_TYPE_ROTATE)
     {
         updateRotation();
     }
 
-    needsUpdate = true;
+    mNeedsUpdate = true;
     invalidateAllDownstreamNodes();
 
     emit nodeRequestUpdate(this);
@@ -304,16 +286,31 @@ QSize NodeBase::getInputSize() const
     return size;
 }
 
+const NodeType NodeBase::getType() const
+{
+    return mNodeType;
+}
+
+const bool NodeBase::getNeedsUpdate() const
+{
+    return mNeedsUpdate;
+}
+
+void NodeBase::setNeedsUpdate(const bool b)
+{
+    mNeedsUpdate = b;
+}
+
 QSize NodeBase::getTargetSize() const
 {
     QSize size(0, 0);
     size = getInputSize();
 
-    if (nodeType == NODE_TYPE_CROP)
+    if (mNodeType == NODE_TYPE_CROP)
     {
         // Crop
-        size.setWidth(size.width() - leftCrop - rightCrop);
-        size.setHeight(size.height() - topCrop - bottomCrop);
+        size.setWidth(size.width() - mLeftCrop - mRightCrop);
+        size.setHeight(size.height() - mTopCrop - mBottomCrop);
         if(size.width() < 0)
         {
             size.setWidth(0);
@@ -323,7 +320,7 @@ QSize NodeBase::getTargetSize() const
             size.setHeight(0);
         }
     }
-    if (nodeType == NODE_TYPE_RESIZE)
+    if (mNodeType == NODE_TYPE_RESIZE)
     {
         // Resize
         auto vals = getAllPropertyValues().split(",");
@@ -345,19 +342,19 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
     }
 
     QJsonObject jsonInputs;
-    for(size_t i = 0; i < nodeInputs.size(); i++)
+    for(size_t i = 0; i < mNodeInputs.size(); i++)
     {
-        jsonInputs.insert(QString::number(i), nodeInputs[i]->getID());
+        jsonInputs.insert(QString::number(i), mNodeInputs[i]->getID());
     }
 
     QJsonObject jsonNode {
         { "uuid", getID() },
-        { "type", nodeStrings[nodeType] },
+        { "type", nodeStrings[mNodeType] },
         { "posx", this->pos().x() },
         { "posy", this->pos().y() },
         { "properties", jsonProps },
         { "inputs", jsonInputs },
-        { "customname", customName }
+        { "customname", mCustomName }
     };
 
     jsonNodesArray.push_back(jsonNode);
@@ -365,7 +362,7 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
 
 NodeInput* NodeBase::getOpenInput() const
 {
-    foreach(auto in, nodeInputs)
+    foreach(auto in, mNodeInputs)
     {
         if (!in->hasConnection())
             return in;
@@ -391,9 +388,9 @@ QString NodeBase::getAllPropertyValues() const
 
 void NodeBase::getAllDownstreamNodes(std::vector<NodeBase*>& nodes)
 {    
-    if(rgbaOut)
+    if(mRgbaOut)
     {
-        foreach(Connection* c, rgbaOut->getConnections())
+        foreach(Connection* c, mRgbaOut->getConnections())
         {
             nodes.push_back(c->targetInput->parentNode);
             c->targetInput->parentNode->getAllDownstreamNodes(nodes);
@@ -405,17 +402,17 @@ std::set<Connection*> NodeBase::getAllConnections()
 {
     std::set<Connection*> connections;
 
-    if (rgbaBackIn)
-        if (auto c = rgbaBackIn->getConnection())
+    if (mRgbaBackIn)
+        if (auto c = mRgbaBackIn->getConnection())
             connections.insert(c);
 
-    if (rgbaFrontIn)
-        if (auto c = rgbaFrontIn->getConnection())
+    if (mRgbaFrontIn)
+        if (auto c = mRgbaFrontIn->getConnection())
             connections.insert(c);
 
-    if (rgbaOut)
+    if (mRgbaOut)
     {
-        auto conns = rgbaOut->getConnections();
+        auto conns = mRgbaOut->getConnections();
 
         if (conns.size() > 0)
         {
@@ -427,14 +424,14 @@ std::set<Connection*> NodeBase::getAllConnections()
 
 CsImage* NodeBase::getCachedImage() const
 {
-    if (cachedImage)
-        return cachedImage.get();
+    if (mCachedImage)
+        return mCachedImage.get();
     return nullptr;
 }
 
 void NodeBase::setCachedImage(std::unique_ptr<CsImage> image)
 {
-    cachedImage = std::move(image);
+    mCachedImage = std::move(image);
 }
 
 void NodeBase::invalidateAllDownstreamNodes()
@@ -455,13 +452,13 @@ void NodeBase::paintEvent(QPaintEvent *event)
 
     QRect rect = this->rect();
     QPainterPath path;
-    path.addRoundedRect(rect, cornerRadius, cornerRadius);
-    painter.fillPath(path, defaultColorBrush);
+    path.addRoundedRect(rect, Config::nodeCornerRadius, Config::nodeCornerRadius);
+    painter.fillPath(path, mDefaultColorBrush);
 
-    if (isSelected)
+    if (mIsSelected)
     {
         painter.setClipRect(0, 0, 120, 33, Qt::ReplaceClip);
-        painter.fillPath(path, selectedColorBrush);
+        painter.fillPath(path, mSelectedColorBrush);
     }
 
     Q_UNUSED(event);
@@ -476,7 +473,7 @@ void NodeBase::moveEvent(QMoveEvent *event)
 
 NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 {
-    for (NodeInput* in : nodeInputs)
+    for (NodeInput* in : mNodeInputs)
     {
         auto bbox = QRect(mapToGlobal(in->geometry().topLeft()),
                           mapToGlobal(in->geometry().bottomRight()));
@@ -490,7 +487,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 
 bool NodeBase::canBeRendered() const
 {
-    if (nodeType == NODE_TYPE_READ)
+    if (mNodeType == NODE_TYPE_READ)
     {
         auto vals = getAllPropertyValues();
         if (vals.size() == 0)
@@ -498,7 +495,7 @@ bool NodeBase::canBeRendered() const
             return false;
         }
     }
-    else if (rgbaBackIn && !rgbaBackIn->hasConnection())
+    else if (mRgbaBackIn && !mRgbaBackIn->hasConnection())
     {
         return false;
     }
@@ -507,16 +504,16 @@ bool NodeBase::canBeRendered() const
 
 NodeProperties* NodeBase::getProperties() const
 {
-    return nodeProperties.get();
+    return mNodeProperties.get();
 }
 
 void NodeBase::updateConnectionPositions()
 {
-    foreach(NodeInput* nodeIn, nodeInputs)
+    foreach(NodeInput* nodeIn, mNodeInputs)
     {
         nodeIn->updateConnection();
     }
-    foreach(NodeOutput* nodeOut, nodeOutputs)
+    foreach(NodeOutput* nodeOut, mNodeOutputs)
     {
         nodeOut->updateConnections();
     }
@@ -525,46 +522,71 @@ void NodeBase::updateConnectionPositions()
 void NodeBase::updateCropSizes()
 {
     auto vals = getAllPropertyValues().split(",");
-    leftCrop = vals[0].toInt();
-    topCrop = vals[1].toInt();
-    rightCrop = vals[2].toInt();
-    bottomCrop = vals[3].toInt();
+    mLeftCrop = vals[0].toInt();
+    mTopCrop = vals[1].toInt();
+    mRightCrop = vals[2].toInt();
+    mBottomCrop = vals[3].toInt();
 }
 
 void NodeBase::updateRotation()
 {
     auto vals = getAllPropertyValues().split(",");
-    rotation = vals[0].toInt();
+    mRotation = vals[0].toInt();
 }
 
 void NodeBase::flushCache()
 {
-    cachedImage = nullptr;
+    mCachedImage = nullptr;
 }
 
 const int NodeBase::getNumImages()
 {
-    return nodeProperties->getNumImages();
+    return mNodeProperties->getNumImages();
 }
 
 void NodeBase::switchToFirstImage()
 {
-    nodeProperties->switchToFirstImage();
+    mNodeProperties->switchToFirstImage();
 }
 
 void NodeBase::switchToNextImage()
 {
-    nodeProperties->switchToNextImage();
+    mNodeProperties->switchToNextImage();
+}
+
+void NodeBase::handleSetSelected(NodeBase* node, const bool b)
+{
+    if (node->getID() == mId)
+    {
+        mIsSelected = b;
+        update();
+    }
+}
+
+void NodeBase::handleSetActive(NodeBase* node, const bool b)
+{
+    if (node->getID() == mId)
+    {
+        mIsActive = b;
+    }
+}
+
+void NodeBase::handleSetViewed(NodeBase* node, const bool b)
+{
+    if (node->getID() == mId)
+    {
+        mIsViewed = b;
+    }
 }
 
 void NodeBase::mousePressEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        if (!isDragging)
+        if (!mIsDragging)
         {
-            isDragging = true;
-            oldPos = event->globalPos();
+            mIsDragging = true;
+            mOldPos = event->globalPos();
         }
         emit nodeWasLeftClicked(this);
     }
@@ -576,12 +598,12 @@ void NodeBase::mousePressEvent(QMouseEvent *event)
 
 void NodeBase::mouseMoveEvent(QMouseEvent *event)
 {
-    if (isDragging)
+    if (mIsDragging)
     {
-        QPoint offset = event->globalPos() - oldPos;
-        QPoint newPos = this->pos() + (offset / nodeGraph->getViewScale());
+        QPoint offset = event->globalPos() - mOldPos;
+        QPoint newPos = this->pos() + (offset / mNodeGraph->getViewScale());
         this->move(newPos);
-        oldPos = event->globalPos();
+        mOldPos = event->globalPos();
         this->updateConnectionPositions();
     }
 }
@@ -590,7 +612,7 @@ void NodeBase::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        isDragging = false;
+        mIsDragging = false;
     }
 }
 

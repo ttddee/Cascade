@@ -182,7 +182,6 @@ HEADERS += \
     src/shadercompiler/DirStackFileIncluder.h \
     src/shadercompiler/SpvShaderCompiler.h \
     src/slidernoclick.h \
-    src/uicolors.h \
     src/uientities/channelselectentity.h \
     src/uientities/checkboxentity.h \
     src/uientities/codeeditorentity.h \

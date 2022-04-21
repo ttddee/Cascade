@@ -51,7 +51,7 @@ private:
 
     bool split = false;
     bool bw = false;
-    ViewerMode currentViewerMode = VIEWER_MODE_OUTPUT_RGB;
+    ViewerMode currentViewerMode = Config::defaultViewerMode;
 
     CsSliderBoxEntity* splitSlider;
     CsSliderBoxEntity* gammaSlider;
