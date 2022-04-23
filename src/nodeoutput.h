@@ -41,18 +41,18 @@ public:
     void updateConnections();
     std::vector<Connection*> getConnections();
 
-    NodeBase* parentNode = nullptr;
-    const int visualWidth = 10;
-    const int visualHeight = 18;
+    NodeBase* mParentNode = nullptr;
+    const int mVisualWidth = 10;
+    const int mVisualHeight = 18;
 
 protected:
     void mousePressEvent(QMouseEvent* event) override;
 
 private:
-    std::vector<Connection*> outConnections;
+    std::vector<Connection*> mOutConnections;
 
 signals:
-    void nodeOutputLeftMouseClicked(NodeOutput* nodeOuptput);
+    void nodeOutputLeftMouseClicked(Cascade::NodeOutput* nodeOuptput);
 
 };
 

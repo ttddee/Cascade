@@ -22,27 +22,27 @@ enum class ViewerMode
     eOutputAlpha
 };
 
-static const QMap<ViewerMode, QString> viewerModeText =
+static const QMap<ViewerMode, QString> sViewerModeText =
 {
-    { ViewerMode::eFrontRgb, "RGB Front" },
-    { ViewerMode::eBackRgb, "RGB Back" },
-    { ViewerMode::eInputAlpha, "Input Alpha" },
-    { ViewerMode::eOutputRgb, "RGB Out" },
-    { ViewerMode::eOutputAlpha, "Alpha Out" }
+    { ViewerMode::eFrontRgb,        "RGB Front" },
+    { ViewerMode::eBackRgb,         "RGB Back" },
+    { ViewerMode::eInputAlpha,      "Input Alpha" },
+    { ViewerMode::eOutputRgb,       "RGB Out" },
+    { ViewerMode::eOutputAlpha,     "Alpha Out" }
 };
 
     namespace Config
     {
-        [[maybe_unused]] static constexpr ViewerMode defaultViewerMode = ViewerMode::eOutputRgb;
+        [[maybe_unused]] static constexpr ViewerMode sDefaultViewerMode = ViewerMode::eOutputRgb;
 
-        [[maybe_unused]] static constexpr QColor red(229, 70, 61);      // Red
-        [[maybe_unused]] static constexpr QColor green(53, 226, 87);    // Green
-        [[maybe_unused]] static constexpr QColor blue(35, 114, 239);    // Blue
+        [[maybe_unused]] static constexpr QColor sRed(229, 70, 61);
+        [[maybe_unused]] static constexpr QColor sGreen(53, 226, 87);
+        [[maybe_unused]] static constexpr QColor sBlue(35, 114, 239);
 
         // Node
-        [[maybe_unused]] static constexpr int nodeCornerRadius(6);
-        [[maybe_unused]] static constexpr QColor defaultNodeColor(24, 27, 30);
-        [[maybe_unused]] static constexpr QColor selectedNodeColor(37, 74, 115);
+        [[maybe_unused]] static constexpr int sNodeCornerRadius(6);
+        [[maybe_unused]] static constexpr QColor sDefaultNodeColor(24, 27, 30);
+        [[maybe_unused]] static constexpr QColor sSelectedNodeColor(37, 74, 115);
 
     } // namespace Cascade::Config
 

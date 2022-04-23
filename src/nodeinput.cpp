@@ -26,10 +26,10 @@ namespace Cascade {
 
 NodeInput::NodeInput(NodeInputType t, QWidget *parent)
     : QPushButton (parent),
-      inputType(t),
-      id(QUuid::createUuid().toString(QUuid::WithoutBraces))
+      mInputType(t),
+      mId(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
-    parentNode = static_cast<NodeBase*>(parent);
+    mParentNode = static_cast<NodeBase*>(parent);
     this->resize(10, 18);
 
     if (t == NODE_INPUT_TYPE_RGB_FRONT)
@@ -42,12 +42,12 @@ NodeInput::NodeInput(NodeInputType t, QWidget *parent)
 
 NodeInputType NodeInput::getInputType()
 {
-    return inputType;
+    return mInputType;
 }
 
 bool NodeInput::hasConnection()
 {
-    if(inConnection)
+    if(mInConnection)
     {
         return true;
     }
@@ -57,46 +57,46 @@ bool NodeInput::hasConnection()
 Connection* NodeInput::getConnection()
 {
     if (hasConnection())
-        return inConnection;
+        return mInConnection;
 
     return nullptr;
 }
 
 void NodeInput::updateConnection()
 {
-    if(inConnection)
+    if(mInConnection)
     {
-        inConnection->updatePosition();
+        mInConnection->updatePosition();
     }
 }
 
 void NodeInput::addInConnection(Connection* c)
 {
-    inConnection = c;
+    mInConnection = c;
     updateConnection();
-    parentNode->requestUpdate();
+    mParentNode->requestUpdate();
 }
 
 void NodeInput::addInConnectionNoUpdate(Connection* c)
 {
-    inConnection = c;
+    mInConnection = c;
     updateConnection();
 }
 
 void NodeInput::removeInConnection()
 {
-    inConnection = nullptr;
-    parentNode->requestUpdate();
+    mInConnection = nullptr;
+    mParentNode->requestUpdate();
 }
 
 QString NodeInput::getID() const
 {
-    return id;
+    return mId;
 }
 
 void NodeInput::setID(const QString &uuid)
 {
-    id = uuid;
+    mId = uuid;
 }
 
 void NodeInput::mousePressEvent(QMouseEvent *event)
@@ -105,7 +105,7 @@ void NodeInput::mousePressEvent(QMouseEvent *event)
     {
         if (hasConnection())
         {
-            emit connectedNodeInputClicked(inConnection);
+            emit connectedNodeInputClicked(mInConnection);
         }
     }
 }

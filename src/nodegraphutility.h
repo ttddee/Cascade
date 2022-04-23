@@ -26,12 +26,12 @@ namespace Cascade {
 
 struct NodePersistentProperties
 {
-    NodeType mNodeType;
-    QPoint mPos;
-    QString mUuid;
-    QMap<int, QString> mInputs;
-    QMap<int, QString> mProperties;
-    QString mCustomName;
+    NodeType            mNodeType;
+    QPoint              mPos;
+    QString             mUuid;
+    QMap<int, QString>  mInputs;
+    QMap<int, QString>  mProperties;
+    QString             mCustomName;
 };
 
 enum class NodeGraphPosition

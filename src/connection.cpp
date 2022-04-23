@@ -41,9 +41,9 @@ namespace Cascade {
 
 Connection::Connection(NodeOutput* source)
     : QGraphicsLineItem(),
-      sourceOutput(source)
+      mSourceOutput(source)
 {
-    this->setPen(normalPen);
+    this->setPen(mNormalPen);
     this->setLine(source->mapToParent(source->pos()).x(),
                   source->mapToParent(source->pos()).y(),
                   source->mapToParent(source->pos()).x(),
@@ -54,19 +54,19 @@ Connection::Connection(NodeOutput* source)
 
 void Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt)
 {
-    if(targetInput)
+    if(mTargetInput)
     {
-        auto t = targetInput->getInputType();
+        auto t = mTargetInput->getInputType();
         if (t == NODE_INPUT_TYPE_RGB_FRONT)
-            this->setPen(frontConnectedPen);
+            this->setPen(mFrontConnectedPen);
         else if (t == NODE_INPUT_TYPE_RGB_BACK)
-            this->setPen(backConnectedPen);
+            this->setPen(mBackConnectedPen);
         else if (t == NODE_INPUT_TYPE_ALPHA)
-            this->setPen(alphaConnectedPen);
+            this->setPen(mAlphaConnectedPen);
     }
     else
     {
-        this->setPen(normalPen);
+        this->setPen(mNormalPen);
     }
     QGraphicsLineItem::paint(painter, opt, wdgt);
 }
@@ -93,22 +93,22 @@ QPainterPath Connection::shape() const
 void Connection::updatePosition()
 {
     this->show();
-    auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
+    auto start = mSourceOutput->mParentNode->mapToParent(mSourceOutput->pos());
 
-    this->setLine(start.x() + sourceOutput->visualWidth / 2,
-                  start.y() + sourceOutput->visualHeight / 2,
-                  targetInput->parentNode->mapToParent(targetInput->pos()).x()
-                  + sourceOutput->visualWidth / 2,
-                  targetInput->parentNode->mapToParent(targetInput->pos()).y()
-                  + sourceOutput->visualHeight / 2);
+    this->setLine(start.x() + mSourceOutput->mVisualWidth / 2,
+                  start.y() + mSourceOutput->mVisualHeight / 2,
+                  mTargetInput->mParentNode->mapToParent(mTargetInput->pos()).x()
+                  + mSourceOutput->mVisualWidth / 2,
+                  mTargetInput->mParentNode->mapToParent(mTargetInput->pos()).y()
+                  + mSourceOutput->mVisualHeight / 2);
 }
 
 void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
 {
     QJsonObject jsonConnection {
-        { "src", sourceOutput->parentNode->getID() },
-        { "dst-node", targetInput->parentNode->getID() },
-        { "dst", targetInput->getID()}
+        { "src", mSourceOutput->mParentNode->getID() },
+        { "dst-node", mTargetInput->mParentNode->getID() },
+        { "dst", mTargetInput->getID()}
     };
     jsonConnectionsArray.push_back(jsonConnection);
 }
@@ -116,13 +116,13 @@ void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
 void Connection::updatePosition(const QPoint end)
 {
     this->show();
-    auto start = sourceOutput->parentNode->mapToParent(sourceOutput->pos());
+    auto start = mSourceOutput->mParentNode->mapToParent(mSourceOutput->pos());
 
-    if (!targetInput)
+    if (!mTargetInput)
     // Connection is open
     {
-        this->setLine(start.x() + sourceOutput->visualWidth / 2,
-                      start.y() + sourceOutput->visualHeight / 2,
+        this->setLine(start.x() + mSourceOutput->mVisualWidth / 2,
+                      start.y() + mSourceOutput->mVisualHeight / 2,
                       end.x() - 5,
                       end.y() - 3);
     }

@@ -35,7 +35,7 @@ public:
 
     static std::shared_ptr<Log>& getLogger()
     {
-        return logger;
+        return sLogger;
     }
 
     static void messageHandler(
@@ -54,10 +54,10 @@ public:
 private:
     static void writeToFile(const QString& s);
 
-    static std::shared_ptr<Log> logger;
+    static std::shared_ptr<Log> sLogger;
 
-    static QFile outFile;
-    static QTextStream stream;
+    static QFile sOutFile;
+    static QTextStream sStream;
 };
 
 } // namespace Cascade

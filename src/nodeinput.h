@@ -52,18 +52,17 @@ public:
 
     NodeBase* getUpstreamNode();
 
-    NodeBase* parentNode = nullptr;
+    NodeBase* mParentNode = nullptr;
 
-    Connection* inConnection = nullptr;
+    Connection* mInConnection = nullptr;
 
 private:
-    const NodeInputType inputType;
+    const NodeInputType mInputType;
 
-    QString id;
-
+    QString mId;
 
 signals:
-    void connectedNodeInputClicked(Connection* c);
+    void connectedNodeInputClicked(Cascade::Connection* c);
 };
 
 } // namespace Cascade

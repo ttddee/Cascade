@@ -36,22 +36,22 @@ ISFManager& ISFManager::getInstance()
 
 const std::vector<unsigned int>& ISFManager::getShaderCode(const QString& nodeName)
 {
-    return isfShaderCode.at(nodeName);
+    return mIsfShaderCode.at(nodeName);
 }
 
 const std::set<QString>& ISFManager::getCategories() const
 {
-    return isfNodeCategories;
+    return mIsfNodeCategories;
 }
 
 const std::map<QString, NodeInitProperties>& ISFManager::getNodeProperties() const
 {
-    return isfNodeProperties;
+    return mIsfNodeProperties;
 }
 
 const QString ISFManager::getCategoryPerNode(const QString &name) const
 {
-    return isfCategoryPerNode.at(name);
+    return mIsfCategoryPerNode.at(name);
 }
 
 void ISFManager::setUp()
@@ -93,7 +93,7 @@ void ISFManager::setUp()
             //if (name == "ISF VHS Glitch")
                 //CS_LOG_INFO(shader);
 
-            if (compiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
+            if (mCompiler.compileGLSLFromCode(shader.toLocal8Bit().data(), "comp"))
             {
                 success++;
 
@@ -101,18 +101,18 @@ void ISFManager::setUp()
                 QJsonObject propObject = jsonData.object();
                 QJsonArray categoriesArray = propObject.value("CATEGORIES").toArray();
                 QString categoryName = categoriesArray.first().toString();
-                isfNodeCategories.insert(categoryName);
-                isfCategoryPerNode[name] = categoryName;
+                mIsfNodeCategories.insert(categoryName);
+                mIsfCategoryPerNode[name] = categoryName;
 
                 // Create properties for the creation of the node
-                isfNodeProperties[name] = createISFNodeProperties(propObject, name);
+                mIsfNodeProperties[name] = createISFNodeProperties(propObject, name);
 
-                this->isfShaderCode[name] = compiler.getSpirV();
+                this->mIsfShaderCode[name] = mCompiler.getSpirV();
             }
             else
             {
                 CS_LOG_INFO("Compilation failed for:" + name);
-                CS_LOG_WARNING(QString::fromStdString(compiler.getError()));
+                CS_LOG_WARNING(QString::fromStdString(mCompiler.getError()));
                 failure++;
             }
         }

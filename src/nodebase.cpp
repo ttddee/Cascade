@@ -224,7 +224,7 @@ NodeBase* NodeBase::getUpstreamNodeBack() const
 {
     if(mRgbaBackIn && mRgbaBackIn->hasConnection())
     {
-        return mRgbaBackIn->inConnection->sourceOutput->parentNode;
+        return mRgbaBackIn->mInConnection->mSourceOutput->mParentNode;
     }
     return nullptr;
 }
@@ -233,7 +233,7 @@ NodeBase* NodeBase::getUpstreamNodeFront() const
 {
     if(mRgbaFrontIn && mRgbaFrontIn->hasConnection())
     {
-        return mRgbaFrontIn->inConnection->sourceOutput->parentNode;
+        return mRgbaFrontIn->mInConnection->mSourceOutput->mParentNode;
     }
     return nullptr;
 }
@@ -350,8 +350,8 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
     QJsonObject jsonNode {
         { "uuid", getID() },
         { "type", nodeStrings[mNodeType] },
-        { "posx", this->pos().x() },
-        { "posy", this->pos().y() },
+        { "posx", pos().x() },
+        { "posy", pos().y() },
         { "properties", jsonProps },
         { "inputs", jsonInputs },
         { "customname", mCustomName }
@@ -392,8 +392,8 @@ void NodeBase::getAllDownstreamNodes(std::vector<NodeBase*>& nodes)
     {
         foreach(Connection* c, mRgbaOut->getConnections())
         {
-            nodes.push_back(c->targetInput->parentNode);
-            c->targetInput->parentNode->getAllDownstreamNodes(nodes);
+            nodes.push_back(c->mTargetInput->mParentNode);
+            c->mTargetInput->mParentNode->getAllDownstreamNodes(nodes);
         }
     }
 }
@@ -452,7 +452,7 @@ void NodeBase::paintEvent(QPaintEvent *event)
 
     QRect rect = this->rect();
     QPainterPath path;
-    path.addRoundedRect(rect, Config::nodeCornerRadius, Config::nodeCornerRadius);
+    path.addRoundedRect(rect, Config::sNodeCornerRadius, Config::sNodeCornerRadius);
     painter.fillPath(path, mDefaultColorBrush);
 
     if (mIsSelected)

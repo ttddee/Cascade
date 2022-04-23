@@ -40,16 +40,16 @@ public:
 
     void addConnectionToJsonObject(QJsonArray& jsonConnectionsArray);
 
-    NodeOutput* sourceOutput = nullptr;
-    NodeInput* targetInput = nullptr;
+    NodeOutput* mSourceOutput = nullptr;
+    NodeInput* mTargetInput = nullptr;
 
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
-    const QPen normalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
-    const QPen frontConnectedPen = QPen(Config::red, 1);
-    const QPen backConnectedPen = QPen(Config::green, 1);
-    const QPen alphaConnectedPen = QPen(Config::blue, 1);
+    const QPen mNormalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
+    const QPen mFrontConnectedPen = QPen(Config::sRed, 1);
+    const QPen mBackConnectedPen = QPen(Config::sGreen, 1);
+    const QPen mAlphaConnectedPen = QPen(Config::sBlue, 1);
 
 };
 

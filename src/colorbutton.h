@@ -36,7 +36,7 @@ public:
 private:
     void paintEvent(QPaintEvent*);
 
-    QColor color;
+    QColor mColor;
 
 signals:
     void colorChanged(QColor);

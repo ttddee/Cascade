@@ -30,7 +30,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
 
     this->setAttribute(Qt::WA_StyledBackground);
 
-    QMapIterator<ViewerMode, QString> i(viewerModeText);
+    QMapIterator<ViewerMode, QString> i(sViewerModeText);
     while (i.hasNext())
     {
         i.next();
@@ -127,7 +127,7 @@ void ViewerStatusBar::handleValueChanged()
 
 void ViewerStatusBar::handleViewerModeCheckBoxChanged()
 {
-    currentViewerMode = viewerModeText.key(ui->viewerModeBox->currentText());
+    currentViewerMode = sViewerModeText.key(ui->viewerModeBox->currentText());
     emit viewerModeChanged(currentViewerMode);
     ui->viewerModeBox->clearFocus();
 
@@ -137,7 +137,7 @@ void ViewerStatusBar::handleViewerModeCheckBoxChanged()
 void ViewerStatusBar::handleSwitchToViewerMode(const ViewerMode mode)
 {
     currentViewerMode = mode;
-    ui->viewerModeBox->setCurrentText(viewerModeText.value(mode));
+    ui->viewerModeBox->setCurrentText(sViewerModeText.value(mode));
 }
 
 QString ViewerStatusBar::getViewerSettings()

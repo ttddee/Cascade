@@ -31,7 +31,7 @@ public:
     explicit AboutDialog(QWidget *parent = nullptr);
 
 private:
-    QDialogButtonBox* buttonBox;
+    QDialogButtonBox* mButtonBox;
 
 signals:
 

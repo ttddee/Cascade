@@ -54,29 +54,29 @@ class MainWindow : public QMainWindow
 public:
     MainWindow(QWidget *parent = nullptr);
 
-    ads::CDockWidget* nodeGraphDockWidget;
-    ads::CDockWidget* propertiesViewDockWidget;
+    ads::CDockWidget* mNodeGraphDockWidget;
+    ads::CDockWidget* mPropertiesViewDockWidget;
 
     NodeGraph* getNodeGraph() const;
 
     ~MainWindow();
 
 private:
-    Ui::MainWindow *ui;
-    VulkanView* vulkanView;
-    NodeGraph* nodeGraph;
-    PropertiesView* propertiesView;
-    ViewerStatusBar* viewerStatusBar;
+    Ui::MainWindow *mUi;
+    VulkanView* mVulkanView;
+    NodeGraph* mNodeGraph;
+    PropertiesView* mPropertiesView;
+    ViewerStatusBar* mViewerStatusBar;
 
-    WindowManager* windowManager;
-    RenderManager* renderManager;
+    WindowManager* mWindowManager;
+    RenderManager* mRenderManager;
+    ProjectManager* mProjectManager;
+    PreferencesManager* mPreferencesManager;
+    ISFManager* mIsfManager;
 
-    ads::CDockManager* dockManager;
+    ads::CDockManager* mDockManager;
 
-    MainMenu* mainMenu;
-    ProjectManager* projectManager;
-    PreferencesManager* preferencesManager;
-    ISFManager* isfManager;
+    MainMenu* mMainMenu;
 
 signals:
     void requestShutdown();

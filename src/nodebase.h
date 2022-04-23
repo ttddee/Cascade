@@ -172,8 +172,8 @@ private:
 
     int mRotation = 0;
 
-    const QBrush mDefaultColorBrush = QBrush(Config::defaultNodeColor);
-    const QBrush mSelectedColorBrush = QBrush(Config::selectedNodeColor);
+    const QBrush mDefaultColorBrush = QBrush(Config::sDefaultNodeColor);
+    const QBrush mSelectedColorBrush = QBrush(Config::sSelectedNodeColor);
 
 signals:
     void nodeWasLeftClicked(Cascade::NodeBase* node);

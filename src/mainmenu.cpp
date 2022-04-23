@@ -159,8 +159,8 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     mViewMenu = new QMenu("View");
     this->addMenu(mViewMenu);
 
-    mViewMenu->addAction(mainWindow->nodeGraphDockWidget->toggleViewAction());
-    mViewMenu->addAction(mainWindow->propertiesViewDockWidget->toggleViewAction());
+    mViewMenu->addAction(mainWindow->mNodeGraphDockWidget->toggleViewAction());
+    mViewMenu->addAction(mainWindow->mPropertiesViewDockWidget->toggleViewAction());
 
     mViewMenu->addSeparator();
 

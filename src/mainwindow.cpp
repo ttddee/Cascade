@@ -40,82 +40,82 @@ namespace Cascade {
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent),
-      ui(new Ui::MainWindow)
+      mUi(new Ui::MainWindow)
 {
     // OCIO needs the locale to be set here
     std::setlocale(LC_NUMERIC, "C");
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    dockManager = new CDockManager(this);
+    mDockManager = new CDockManager(this);
 
-    viewerStatusBar = new ViewerStatusBar();
+    mViewerStatusBar = new ViewerStatusBar();
 
-    vulkanView = new VulkanView(viewerStatusBar);
+    mVulkanView = new VulkanView(mViewerStatusBar);
     CDockWidget* vulkanViewDockWidget = new CDockWidget("Viewer");
-    vulkanViewDockWidget->setWidget(vulkanView);
-    auto* centralDockArea = dockManager->setCentralWidget(vulkanViewDockWidget);
+    vulkanViewDockWidget->setWidget(mVulkanView);
+    auto* centralDockArea = mDockManager->setCentralWidget(vulkanViewDockWidget);
     centralDockArea->setAllowedAreas(DockWidgetArea::OuterDockAreas);
 
-    isfManager = &ISFManager::getInstance();
-    isfManager->setUp();
+    mIsfManager = &ISFManager::getInstance();
+    mIsfManager->setUp();
 
-    nodeGraph = new NodeGraph();
-    nodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    nodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    nodeGraphDockWidget = new CDockWidget("Node Graph");
-    nodeGraphDockWidget->setWidget(nodeGraph);
-    dockManager->addDockWidget(
+    mNodeGraph = new NodeGraph();
+    mNodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mNodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mNodeGraphDockWidget = new CDockWidget("Node Graph");
+    mNodeGraphDockWidget->setWidget(mNodeGraph);
+    mDockManager->addDockWidget(
                 DockWidgetArea::BottomDockWidgetArea,
-                nodeGraphDockWidget,
+                mNodeGraphDockWidget,
                 centralDockArea);
 
-    propertiesView = new PropertiesView();
-    propertiesViewDockWidget = new CDockWidget("Properties");
-    propertiesViewDockWidget->setWidget(propertiesView);
-    propertiesViewDockWidget->resize(700, 700);
-    dockManager->addDockWidget(
+    mPropertiesView = new PropertiesView();
+    mPropertiesViewDockWidget = new CDockWidget("Properties");
+    mPropertiesViewDockWidget->setWidget(mPropertiesView);
+    mPropertiesViewDockWidget->resize(700, 700);
+    mDockManager->addDockWidget(
                 DockWidgetArea::RightDockWidgetArea,
-                propertiesViewDockWidget,
+                mPropertiesViewDockWidget,
                 centralDockArea);
 
-    mainMenu = new MainMenu(this);
-    this->setMenuBar(mainMenu);
+    mMainMenu = new MainMenu(this);
+    this->setMenuBar(mMainMenu);
 
-    windowManager = &WindowManager::getInstance();
-    windowManager->setUp(
-                vulkanView->getVulkanWindow(),
-                nodeGraph,
-                propertiesView,
-                viewerStatusBar);
+    mWindowManager = &WindowManager::getInstance();
+    mWindowManager->setUp(
+                mVulkanView->getVulkanWindow(),
+                mNodeGraph,
+                mPropertiesView,
+                mViewerStatusBar);
 
-    projectManager = &ProjectManager::getInstance();
-    projectManager->setUp(nodeGraph);
-    connect(projectManager, &ProjectManager::projectTitleChanged,
+    mProjectManager = &ProjectManager::getInstance();
+    mProjectManager->setUp(mNodeGraph);
+    connect(mProjectManager, &ProjectManager::projectTitleChanged,
             this, &MainWindow::handleProjectTitleChanged);
 
-    preferencesManager = &PreferencesManager::getInstance();
-    preferencesManager->setUp();
+    mPreferencesManager = &PreferencesManager::getInstance();
+    mPreferencesManager->setUp();
 
     // Incoming
-    connect(vulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
+    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);
-    connect(vulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
+    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
             this, &MainWindow::handleNoGPUFound);
-    connect(vulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
+    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
             this, &MainWindow::handleDeviceLost);
 
     // Outgoing
     connect(this, &MainWindow::requestShutdown,
-            nodeGraph, &NodeGraph::handleShutdownRequest);
+            mNodeGraph, &NodeGraph::handleShutdownRequest);
 
     QSettings::setPath(
                 QSettings::IniFormat,
                 QSettings::SystemScope,
                 QDir::currentPath());
 
-    projectManager->createStartupProject();
+    mProjectManager->createStartupProject();
 
     // Bring window to front, just in case it isn't
     this->setWindowState(Qt::WindowActive);
@@ -123,17 +123,17 @@ MainWindow::MainWindow(QWidget *parent)
 
 NodeGraph* MainWindow::getNodeGraph() const
 {
-    return nodeGraph;
+    return mNodeGraph;
 }
 
 void MainWindow::handleRendererHasBeenCreated()
 {
     // We are waiting for the renderer to be fully
     // initialized here before using it
-    renderManager = &RenderManager::getInstance();
-    renderManager->setUp(vulkanView->getVulkanWindow()->getRenderer(), nodeGraph);
+    mRenderManager = &RenderManager::getInstance();
+    mRenderManager->setUp(mVulkanView->getVulkanWindow()->getRenderer(), mNodeGraph);
 
-    this->statusBar()->showMessage("GPU: " + vulkanView->getVulkanWindow()->getRenderer()->getGpuName());
+    this->statusBar()->showMessage("GPU: " + mVulkanView->getVulkanWindow()->getRenderer()->getGpuName());
 }
 
 void MainWindow::handleNoGPUFound()
@@ -155,27 +155,27 @@ void MainWindow::handleProjectTitleChanged(const QString& t)
     QString spacer = "- ";
     if (t == "*")
         spacer = "";
-    nodeGraphDockWidget->setTitle("Node Graph " + spacer + t);
+    mNodeGraphDockWidget->setTitle("Node Graph " + spacer + t);
 }
 
 void MainWindow::handleNewProjectAction()
 {
-    projectManager->createNewProject();
+    mProjectManager->createNewProject();
 }
 
 void MainWindow::handleOpenProjectAction()
 {
-    projectManager->loadProject();
+    mProjectManager->loadProject();
 }
 
 void MainWindow::handleSaveProjectAction()
 {
-    projectManager->saveProject();
+    mProjectManager->saveProject();
 }
 
 void MainWindow::handleSaveProjectAsAction()
 {
-    projectManager->saveProjectAs();
+    mProjectManager->saveProjectAs();
 }
 
 void MainWindow::handleExitAction()
@@ -201,14 +201,14 @@ void MainWindow::closeEvent(QCloseEvent *event)
 {
     emit requestShutdown();
 
-    vulkanView->getVulkanWindow()->getRenderer()->shutdown();
+    mVulkanView->getVulkanWindow()->getRenderer()->shutdown();
 
     QMainWindow::closeEvent(event);
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

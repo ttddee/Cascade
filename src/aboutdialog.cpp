@@ -25,9 +25,9 @@
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent)
 {
-    buttonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
+    mButtonBox = new QDialogButtonBox(QDialogButtonBox::Ok);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
 
     QPixmap logo(":/design/logo/cascade-logo-full.png");
     QLabel* logoLabel = new QLabel(this);
@@ -42,7 +42,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
     mainLayout->setSpacing(15);
     mainLayout->addWidget(logoLabel);
     mainLayout->addWidget(textLabel);
-    mainLayout->addWidget(buttonBox);
+    mainLayout->addWidget(mButtonBox);
     setLayout(mainLayout);
 
     setWindowTitle(tr("About"));

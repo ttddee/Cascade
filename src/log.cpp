@@ -28,9 +28,9 @@ namespace Cascade {
 
 Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
 
-std::shared_ptr<Log> Log::logger;
-QFile Log::outFile;
-QTextStream Log::stream;
+std::shared_ptr<Log> Log::sLogger;
+QFile Log::sOutFile;
+QTextStream Log::sStream;
 
 void Log::messageHandler(
         QtMsgType type,
@@ -48,9 +48,9 @@ void Log::Init()
 
     QFile::remove("Cascade.log");
 
-    outFile.setFileName("Cascade.log");
-    outFile.open(QIODevice::WriteOnly | QIODevice::Append);
-    stream.setDevice(&outFile);
+    sOutFile.setFileName("Cascade.log");
+    sOutFile.open(QIODevice::WriteOnly | QIODevice::Append);
+    sStream.setDevice(&sOutFile);
 
     qInstallMessageHandler(messageHandler);
 }
@@ -97,7 +97,7 @@ void Log::console(const QString &s)
 
 void Log::writeToFile(const QString &s)
 {
-    stream << s << "\n";
-    stream.flush();
+    sStream << s << "\n";
+    sStream.flush();
 }
 }

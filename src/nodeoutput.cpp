@@ -32,32 +32,32 @@ NodeOutput::NodeOutput(QWidget *parent)
     : QPushButton (parent)
 {
     // Keep reference to parent node
-    parentNode = static_cast<NodeBase*>(parent);
+    mParentNode = static_cast<NodeBase*>(parent);
 
-    this->resize(visualWidth, visualHeight);
+    this->resize(mVisualWidth, mVisualHeight);
 
     setObjectName("Output");
 }
 
 void NodeOutput::addConnection(Connection *c)
 {
-    outConnections.push_back(c);
+    mOutConnections.push_back(c);
 }
 
 void NodeOutput::removeConnection(Connection *c)
 {
-    for(size_t i = 0; i < outConnections.size(); ++i)
+    for(size_t i = 0; i < mOutConnections.size(); ++i)
     {
-        if (c == outConnections[i])
+        if (c == mOutConnections[i])
         {
-            outConnections.erase(outConnections.begin() + i);
+            mOutConnections.erase(mOutConnections.begin() + i);
         }
     }
 }
 
 void NodeOutput::updateConnections()
 {
-    foreach(Connection* c, outConnections)
+    foreach(Connection* c, mOutConnections)
     {
         c->updatePosition();
     }
@@ -74,7 +74,7 @@ void NodeOutput::mousePressEvent(QMouseEvent *event)
 
 std::vector<Connection*> NodeOutput::getConnections()
 {
-    return outConnections;
+    return mOutConnections;
 }
 
 } // namespace Cascade

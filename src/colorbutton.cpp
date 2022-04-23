@@ -31,17 +31,17 @@ ColorButton::ColorButton(QWidget *parent) :
     connect(this, &ColorButton::clicked,
             this, &ColorButton::handleButtonClicked);
 
-    color = Qt::white;
+    mColor = Qt::white;
 }
 
 QColor ColorButton::getColor()
 {
-    return color;
+    return mColor;
 }
 
 void ColorButton::setColor(QColor c)
 {
-    color = c;
+    mColor = c;
 
     emit colorChanged(c);
 }

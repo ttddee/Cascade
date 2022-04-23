@@ -65,13 +65,13 @@ private:
 
     const int getIndexFromArray(const QJsonArray& array, const QString& value) const;
 
-    SpvCompiler compiler;
+    SpvCompiler mCompiler;
 
-    std::map<QString, QJsonDocument> isfProperties;
-    std::map<QString, std::vector<unsigned int>> isfShaderCode;
-    std::set<QString> isfNodeCategories;
-    std::map<QString, NodeInitProperties> isfNodeProperties;
-    std::map<QString, QString> isfCategoryPerNode;
+    std::map<QString, QJsonDocument> mIsfProperties;
+    std::map<QString, std::vector<unsigned int>> mIsfShaderCode;
+    std::set<QString> mIsfNodeCategories;
+    std::map<QString, NodeInitProperties> mIsfNodeProperties;
+    std::map<QString, QString> mIsfCategoryPerNode;
 };
 
 } // namespace Cascade
