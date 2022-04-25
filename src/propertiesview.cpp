@@ -24,18 +24,18 @@ namespace Cascade {
 PropertiesView::PropertiesView(QWidget *parent)
     : QWidget(parent)
 {
-    layout = new QVBoxLayout();
-    this->setLayout(layout);
+    mLayout = new QVBoxLayout();
+    this->setLayout(mLayout);
     this->setAttribute(Qt::WA_StyledBackground);
 }
 
 void PropertiesView::clear()
 {
-    if (currentProperties)
+    if (mCurrentProperties)
     {
-        currentProperties->hide();
-        layout->removeWidget(currentProperties);
-        currentProperties = nullptr;
+        mCurrentProperties->hide();
+        mLayout->removeWidget(mCurrentProperties);
+        mCurrentProperties = nullptr;
     }
 }
 
@@ -43,9 +43,9 @@ void PropertiesView::loadProperties(NodeProperties *prop)
 {
     clear();
 
-    layout->addWidget(prop);
-    currentProperties = prop;
-    currentProperties->show();
+    mLayout->addWidget(prop);
+    mCurrentProperties = prop;
+    mCurrentProperties->show();
 }
 
 } // namespace Cascade

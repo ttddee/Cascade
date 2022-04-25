@@ -39,8 +39,8 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
     CS_LOG_INFO("Creating Vulkan instance");
 
     // Set up validation layers
-    instance.setLayers(Renderer::instanceLayers);
-    instance.setExtensions(Renderer::instanceExtensions);
+    mInstance.setLayers(Renderer::instanceLayers);
+    mInstance.setExtensions(Renderer::instanceExtensions);
 
     // Set up Dynamic Dispatch Loader to use with vulkan.hpp
     vk::DynamicLoader dl;
@@ -48,26 +48,26 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
         dl.getProcAddress<PFN_vkGetInstanceProcAddr>("vkGetInstanceProcAddr");
     VULKAN_HPP_DEFAULT_DISPATCHER.init(vkGetInstanceProcAddr);
 
-    if (!instance.create())
+    if (!mInstance.create())
     {
         executeMessageBox(MESSAGEBOX_FAILED_INITIALIZATION);
 
         CS_LOG_FATAL("Failed to create Vulkan instance. Error code: ");
-        CS_LOG_FATAL(QString::number(instance.errorCode()));
+        CS_LOG_FATAL(QString::number(mInstance.errorCode()));
     }
 
-    VULKAN_HPP_DEFAULT_DISPATCHER.init(instance.vkInstance());
+    VULKAN_HPP_DEFAULT_DISPATCHER.init(mInstance.vkInstance());
 
     // Create a VulkanWindow
-    vulkanWindow = new VulkanWindow();
-    vulkanWindow->setVulkanInstance(&instance);
+    mVulkanWindow = new VulkanWindow();
+    mVulkanWindow->setVulkanInstance(&mInstance);
 
-    vulkanWindow->setPreferredColorFormats(QVector<VkFormat>() << VK_FORMAT_R32G32B32A32_SFLOAT);
+    mVulkanWindow->setPreferredColorFormats(QVector<VkFormat>() << VK_FORMAT_R32G32B32A32_SFLOAT);
 
     // Create Vulkan window container and put in layout
-    vulkanWrapper =  QWidget::createWindowContainer(vulkanWindow);
+    mVulkanWrapper =  QWidget::createWindowContainer(mVulkanWindow);
     QVBoxLayout* layout = new QVBoxLayout();
-    layout->addWidget(vulkanWrapper);
+    layout->addWidget(mVulkanWrapper);
     layout->addWidget(statusBar);
     layout->setContentsMargins(QMargins(0, 0, 0, 0));
     layout->setSpacing(0);
@@ -76,12 +76,12 @@ VulkanView::VulkanView(ViewerStatusBar* statusBar, QWidget *parent)
 
 VulkanWindow* VulkanView::getVulkanWindow()
 {
-    return vulkanWindow;
+    return mVulkanWindow;
 }
 
 VulkanView::~VulkanView()
 {
-    delete vulkanWindow;
+    delete mVulkanWindow;
 }
 
 } // namespace Cascade

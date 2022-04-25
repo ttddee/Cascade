@@ -48,12 +48,12 @@ public:
     void switchToFirstImage();
     void switchToNextImage();
 
-    std::vector<UiEntity*> widgets;
+    std::vector<UiEntity*> mWidgets;
 
 private:
-    const NodeType nodeType;
-    QVBoxLayout* layout;
-    NodeBase* parentNode;
+    const NodeType mNodeType;
+    QVBoxLayout* mLayout;
+    NodeBase* mParentNode;
 
 signals:
     void projectIsDirty();

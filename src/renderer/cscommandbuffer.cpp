@@ -31,8 +31,8 @@ CsCommandBuffer::CsCommandBuffer(
         vk::DescriptorSet* descriptorSet) :
     device(d),
     physicalDevice(pd),
-    computePipelineLayout(pipelineLayout),
-    computeDescriptorSet(descriptorSet)
+    mComputePipelineLayout(pipelineLayout),
+    mComputeDescriptorSet(descriptorSet)
 {
     createComputeQueue();
     createComputeCommandPool();
@@ -55,7 +55,7 @@ void CsCommandBuffer::createComputeQueue()
     }
 
     // Get a compute queue from the device
-    computeQueue = device->getQueue(computeFamilyIndex, 0);
+    mComputeQueue = device->getQueue(computeFamilyIndex, 0);
 }
 
 void CsCommandBuffer::createComputeCommandPool()
@@ -65,29 +65,29 @@ void CsCommandBuffer::createComputeCommandPool()
                 { vk::CommandPoolCreateFlagBits::eResetCommandBuffer },
                 computeFamilyIndex);
 
-    computeCommandPool = device->createCommandPoolUnique(cmdPoolInfo).value;
+    mComputeCommandPool = device->createCommandPoolUnique(cmdPoolInfo).value;
 }
 
 void CsCommandBuffer::createComputeCommandBuffers()
 {
     // Create the command buffer for loading an image from disk
     vk::CommandBufferAllocateInfo commandBufferAllocateInfo(
-                *computeCommandPool,
+                *mComputeCommandPool,
                 vk::CommandBufferLevel::ePrimary,
                 3);
 
     std::vector<vk::UniqueCommandBuffer> buffers = device->allocateCommandBuffersUnique(
                 commandBufferAllocateInfo).value;
 
-    commandBufferImageLoad = vk::UniqueCommandBuffer(std::move(buffers.at(0)));
-    commandBufferGeneric = vk::UniqueCommandBuffer(std::move(buffers.at(1)));
-    commandBufferImageSave = vk::UniqueCommandBuffer(std::move(buffers.at(2)));
+    mCommandBufferImageLoad = vk::UniqueCommandBuffer(std::move(buffers.at(0)));
+    mCommandBufferGeneric = vk::UniqueCommandBuffer(std::move(buffers.at(1)));
+    mCommandBufferImageSave = vk::UniqueCommandBuffer(std::move(buffers.at(2)));
 
     // Fence for compute CB sync
     vk::FenceCreateInfo fenceCreateInfo(
                 vk::FenceCreateFlagBits::eSignaled);
 
-    fence = device->createFenceUnique(fenceCreateInfo).value;
+    mFence = device->createFenceUnique(fenceCreateInfo).value;
 }
 
 void CsCommandBuffer::recordGeneric(
@@ -98,45 +98,45 @@ void CsCommandBuffer::recordGeneric(
         int numShaderPasses,
         int currentShaderPass)
 {
-    auto result = computeQueue.waitIdle();
+    auto result = mComputeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    result = commandBufferGeneric->begin(cmdBufferBeginInfo);
+    result = mCommandBufferGeneric->begin(cmdBufferBeginInfo);
 
     // Layout transitions before compute stage
     inputImageBack->transitionLayoutTo(
-                commandBufferGeneric,
+                mCommandBufferGeneric,
                 vk::ImageLayout::eGeneral);
 
     outputImage->transitionLayoutTo(
-                commandBufferGeneric,
+                mCommandBufferGeneric,
                 vk::ImageLayout::eGeneral);
 
     if (inputImageFront)
     {
         inputImageFront->transitionLayoutTo(
-                    commandBufferGeneric,
+                    mCommandBufferGeneric,
                     vk::ImageLayout::eGeneral);
     }
 
-    commandBufferGeneric->bindPipeline(
+    mCommandBufferGeneric->bindPipeline(
                 vk::PipelineBindPoint::eCompute,
                 pl);
-    commandBufferGeneric->bindDescriptorSets(
+    mCommandBufferGeneric->bindDescriptorSets(
                 vk::PipelineBindPoint::eCompute,
-                *computePipelineLayout,
+                *mComputePipelineLayout,
                 0,
-                *computeDescriptorSet,
+                *mComputeDescriptorSet,
                 {});
-    commandBufferGeneric->dispatch(
+    mCommandBufferGeneric->dispatch(
                 outputImage->getWidth() / 16 + 1,
                 outputImage->getHeight() / 16 + 1,
                 1);
 
     // Layout transitions after compute stage
     inputImageBack->transitionLayoutTo(
-                commandBufferGeneric,
+                mCommandBufferGeneric,
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
     auto layout = vk::ImageLayout::eGeneral;
@@ -144,17 +144,17 @@ void CsCommandBuffer::recordGeneric(
         layout = vk::ImageLayout::eShaderReadOnlyOptimal;
 
     outputImage->transitionLayoutTo(
-                commandBufferGeneric,
+                mCommandBufferGeneric,
                 layout);
 
     if (inputImageFront)
     {
         inputImageFront->transitionLayoutTo(
-                    commandBufferGeneric,
+                    mCommandBufferGeneric,
                     vk::ImageLayout::eShaderReadOnlyOptimal);
     }
 
-    result = commandBufferGeneric->end();
+    result = mCommandBufferGeneric->end();
     Q_UNUSED(result);
 }
 
@@ -164,18 +164,18 @@ void CsCommandBuffer::recordImageLoad(
         CsImage* const renderTarget,
         vk::Pipeline* const readNodePipeline)
 {
-    auto result = computeQueue.waitIdle();
+    auto result = mComputeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    result = commandBufferImageLoad->begin(cmdBufferBeginInfo);
+    result = mCommandBufferImageLoad->begin(cmdBufferBeginInfo);
 
     loadImage->transitionLayoutTo(
-                commandBufferImageLoad,
+                mCommandBufferImageLoad,
                 vk::ImageLayout::eTransferSrcOptimal);
 
     tmpImage->transitionLayoutTo(
-                commandBufferImageLoad,
+                mCommandBufferImageLoad,
                 vk::ImageLayout::eTransferDstOptimal);
 
     vk::ImageCopy copyInfo;
@@ -187,7 +187,7 @@ void CsCommandBuffer::recordImageLoad(
     copyInfo.extent.height              = loadImage->getHeight();
     copyInfo.extent.depth               = 1;
 
-    commandBufferImageLoad->copyImage(
+    mCommandBufferImageLoad->copyImage(
                 *loadImage->getImage(),
                 vk::ImageLayout::eTransferSrcOptimal,
                 *tmpImage->getImage(),
@@ -196,32 +196,32 @@ void CsCommandBuffer::recordImageLoad(
                 &copyInfo);
 
     tmpImage->transitionLayoutTo(
-                commandBufferImageLoad,
+                mCommandBufferImageLoad,
                 vk::ImageLayout::eGeneral);
 
     renderTarget->transitionLayoutTo(
-                commandBufferImageLoad,
+                mCommandBufferImageLoad,
                 vk::ImageLayout::eGeneral);
 
-    commandBufferImageLoad->bindPipeline(
+    mCommandBufferImageLoad->bindPipeline(
                 vk::PipelineBindPoint::eCompute,
                 *readNodePipeline);
-    commandBufferImageLoad->bindDescriptorSets(
+    mCommandBufferImageLoad->bindDescriptorSets(
                 vk::PipelineBindPoint::eCompute,
-                *computePipelineLayout,
+                *mComputePipelineLayout,
                 0,
-                *computeDescriptorSet,
+                *mComputeDescriptorSet,
                 {});
-    commandBufferImageLoad->dispatch(
+    mCommandBufferImageLoad->dispatch(
                 loadImage->getWidth() / 16 + 1,
                 loadImage->getHeight() / 16 + 1,
                 1);
 
     renderTarget->transitionLayoutTo(
-                commandBufferImageLoad,
+                mCommandBufferImageLoad,
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    result = commandBufferImageLoad->end();
+    result = mCommandBufferImageLoad->end();
 }
 
 vk::DeviceMemory* CsCommandBuffer::recordImageSave(
@@ -230,20 +230,20 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
     CS_LOG_INFO("Copying image GPU-->CPU.");
 
     // This is for outputting an image to the CPU
-    auto result = computeQueue.waitIdle();
+    auto result = mComputeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 
-    result = commandBufferImageSave->begin(cmdBufferBeginInfo);
+    result = mCommandBufferImageSave->begin(cmdBufferBeginInfo);
 
     auto outputImageSize = QSize(inputImage->getWidth(), inputImage->getHeight());
 
     vk::DeviceSize bufferSize = outputImageSize.width() * outputImageSize.height() * 16; // 4 channels * 4 bytes
 
-    createBuffer(outputStagingBuffer, outputStagingBufferMemory, bufferSize);
+    createBuffer(mOutputStagingBuffer, mOutputStagingBufferMemory, bufferSize);
 
     inputImage->transitionLayoutTo(
-                commandBufferImageSave,
+                mCommandBufferImageSave,
                 vk::ImageLayout::eTransferSrcOptimal);
 
     vk::ImageSubresourceLayers imageLayers(
@@ -263,30 +263,30 @@ vk::DeviceMemory* CsCommandBuffer::recordImageSave(
                     (uint32_t)outputImageSize.height(),
                     1
                 });
-    commandBufferImageSave->copyImageToBuffer(
+    mCommandBufferImageSave->copyImageToBuffer(
                 *inputImage->getImage(),
                 vk::ImageLayout::eTransferSrcOptimal,
-                *outputStagingBuffer,
+                *mOutputStagingBuffer,
                 copyInfo);
 
     inputImage->transitionLayoutTo(
-                commandBufferImageSave,
+                mCommandBufferImageSave,
                 vk::ImageLayout::eShaderReadOnlyOptimal);
 
-    result = commandBufferImageSave->end();
+    result = mCommandBufferImageSave->end();
     Q_UNUSED(result);
 
-    return &outputStagingBufferMemory.get();
+    return &mOutputStagingBufferMemory.get();
 }
 
 void CsCommandBuffer::submitGeneric()
 {
     // Submit compute commands
     // Use a fence to ensure that compute command buffer has finished executing before using it again
-    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    vk::Result result = device->waitForFences(1, &(*mFence), true, UINT64_MAX);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem waiting for fence.");
-    result = device->resetFences(1, &(*fence));
+    result = device->resetFences(1, &(*mFence));
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Could not reset fence.");
 
@@ -294,22 +294,22 @@ void CsCommandBuffer::submitGeneric()
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
 
-    computeSubmitInfo.pCommandBuffers = &commandBufferGeneric.get();
+    computeSubmitInfo.pCommandBuffers = &mCommandBufferGeneric.get();
 
-    result = computeQueue.submit(
+    result = mComputeQueue.submit(
                 1,
                 &computeSubmitInfo,
-                *fence);
+                *mFence);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 void CsCommandBuffer::submitImageLoad()
 {
-    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    vk::Result result = device->waitForFences(1, &(*mFence), true, UINT64_MAX);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem waiting for fence.");
-    result = device->resetFences(1, &(*fence));
+    result = device->resetFences(1, &(*mFence));
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Could not reset fence.");
 
@@ -317,61 +317,61 @@ void CsCommandBuffer::submitImageLoad()
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
 
-    computeSubmitInfo.pCommandBuffers = &commandBufferImageLoad.get();
+    computeSubmitInfo.pCommandBuffers = &mCommandBufferImageLoad.get();
 
-    result = computeQueue.submit(
+    result = mComputeQueue.submit(
                 1,
                 &computeSubmitInfo,
-                *fence);
+                *mFence);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 void CsCommandBuffer::submitImageSave()
 {
-    vk::Result result = device->waitForFences(1, &(*fence), true, UINT64_MAX);
+    vk::Result result = device->waitForFences(1, &(*mFence), true, UINT64_MAX);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem waiting for fence.");
-    result = device->resetFences(1, &(*fence));
+    result = device->resetFences(1, &(*mFence));
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Could not reset fence.");
 
     vk::SubmitInfo computeSubmitInfo;
     computeSubmitInfo.commandBufferCount = 1;
-    computeSubmitInfo.pCommandBuffers = &commandBufferImageSave.get();
+    computeSubmitInfo.pCommandBuffers = &mCommandBufferImageSave.get();
 
-    result = computeQueue.submit(
+    result = mComputeQueue.submit(
                 1,
                 &computeSubmitInfo,
-                *fence);
+                *mFence);
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Problem submitting compute queue.");
 }
 
 vk::Queue* CsCommandBuffer::getQueue()
 {
-    return &computeQueue;
+    return &mComputeQueue;
 }
 
 vk::CommandBuffer* CsCommandBuffer::getGeneric()
 {
-    auto result = computeQueue.waitIdle();
+    auto result = mComputeQueue.waitIdle();
     Q_UNUSED(result);
 
-    return &(*commandBufferGeneric);
+    return &(*mCommandBufferGeneric);
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageLoad()
 {
-    auto result = computeQueue.waitIdle();
+    auto result = mComputeQueue.waitIdle();
     Q_UNUSED(result);
 
-    return &(*commandBufferImageLoad);
+    return &(*mCommandBufferImageLoad);
 }
 
 vk::CommandBuffer* CsCommandBuffer::getImageSave()
 {
-    return &(*commandBufferImageSave);
+    return &(*mCommandBufferImageSave);
 }
 
 void CsCommandBuffer::createBuffer(

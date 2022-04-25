@@ -77,24 +77,24 @@ private:
     const vk::PhysicalDevice* physicalDevice;
     int computeFamilyIndex;
 
-    vk::UniqueCommandPool computeCommandPool;
+    vk::UniqueCommandPool mComputeCommandPool;
     // Command buffer for all shaders except IO
-    vk::UniqueCommandBuffer commandBufferGeneric;
+    vk::UniqueCommandBuffer mCommandBufferGeneric;
     // Command buffer for loading images from disk
-    vk::UniqueCommandBuffer commandBufferImageLoad;
+    vk::UniqueCommandBuffer mCommandBufferImageLoad;
     // Command buffer for writing images to disk
-    vk::UniqueCommandBuffer commandBufferImageSave;
+    vk::UniqueCommandBuffer mCommandBufferImageSave;
 
-    vk::CommandBuffer* currentBuffer;
+    vk::CommandBuffer* mCurrentBuffer;
 
-    vk::Queue computeQueue;
-    vk::UniqueFence fence;
+    vk::Queue mComputeQueue;
+    vk::UniqueFence mFence;
 
-    vk::PipelineLayout* computePipelineLayout;
-    vk::DescriptorSet* computeDescriptorSet;
+    vk::PipelineLayout* mComputePipelineLayout;
+    vk::DescriptorSet* mComputeDescriptorSet;
 
-    vk::UniqueBuffer outputStagingBuffer;
-    vk::UniqueDeviceMemory outputStagingBufferMemory;
+    vk::UniqueBuffer mOutputStagingBuffer;
+    vk::UniqueDeviceMemory mOutputStagingBufferMemory;
 };
 
 } // namespace Cascade::Renderer

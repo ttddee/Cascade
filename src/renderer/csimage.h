@@ -32,8 +32,7 @@ namespace Cascade::Renderer {
 class CsImage
 {
 public:
-    CsImage(
-            VulkanWindow* win,
+    CsImage(VulkanWindow* win,
             const vk::Device* d,
             const vk::PhysicalDevice* pd,
             const int w = 100,
@@ -58,18 +57,18 @@ public:
     ~CsImage();
 
 private:
-    vk::UniqueImage image;
-    vk::UniqueImageView view;
-    vk::UniqueDeviceMemory memory;
+    vk::UniqueImage mImage;
+    vk::UniqueImageView mView;
+    vk::UniqueDeviceMemory mMemory;
 
-    VulkanWindow* window;
-    const vk::Device* device;
-    const vk::PhysicalDevice* physicalDevice;
+    VulkanWindow* mWindow;
+    const vk::Device* mDevice;
+    const vk::PhysicalDevice* mPhysicalDevice;
 
-    vk::ImageLayout currentLayout = vk::ImageLayout::eUndefined;
+    vk::ImageLayout mCurrentLayout = vk::ImageLayout::eUndefined;
 
-    const int width;
-    const int height;
+    const int mWidth;
+    const int mHeight;
 };
 
 } // end namespace Cascade::Renderer

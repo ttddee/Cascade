@@ -39,8 +39,8 @@ public:
     void clear();
 
 private:
-    QVBoxLayout* layout;
-    NodeProperties* currentProperties = nullptr;
+    QVBoxLayout* mLayout;
+    NodeProperties* mCurrentProperties = nullptr;
 
 };
 

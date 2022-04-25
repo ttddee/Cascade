@@ -49,13 +49,13 @@ public:
 private:
     Ui::ViewerStatusBar *ui;
 
-    bool split = false;
-    bool bw = false;
+    bool mSplit = false;
+    bool mBw = false;
     ViewerMode currentViewerMode = Config::sDefaultViewerMode;
 
-    CsSliderBoxEntity* splitSlider;
-    CsSliderBoxEntity* gammaSlider;
-    CsSliderBoxEntity* gainSlider;
+    CsSliderBoxEntity* mSplitSlider;
+    CsSliderBoxEntity* mGammaSlider;
+    CsSliderBoxEntity* mGainSlider;
 
 signals:
     void requestZoomReset();

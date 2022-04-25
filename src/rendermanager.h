@@ -53,10 +53,10 @@ private:
     bool renderNodes(NodeBase* node);
     void renderNode(NodeBase* node);
 
-    VulkanRenderer* renderer;
-    NodeGraph* nodeGraph;
+    VulkanRenderer* mRenderer;
+    NodeGraph* mNodeGraph;
 
-    WindowManager* wManager;
+    WindowManager* mWindowManager;
 
 public slots:
     void handleNodeDisplayRequest(NodeBase* node);

@@ -40,9 +40,9 @@ public:
     ~VulkanView();
 
 private:
-    QWidget* vulkanWrapper;
-    VulkanWindow* vulkanWindow;
-    QVulkanInstance instance;
+    QWidget* mVulkanWrapper;
+    VulkanWindow* mVulkanWindow;
+    QVulkanInstance mInstance;
 };
 
 } // namespace Cascade

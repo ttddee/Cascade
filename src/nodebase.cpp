@@ -334,7 +334,7 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
 {
     QJsonObject jsonProps;
 
-    auto widgets = getProperties()->widgets;
+    auto widgets = getProperties()->mWidgets;
 
     for(size_t i = 0; i < widgets.size(); i++)
     {
@@ -373,7 +373,7 @@ NodeInput* NodeBase::getOpenInput() const
 QString NodeBase::getAllPropertyValues() const
 {
     QString vals;
-    auto widgets = getProperties()->widgets;
+    auto widgets = getProperties()->mWidgets;
 
     for(size_t i = 0; i < widgets.size(); i++)
     {

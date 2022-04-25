@@ -45,14 +45,14 @@ public:
     ~CsSettingsBuffer();
 
 private:
-    vk::UniqueBuffer buffer;
-    vk::UniqueDeviceMemory memory;
+    vk::UniqueBuffer mBuffer;
+    vk::UniqueDeviceMemory mMemory;
 
-    vk::Device* device;
-    vk::PhysicalDevice* physicalDevice;
+    vk::Device* mDevice;
+    vk::PhysicalDevice* mPhysicalDevice;
 
-    float* pBufferStart;
-    int bufferSize;
+    float* mBufferStart;
+    int mBufferSize;
 };
 
 } // end namespace Cascade::Renderer

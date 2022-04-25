@@ -56,14 +56,14 @@ private:
 
     void setViewerMode(const ViewerMode mode);
 
-    VulkanWindow* vulkanWindow;
-    NodeGraph* nodeGraph;
-    PropertiesView* propertiesView;
-    ViewerStatusBar* viewerStatusBar;
+    VulkanWindow* mVulkanWindow;
+    NodeGraph* mNodeGraph;
+    PropertiesView* mPropertiesView;
+    ViewerStatusBar* mViewerStatusBar;
 
-    RenderManager* rManager;
+    RenderManager* mRenderManager;
 
-    ViewerMode currentViewerMode = Config::sDefaultViewerMode;
+    ViewerMode mCurrentViewerMode = Config::sDefaultViewerMode;
 
 signals:
     void deleteKeyPressed();

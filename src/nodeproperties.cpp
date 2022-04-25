@@ -51,13 +51,13 @@ NodeProperties::NodeProperties(
         const NodeInitProperties& initProps,
         QWidget *parent)
         : QWidget(parent),
-          nodeType(t),
-          parentNode(parentNode)
+          mNodeType(t),
+          mParentNode(parentNode)
 {
-    layout = new QVBoxLayout();
-    layout->setAlignment(Qt::AlignTop);
-    layout->setContentsMargins(QMargins(0,0,0,0));
-    this->setLayout(layout);
+    mLayout = new QVBoxLayout();
+    mLayout->setAlignment(Qt::AlignTop);
+    mLayout->setContentsMargins(QMargins(0,0,0,0));
+    this->setLayout(mLayout);
 
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeProperties::projectIsDirty,
@@ -70,7 +70,7 @@ NodeProperties::NodeProperties(
             PropertiesHeading* item = new PropertiesHeading(
                         elem.second.toUpper(),
                         this);
-            layout->addWidget(item);
+            mLayout->addWidget(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SPINBOX)
         {
@@ -86,8 +86,8 @@ NodeProperties::NodeProperties(
                         parts.at(3).toInt(),
                         parts.at(4).toInt());
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_FILEBOX)
         {
@@ -95,8 +95,8 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_FILEBOX,
                         this);
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_COLOR_BUTTON)
         {
@@ -112,8 +112,8 @@ NodeProperties::NodeProperties(
                         parts.at(3).toFloat() * 255.0,
                         parts.at(4).toFloat() * 255.0);
             item->setColor(color);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_WRITE_PROPERTIES)
         {
@@ -121,8 +121,8 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_WRITE_PROPERTIES,
                         this);
             item->selfConnectToRequestFileSave(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_COMBOBOX)
         {
@@ -138,8 +138,8 @@ NodeProperties::NodeProperties(
             }
             item->setOptions(options, parts.last().toInt());
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_CHANNEL_SELECT)
         {
@@ -152,8 +152,8 @@ NodeProperties::NodeProperties(
                 item->hideAlphaChannel();
             }
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
         {
@@ -169,8 +169,8 @@ NodeProperties::NodeProperties(
                         parts.at(3).toDouble(),
                         parts.at(4).toDouble());
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_INT)
         {
@@ -186,8 +186,8 @@ NodeProperties::NodeProperties(
                         parts.at(3).toInt(),
                         parts.at(4).toInt());
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_COLOR_PROPERTIES)
         {
@@ -195,8 +195,8 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_COLOR_PROPERTIES,
                         this);
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SIZEBOX)
         {
@@ -204,8 +204,8 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_SIZEBOX,
                         this);
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_TEXTBOX)
         {
@@ -213,8 +213,8 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_TEXTBOX,
                         this);
             item->setText(elem.second);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_CHECKBOX)
         {
@@ -225,8 +225,8 @@ NodeProperties::NodeProperties(
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
             item->setChecked(parts.at(1).toInt());
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_TEXTBROWSER)
         {
@@ -234,16 +234,16 @@ NodeProperties::NodeProperties(
                         UI_ELEMENT_TYPE_TEXTBOX,
                         this);
             item->setText(elem.second);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_SEPARATOR)
         {
             SeparatorEntity* item = new SeparatorEntity(
                         UI_ELEMENT_TYPE_SEPARATOR,
                         this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_LINEEDIT)
         {
@@ -253,8 +253,8 @@ NodeProperties::NodeProperties(
             auto parts = elem.second.split(",");
             item->setName(parts[0]);
             item->setText(parts[1]);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_FOLDERBOX)
         {
@@ -263,8 +263,8 @@ NodeProperties::NodeProperties(
                         this);
             item->setName(elem.second);
             item->selfConnectToValueChanged(this);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
         else if (elem.first == UI_ELEMENT_TYPE_RESIZE_PROPERTIES)
         {
@@ -273,8 +273,8 @@ NodeProperties::NodeProperties(
                         this);
             item->selfConnectToValueChanged(this);
             item->setParentNode(parentNode);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
 
             connect(parentNode, &NodeBase::nodeRequestUpdate,
                     item, &ResizePropertiesEntity::handleNodeRequestUpdate);
@@ -286,8 +286,8 @@ NodeProperties::NodeProperties(
                         this);
             item->selfConnectToValueChanged(this);
             item->setParentNode(parentNode);
-            layout->addWidget(item);
-            widgets.push_back(item);
+            mLayout->addWidget(item);
+            mWidgets.push_back(item);
         }
     }
 }
@@ -296,13 +296,13 @@ void NodeProperties::loadNodePropertyValues(const QMap<int, QString> &values)
 {
     for (int i = 0; i < values.size(); i++)
     {
-        widgets[i]->loadPropertyValues(values[i]);
+        mWidgets[i]->loadPropertyValues(values[i]);
     }
 }
 
 void NodeProperties::handleSomeValueChanged()
 {
-    parentNode->requestUpdate();
+    mParentNode->requestUpdate();
 
     emit projectIsDirty();
 }
@@ -313,26 +313,26 @@ void NodeProperties::handleFileSaveRequest(
         const QMap<std::string, std::string>& attributes,
         const bool batchRender)
 {
-    emit parentNode->nodeRequestFileSave(parentNode, path, fileType, attributes, batchRender);
+    emit mParentNode->nodeRequestFileSave(mParentNode, path, fileType, attributes, batchRender);
 }
 
 int NodeProperties::getNumImages()
 {
-    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+    auto entity = static_cast<FileBoxEntity*>(mWidgets.at(0));
 
     return entity->getNumImages();
 }
 
 void NodeProperties::switchToFirstImage()
 {
-    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+    auto entity = static_cast<FileBoxEntity*>(mWidgets.at(0));
 
     entity->switchToFirstImage();
 }
 
 void NodeProperties::switchToNextImage()
 {
-    auto entity = static_cast<FileBoxEntity*>(widgets.at(0));
+    auto entity = static_cast<FileBoxEntity*>(mWidgets.at(0));
 
     entity->switchToNextImage();
 }

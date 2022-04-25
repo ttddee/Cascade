@@ -47,16 +47,16 @@ static float vertexData[] = { // Y up, front = CW
 };
 
 VulkanRenderer::VulkanRenderer(VulkanWindow *w)
-    : window(w)
+    : mWindow(w)
 {
-    concurrentFrameCount = window->concurrentFrameCount();
+    mConcurrentFrameCount = mWindow->concurrentFrameCount();
 }
 
 void VulkanRenderer::initResources()
 {
     // Get device and functions
-    device = window->device();
-    physicalDevice = window->physicalDevice();
+    mDevice = mWindow->device();
+    mPhysicalDevice = mWindow->physicalDevice();
 
     // Init all the permanent parts of the renderer
     createVertexBuffer();
@@ -66,8 +66,8 @@ void VulkanRenderer::initResources()
     createGraphicsPipelineCache();
     createGraphicsPipelineLayout();
 
-    createGraphicsPipeline(graphicsPipelineRGB, ":/shaders/texture_frag.spv");
-    createGraphicsPipeline(graphicsPipelineAlpha, ":/shaders/texture_alpha_frag.spv");
+    createGraphicsPipeline(mGraphicsPipelineRGB, ":/shaders/texture_frag.spv");
+    createGraphicsPipeline(mGraphicsPipelineAlpha, ":/shaders/texture_alpha_frag.spv");
 
     createComputeDescriptors();
     createComputePipelineLayout();
@@ -75,38 +75,38 @@ void VulkanRenderer::initResources()
     // Load all the shaders we need and create their pipelines
     loadShadersFromDisk();
     // Create Noop pipeline
-    computePipelineNoop = createComputePipeline(
+    mComputePipelineNoop = createComputePipeline(
                 createShaderFromFile(":/shaders/noop_comp.spv").get());
     // Create a pipeline for each shader
     createComputePipelines();
 
-    computeCommandBuffer = std::unique_ptr<CsCommandBuffer>(
-                new CsCommandBuffer(&device,
-                                    &physicalDevice,
-                                    &computePipelineLayout.get(),
-                                    &computeDescriptorSet.get()));
+    mComputeCommandBuffer = std::unique_ptr<CsCommandBuffer>(
+                new CsCommandBuffer(&mDevice,
+                                    &mPhysicalDevice,
+                                    &mComputePipelineLayout.get(),
+                                    &mComputeDescriptorSet.get()));
 
-    settingsBuffer = std::unique_ptr<CsSettingsBuffer>(new CsSettingsBuffer(
-                &device,
-                &physicalDevice));
+    mSettingsBuffer = std::unique_ptr<CsSettingsBuffer>(new CsSettingsBuffer(
+                &mDevice,
+                &mPhysicalDevice));
 
     // Load OCIO config
     try
     {
         const char* file = "ocio/config.ocio";
-        ocioConfig = OCIO::Config::CreateFromFile(file);
+        mOcioConfig = OCIO::Config::CreateFromFile(file);
     }
     catch(OCIO::Exception& exception)
     {
         CS_LOG_WARNING("OpenColorIO Error: " + QString(exception.what()));
     }
 
-    emit window->rendererHasBeenCreated();
+    emit mWindow->rendererHasBeenCreated();
 }
 
 QString VulkanRenderer::getGpuName()
 {
-    vk::PhysicalDeviceProperties deviceProps = physicalDevice.getProperties();
+    vk::PhysicalDeviceProperties deviceProps = mPhysicalDevice.getProperties();
     auto deviceName = QString::fromLatin1(deviceProps.deviceName);
 
     return deviceName;
@@ -116,9 +116,9 @@ void VulkanRenderer::createVertexBuffer()
 {
     // The current vertexBuffer will be destroyed,
     // so we have to wait here.
-    auto result = device.waitIdle();
+    auto result = mDevice.waitIdle();
 
-    const vk::PhysicalDeviceLimits pdevLimits(physicalDevice.getProperties().limits);
+    const vk::PhysicalDeviceLimits pdevLimits(mPhysicalDevice.getProperties().limits);
     const vk::DeviceSize uniAlign = pdevLimits.minUniformBufferOffsetAlignment;
 
     const vk::DeviceSize vertexAllocSize = aligned(sizeof(vertexData), uniAlign);
@@ -126,56 +126,56 @@ void VulkanRenderer::createVertexBuffer()
 
     vk::BufferCreateInfo bufferInfo
             ({},
-             vertexAllocSize + concurrentFrameCount * uniformAllocSize,
+             vertexAllocSize + mConcurrentFrameCount * uniformAllocSize,
              vk::BufferUsageFlags(
                             vk::BufferUsageFlagBits::eVertexBuffer |
                             vk::BufferUsageFlagBits::eUniformBuffer));
-    vertexBuffer = device.createBufferUnique(bufferInfo).value;
+    mVertexBuffer = mDevice.createBufferUnique(bufferInfo).value;
 
 #ifdef QT_DEBUG
     {
         vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
                     vk::ObjectType::eBuffer,
-                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *vertexBuffer),
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkBuffer, *mVertexBuffer),
                     "Vertex Buffer");
-        result = device.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        result = mDevice.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
-    vk::MemoryRequirements memReq = device.getBufferMemoryRequirements(*vertexBuffer);
+    vk::MemoryRequirements memReq = mDevice.getBufferMemoryRequirements(*mVertexBuffer);
 
-    vk::MemoryAllocateInfo memAllocInfo(memReq.size, window->hostVisibleMemoryIndex());
+    vk::MemoryAllocateInfo memAllocInfo(memReq.size, mWindow->hostVisibleMemoryIndex());
 
-    vertexBufferMemory = device.allocateMemoryUnique(memAllocInfo).value;
+    mVertexBufferMemory = mDevice.allocateMemoryUnique(memAllocInfo).value;
 
 #ifdef QT_DEBUG
     {
         vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
                     vk::ObjectType::eDeviceMemory,
-                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *vertexBufferMemory),
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *mVertexBufferMemory),
                     "Vertex Buffer Memory");
-        result = device.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        result = mDevice.setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
     // copy the vertex and color data into device memory
     uint8_t* pData = static_cast<uint8_t *>(
-                device.mapMemory(
-                    vertexBufferMemory.get(), 0, memReq.size).value);
+                mDevice.mapMemory(
+                    mVertexBufferMemory.get(), 0, memReq.size).value);
     memcpy(pData, vertexData, sizeof(vertexData));
 
     QMatrix4x4 ident;
-    for (int i = 0; i < concurrentFrameCount; ++i)
+    for (int i = 0; i < mConcurrentFrameCount; ++i)
     {
         const vk::DeviceSize offset = vertexAllocSize + i * uniformAllocSize;
         memcpy(pData + offset, ident.constData(), 16 * sizeof(float));
-        uniformBufferInfo[i].setBuffer(*vertexBuffer);
-        uniformBufferInfo[i].setOffset(offset);
-        uniformBufferInfo[i].setRange(uniformAllocSize);
+        mUniformBufferInfo[i].setBuffer(*mVertexBuffer);
+        mUniformBufferInfo[i].setOffset(offset);
+        mUniformBufferInfo[i].setRange(uniformAllocSize);
     }
-    device.unmapMemory(vertexBufferMemory.get());
+    mDevice.unmapMemory(mVertexBufferMemory.get());
 
-    result = device.bindBufferMemory(*vertexBuffer, *vertexBufferMemory, 0);
+    result = mDevice.bindBufferMemory(*mVertexBuffer, *mVertexBufferMemory, 0);
     Q_UNUSED(result);
 }
 
@@ -193,17 +193,17 @@ void VulkanRenderer::createSampler()
                 {},
                 false);
 
-    sampler = device.createSamplerUnique(samplerInfo).value;
+    mSampler = mDevice.createSamplerUnique(samplerInfo).value;
 }
 
 void VulkanRenderer::createDescriptorPool()
 {
     // Create descriptor pool
     std::vector<vk::DescriptorPoolSize> descPoolSizes = {
-        { vk::DescriptorType::eUniformBuffer,         3 * uint32_t(concurrentFrameCount) },
-        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
-        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(concurrentFrameCount) },
-        { vk::DescriptorType::eStorageImage,          6 * uint32_t(concurrentFrameCount) }
+        { vk::DescriptorType::eUniformBuffer,         3 * uint32_t(mConcurrentFrameCount) },
+        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(mConcurrentFrameCount) },
+        { vk::DescriptorType::eCombinedImageSampler,  1 * uint32_t(mConcurrentFrameCount) },
+        { vk::DescriptorType::eStorageImage,          6 * uint32_t(mConcurrentFrameCount) }
     };
 
     vk::DescriptorPoolCreateInfo descPoolInfo(
@@ -212,7 +212,7 @@ void VulkanRenderer::createDescriptorPool()
                 4,
                 descPoolSizes.data());
 
-    descriptorPool = device.createDescriptorPoolUnique(descPoolInfo).value;
+    mDescriptorPool = mDevice.createDescriptorPoolUnique(descPoolInfo).value;
 }
 
 void VulkanRenderer::createGraphicsDescriptors()
@@ -244,14 +244,14 @@ void VulkanRenderer::createGraphicsDescriptors()
                 3, // bindingCount
                 layoutBinding.data());
 
-    graphicsDescriptorSetLayout = device.createDescriptorSetLayoutUnique(descLayoutInfo).value;
+    mGraphicsDescriptorSetLayout = mDevice.createDescriptorSetLayoutUnique(descLayoutInfo).value;
 }
 
 void VulkanRenderer::createGraphicsPipelineCache()
 {
     // Pipeline cache
     vk::PipelineCacheCreateInfo pipelineCacheInfo;
-    pipelineCache = device.createPipelineCacheUnique(pipelineCacheInfo).value;
+    mPipelineCache = mDevice.createPipelineCacheUnique(pipelineCacheInfo).value;
 }
 
 void VulkanRenderer::createGraphicsPipelineLayout()
@@ -259,23 +259,23 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     vk::PushConstantRange pushConstantRange;
     pushConstantRange.stageFlags                = vk::ShaderStageFlagBits::eFragment;
     pushConstantRange.offset                    = 0;
-    pushConstantRange.size                      = sizeof(viewerPushConstants);
+    pushConstantRange.size                      = sizeof(mViewerPushConstants);
 
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
                 {},
                 1,
-                &(*graphicsDescriptorSetLayout),
+                &(*mGraphicsDescriptorSetLayout),
                 1,
                 &pushConstantRange);
 
-    graphicsPipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo).value;
+    mGraphicsPipelineLayout = mDevice.createPipelineLayoutUnique(pipelineLayoutInfo).value;
 }
 
 void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
 {
     auto props = node->getAllPropertyValues();
 
-    settingsBuffer->fillBuffer(props);
+    mSettingsBuffer->fillBuffer(props);
 }
 
 void VulkanRenderer::createGraphicsPipeline(
@@ -413,10 +413,10 @@ void VulkanRenderer::createGraphicsPipeline(
                 dynEnable);
     pipelineInfo.pDynamicState = &dyn;
 
-    pipelineInfo.layout = *graphicsPipelineLayout;
-    pipelineInfo.renderPass = window->defaultRenderPass();
+    pipelineInfo.layout = *mGraphicsPipelineLayout;
+    pipelineInfo.renderPass = mWindow->defaultRenderPass();
 
-    pl = std::move(device.createGraphicsPipelineUnique(*pipelineCache, pipelineInfo).value);
+    pl = std::move(mDevice.createGraphicsPipelineUnique(*mPipelineCache, pipelineInfo).value);
 }
 
 vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
@@ -435,7 +435,7 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromFile(const QString &name)
                 blob.size(),
                 reinterpret_cast<const uint32_t *>(blob.constData()));
 
-    vk::UniqueShaderModule shaderModule = device.createShaderModuleUnique(shaderInfo).value;
+    vk::UniqueShaderModule shaderModule = mDevice.createShaderModuleUnique(shaderInfo).value;
 
     return shaderModule;
 }
@@ -451,7 +451,7 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromCode(const std::vector<un
                 codeArray.size(),
                 reinterpret_cast<const uint32_t *>(codeArray.constData()));
 
-    vk::UniqueShaderModule shaderModule = device.createShaderModuleUnique(shaderInfo).value;
+    vk::UniqueShaderModule shaderModule = mDevice.createShaderModuleUnique(shaderInfo).value;
 
     return shaderModule;
 }
@@ -464,54 +464,54 @@ void VulkanRenderer::loadShadersFromDisk()
 
         auto props = getPropertiesForType(nodeType);
 
-        shaders[nodeType] = createShaderFromFile(props.shaderPath);
+        mShaders[nodeType] = createShaderFromFile(props.shaderPath);
     }
 }
 
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
 {
-    computeRenderTarget = std::unique_ptr<CsImage>(
-                new CsImage(window,
-                            &device,
-                            &physicalDevice,
+    mComputeRenderTarget = std::unique_ptr<CsImage>(
+                new CsImage(mWindow,
+                            &mDevice,
+                            &mPhysicalDevice,
                             width,
                             height,
                             false,
                             "Compute Render Target"));
 
-    emit window->renderTargetHasBeenCreated(width, height);
+    emit mWindow->renderTargetHasBeenCreated(width, height);
 
-    currentRenderSize = QSize(width, height);
+    mCurrentRenderSize = QSize(width, height);
 
     return true;
 }
 
 bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpace)
 {
-    cpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
-    bool ok = cpuImage->read(0, 0, 0, 4, true, OIIO::TypeDesc::FLOAT);
+    mCpuImage = std::unique_ptr<ImageBuf>(new ImageBuf(path.toStdString()));
+    bool ok = mCpuImage->read(0, 0, 0, 4, true, OIIO::TypeDesc::FLOAT);
     if (!ok)
     {
         CS_LOG_WARNING("There was a problem reading the image from disk.");
-        CS_LOG_WARNING(QString::fromStdString(cpuImage->geterror()));
+        CS_LOG_WARNING(QString::fromStdString(mCpuImage->geterror()));
     }
     // Add alpha channel if it doesn't exist
-    if (cpuImage->nchannels() == 3)
+    if (mCpuImage->nchannels() == 3)
     {
         int channelorder[] = { 0, 1, 2, -1 };
         float channelvalues[] = { 0 /*ignore*/, 0 /*ignore*/, 0 /*ignore*/, 1.0 };
         std::string channelnames[] = { "R", "G", "B", "A" };
 
-        *cpuImage = OIIO::ImageBufAlgo::channels(*cpuImage, 4, channelorder, channelvalues, channelnames);
+        *mCpuImage = OIIO::ImageBufAlgo::channels(*mCpuImage, 4, channelorder, channelvalues, channelnames);
     }
 
-    transformColorSpace(colorSpaces.at(colorSpace), "linear", *cpuImage);
+    transformColorSpace(colorSpaces.at(colorSpace), "linear", *mCpuImage);
 
-    updateVertexData(cpuImage->xend(), cpuImage->yend());
+    updateVertexData(mCpuImage->xend(), mCpuImage->yend());
 
-    auto imageSize = QSize(cpuImage->xend(), cpuImage->yend());
+    auto imageSize = QSize(mCpuImage->xend(), mCpuImage->yend());
 
-    vk::FormatProperties props = physicalDevice.getFormatProperties(globalImageFormat);
+    vk::FormatProperties props = mPhysicalDevice.getFormatProperties(globalImageFormat);
     const bool canSampleLinear = (bool)(props.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
     const bool canSampleOptimal = (bool)(props.optimalTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);
     if (!canSampleLinear && !canSampleOptimal) {
@@ -520,19 +520,19 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
     }
 
     // The image that gets the data from the CPU
-    loadImageStaging = std::unique_ptr<CsImage>(
-                new CsImage(window,
-                            &device,
-                            &physicalDevice,
-                            cpuImage->xend(),
-                            cpuImage->yend(),
+    mLoadImageStaging = std::unique_ptr<CsImage>(
+                new CsImage(mWindow,
+                            &mDevice,
+                            &mPhysicalDevice,
+                            mCpuImage->xend(),
+                            mCpuImage->yend(),
                             true,
                             "Load Image Staging"));
 
     if (!writeLinearImage(
-                static_cast<float*>(cpuImage->localpixels()),
-                QSize(cpuImage->xend(), cpuImage->yend()),
-                loadImageStaging))
+                static_cast<float*>(mCpuImage->localpixels()),
+                QSize(mCpuImage->xend(), mCpuImage->yend()),
+                mLoadImageStaging))
     {
         CS_LOG_WARNING("Failed to write linear image");
         return false;
@@ -543,7 +543,7 @@ bool VulkanRenderer::createImageFromFile(const QString &path, const int colorSpa
 void VulkanRenderer::transformColorSpace(const QString& from, const QString& to, ImageBuf& image)
 {
     parallelApplyColorSpace(
-                ocioConfig,
+                mOcioConfig,
                 from,
                 to,
                 static_cast<float*>(image.localpixels()),
@@ -555,7 +555,7 @@ void VulkanRenderer::createComputeDescriptors()
 {
     // TODO: Clean this up.
 
-    if (!computeDescriptorSetLayout)
+    if (!mComputeDescriptorSetLayout)
     {
         // Define the layout of the input of the shader.
         // 2 images to read, 1 image to write
@@ -586,69 +586,69 @@ void VulkanRenderer::createComputeDescriptors()
                     4,
                     &bindings.at(0));
 
-        computeDescriptorSetLayout = device.createDescriptorSetLayoutUnique(
+        mComputeDescriptorSetLayout = mDevice.createDescriptorSetLayoutUnique(
                     descSetLayoutCreateInfo).value;
     }
 
-    graphicsDescriptorSet.reserve(2);
+    mGraphicsDescriptorSet.reserve(2);
 
     // Descriptor sets
-    for (int i = 0; i < concurrentFrameCount; ++i)
+    for (int i = 0; i < mConcurrentFrameCount; ++i)
     {
         {
             vk::DescriptorSetAllocateInfo descSetAllocInfo(
-                        *descriptorPool,
+                        *mDescriptorPool,
                         1,
-                        &(*graphicsDescriptorSetLayout));
+                        &(*mGraphicsDescriptorSetLayout));
 
-            graphicsDescriptorSet.push_back(std::move(device.allocateDescriptorSetsUnique(descSetAllocInfo).value.front()));
+            mGraphicsDescriptorSet.push_back(std::move(mDevice.allocateDescriptorSetsUnique(descSetAllocInfo).value.front()));
         }
     }
 
     vk::DescriptorSetAllocateInfo descSetAllocInfoCompute(
-                *descriptorPool,
+                *mDescriptorPool,
                 1,
-                &(*computeDescriptorSetLayout));
+                &(*mComputeDescriptorSetLayout));
 
-    computeDescriptorSet = std::move(device.allocateDescriptorSetsUnique(descSetAllocInfoCompute).value.front());
+    mComputeDescriptorSet = std::move(mDevice.allocateDescriptorSetsUnique(descSetAllocInfoCompute).value.front());
 }
 
 void VulkanRenderer::updateGraphicsDescriptors(
         const CsImage* const outputImage,
         const CsImage* const upstreamImage)
 {
-    for (int i = 0; i < concurrentFrameCount; ++i)
+    for (int i = 0; i < mConcurrentFrameCount; ++i)
     {
         std::vector<vk::WriteDescriptorSet> descWrite(3);
-        descWrite.at(0).dstSet = *graphicsDescriptorSet.at(i);
+        descWrite.at(0).dstSet = *mGraphicsDescriptorSet.at(i);
         descWrite.at(0).dstBinding = 0;
         descWrite.at(0).descriptorCount = 1;
         descWrite.at(0).descriptorType = vk::DescriptorType::eUniformBuffer;
-        descWrite.at(0).pBufferInfo = &uniformBufferInfo[i];
+        descWrite.at(0).pBufferInfo = &mUniformBufferInfo[i];
 
         vk::DescriptorImageInfo descImageInfo(
-                    *sampler,
+                    *mSampler,
                     *outputImage->getImageView(),
                     vk::ImageLayout::eShaderReadOnlyOptimal);
 
-        descWrite.at(1).dstSet = *graphicsDescriptorSet.at(i);
+        descWrite.at(1).dstSet = *mGraphicsDescriptorSet.at(i);
         descWrite.at(1).dstBinding = 1;
         descWrite.at(1).descriptorCount = 1;
         descWrite.at(1).descriptorType = vk::DescriptorType::eCombinedImageSampler;
         descWrite.at(1).pImageInfo = &descImageInfo;
 
         vk::DescriptorImageInfo descImageInfoUpstream(
-                    *sampler,
+                    *mSampler,
                     *upstreamImage->getImageView(),
                     vk::ImageLayout::eShaderReadOnlyOptimal);
 
-        descWrite.at(2).dstSet = *graphicsDescriptorSet.at(i);
+        descWrite.at(2).dstSet = *mGraphicsDescriptorSet.at(i);
         descWrite.at(2).dstBinding = 2;
         descWrite.at(2).descriptorCount = 1;
         descWrite.at(2).descriptorType = vk::DescriptorType::eCombinedImageSampler;
         descWrite.at(2).pImageInfo = &descImageInfoUpstream;
 
-        device.updateDescriptorSets(descWrite, {});
+        mDevice.updateDescriptorSets(descWrite, {});
     }
 }
 
@@ -657,16 +657,16 @@ void VulkanRenderer::updateComputeDescriptors(
         const CsImage* const inputImageFront,
         const CsImage* const outputImage)
 {
-    auto result = device.waitIdle();
+    auto result = mDevice.waitIdle();
     Q_UNUSED(result);
 
     vk::DescriptorImageInfo sourceInfoBack(
-                *sampler,
+                *mSampler,
                 *inputImageBack->getImageView(),
                 vk::ImageLayout::eGeneral);
 
     vk::DescriptorImageInfo sourceInfoFront;
-    sourceInfoFront.sampler = *sampler;
+    sourceInfoFront.sampler = *mSampler;
     if (inputImageFront)
         sourceInfoFront.imageView = *inputImageFront->getImageView();
     else
@@ -679,37 +679,37 @@ void VulkanRenderer::updateComputeDescriptors(
                 vk::ImageLayout::eGeneral);
 
     vk::DescriptorBufferInfo settingsBufferInfo(
-                *settingsBuffer->getBuffer(),
+                *mSettingsBuffer->getBuffer(),
                 0,
                 VK_WHOLE_SIZE);
 
     std::vector<vk::WriteDescriptorSet> descWrite(4);
 
-    descWrite.at(0).dstSet                    = *computeDescriptorSet;
+    descWrite.at(0).dstSet                    = *mComputeDescriptorSet;
     descWrite.at(0).dstBinding                = 0;
     descWrite.at(0).descriptorCount           = 1;
     descWrite.at(0).descriptorType            = vk::DescriptorType::eStorageImage;
     descWrite.at(0).pImageInfo                = &sourceInfoBack;
 
-    descWrite.at(1).dstSet                    = *computeDescriptorSet;
+    descWrite.at(1).dstSet                    = *mComputeDescriptorSet;
     descWrite.at(1).dstBinding                = 1;
     descWrite.at(1).descriptorCount           = 1;
     descWrite.at(1).descriptorType            = vk::DescriptorType::eStorageImage;
     descWrite.at(1).pImageInfo                = &sourceInfoFront;
 
-    descWrite.at(2).dstSet                    = *computeDescriptorSet;
+    descWrite.at(2).dstSet                    = *mComputeDescriptorSet;
     descWrite.at(2).dstBinding                = 2;
     descWrite.at(2).descriptorCount           = 1;
     descWrite.at(2).descriptorType            = vk::DescriptorType::eStorageImage;
     descWrite.at(2).pImageInfo                = &destinationInfo;
 
-    descWrite.at(3).dstSet                    = *computeDescriptorSet;
+    descWrite.at(3).dstSet                    = *mComputeDescriptorSet;
     descWrite.at(3).dstBinding                = 3;
     descWrite.at(3).descriptorCount           = 1;
     descWrite.at(3).descriptorType            = vk::DescriptorType::eUniformBuffer;
     descWrite.at(3).pBufferInfo               = &settingsBufferInfo;
 
-    device.updateDescriptorSets(descWrite, {});
+    mDevice.updateDescriptorSets(descWrite, {});
 }
 
 void VulkanRenderer::createComputePipelineLayout()
@@ -717,10 +717,10 @@ void VulkanRenderer::createComputePipelineLayout()
     vk::PipelineLayoutCreateInfo pipelineLayoutInfo(
                 {},
                 1,
-                &(*computeDescriptorSetLayout));
+                &(*mComputeDescriptorSetLayout));
 
     //Create the layout, store it to share between shaders
-    computePipelineLayout = device.createPipelineLayoutUnique(pipelineLayoutInfo).value;
+    mComputePipelineLayout = mDevice.createPipelineLayoutUnique(pipelineLayoutInfo).value;
 }
 
 
@@ -730,7 +730,7 @@ void VulkanRenderer::createComputePipelines()
     {
         NodeType nodeType = static_cast<NodeType>(i);
 
-        pipelines[nodeType] = createComputePipeline(shaders[nodeType].get());
+        mPipelines[nodeType] = createComputePipeline(mShaders[nodeType].get());
     }
 }
 
@@ -746,9 +746,9 @@ vk::UniquePipeline VulkanRenderer::createComputePipeline(
     vk::ComputePipelineCreateInfo pipelineInfo(
                 {},
                 computeStage,
-                *computePipelineLayout);
+                *mComputePipelineLayout);
 
-    vk::UniquePipeline pl = device.createComputePipelineUnique(*pipelineCache, pipelineInfo).value;
+    vk::UniquePipeline pl = mDevice.createComputePipelineUnique(*mPipelineCache, pipelineInfo).value;
 
     return pl;
 }
@@ -760,7 +760,7 @@ void VulkanRenderer::createQueryPool()
                 vk::QueryType::eTimestamp,
                 2);
 
-    queryPool = device.createQueryPoolUnique(queryPoolInfo).value;
+    mQueryPool = mDevice.createQueryPoolUnique(queryPoolInfo).value;
 }
 
 bool VulkanRenderer::writeLinearImage(
@@ -773,10 +773,10 @@ bool VulkanRenderer::writeLinearImage(
                 0, // mip level
                 0);
 
-    vk::SubresourceLayout layout = device.getImageSubresourceLayout(*image->getImage(), subres);
+    vk::SubresourceLayout layout = mDevice.getImageSubresourceLayout(*image->getImage(), subres);
 
     float *p;
-    vk::Result err = device.mapMemory(*image->getMemory(),
+    vk::Result err = mDevice.mapMemory(*image->getMemory(),
                                       layout.offset,
                                       layout.size,
                                       {},
@@ -801,7 +801,7 @@ bool VulkanRenderer::writeLinearImage(
         p += w * 4 + pad;
     }
 
-    device.unmapMemory(*image->getMemory());
+    mDevice.unmapMemory(*image->getMemory());
 
     return true;
 }
@@ -821,15 +821,15 @@ void VulkanRenderer::updateVertexData(const int w, const int h)
 void VulkanRenderer::initSwapChainResources()
 {
     // Projection matrix
-    projection = window->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
-    const QSize sz = window->swapChainImageSize();
-    projection.ortho( -sz.width() / scaleXY, sz.width() / scaleXY, -sz.height() / scaleXY, sz.height() / scaleXY, -1.0f, 100.0f);
-    projection.scale(500);
+    mProjection = mWindow->clipCorrectionMatrix(); // adjust for Vulkan-OpenGL clip space differences
+    const QSize sz = mWindow->swapChainImageSize();
+    mProjection.ortho( -sz.width() / mScaleXY, sz.width() / mScaleXY, -sz.height() / mScaleXY, sz.height() / mScaleXY, -1.0f, 100.0f);
+    mProjection.scale(500);
 }
 
 void VulkanRenderer::setDisplayMode(const DisplayMode mode)
 {
-    displayMode = mode;
+    mDisplayMode = mode;
 }
 
 bool VulkanRenderer::saveImageToDisk(
@@ -840,15 +840,15 @@ bool VulkanRenderer::saveImageToDisk(
 {
     bool success = true;
 
-    auto mem = computeCommandBuffer->recordImageSave(
+    auto mem = mComputeCommandBuffer->recordImageSave(
                 inputImage);
 
-    computeCommandBuffer->submitImageSave();
+    mComputeCommandBuffer->submitImageSave();
 
-    auto result = device.waitIdle();
+    auto result = mDevice.waitIdle();
 
     float *pInput;
-    result = device.mapMemory(
+    result = mDevice.mapMemory(
                 *mem,
                 0,
                 VK_WHOLE_SIZE,
@@ -886,16 +886,16 @@ bool VulkanRenderer::saveImageToDisk(
 
     delete[] output;
 
-    device.unmapMemory(*mem);
+    mDevice.unmapMemory(*mem);
 
     return success;
 }
 
 void VulkanRenderer::createRenderPass()
 {
-    vk::CommandBuffer cb = window->currentCommandBuffer();
+    vk::CommandBuffer cb = mWindow->currentCommandBuffer();
 
-    const QSize sz = window->swapChainImageSize();
+    const QSize sz = mWindow->swapChainImageSize();
 
     // Clear background
     vk::ClearDepthStencilValue clearDS = { 1, 0 };
@@ -904,8 +904,8 @@ void VulkanRenderer::createRenderPass()
     clearValues[1].depthStencil = clearDS;
 
     vk::RenderPassBeginInfo rpBeginInfo;
-    rpBeginInfo.renderPass = window->defaultRenderPass();
-    rpBeginInfo.framebuffer = window->currentFramebuffer();
+    rpBeginInfo.renderPass = mWindow->defaultRenderPass();
+    rpBeginInfo.framebuffer = mWindow->currentFramebuffer();
     rpBeginInfo.renderArea.extent.width = sz.width();
     rpBeginInfo.renderArea.extent.height = sz.height();
     rpBeginInfo.clearValueCount = 2;
@@ -917,9 +917,9 @@ void VulkanRenderer::createRenderPass()
 
     // TODO: Can we do this once?
     quint8 *p;
-    vk::Result err = device.mapMemory(
-                *vertexBufferMemory,
-                uniformBufferInfo[window->currentFrame()].offset,
+    vk::Result err = mDevice.mapMemory(
+                *mVertexBufferMemory,
+                mUniformBufferInfo[mWindow->currentFrame()].offset,
                 uniformDataSize,
                 {},
                 reinterpret_cast<void **>(&p));
@@ -929,52 +929,52 @@ void VulkanRenderer::createRenderPass()
         CS_LOG_WARNING("Failed to map memory for vertex buffer.");
     }
 
-    QMatrix4x4 m = projection;
+    QMatrix4x4 m = mProjection;
 
     QMatrix4x4 rotation;
     rotation.setToIdentity();
 
     QMatrix4x4 translation;
     translation.setToIdentity();
-    translation.translate(position_x, position_y, position_z);
+    translation.translate(mPositionX, mPositionY, mPositionZ);
 
     QMatrix4x4 scale;
     scale.setToIdentity();
-    scale.scale(scaleXY, scaleXY, scaleXY);
+    scale.scale(mScaleXY, mScaleXY, mScaleXY);
 
     m = m * translation * scale;
 
     memcpy(p, m.constData(), 16 * sizeof(float));
-    device.unmapMemory(*vertexBufferMemory);
+    mDevice.unmapMemory(*mVertexBufferMemory);
 
     // Choose to either display RGB or Alpha
     vk::Pipeline* pl;
-    if (displayMode == DisplayMode::eAlpha)
-        pl = &graphicsPipelineAlpha.get();
+    if (mDisplayMode == DisplayMode::eAlpha)
+        pl = &mGraphicsPipelineAlpha.get();
     else
-        pl = &graphicsPipelineRGB.get();
+        pl = &mGraphicsPipelineRGB.get();
 
     cb.pushConstants(
-                *graphicsPipelineLayout,
+                *mGraphicsPipelineLayout,
                 vk::ShaderStageFlagBits::eFragment,
                 0,
-                sizeof(viewerPushConstants),
-                viewerPushConstants.data());
+                sizeof(mViewerPushConstants),
+                mViewerPushConstants.data());
     cb.bindPipeline(
                 vk::PipelineBindPoint::eGraphics,
                 *pl);
     cb.bindDescriptorSets(
                 vk::PipelineBindPoint::eGraphics,
-                *graphicsPipelineLayout,
+                *mGraphicsPipelineLayout,
                 0,
-                *graphicsDescriptorSet.at(window->currentFrame()),
+                *mGraphicsDescriptorSet.at(mWindow->currentFrame()),
                 {});
 
     vk::DeviceSize vbOffset = 0;
     cb.bindVertexBuffers(
                 0,
                 1,
-                &vertexBuffer.get(),
+                &mVertexBuffer.get(),
                 &vbOffset);
 
     //negative viewport
@@ -1006,7 +1006,7 @@ void VulkanRenderer::createRenderPass()
 
 void VulkanRenderer::setViewerPushConstants(const QString &s)
 {
-    viewerPushConstants = unpackPushConstants(s);
+    mViewerPushConstants = unpackPushConstants(s);
 }
 
 void VulkanRenderer::processReadNode(NodeBase *node)
@@ -1022,42 +1022,42 @@ void VulkanRenderer::processReadNode(NodeBase *node)
 
     if(path != "" && checkFile.exists() && checkFile.isFile())
     {
-        imagePath = path;
+        mImagePath = path;
 
         // Create texture
-        if (!createImageFromFile(imagePath, colorSpace))
+        if (!createImageFromFile(mImagePath, colorSpace))
             CS_LOG_WARNING("Failed to create texture");
 
-        tmpCacheImage = std::unique_ptr<CsImage>(
-                    new CsImage(window,
-                                &device,
-                                &physicalDevice,
-                                cpuImage->xend(),
-                                cpuImage->yend(),
+        mTmpCacheImage = std::unique_ptr<CsImage>(
+                    new CsImage(mWindow,
+                                &mDevice,
+                                &mPhysicalDevice,
+                                mCpuImage->xend(),
+                                mCpuImage->yend(),
                                 false,
                                 "Tmp Cache Image"));
 
         // Create render target
-        if (!createComputeRenderTarget(cpuImage->xend(), cpuImage->yend()))
+        if (!createComputeRenderTarget(mCpuImage->xend(), mCpuImage->yend()))
             CS_LOG_WARNING("Failed to create compute render target.");
 
-        updateComputeDescriptors(tmpCacheImage.get(), nullptr, computeRenderTarget.get());
+        updateComputeDescriptors(mTmpCacheImage.get(), nullptr, mComputeRenderTarget.get());
 
-        computeCommandBuffer->recordImageLoad(
-                    loadImageStaging.get(),
-                    tmpCacheImage.get(),
-                    computeRenderTarget.get(),
-                    &pipelines[NODE_TYPE_READ].get());
+        mComputeCommandBuffer->recordImageLoad(
+                    mLoadImageStaging.get(),
+                    mTmpCacheImage.get(),
+                    mComputeRenderTarget.get(),
+                    &mPipelines[NODE_TYPE_READ].get());
 
-        computeCommandBuffer->submitImageLoad();
+        mComputeCommandBuffer->submitImageLoad();
 
-        node->setCachedImage(std::move(computeRenderTarget));
+        node->setCachedImage(std::move(mComputeRenderTarget));
 
         // Delete the staging image
-        auto result = device.waitIdle();
+        auto result = mDevice.waitIdle();
         Q_UNUSED(result);
 
-        loadImageStaging = nullptr;
+        mLoadImageStaging = nullptr;
     }
     else
     {
@@ -1071,7 +1071,7 @@ void VulkanRenderer::processNode(
         CsImage* inputImageFront,
         const QSize targetSize)
 {
-    auto result = device.waitIdle();
+    auto result = mDevice.waitIdle();
 
     fillSettingsBuffer(node);
 
@@ -1079,28 +1079,28 @@ void VulkanRenderer::processNode(
         CS_LOG_WARNING("Failed to create compute render target.");
 
     // Tells the shader if we have a mask on the front input
-    settingsBuffer->appendValue(0.0);
+    mSettingsBuffer->appendValue(0.0);
     if (inputImageFront)
     {
-        settingsBuffer->incrementLastValue();
+        mSettingsBuffer->incrementLastValue();
     }
 
     // TODO: This is a workaround for generative nodes without input
     // but needs to be fixed
     if (!inputImageBack)
     {
-        tmpCacheImage = std::unique_ptr<CsImage>(
-                    new CsImage(window,
-                                &device,
-                                &physicalDevice,
+        mTmpCacheImage = std::unique_ptr<CsImage>(
+                    new CsImage(mWindow,
+                                &mDevice,
+                                &mPhysicalDevice,
                                 targetSize.width(),
                                 targetSize.height(),
                                 false,
                                 "Tmp Cache Image"));
-        inputImageBack = tmpCacheImage.get();
+        inputImageBack = mTmpCacheImage.get();
     }
 
-    auto pipeline = pipelines[node->getType()].get();
+    auto pipeline = mPipelines[node->getType()].get();
 
     auto nodeType = node->getType();
 
@@ -1108,15 +1108,15 @@ void VulkanRenderer::processNode(
     {
         if (node->getShaderCode().size() != 0)
         {
-            shaderUser = createShaderFromCode(node->getShaderCode());
+            mShaderUser = createShaderFromCode(node->getShaderCode());
 
-            computePipelineUser = createComputePipeline(shaderUser.get());
+            mComputePipelineUser = createComputePipeline(mShaderUser.get());
 
-            pipeline = computePipelineUser.get();
+            pipeline = mComputePipelineUser.get();
         }
         else
         {
-            pipeline = computePipelineNoop.get();
+            pipeline = mComputePipelineNoop.get();
         }
     }
 
@@ -1125,23 +1125,23 @@ void VulkanRenderer::processNode(
 
     if (numShaderPasses == 1)
     {
-        updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget.get());
+        updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
 
-        computeCommandBuffer->recordGeneric(
+        mComputeCommandBuffer->recordGeneric(
                     inputImageBack,
                     inputImageFront,
-                    computeRenderTarget.get(),
+                    mComputeRenderTarget.get(),
                     pipeline,
                     numShaderPasses,
                     currentShaderPass);
 
-        computeCommandBuffer->submitGeneric();
+        mComputeCommandBuffer->submitGeneric();
 
-        window->requestUpdate();
+        mWindow->requestUpdate();
 
-        result = device.waitIdle();
+        result = mDevice.waitIdle();
 
-        node->setCachedImage(std::move(computeRenderTarget));
+        node->setCachedImage(std::move(mComputeRenderTarget));
     }
     else
     {
@@ -1151,48 +1151,48 @@ void VulkanRenderer::processNode(
             if (currentShaderPass == 1)
             {
                 // First pass of multipass shader
-                settingsBuffer->appendValue(0.0);
+                mSettingsBuffer->appendValue(0.0);
 
-                updateComputeDescriptors(inputImageBack, inputImageFront, computeRenderTarget.get());
+                updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
 
-                computeCommandBuffer->recordGeneric(
+                mComputeCommandBuffer->recordGeneric(
                             inputImageBack,
                             inputImageFront,
-                            computeRenderTarget.get(),
+                            mComputeRenderTarget.get(),
                             pipeline,
                             numShaderPasses,
                             currentShaderPass);
 
-                computeCommandBuffer->submitGeneric();
+                mComputeCommandBuffer->submitGeneric();
             }
             else if (currentShaderPass <= numShaderPasses)
             {
                 // Subsequent passes
-                settingsBuffer->incrementLastValue();
+                mSettingsBuffer->incrementLastValue();
 
                 if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
                     CS_LOG_WARNING("Failed to create compute render target.");
 
-                updateComputeDescriptors(node->getCachedImage(), inputImageFront, computeRenderTarget.get());
+                updateComputeDescriptors(node->getCachedImage(), inputImageFront, mComputeRenderTarget.get());
 
-                computeCommandBuffer->recordGeneric(
+                mComputeCommandBuffer->recordGeneric(
                             node->getCachedImage(),
                             inputImageFront,
-                            computeRenderTarget.get(),
+                            mComputeRenderTarget.get(),
                             pipeline,
                             numShaderPasses,
                             currentShaderPass);
 
-                computeCommandBuffer->submitGeneric();
+                mComputeCommandBuffer->submitGeneric();
             }
             currentShaderPass++;
 
-            result = device.waitIdle();
+            result = mDevice.waitIdle();
 
-            node->setCachedImage(std::move(computeRenderTarget));
+            node->setCachedImage(std::move(mComputeRenderTarget));
         }
 
-        window->requestUpdate();
+        mWindow->requestUpdate();
     }
 }
 
@@ -1201,7 +1201,7 @@ void VulkanRenderer::displayNode(const NodeBase *node)
     if(CsImage* image = node->getCachedImage())
     {
         // Execute a NoOp shader on the node
-        clearScreen = false;
+        mClearScreen = false;
 
         updateVertexData(image->getWidth(), image->getHeight());
         createVertexBuffer();
@@ -1216,19 +1216,19 @@ void VulkanRenderer::displayNode(const NodeBase *node)
             upstreamImage = image;
 
         updateGraphicsDescriptors(image, upstreamImage);
-        updateComputeDescriptors(image, nullptr, computeRenderTarget.get());
+        updateComputeDescriptors(image, nullptr, mComputeRenderTarget.get());
 
-        computeCommandBuffer->recordGeneric(
+        mComputeCommandBuffer->recordGeneric(
                     image,
                     nullptr,
-                    computeRenderTarget.get(),
-                    *computePipelineNoop,
+                    mComputeRenderTarget.get(),
+                    *mComputePipelineNoop,
                     1,
                     1);
 
-        computeCommandBuffer->submitGeneric();
+        mComputeCommandBuffer->submitGeneric();
 
-        window->requestUpdate();
+        mWindow->requestUpdate();
     }
     else
     {
@@ -1239,16 +1239,16 @@ void VulkanRenderer::displayNode(const NodeBase *node)
 
 void VulkanRenderer::doClearScreen()
 {
-    clearScreen = true;
+    mClearScreen = true;
 
-    window->requestUpdate();
+    mWindow->requestUpdate();
 }
 
 void VulkanRenderer::startNextFrame()
 {
-    if (clearScreen)
+    if (mClearScreen)
     {
-        const QSize sz = window->swapChainImageSize();
+        const QSize sz = mWindow->swapChainImageSize();
 
         // Clear background
         vk::ClearDepthStencilValue clearDS = { 1, 0 };
@@ -1256,11 +1256,11 @@ void VulkanRenderer::startNextFrame()
         clearValues[0].color = clearColor;
         clearValues[1].depthStencil = clearDS;
 
-        vk::CommandBuffer cmdBuf = window->currentCommandBuffer();
+        vk::CommandBuffer cmdBuf = mWindow->currentCommandBuffer();
 
         vk::RenderPassBeginInfo rpBeginInfo;
-        rpBeginInfo.renderPass = window->defaultRenderPass();
-        rpBeginInfo.framebuffer = window->currentFramebuffer();
+        rpBeginInfo.renderPass = mWindow->defaultRenderPass();
+        rpBeginInfo.framebuffer = mWindow->currentFramebuffer();
         rpBeginInfo.renderArea.extent.width = sz.width();
         rpBeginInfo.renderArea.extent.height = sz.height();
         rpBeginInfo.clearValueCount = 2;
@@ -1277,29 +1277,29 @@ void VulkanRenderer::startNextFrame()
         createRenderPass();
     }
 
-    window->frameReady();
+    mWindow->frameReady();
 }
 
 void VulkanRenderer::logicalDeviceLost()
 {
-    emit window->deviceLost();
+    emit mWindow->deviceLost();
 }
 
 void VulkanRenderer::translate(float dx, float dy)
 {
-    const QSize sz = window->size();
+    const QSize sz = mWindow->size();
 
-    position_x += 6.0 * dx / sz.width();
-    position_y += 2.0 * -dy / sz.height();
+    mPositionX += 6.0 * dx / sz.width();
+    mPositionY += 2.0 * -dy / sz.height();
 
-    window->requestUpdate();
+    mWindow->requestUpdate();
 }
 
 void VulkanRenderer::scale(float s)
 {
-    scaleXY = s;
-    window->requestUpdate();
-    emit window->requestZoomTextUpdate(s);
+    mScaleXY = s;
+    mWindow->requestUpdate();
+    emit mWindow->requestZoomTextUpdate(s);
 }
 
 void VulkanRenderer::releaseSwapChainResources()
@@ -1315,34 +1315,34 @@ void VulkanRenderer::releaseResources()
 void VulkanRenderer::shutdown()
 {
     CS_LOG_INFO("Destroying Renderer.");
-    auto result = device.waitIdle();
+    auto result = mDevice.waitIdle();
 
 
-    loadImageStaging = nullptr;
-    tmpCacheImage = nullptr;
-    computeRenderTarget = nullptr;
-    settingsBuffer = nullptr;
-    for(auto& pl : pipelines)
-        device.destroy(*pl.second);
-    device.destroy(*computePipelineNoop);
-    device.destroy(*computePipelineUser);
-    device.destroy(*graphicsPipelineRGB);
-    device.destroy(*graphicsPipelineAlpha);
-    device.destroy(*pipelineCache);
-    device.destroy(*descriptorPool);
-    for(auto& sh : shaders)
-        device.destroy(*sh.second);
-    device.destroy(*shaderUser);
-    device.destroy(*graphicsPipelineLayout);
-    device.destroy(*computePipelineLayout);
-    device.destroy(*graphicsDescriptorSetLayout);
-    device.destroy(*computeDescriptorSetLayout);
-    computeCommandBuffer = nullptr;
-    device.destroy(*sampler);
-    device.free(*vertexBufferMemory);
-    device.destroy(*vertexBuffer);
+    mLoadImageStaging = nullptr;
+    mTmpCacheImage = nullptr;
+    mComputeRenderTarget = nullptr;
+    mSettingsBuffer = nullptr;
+    for(auto& pl : mPipelines)
+        mDevice.destroy(*pl.second);
+    mDevice.destroy(*mComputePipelineNoop);
+    mDevice.destroy(*mComputePipelineUser);
+    mDevice.destroy(*mGraphicsPipelineRGB);
+    mDevice.destroy(*mGraphicsPipelineAlpha);
+    mDevice.destroy(*mPipelineCache);
+    mDevice.destroy(*mDescriptorPool);
+    for(auto& sh : mShaders)
+        mDevice.destroy(*sh.second);
+    mDevice.destroy(*mShaderUser);
+    mDevice.destroy(*mGraphicsPipelineLayout);
+    mDevice.destroy(*mComputePipelineLayout);
+    mDevice.destroy(*mGraphicsDescriptorSetLayout);
+    mDevice.destroy(*mComputeDescriptorSetLayout);
+    mComputeCommandBuffer = nullptr;
+    mDevice.destroy(*mSampler);
+    mDevice.free(*mVertexBufferMemory);
+    mDevice.destroy(*mVertexBuffer);
 
-    result = device.waitIdle();
+    result = mDevice.waitIdle();
 }
 
 VulkanRenderer::~VulkanRenderer()

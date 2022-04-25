@@ -43,42 +43,42 @@ void WindowManager::setUp(
         PropertiesView *pv,
         ViewerStatusBar* vb)
 {
-    vulkanWindow = vw;
-    nodeGraph = ng;
-    propertiesView = pv;
-    viewerStatusBar = vb;
+    mVulkanWindow = vw;
+    mNodeGraph = ng;
+    mPropertiesView = pv;
+    mViewerStatusBar = vb;
 
-    vulkanWindow->installEventFilter(this);
-    nodeGraph->installEventFilter(this);
-    propertiesView->installEventFilter(this);
-    viewerStatusBar->installEventFilter(this);
+    mVulkanWindow->installEventFilter(this);
+    mNodeGraph->installEventFilter(this);
+    mPropertiesView->installEventFilter(this);
+    mViewerStatusBar->installEventFilter(this);
 
     // Incoming
-    connect(vulkanWindow, &VulkanWindow::requestZoomTextUpdate,
+    connect(mVulkanWindow, &VulkanWindow::requestZoomTextUpdate,
             this, &WindowManager::handleZoomTextUpdateRequest);
-    connect(viewerStatusBar, &ViewerStatusBar::requestZoomReset,
-            vulkanWindow, &VulkanWindow::handleZoomResetRequest);
-    connect(vulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
+    connect(mViewerStatusBar, &ViewerStatusBar::requestZoomReset,
+            mVulkanWindow, &VulkanWindow::handleZoomResetRequest);
+    connect(mVulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
             this, &WindowManager::handleRenderTargetCreated);
-    connect(viewerStatusBar, &ViewerStatusBar::valueChanged,
+    connect(mViewerStatusBar, &ViewerStatusBar::valueChanged,
             this, &WindowManager::handleViewerStatusBarValueChanged);
-    connect(viewerStatusBar, &ViewerStatusBar::viewerModeChanged,
+    connect(mViewerStatusBar, &ViewerStatusBar::viewerModeChanged,
             this, &WindowManager::handleViewerModeChanged);
 
     // Outgoing
     connect(this, &WindowManager::deleteKeyPressed,
-            nodeGraph, &NodeGraph::handleDeleteKeyPressed);
+            mNodeGraph, &NodeGraph::handleDeleteKeyPressed);
     connect(this, &WindowManager::switchToViewerMode,
-            nodeGraph, &NodeGraph::handleSwitchToViewerMode);
+            mNodeGraph, &NodeGraph::handleSwitchToViewerMode);
     connect(this, &WindowManager::switchToViewerMode,
-            viewerStatusBar, &ViewerStatusBar::handleSwitchToViewerMode);
+            mViewerStatusBar, &ViewerStatusBar::handleSwitchToViewerMode);
 
-    rManager = &RenderManager::getInstance();
+    mRenderManager = &RenderManager::getInstance();
 }
 
 ViewerMode WindowManager::getViewerMode()
 {
-    return currentViewerMode;
+    return mCurrentViewerMode;
 }
 
 bool WindowManager::eventFilter(QObject *watched, QEvent *event)
@@ -101,8 +101,8 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
-            if (nodeGraph->getSelectedNode() == nodeGraph->getViewedNode() &&
-                currentViewerMode == ViewerMode::eOutputRgb)
+            if (mNodeGraph->getSelectedNode() == mNodeGraph->getViewedNode() &&
+                mCurrentViewerMode == ViewerMode::eOutputRgb)
             {
                 setViewerMode(ViewerMode::eOutputAlpha);
             }
@@ -133,30 +133,30 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
 void WindowManager::setViewerMode(const ViewerMode mode)
 {
-    currentViewerMode = mode;
+    mCurrentViewerMode = mode;
 
     emit switchToViewerMode(mode);
 }
 
 void WindowManager::handleClearPropertiesRequest()
 {
-    propertiesView->clear();
+    mPropertiesView->clear();
 }
 
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 {
-    propertiesView->loadProperties(node->getProperties());
+    mPropertiesView->loadProperties(node->getProperties());
 }
 
 void WindowManager::handleZoomTextUpdateRequest(float f)
 {
-    viewerStatusBar->setZoomText(QString::number(static_cast<int>(f * 100)));
+    mViewerStatusBar->setZoomText(QString::number(static_cast<int>(f * 100)));
 }
 
 void WindowManager::handleRenderTargetCreated(int w, int h)
 {
-    viewerStatusBar->setWidthText(QString::number(w));
-    viewerStatusBar->setHeightText(QString::number(h));
+    mViewerStatusBar->setWidthText(QString::number(w));
+    mViewerStatusBar->setHeightText(QString::number(h));
 }
 
 void WindowManager::handleViewerModeChanged(const Cascade::ViewerMode mode)
@@ -166,12 +166,12 @@ void WindowManager::handleViewerModeChanged(const Cascade::ViewerMode mode)
 
 void WindowManager::handleViewerStatusBarValueChanged()
 {
-    rManager->updateViewerPushConstants(viewerStatusBar->getViewerSettings());
+    mRenderManager->updateViewerPushConstants(mViewerStatusBar->getViewerSettings());
 
-    auto node = nodeGraph->getViewedNode();
+    auto node = mNodeGraph->getViewedNode();
     if (node)
     {
-        emit nodeGraph->requestNodeDisplay(node);
+        emit mNodeGraph->requestNodeDisplay(node);
     }
 }
 

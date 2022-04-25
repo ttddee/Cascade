@@ -36,7 +36,7 @@ public:
     ~PropertiesHeading();
 
 private:
-    Ui::PropertiesHeading *ui;
+    Ui::PropertiesHeading *mUi;
 };
 
 #endif // PROPERTIESHEADING_H

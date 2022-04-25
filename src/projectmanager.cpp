@@ -39,19 +39,19 @@ ProjectManager& ProjectManager::getInstance()
 
 void ProjectManager::setUp(NodeGraph* ng)
 {
-    nodeGraph = ng;
+    mNodeGraph = ng;
 
     // Incoming
-    connect(nodeGraph, &NodeGraph::projectIsDirty,
+    connect(mNodeGraph, &NodeGraph::projectIsDirty,
             this, &ProjectManager::handleProjectIsDirty);
 
     // Outgoing
     connect(this, &ProjectManager::requestCreateStartupProject,
-            nodeGraph, &NodeGraph::handleCreateStartupProject);
+            mNodeGraph, &NodeGraph::handleCreateStartupProject);
     connect(this, &ProjectManager::requestCreateNewProject,
-            nodeGraph, &NodeGraph::handleCreateNewProject);
+            mNodeGraph, &NodeGraph::handleCreateNewProject);
     connect(this, &ProjectManager::requestLoadProject,
-            nodeGraph, &NodeGraph::handleLoadProject);
+            mNodeGraph, &NodeGraph::handleLoadProject);
 }
 
 void ProjectManager::createStartupProject()
@@ -69,7 +69,7 @@ void ProjectManager::createNewProject()
 
 const bool ProjectManager::checkIfDiscardChanges()
 {
-    if (projectIsDirty)
+    if (mProjectIsDirty)
     {
         QMessageBox box;
         box.setText("The project has been modified.");
@@ -87,7 +87,7 @@ const bool ProjectManager::checkIfDiscardChanges()
 
 void ProjectManager::loadProject()
 {
-    if (checkIfDiscardChanges() || !projectIsDirty)
+    if (checkIfDiscardChanges() || !mProjectIsDirty)
     {
         QFileDialog dialog(nullptr);
         dialog.setFileMode(QFileDialog::ExistingFile);
@@ -114,10 +114,10 @@ void ProjectManager::loadProject()
 
             emit requestLoadProject(jsonNodeGraph);
 
-            currentProjectPath = files.first();
-            currentProject = files.first().split("/").last();
+            mCurrentProjectPath = files.first();
+            mCurrentProject = files.first().split("/").last();
 
-            projectIsDirty = false;
+            mProjectIsDirty = false;
             updateProjectName();
         }
     }
@@ -125,15 +125,15 @@ void ProjectManager::loadProject()
 
 void ProjectManager::saveProject()
 {
-    if(projectIsDirty && currentProjectPath != "" && currentProject != "")
+    if(mProjectIsDirty && mCurrentProjectPath != "" && mCurrentProject != "")
     {
-        project.setObject(getJsonFromNodeGraph());
-        writeJsonToDisk(project, currentProjectPath);
+        mProject.setObject(getJsonFromNodeGraph());
+        writeJsonToDisk(mProject, mCurrentProjectPath);
 
-        projectIsDirty = false;
+        mProjectIsDirty = false;
         updateProjectName();
     }
-    else if(currentProject == "")
+    else if(mCurrentProject == "")
     {
         saveProjectAs();
     }
@@ -159,20 +159,20 @@ void ProjectManager::saveProjectAs()
         else
             path = f;
 
-        project.setObject(getJsonFromNodeGraph());
-        writeJsonToDisk(project, path);
+        mProject.setObject(getJsonFromNodeGraph());
+        writeJsonToDisk(mProject, path);
 
-        currentProjectPath = path;
-        currentProject = path.split("/").last();
+        mCurrentProjectPath = path;
+        mCurrentProject = path.split("/").last();
 
-        projectIsDirty = false;
+        mProjectIsDirty = false;
         updateProjectName();
     }
 }
 
 void ProjectManager::handleProjectIsDirty()
 {
-    projectIsDirty = true;
+    mProjectIsDirty = true;
     updateProjectName();
 }
 
@@ -180,12 +180,12 @@ void ProjectManager::updateProjectName()
 {
     QString dirt;
 
-    if (projectIsDirty)
+    if (mProjectIsDirty)
         dirt = "*";
     else
         dirt = "";
 
-    emit projectTitleChanged(currentProject + dirt);
+    emit projectTitleChanged(mCurrentProject + dirt);
 }
 
 void ProjectManager::writeJsonToDisk(const QJsonDocument& project,
@@ -206,7 +206,7 @@ void ProjectManager::writeJsonToDisk(const QJsonDocument& project,
 QJsonObject ProjectManager::getJsonFromNodeGraph()
 {
     QJsonArray jsonNodeGraph;
-    nodeGraph->getNodeGraphAsJson(jsonNodeGraph);
+    mNodeGraph->getNodeGraphAsJson(jsonNodeGraph);
 
     QJsonObject jsonProject {
         { "nodegraph", jsonNodeGraph },

@@ -84,11 +84,11 @@ void PreferencesManager::loadPreferences()
     QJsonArray nodeGraphKeys = jsonGeneralKeysHeading.value("nodegraph").toArray();
     QJsonArray viewerKeys = jsonGeneralKeysHeading.value("viewer").toArray();
 
-    keyCategories.push_back(
+    mKeyCategories.push_back(
                 jsonArrayToKeysCategory("general", generalKeys));
-    keyCategories.push_back(
+    mKeyCategories.push_back(
                 jsonArrayToKeysCategory("nodegraph", nodeGraphKeys));
-    keyCategories.push_back(
+    mKeyCategories.push_back(
                 jsonArrayToKeysCategory("viewer", viewerKeys));
 }
 
@@ -109,7 +109,7 @@ KeysCategory PreferencesManager::jsonArrayToKeysCategory(
 
 const std::vector<KeysCategory>& PreferencesManager::getKeys()
 {
-    return keyCategories;
+    return mKeyCategories;
 }
 
 } // namespace Cascade

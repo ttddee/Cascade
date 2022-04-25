@@ -37,30 +37,30 @@ RenderManager& RenderManager::getInstance()
 
 void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
 {
-    renderer = r;
-    nodeGraph = ng;
+    mRenderer = r;
+    mNodeGraph = ng;
 
-    wManager = &WindowManager::getInstance();
+    mWindowManager = &WindowManager::getInstance();
 }
 
 void RenderManager::updateViewerPushConstants(const QString &s)
 {
-    renderer->setViewerPushConstants(s);
+    mRenderer->setViewerPushConstants(s);
 }
 
 void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 {
     auto props = getPropertiesForType(node->getType());
 
-    auto viewerMode = wManager->getViewerMode();
+    auto viewerMode = mWindowManager->getViewerMode();
 
-    renderer->setDisplayMode(DisplayMode::eRgb);
+    mRenderer->setDisplayMode(DisplayMode::eRgb);
 
     if (viewerMode == ViewerMode::eFrontRgb)
     {
         if (props.frontInputTrait == FRONT_INPUT_ALWAYS_CLEAR)
         {
-            renderer->doClearScreen();
+            mRenderer->doClearScreen();
         }
         else if (props.frontInputTrait == FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
@@ -71,7 +71,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     {
         if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
         {
-            renderer->doClearScreen();
+            mRenderer->doClearScreen();
         }
         else if (props.backInputTrait == BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
@@ -82,11 +82,11 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
     {
         if (props.alphaInputTrait == ALPHA_INPUT_ALWAYS_CLEAR)
         {
-            renderer->doClearScreen();
+            mRenderer->doClearScreen();
         }
         else if (props.alphaInputTrait == ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR)
         {
-            renderer->setDisplayMode(DisplayMode::eAlpha);
+            mRenderer->setDisplayMode(DisplayMode::eAlpha);
             displayNode(node->getUpstreamNodeFront());
         }
     }
@@ -96,7 +96,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 
         if (viewerMode == ViewerMode::eOutputAlpha)
         {
-            renderer->setDisplayMode(DisplayMode::eAlpha);
+            mRenderer->setDisplayMode(DisplayMode::eAlpha);
         }
         if (props.rgbOutputTrait == OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED)
         {
@@ -133,7 +133,7 @@ void RenderManager::handleNodeFileSaveRequest(
 //            });
 //            bool success = handle.get();
 
-            if(renderer->saveImageToDisk(image, path, attributes, parts.last().toInt()))
+            if(mRenderer->saveImageToDisk(image, path, attributes, parts.last().toInt()))
             {
                 if (!isBatch)
                 {
@@ -154,7 +154,7 @@ void RenderManager::handleNodeFileSaveRequest(
 
 void RenderManager::handleClearScreenRequest()
 {
-    renderer->doClearScreen();
+    mRenderer->doClearScreen();
 }
 
 void RenderManager::displayNode(NodeBase* node)
@@ -162,13 +162,13 @@ void RenderManager::displayNode(NodeBase* node)
     if (node && node->canBeRendered())
     {
         if (renderNodes(node))
-            renderer->displayNode(node);
+            mRenderer->displayNode(node);
         else
-            renderer->doClearScreen();
+            mRenderer->doClearScreen();
     }
     else
     {
-        renderer->doClearScreen();
+        mRenderer->doClearScreen();
     }
 }
 
@@ -197,7 +197,7 @@ void RenderManager::renderNode(NodeBase *node)
     {
         if (node->canBeRendered())
         {
-            renderer->processReadNode(node);
+            mRenderer->processReadNode(node);
         }
     }
     // All other nodes
@@ -212,12 +212,12 @@ void RenderManager::renderNode(NodeBase *node)
         if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
         {
             inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
-            renderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
+            mRenderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
         }
         // A node without a front image
         else if (inputImageBack)
         {
-            renderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
+            mRenderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
         }
     }
     node->setNeedsUpdate(false);

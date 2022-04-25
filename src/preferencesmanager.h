@@ -53,7 +53,7 @@ private:
             const QString& name,
             const QJsonArray& arr);
 
-    std::vector<KeysCategory> keyCategories;
+    std::vector<KeysCategory> mKeyCategories;
 };
 
 } // namespace Cascade

@@ -22,14 +22,14 @@
 
 PropertiesHeading::PropertiesHeading(const QString& text, QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::PropertiesHeading)
+    mUi(new Ui::PropertiesHeading)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->propHeading->setText(text);
+    mUi->propHeading->setText(text);
 }
 
 PropertiesHeading::~PropertiesHeading()
 {
-    delete ui;
+    delete mUi;
 }

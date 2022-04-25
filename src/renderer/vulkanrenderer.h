@@ -153,71 +153,71 @@ private:
 
     void logicalDeviceLost() override;
 
-    VulkanWindow *window;
-    vk::Device device;
-    vk::PhysicalDevice physicalDevice;
+    VulkanWindow *mWindow;
+    vk::Device mDevice;
+    vk::PhysicalDevice mPhysicalDevice;
 
-    vk::UniqueBuffer vertexBuffer;
-    vk::UniqueDeviceMemory vertexBufferMemory;
-    vk::DescriptorBufferInfo uniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
+    vk::UniqueBuffer mVertexBuffer;
+    vk::UniqueDeviceMemory mVertexBufferMemory;
+    vk::DescriptorBufferInfo mUniformBufferInfo[QVulkanWindow::MAX_CONCURRENT_FRAME_COUNT];
 
-    vk::UniqueDescriptorPool descriptorPool;
-    vk::UniqueDescriptorSetLayout graphicsDescriptorSetLayout;
-    std::vector<vk::UniqueDescriptorSet> graphicsDescriptorSet;
+    vk::UniqueDescriptorPool mDescriptorPool;
+    vk::UniqueDescriptorSetLayout mGraphicsDescriptorSetLayout;
+    std::vector<vk::UniqueDescriptorSet> mGraphicsDescriptorSet;
 
-    vk::UniquePipelineCache pipelineCache;
-    vk::UniquePipelineLayout graphicsPipelineLayout;
-    vk::UniquePipeline graphicsPipelineRGB;
-    vk::UniquePipeline graphicsPipelineAlpha;
-    vk::UniqueQueryPool queryPool;
+    vk::UniquePipelineCache mPipelineCache;
+    vk::UniquePipelineLayout mGraphicsPipelineLayout;
+    vk::UniquePipeline mGraphicsPipelineRGB;
+    vk::UniquePipeline mGraphicsPipelineAlpha;
+    vk::UniqueQueryPool mQueryPool;
 
-    vk::UniqueSampler sampler;
+    vk::UniqueSampler mSampler;
 
-    vk::UniquePipeline computePipelineNoop;
-    vk::UniqueShaderModule shaderUser;
-    vk::UniquePipeline computePipelineUser;
+    vk::UniquePipeline mComputePipelineNoop;
+    vk::UniqueShaderModule mShaderUser;
+    vk::UniquePipeline mComputePipelineUser;
 
-    QSize currentRenderSize;
+    QSize mCurrentRenderSize;
 
-    std::unique_ptr<ImageBuf> cpuImage;
-    QString imagePath;
+    std::unique_ptr<ImageBuf> mCpuImage;
+    QString mImagePath;
 
-    int concurrentFrameCount;  
+    int mConcurrentFrameCount;
 
-    QSize outputImageSize;
+    QSize mOutputImageSize;
 
-    QMatrix4x4 projection;
-    float rotation    = 0.0f;
-    float position_x  = 0.0f;
-    float position_y  = 0.0f;
-    float position_z  = 0.0f;
-    float scaleXY     = 1.0f;
+    QMatrix4x4 mProjection;
+    float mRotation    = 0.0f;
+    float mPositionX  = 0.0f;
+    float mPositionY  = 0.0f;
+    float mPositionZ  = 0.0f;
+    float mScaleXY     = 1.0f;
 
     // TODO: Replace this with proper render states
-    bool clearScreen = true;
+    bool mClearScreen = true;
 
-    DisplayMode displayMode = DisplayMode::eRgb;
+    DisplayMode mDisplayMode = DisplayMode::eRgb;
 
-    std::unique_ptr<CsCommandBuffer> computeCommandBuffer;
+    std::unique_ptr<CsCommandBuffer> mComputeCommandBuffer;
 
-    vk::UniquePipelineLayout                computePipelineLayout;
-    vk::UniquePipeline                      computePipeline;
-    vk::UniqueDescriptorSetLayout           computeDescriptorSetLayout;
-    vk::UniqueDescriptorSet                 computeDescriptorSet;
+    vk::UniquePipelineLayout                mComputePipelineLayout;
+    vk::UniquePipeline                      mComputePipeline;
+    vk::UniqueDescriptorSetLayout           mComputeDescriptorSetLayout;
+    vk::UniqueDescriptorSet                 mComputeDescriptorSet;
 
-    std::unique_ptr<CsImage>                loadImageStaging;
-    std::unique_ptr<CsImage>                tmpCacheImage;
-    std::unique_ptr<CsImage>                computeRenderTarget;
+    std::unique_ptr<CsImage>                mLoadImageStaging;
+    std::unique_ptr<CsImage>                mTmpCacheImage;
+    std::unique_ptr<CsImage>                mComputeRenderTarget;
 
-    std::map<NodeType, vk::UniqueShaderModule>  shaders;
-    std::map<NodeType, vk::UniquePipeline>      pipelines;
+    std::map<NodeType, vk::UniqueShaderModule>  mShaders;
+    std::map<NodeType, vk::UniquePipeline>      mPipelines;
 
     // TODO: Move this out of here
-    std::vector<float> viewerPushConstants = { 0.0f, 0.5f, 0.0f, 1.0f, 1.0f };
+    std::vector<float> mViewerPushConstants = { 0.0f, 0.5f, 0.0f, 1.0f, 1.0f };
 
-    std::unique_ptr<CsSettingsBuffer> settingsBuffer;
+    std::unique_ptr<CsSettingsBuffer> mSettingsBuffer;
 
-    OCIO::ConstConfigRcPtr ocioConfig;
+    OCIO::ConstConfigRcPtr mOcioConfig;
 };
 
 } // end namespace Cascade::Renderer

@@ -32,8 +32,8 @@ CsSettingsBuffer::CsSettingsBuffer(
         vk::Device* d,
         vk::PhysicalDevice* pd)
 {
-    device = d;
-    physicalDevice = pd;
+    mDevice = d;
+    mPhysicalDevice = pd;
 
     vk::DeviceSize size = sizeof(float) * 128;
 
@@ -46,15 +46,15 @@ CsSettingsBuffer::CsSettingsBuffer(
                     ),
                 vk::SharingMode::eExclusive);
 
-    buffer = device->createBufferUnique(bufferInfo).value;
+    mBuffer = mDevice->createBufferUnique(bufferInfo).value;
 
-    vk::MemoryRequirements memRequirements = device->getBufferMemoryRequirements(*buffer);
+    vk::MemoryRequirements memRequirements = mDevice->getBufferMemoryRequirements(*mBuffer);
 
     vk::MemoryPropertyFlags properties =
             vk::MemoryPropertyFlagBits::eHostVisible |
             vk::MemoryPropertyFlagBits::eHostCoherent;
 
-    vk::PhysicalDeviceMemoryProperties memProperties = physicalDevice->getMemoryProperties();
+    vk::PhysicalDeviceMemoryProperties memProperties = mPhysicalDevice->getMemoryProperties();
 
     uint32_t memTypeIndex = 0;
 
@@ -71,16 +71,16 @@ CsSettingsBuffer::CsSettingsBuffer(
                 memRequirements.size,
                 memTypeIndex);
 
-   memory = device->allocateMemoryUnique(allocInfo).value;
+   mMemory = mDevice->allocateMemoryUnique(allocInfo).value;
 
-    auto result = device->bindBufferMemory(*buffer, *memory, 0);
+    auto result = mDevice->bindBufferMemory(*mBuffer, *mMemory, 0);
 
-    result = device->mapMemory(
-                *memory,
+    result = mDevice->mapMemory(
+                *mMemory,
                 0,
                 VK_WHOLE_SIZE,
                 {},
-                reinterpret_cast<void **>(&pBufferStart));
+                reinterpret_cast<void **>(&mBufferStart));
     if (result != vk::Result::eSuccess)
         CS_LOG_WARNING("Failed to map memory");
 }
@@ -89,41 +89,41 @@ void CsSettingsBuffer::fillBuffer(const QString &s)
 {
     auto parts = s.split(",");
 
-    float* pBuffer = pBufferStart;
+    float* pBuffer = mBufferStart;
 
-    bufferSize = 0;
+    mBufferSize = 0;
 
     foreach(auto& item, parts)
     {
         *pBuffer = item.toFloat();
         pBuffer++;
-        bufferSize++;
+        mBufferSize++;
     }
 }
 
 void CsSettingsBuffer::appendValue(float f)
 {
-    float *pBuffer = pBufferStart;
-    pBuffer += bufferSize;
+    float *pBuffer = mBufferStart;
+    pBuffer += mBufferSize;
     *pBuffer = f;
-    bufferSize++;
+    mBufferSize++;
 }
 
 void CsSettingsBuffer::incrementLastValue()
 {
-    float *pBuffer = pBufferStart;
-    pBuffer += bufferSize - 1;
+    float *pBuffer = mBufferStart;
+    pBuffer += mBufferSize - 1;
     *pBuffer = *pBuffer + 1.0;
 }
 
 vk::UniqueBuffer& CsSettingsBuffer::getBuffer()
 {
-    return buffer;
+    return mBuffer;
 }
 
 vk::UniqueDeviceMemory& CsSettingsBuffer::getMemory()
 {
-    return memory;
+    return mMemory;
 }
 
 CsSettingsBuffer::~CsSettingsBuffer()

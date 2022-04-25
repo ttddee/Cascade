@@ -37,10 +37,10 @@ public:
 private:
     void loadKeys();
 
-    QTabWidget* tabWidget;
-    QDialogButtonBox* buttonBox;
+    QTabWidget* mTabWidget;
+    QDialogButtonBox* mButtonBox;
 
-    QTableWidget* keysWidget;
+    QTableWidget* mKeysWidget;
 };
 
 } // namespace Cascade

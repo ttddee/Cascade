@@ -31,21 +31,21 @@ namespace Cascade {
 PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent)
 {
-    tabWidget = new QTabWidget;
-    tabWidget->addTab(new QWidget(), tr("General"));
+    mTabWidget = new QTabWidget;
+    mTabWidget->addTab(new QWidget(), tr("General"));
 
     loadKeys();
 
-    buttonBox = new QDialogButtonBox(
+    mButtonBox = new QDialogButtonBox(
                 QDialogButtonBox::Save |
                 QDialogButtonBox::Cancel);
 
-    connect(buttonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
-    connect(buttonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
+    connect(mButtonBox, &QDialogButtonBox::accepted, this, &QDialog::accept);
+    connect(mButtonBox, &QDialogButtonBox::rejected, this, &QDialog::reject);
 
     QVBoxLayout *mainLayout = new QVBoxLayout;
-    mainLayout->addWidget(tabWidget);
-    mainLayout->addWidget(buttonBox);
+    mainLayout->addWidget(mTabWidget);
+    mainLayout->addWidget(mButtonBox);
     setLayout(mainLayout);
 
     setWindowTitle(tr("Preferences"));
@@ -57,36 +57,36 @@ void PreferencesDialog::loadKeys()
     auto prefsManager = &PreferencesManager::getInstance();
     auto keyCategories = prefsManager->getKeys();
 
-    keysWidget = new QTableWidget(0, 2);
+    mKeysWidget = new QTableWidget(0, 2);
     QStringList labels({ "Function", "Key" });
-    keysWidget->setHorizontalHeaderLabels(labels);
-    keysWidget->horizontalHeader()->setStretchLastSection(true);
-    keysWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
-    keysWidget->setShowGrid(false);
-    keysWidget->verticalHeader()->hide();
-    keysWidget->setColumnWidth(0, 200);
+    mKeysWidget->setHorizontalHeaderLabels(labels);
+    mKeysWidget->horizontalHeader()->setStretchLastSection(true);
+    mKeysWidget->horizontalHeader()->setDefaultAlignment(Qt::AlignLeft);
+    mKeysWidget->setShowGrid(false);
+    mKeysWidget->verticalHeader()->hide();
+    mKeysWidget->setColumnWidth(0, 200);
 
     QFont bold;
     bold.setBold(true);
 
     for (auto& category : keyCategories)
     {
-        keysWidget->insertRow(keysWidget->rowCount());
+        mKeysWidget->insertRow(mKeysWidget->rowCount());
         QTableWidgetItem* heading = new QTableWidgetItem(category.name.toUpper());
         heading->setFont(bold);
-        keysWidget->setItem(keysWidget->rowCount() - 1, 0, heading);
+        mKeysWidget->setItem(mKeysWidget->rowCount() - 1, 0, heading);
         for (auto& pair : category.keys)
         {
-            keysWidget->insertRow(keysWidget->rowCount());
+            mKeysWidget->insertRow(mKeysWidget->rowCount());
             QTableWidgetItem* k = new QTableWidgetItem(pair.first);
-            keysWidget->setItem(keysWidget->rowCount() - 1, 0, k);
+            mKeysWidget->setItem(mKeysWidget->rowCount() - 1, 0, k);
             QTableWidgetItem* v = new QTableWidgetItem(pair.second);
-            keysWidget->setItem(keysWidget->rowCount() - 1, 1, v);
+            mKeysWidget->setItem(mKeysWidget->rowCount() - 1, 1, v);
         }
-        keysWidget->insertRow(keysWidget->rowCount());
+        mKeysWidget->insertRow(mKeysWidget->rowCount());
     }
 
-    tabWidget->addTab(keysWidget, tr("Keys"));
+    mTabWidget->addTab(mKeysWidget, tr("Keys"));
 }
 
 } // namespace Cascade

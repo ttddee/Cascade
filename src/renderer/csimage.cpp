@@ -33,21 +33,21 @@ CsImage::CsImage(
         const int h,
         const bool isLinear,
         const char* debugName)
-        : device(d),
-          physicalDevice(pd),
-          width(w),
-          height(h)
+        : mDevice(d),
+          mPhysicalDevice(pd),
+          mWidth(w),
+          mHeight(h)
 {
-    window = win;
+    mWindow = win;
 
-    isLinear ? currentLayout = vk::ImageLayout::eUndefined :
-               currentLayout = vk::ImageLayout::ePreinitialized;
+    isLinear ? mCurrentLayout = vk::ImageLayout::eUndefined :
+               mCurrentLayout = vk::ImageLayout::ePreinitialized;
 
     vk::ImageCreateInfo imageInfo(
                 {},
                 vk::ImageType::e2D,
                 vk::Format::eR32G32B32A32Sfloat,
-                vk::Extent3D(width, height, 1),
+                vk::Extent3D(mWidth, mHeight, 1),
                 1,
                 1,
                 vk::SampleCountFlagBits::e1,
@@ -62,31 +62,31 @@ CsImage::CsImage(
                 vk::SharingMode::eExclusive,
                 {},
                 {},
-                currentLayout);
-    image = device->createImageUnique(imageInfo).value;
+                mCurrentLayout);
+    mImage = mDevice->createImageUnique(imageInfo).value;
 
 #ifdef QT_DEBUG
     {
         vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
                     vk::ObjectType::eImage,
-                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkImage, *image),
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkImage, *mImage),
                     debugName);
-        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
     // Get how much memory we need and how it should aligned
-    vk::MemoryRequirements memReq = device->getImageMemoryRequirements(*image);
+    vk::MemoryRequirements memReq = mDevice->getImageMemoryRequirements(*mImage);
 
     // Make sure linear images get memory visible to the CPU
     uint32_t memIndex = 0;
 
-    isLinear ? memIndex = window->hostVisibleMemoryIndex() :
-               memIndex = window->deviceLocalMemoryIndex();
+    isLinear ? memIndex = mWindow->hostVisibleMemoryIndex() :
+               memIndex = mWindow->deviceLocalMemoryIndex();
 
     if (!(memReq.memoryTypeBits & (1 << memIndex)))
     {
-        vk::PhysicalDeviceMemoryProperties physDevMemProps = physicalDevice->getMemoryProperties();
+        vk::PhysicalDeviceMemoryProperties physDevMemProps = mPhysicalDevice->getMemoryProperties();
         for (uint32_t i = 0; i < physDevMemProps.memoryTypeCount; ++i)
         {
             if (!(memReq.memoryTypeBits & (1 << i)))
@@ -96,24 +96,24 @@ CsImage::CsImage(
     }
 
     vk::MemoryAllocateInfo allocInfo(memReq.size, memIndex);
-    memory = device->allocateMemoryUnique(allocInfo).value;
+    mMemory = mDevice->allocateMemoryUnique(allocInfo).value;
 
 #ifdef QT_DEBUG
     {
         vk::DebugUtilsObjectNameInfoEXT debugUtilsObjectNameInfo(
                     vk::ObjectType::eDeviceMemory,
-                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *memory),
+                    NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *mMemory),
                     debugName);
-        auto result = device->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+        auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
     //Associate the image with this chunk of memory
-    auto result = device->bindImageMemory(*image, *memory, 0);
+    auto result = mDevice->bindImageMemory(*mImage, *mMemory, 0);
 
     vk::ImageViewCreateInfo viewInfo(
                 { },
-                *image,
+                *mImage,
                 vk::ImageViewType::e2D,
                 vk::Format::eR32G32B32A32Sfloat,
                 vk::ComponentMapping(vk::ComponentSwizzle::eR,
@@ -126,27 +126,27 @@ CsImage::CsImage(
                                           0,
                                           1));
 
-    view = device->createImageViewUnique(viewInfo).value;
+    mView = mDevice->createImageViewUnique(viewInfo).value;
 }
 
 const vk::UniqueImage& CsImage::getImage() const
 {
-    return image;
+    return mImage;
 }
 
 const vk::UniqueImageView& CsImage::getImageView() const
 {
-    return view;
+    return mView;
 }
 
 const vk::UniqueDeviceMemory& CsImage::getMemory() const
 {
-    return memory;
+    return mMemory;
 }
 
 vk::ImageLayout CsImage::getLayout() const
 {
-    return currentLayout;
+    return mCurrentLayout;
 }
 
 void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout layout)
@@ -156,11 +156,11 @@ void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout la
                 vk::AccessFlagBits::eMemoryRead,
                 vk::AccessFlagBits::eShaderRead |
                 vk::AccessFlagBits::eShaderWrite,
-                currentLayout,
+                mCurrentLayout,
                 layout,
                 {},
                 {},
-                *image,
+                *mImage,
                 vk::ImageSubresourceRange
                 {
                     vk::ImageAspectFlagBits::eColor,
@@ -182,17 +182,17 @@ void CsImage::transitionLayoutTo(vk::UniqueCommandBuffer &cb, vk::ImageLayout la
 
 void CsImage::setLayout(const vk::ImageLayout& layout)
 {
-    currentLayout = layout;
+    mCurrentLayout = layout;
 }
 
 int CsImage::getWidth() const
 {
-    return width;
+    return mWidth;
 }
 
 int CsImage::getHeight() const
 {
-    return height;
+    return mHeight;
 }
 
 void CsImage::destroy()
@@ -203,7 +203,7 @@ void CsImage::destroy()
 CsImage::~CsImage()
 {
     // Need to make sure this image is not used by any command buffer
-    auto result = device->waitIdle();
+    auto result = mDevice->waitIdle();
     Q_UNUSED(result);
 }
 

@@ -52,12 +52,12 @@ private:
     QJsonObject getJsonFromNodeGraph();
     const bool checkIfDiscardChanges();
 
-    NodeGraph* nodeGraph;
+    NodeGraph* mNodeGraph;
 
-    QJsonDocument project;
-    QString currentProjectPath;
-    QString currentProject;
-    bool projectIsDirty = true;
+    QJsonDocument mProject;
+    QString mCurrentProjectPath;
+    QString mCurrentProject;
+    bool mProjectIsDirty = true;
 
 signals:
     void projectTitleChanged(const QString& t);
