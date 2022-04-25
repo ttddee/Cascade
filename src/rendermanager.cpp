@@ -58,33 +58,33 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
 
     if (viewerMode == ViewerMode::eFrontRgb)
     {
-        if (props.frontInputTrait == FRONT_INPUT_ALWAYS_CLEAR)
+        if (props.frontInputTrait == FrontInputTrait::eAlwaysClear)
         {
             mRenderer->doClearScreen();
         }
-        else if (props.frontInputTrait == FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR)
+        else if (props.frontInputTrait == FrontInputTrait::eRenderUpstreamOrClear)
         {
             displayNode(node->getUpstreamNodeFront());
         }
     }
     else if (viewerMode == ViewerMode::eBackRgb)
     {
-        if (props.backInputTrait == BACK_INPUT_ALWAYS_CLEAR)
+        if (props.backInputTrait == BackInputTrait::eAlwaysClear)
         {
             mRenderer->doClearScreen();
         }
-        else if (props.backInputTrait == BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR)
+        else if (props.backInputTrait == BackInputTrait::eRenderUpstreamOrClear)
         {
             displayNode(node->getUpstreamNodeBack());
         }
     }
     else if (viewerMode == ViewerMode::eInputAlpha)
     {
-        if (props.alphaInputTrait == ALPHA_INPUT_ALWAYS_CLEAR)
+        if (props.alphaInputTrait == AlphaInputTrait::eAlwaysClear)
         {
             mRenderer->doClearScreen();
         }
-        else if (props.alphaInputTrait == ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR)
+        else if (props.alphaInputTrait == AlphaInputTrait::eRenderUpstreamOrClear)
         {
             mRenderer->setDisplayMode(DisplayMode::eAlpha);
             displayNode(node->getUpstreamNodeFront());
@@ -98,7 +98,7 @@ void RenderManager::handleNodeDisplayRequest(NodeBase* node)
         {
             mRenderer->setDisplayMode(DisplayMode::eAlpha);
         }
-        if (props.rgbOutputTrait == OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED)
+        if (props.rgbOutputTrait == OutputTrait::eRenderUpstreamIfFrontDisconnected)
         {
             if (!node->getUpstreamNodeFront())
             {
@@ -193,7 +193,7 @@ bool RenderManager::renderNodes(NodeBase *node)
 void RenderManager::renderNode(NodeBase *node)
 {
     // Read node
-    if (node->getType() == NODE_TYPE_READ && node->getNeedsUpdate())
+    if (node->getType() == NodeType::eRead && node->getNeedsUpdate())
     {
         if (node->canBeRendered())
         {

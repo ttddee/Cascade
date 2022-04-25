@@ -127,16 +127,16 @@ NodeInitProperties ISFManager::createISFNodeProperties(
 {
     NodeInitProperties props =
     {
-        NODE_TYPE_ISF,
+        NodeType::eIsf,
         name,
-        NODE_CATEGORY_ISF,
+        NodeCategory::eIsf,
         { NodeInputType::eRgbBack },
         { NodeOutputType::eRgb },
         createUIElementsFromJson(name, json),
-        FRONT_INPUT_ALWAYS_CLEAR,
-        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        FrontInputTrait::eAlwaysClear,
+        BackInputTrait::eRenderUpstreamOrClear,
+        AlphaInputTrait::eAlwaysClear,
+        OutputTrait::eRenderUpstreamOrClear,
         ":/shaders/noop_comp.spv",
         1
     };
@@ -160,7 +160,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
         const QJsonObject &json)
 {
     std::vector<std::pair<UIElementType, QString>> elements;
-    elements.push_back({ UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeName });
+    elements.push_back({ UIElementType::ePropertiesHeading, nodeName });
 
     QJsonArray inputsArray = json.value("INPUTS").toArray();
 
@@ -179,7 +179,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
         {
             elements.push_back(
                 {
-                    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                    UIElementType::eSliderBoxDouble,
                     label + "," +
                     QString::number(property["MIN"].toDouble()) +
                     "," +
@@ -193,7 +193,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             auto array = property["DEFAULT"].toArray();
             elements.push_back(
                 {
-                    UI_ELEMENT_TYPE_COLOR_BUTTON,
+                    UIElementType::eColorButton,
                     label +
                     "," +
                     QString::number(array.at(0).toDouble()) +
@@ -209,7 +209,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
         {
             elements.push_back(
                 {
-                   UI_ELEMENT_TYPE_CHECKBOX,
+                   UIElementType::eCheckBox,
                    label + "," + QString::number(property["DEFAULT"].toInt())
                 });
         }
@@ -217,7 +217,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
         {
             elements.push_back(
                 {
-                   UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                   UIElementType::eSliderBoxInt,
                    label + "," +
                    QString::number(property["MIN"].toInt()) +
                    "," +
@@ -233,7 +233,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             auto def = property["DEFAULT"].toArray();
             elements.push_back(
                 {
-                    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                    UIElementType::eSliderBoxDouble,
                     label + " X," +
                     QString::number(min.first().toDouble()) +
                     "," +
@@ -243,7 +243,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
                 });
             elements.push_back(
                 {
-                    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                    UIElementType::eSliderBoxDouble,
                     label + " Y," +
                     QString::number(min.last().toDouble()) +
                     "," +
@@ -262,14 +262,14 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
             }
             elements.push_back(
                 {
-                   UI_ELEMENT_TYPE_COMBOBOX,
+                   UIElementType::eComboBox,
                    label + "," +
                    labels +
                    QString::number(property["DEFAULT"].toInt())
                 });
         }
     }
-    elements.push_back({ UI_ELEMENT_TYPE_TEXTBOX, "CREDIT: " + json.value("CREDIT").toString() });
+    elements.push_back({ UIElementType::eTextBox, "CREDIT: " + json.value("CREDIT").toString() });
     return elements;
 }
 

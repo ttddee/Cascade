@@ -65,7 +65,7 @@ void NodeBase::setUpNode(
 {
     NodeInitProperties props;
 
-    if (nodeType != NODE_TYPE_ISF)
+    if (nodeType != NodeType::eIsf)
     {
         props = Cascade::getPropertiesForType(nodeType);
     }
@@ -253,11 +253,11 @@ void NodeBase::getAllUpstreamNodes(std::vector<NodeBase*>& nodes)
 
 void NodeBase::requestUpdate()
 {
-    if (mNodeType == NODE_TYPE_CROP)
+    if (mNodeType == NodeType::eCrop)
     {
         updateCropSizes();
     }
-    else if (mNodeType == NODE_TYPE_ROTATE)
+    else if (mNodeType == NodeType::eRotate)
     {
         updateRotation();
     }
@@ -306,7 +306,7 @@ QSize NodeBase::getTargetSize() const
     QSize size(0, 0);
     size = getInputSize();
 
-    if (mNodeType == NODE_TYPE_CROP)
+    if (mNodeType == NodeType::eCrop)
     {
         // Crop
         size.setWidth(size.width() - mLeftCrop - mRightCrop);
@@ -320,7 +320,7 @@ QSize NodeBase::getTargetSize() const
             size.setHeight(0);
         }
     }
-    if (mNodeType == NODE_TYPE_RESIZE)
+    if (mNodeType == NodeType::eResize)
     {
         // Resize
         auto vals = getAllPropertyValues().split(",");
@@ -487,7 +487,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 
 bool NodeBase::canBeRendered() const
 {
-    if (mNodeType == NODE_TYPE_READ)
+    if (mNodeType == NodeType::eRead)
     {
         auto vals = getAllPropertyValues();
         if (vals.size() == 0)

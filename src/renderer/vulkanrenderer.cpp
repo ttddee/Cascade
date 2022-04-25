@@ -458,7 +458,7 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromCode(const std::vector<un
 
 void VulkanRenderer::loadShadersFromDisk()
 {
-    for (int i = 0; i != NODE_TYPE_MAX; i++)
+    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
     {
         NodeType nodeType = static_cast<NodeType>(i);
 
@@ -726,7 +726,7 @@ void VulkanRenderer::createComputePipelineLayout()
 
 void VulkanRenderer::createComputePipelines()
 {
-    for (int i = 0; i != NODE_TYPE_MAX; i++)
+    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
     {
         NodeType nodeType = static_cast<NodeType>(i);
 
@@ -1047,7 +1047,7 @@ void VulkanRenderer::processReadNode(NodeBase *node)
                     mLoadImageStaging.get(),
                     mTmpCacheImage.get(),
                     mComputeRenderTarget.get(),
-                    &mPipelines[NODE_TYPE_READ].get());
+                    &mPipelines[NodeType::eRead].get());
 
         mComputeCommandBuffer->submitImageLoad();
 
@@ -1104,7 +1104,7 @@ void VulkanRenderer::processNode(
 
     auto nodeType = node->getType();
 
-    if (nodeType == NODE_TYPE_SHADER || nodeType == NODE_TYPE_ISF)
+    if (nodeType == NodeType::eShader || nodeType == NodeType::eIsf)
     {
         if (node->getShaderCode().size() != 0)
         {

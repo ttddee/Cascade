@@ -40,7 +40,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     ui->viewerModeBox->setMinimumWidth(90);
 
     mSplitSlider = new CsSliderBoxEntity(
-                UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                UIElementType::eSliderBoxDouble,
                 this);
     mSplitSlider->setName("Split");
     mSplitSlider->setMaximumWidth(250);
@@ -48,7 +48,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     ui->horizontalLayout->insertWidget(11, mSplitSlider);
 
     mGammaSlider = new CsSliderBoxEntity(
-                UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                UIElementType::eSliderBoxDouble,
                 this);
     mGammaSlider->setName("Gamma");
     mGammaSlider->setMaximumWidth(250);
@@ -56,7 +56,7 @@ ViewerStatusBar::ViewerStatusBar(QWidget *parent) :
     ui->horizontalLayout->insertWidget(15, mGammaSlider);
 
     mGainSlider = new CsSliderBoxEntity(
-                UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                UIElementType::eSliderBoxDouble,
                 this);
     mGainSlider->setName("Gain");
     mGainSlider->setMaximumWidth(250);

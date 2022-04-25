@@ -45,7 +45,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
 
     // Add nodes to corresponding submenus
     auto nodes = nodeStrings;
-    nodes.remove(NODE_TYPE_ISF);
+    nodes.remove(NodeType::eIsf);
     QMapIterator<NodeType, QString> i(nodes);
     while (i.hasNext())
     {
@@ -72,7 +72,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
     {
         for (auto& cat : isfCategoryStrings)
         {
-            auto submenu = categories.value(NODE_CATEGORY_ISF)->addMenu(cat);
+            auto submenu = categories.value(NodeCategory::eIsf)->addMenu(cat);
             isfCategories[cat] = submenu;
         }
     }
@@ -85,7 +85,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
         auto a = new QAction();
         mActions.push_back(a);
         a->setText(nodeName);
-        auto t = NODE_TYPE_ISF;
+        auto t = NodeType::eIsf;
         isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
 
         QObject::connect(

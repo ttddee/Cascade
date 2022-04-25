@@ -63,8 +63,8 @@ NodeGraph::NodeGraph(QWidget* parent)
 
 void NodeGraph::createProject()
 {
-    createNode(NODE_TYPE_READ, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
-    createNode(NODE_TYPE_WRITE, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
+    createNode(NodeType::eRead, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
+    createNode(NodeType::eWrite, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
 }
 
 void NodeGraph::createNode(
@@ -134,7 +134,7 @@ void NodeGraph::connectNodeSignals(NodeBase* n)
     connect(n, &NodeBase::nodeWasDoubleClicked,
             mWindowManager, &WindowManager::handleNodeDoubleClicked);
 
-    if (n->getType() == NODE_TYPE_WRITE)
+    if (n->getType() == NodeType::eWrite)
     {
         connect(n, &NodeBase::nodeRequestFileSave,
                 this, &NodeGraph::handleFileSaveRequest);
@@ -389,7 +389,7 @@ void NodeGraph::handleFileSaveRequest(
         std::vector<NodeBase*> readNodes;
         for (auto& n : mNodes)
         {
-            if (n->getType() == NODE_TYPE_READ)
+            if (n->getType() == NodeType::eRead)
                 readNodes.push_back(n);
         }
 

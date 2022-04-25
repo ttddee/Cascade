@@ -47,80 +47,80 @@ enum class NodeOutputType
 ////////////////////////////////////
 // Front Input Traits
 ////////////////////////////////////
-enum FrontInputTrait
+enum class FrontInputTrait
 {
-    FRONT_INPUT_ALWAYS_CLEAR,
-    FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    eAlwaysClear,
+    eRenderUpstreamOrClear
 };
 
 ////////////////////////////////////
 // Back Input Traits
 ////////////////////////////////////
-enum BackInputTrait
+enum class BackInputTrait
 {
-    BACK_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    eAlwaysClear,
+    eRenderUpstreamOrClear
 };
 
 ////////////////////////////////////
 // Alpha Input Traits
 ////////////////////////////////////
-enum AlphaInputTrait
+enum class AlphaInputTrait
 {
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR
+    eAlwaysClear,
+    eRenderUpstreamOrClear
 };
 
 ////////////////////////////////////
 // Output Traits
 ////////////////////////////////////
-enum RGBOutputTrait
+enum class OutputTrait
 {
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED
+    eRenderUpstreamOrClear,
+    eRenderUpstreamIfFrontDisconnected
 };
 
 ////////////////////////////////////
 // Global UI element types
 ////////////////////////////////////
-enum UIElementType
+enum class UIElementType
 {
-    UI_ELEMENT_TYPE_PROPERTIES_HEADING,
-    UI_ELEMENT_TYPE_SPINBOX,
-    UI_ELEMENT_TYPE_FILEBOX,
-    UI_ELEMENT_TYPE_COLOR_BUTTON,
-    UI_ELEMENT_TYPE_WRITE_PROPERTIES,
-    UI_ELEMENT_TYPE_COMBOBOX,
-    UI_ELEMENT_TYPE_CHANNEL_SELECT,
-    UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
-    UI_ELEMENT_TYPE_SLIDER_BOX_INT,
-    UI_ELEMENT_TYPE_COLOR_PROPERTIES,
-    UI_ELEMENT_TYPE_SIZEBOX,
-    UI_ELEMENT_TYPE_TEXTBOX,
-    UI_ELEMENT_TYPE_CHECKBOX,
-    UI_ELEMENT_TYPE_TEXTBROWSER, // TODO: This is not used anywhere
-    UI_ELEMENT_TYPE_SEPARATOR,
-    UI_ELEMENT_TYPE_LINEEDIT, // TODO: This is not used anywhere
-    UI_ELEMENT_TYPE_FOLDERBOX, // TODO: This is not used anywhere
-    UI_ELEMENT_TYPE_RESIZE_PROPERTIES,
-    UI_ELEMENT_TYPE_CODE_EDITOR
+    ePropertiesHeading,
+    eSpinBox,
+    eFileBox,
+    eColorButton,
+    eWriteProperties,
+    eComboBox,
+    eChannelSelect,
+    eSliderBoxDouble,
+    eSliderBoxInt,
+    eColorProperties,
+    eSizeBox,
+    eTextBox,
+    eCheckBox,
+    eTextBrowser, // TODO: This is not used anywhere
+    eSeparator,
+    eLineEdit, // TODO: This is not used anywhere
+    eFolderBox, // TODO: This is not used anywhere
+    eResizeProperties,
+    eCodeEditor
 };
 
 ////////////////////////////////////
 // Node categories
 ////////////////////////////////////
-enum NodeCategory
+enum class NodeCategory
 {
-    NODE_CATEGORY_IO,
-    NODE_CATEGORY_GENERATE,
-    NODE_CATEGORY_COLOR,
-    NODE_CATEGORY_FILTER,
-    NODE_CATEGORY_EFFECTS,
-    NODE_CATEGORY_MERGE,
-    NODE_CATEGORY_TRANSFORM,
-    NODE_CATEGORY_CHANNEL,
-    NODE_CATEGORY_ISF,
-    NODE_CATEGORY_MAX
+    eIO,
+    eGenerate,
+    eColor,
+    eFilter,
+    eEffects,
+    eMerge,
+    eTransform,
+    eChannel,
+    eIsf,
+    eLast
 };
 
 ////////////////////////////////////
@@ -128,61 +128,61 @@ enum NodeCategory
 ////////////////////////////////////
 const static QMap<NodeCategory, QString> categoryStrings =
 {
-    { NODE_CATEGORY_IO, "IO" },
-    { NODE_CATEGORY_GENERATE, "Generate" },
-    { NODE_CATEGORY_COLOR, "Color" },
-    { NODE_CATEGORY_FILTER, "Filter" },
-    { NODE_CATEGORY_EFFECTS, "Effects" },
-    { NODE_CATEGORY_MERGE, "Merge" },
-    { NODE_CATEGORY_TRANSFORM, "Transform" },
-    { NODE_CATEGORY_CHANNEL, "Channel" },
-    { NODE_CATEGORY_ISF, "ISF" }
+    { NodeCategory::eIO,            "IO" },
+    { NodeCategory::eGenerate,      "Generate" },
+    { NodeCategory::eColor,         "Color" },
+    { NodeCategory::eFilter,        "Filter" },
+    { NodeCategory::eEffects,       "Effects" },
+    { NodeCategory::eMerge,         "Merge" },
+    { NodeCategory::eTransform,     "Transform" },
+    { NodeCategory::eChannel,       "Channel" },
+    { NodeCategory::eIsf,           "ISF" }
 };
 
 ////////////////////////////////////
 // Global node types
 ////////////////////////////////////
-enum NodeType
+enum class NodeType
 {
-    NODE_TYPE_BLOOM,
-    NODE_TYPE_BLUR,
-    NODE_TYPE_CHANNEL_COPY,
-    NODE_TYPE_CHECKERBOARD,
-    NODE_TYPE_CHROMA_KEY,
-    NODE_TYPE_CLAMP,
-    NODE_TYPE_COLOR_BALANCE,
-    NODE_TYPE_COLOR_CORRECT,
-    NODE_TYPE_COLOR_MAP,
-    NODE_TYPE_CONSTANT,
-    NODE_TYPE_CONTOURS,
-    NODE_TYPE_CROP,
-    NODE_TYPE_DIFFERENCE,
-    NODE_TYPE_DIRECTIONAL_BLUR,
-    NODE_TYPE_EDGE_DETECT,
-    NODE_TYPE_ERODE,
-    NODE_TYPE_EXTRACT_COLOR,
-    NODE_TYPE_FLIP,
-    NODE_TYPE_HUE_SATURATION,
-    NODE_TYPE_INVERT,
-    NODE_TYPE_LEVELS,
-    NODE_TYPE_MERGE,
-    NODE_TYPE_NOISE,
-    NODE_TYPE_OLD_FILM,
-    NODE_TYPE_PIXELATE,
-    NODE_TYPE_PREMULT,
-    NODE_TYPE_READ,
-    NODE_TYPE_RESIZE,
-    NODE_TYPE_RIVER_STYX,
-    NODE_TYPE_ROTATE,
-    NODE_TYPE_SHADER,
-    NODE_TYPE_SHARPEN,
-    NODE_TYPE_SHUFFLE,
-    NODE_TYPE_SMART_DENOISE,
-    NODE_TYPE_SOLARIZE,
-    NODE_TYPE_UNPREMULT,
-    NODE_TYPE_WRITE,
-    NODE_TYPE_ISF,
-    NODE_TYPE_MAX
+    eBloom,
+    eBlur,
+    eChannelCopy,
+    eCheckerBoard,
+    eChromaKey,
+    eClamp,
+    eColorBalance,
+    eColorCorrect,
+    eColorMap,
+    eConstant,
+    eContours,
+    eCrop,
+    eDifference,
+    eDirectionalBlur,
+    eEdgeDetect,
+    eErode,
+    eExtractColor,
+    eFlip,
+    eHueSaturation,
+    eInvert,
+    eLevels,
+    eMerge,
+    eNoise,
+    eOldFilm,
+    ePixelate,
+    ePremult,
+    eRead,
+    eResize,
+    eRiverStyx,
+    eRotate,
+    eShader,
+    eSharpen,
+    eShuffle,
+    eSmartDenoise,
+    eSolarize,
+    eUnPremult,
+    eWrite,
+    eIsf,
+    eLast
 };
 
 ////////////////////////////////////
@@ -190,44 +190,44 @@ enum NodeType
 ////////////////////////////////////
 const static QMap<NodeType, QString> nodeStrings =
 {
-    { NODE_TYPE_BLOOM, "Bloom" },
-    { NODE_TYPE_BLUR, "Blur" },
-    { NODE_TYPE_CHANNEL_COPY, "Channel Copy" },
-    { NODE_TYPE_CHECKERBOARD, "Checkerboard" },
-    { NODE_TYPE_CHROMA_KEY, "Chroma Key" },
-    { NODE_TYPE_CLAMP, "Clamp" },
-    { NODE_TYPE_COLOR_BALANCE, "Color Balance" },
-    { NODE_TYPE_COLOR_CORRECT, "Color Correct" },
-    { NODE_TYPE_COLOR_MAP, "Color Map" },
-    { NODE_TYPE_CONSTANT, "Constant" },
-    { NODE_TYPE_CONTOURS, "Contours" },
-    { NODE_TYPE_CROP, "Crop" },
-    { NODE_TYPE_DIFFERENCE, "Difference Key" },
-    { NODE_TYPE_DIRECTIONAL_BLUR, "Directional Blur" },
-    { NODE_TYPE_EDGE_DETECT, "Edge Detect" },
-    { NODE_TYPE_ERODE, "Erode" },
-    { NODE_TYPE_EXTRACT_COLOR, "Extract Color" },
-    { NODE_TYPE_FLIP, "Flip" },
-    { NODE_TYPE_HUE_SATURATION, "Hue Saturation" },
-    { NODE_TYPE_INVERT, "Invert" },
-    { NODE_TYPE_ISF, "ISF" },
-    { NODE_TYPE_LEVELS, "Levels" },
-    { NODE_TYPE_MERGE, "Merge" },
-    { NODE_TYPE_NOISE, "Noise" },
-    { NODE_TYPE_OLD_FILM, "Old Film" },
-    { NODE_TYPE_PIXELATE, "Pixelate" },
-    { NODE_TYPE_PREMULT, "Premult" },
-    { NODE_TYPE_READ, "Read Image" },
-    { NODE_TYPE_RESIZE, "Resize" },
-    { NODE_TYPE_RIVER_STYX, "River Styx" },
-    { NODE_TYPE_ROTATE, "Rotate" },
-    { NODE_TYPE_SHADER, "GLSL Shader" },
-    { NODE_TYPE_SHARPEN, "Sharpen" },
-    { NODE_TYPE_SHUFFLE, "Shuffle" },
-    { NODE_TYPE_SMART_DENOISE, "Smart Denoise" },
-    { NODE_TYPE_SOLARIZE, "Solarize" },
-    { NODE_TYPE_UNPREMULT, "Unpremult" },
-    { NODE_TYPE_WRITE, "Write Image" }
+    { NodeType::eBloom,             "Bloom" },
+    { NodeType::eBlur,              "Blur" },
+    { NodeType::eChannelCopy,       "Channel Copy" },
+    { NodeType::eCheckerBoard,      "Checkerboard" },
+    { NodeType::eChromaKey,         "Chroma Key" },
+    { NodeType::eClamp,             "Clamp" },
+    { NodeType::eColorBalance,      "Color Balance" },
+    { NodeType::eColorCorrect,      "Color Correct" },
+    { NodeType::eColorMap,          "Color Map" },
+    { NodeType::eConstant,          "Constant" },
+    { NodeType::eContours,          "Contours" },
+    { NodeType::eCrop,              "Crop" },
+    { NodeType::eDifference,        "Difference Key" },
+    { NodeType::eDirectionalBlur,   "Directional Blur" },
+    { NodeType::eEdgeDetect,        "Edge Detect" },
+    { NodeType::eErode,             "Erode" },
+    { NodeType::eExtractColor,      "Extract Color" },
+    { NodeType::eFlip,              "Flip" },
+    { NodeType::eHueSaturation,     "Hue Saturation" },
+    { NodeType::eInvert,            "Invert" },
+    { NodeType::eIsf,               "ISF" },
+    { NodeType::eLevels,            "Levels" },
+    { NodeType::eMerge,             "Merge" },
+    { NodeType::eNoise,             "Noise" },
+    { NodeType::eOldFilm,           "Old Film" },
+    { NodeType::ePixelate,          "Pixelate" },
+    { NodeType::ePremult,           "Premult" },
+    { NodeType::eRead,              "Read Image" },
+    { NodeType::eResize,            "Resize" },
+    { NodeType::eRiverStyx,         "River Styx" },
+    { NodeType::eRotate,            "Rotate" },
+    { NodeType::eShader,            "GLSL Shader" },
+    { NodeType::eSharpen,           "Sharpen" },
+    { NodeType::eShuffle,           "Shuffle" },
+    { NodeType::eSmartDenoise,      "Smart Denoise" },
+    { NodeType::eSolarize,          "Solarize" },
+    { NodeType::eUnPremult,         "Unpremult" },
+    { NodeType::eWrite,             "Write Image" }
 };
 
 ////////////////////////////////////
@@ -244,7 +244,7 @@ struct NodeInitProperties
     FrontInputTrait frontInputTrait;
     BackInputTrait backInputTrait;
     AlphaInputTrait alphaInputTrait;
-    RGBOutputTrait rgbOutputTrait;
+    OutputTrait rgbOutputTrait;
     QString shaderPath;
     int numShaderPasses;
 };
@@ -254,805 +254,805 @@ struct NodeInitProperties
 ////////////////////////////////////
 const static NodeInitProperties cropNodeInitProperties =
 {
-    NODE_TYPE_CROP,
-    nodeStrings[NODE_TYPE_CROP],
-    NODE_CATEGORY_TRANSFORM,
+    NodeType::eCrop,
+    nodeStrings[NodeType::eCrop],
+    NodeCategory::eTransform,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CROP] },
-        { UI_ELEMENT_TYPE_SPINBOX, "Left,0,100000,1,0" },
-        { UI_ELEMENT_TYPE_SPINBOX, "Top,0,100000,1,0" },
-        { UI_ELEMENT_TYPE_SPINBOX, "Right,0,100000,1,0" },
-        { UI_ELEMENT_TYPE_SPINBOX, "Bottom,0,100000,1,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eCrop] },
+        { UIElementType::eSpinBox, "Left,0,100000,1,0" },
+        { UIElementType::eSpinBox, "Top,0,100000,1,0" },
+        { UIElementType::eSpinBox, "Right,0,100000,1,0" },
+        { UIElementType::eSpinBox, "Bottom,0,100000,1,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/crop_comp.spv",
     1
 };
 
 const static NodeInitProperties readNodeInitProperties =
 {
-    NODE_TYPE_READ,
-    nodeStrings[NODE_TYPE_READ],
-    NODE_CATEGORY_IO,
+    NodeType::eRead,
+    nodeStrings[NodeType::eRead],
+    NodeCategory::eIO,
     { },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_READ] },
-        { UI_ELEMENT_TYPE_FILEBOX, "" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Color Space:,sRGB,Linear,rec709,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eRead] },
+        { UIElementType::eFileBox, "" },
+        { UIElementType::eComboBox, "Color Space:,sRGB,Linear,rec709,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_ALWAYS_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eAlwaysClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/read_comp.spv",
     1
 };
 
 const static NodeInitProperties blurNodeInitProperties =
 {
-    NODE_TYPE_BLUR,
-    nodeStrings[NODE_TYPE_BLUR],
-    NODE_CATEGORY_FILTER,
+    NodeType::eBlur,
+    nodeStrings[NodeType::eBlur],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLUR] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Strength,0,100,1,3" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eBlur] },
+        { UIElementType::eChannelSelect, "0" },
+        { UIElementType::eSliderBoxInt, "Strength,0,100,1,3" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/blur_comp.spv",
     2
 };
 
 const static NodeInitProperties colorNodeInitProperties =
 {
-    NODE_TYPE_COLOR_CORRECT,
-    nodeStrings[NODE_TYPE_COLOR_CORRECT],
-    NODE_CATEGORY_COLOR,
+    NodeType::eColorCorrect,
+    nodeStrings[NodeType::eColorCorrect],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbAlpha },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_CORRECT] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
-        { UI_ELEMENT_TYPE_COLOR_PROPERTIES, "" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eColorCorrect] },
+        { UIElementType::eChannelSelect, "1" },
+        { UIElementType::eColorProperties, "" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/color_comp.spv",
     1
 };
 
 const static NodeInitProperties resizeNodeInitProperties =
 {
-    NODE_TYPE_RESIZE,
-    nodeStrings[NODE_TYPE_RESIZE],
-    NODE_CATEGORY_TRANSFORM,
+    NodeType::eResize,
+    nodeStrings[NodeType::eResize],
+    NodeCategory::eTransform,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RESIZE] },
-        { UI_ELEMENT_TYPE_RESIZE_PROPERTIES, "" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Filter,Bicubic,Lanczos,Bilinear,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eResize] },
+        { UIElementType::eResizeProperties, "" },
+        { UIElementType::eComboBox, "Filter,Bicubic,Lanczos,Bilinear,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/resize_comp.spv",
     1
 };
 
 const static NodeInitProperties rotateNodeInitProperties =
 {
-    NODE_TYPE_ROTATE,
-    nodeStrings[NODE_TYPE_ROTATE],
-    NODE_CATEGORY_TRANSFORM,
+    NodeType::eRotate,
+    nodeStrings[NodeType::eRotate],
+    NodeCategory::eTransform,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ROTATE] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Angle,0,360,1,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eRotate] },
+        { UIElementType::eSliderBoxInt, "Angle,0,360,1,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/rotate_comp.spv",
     1
 };
 
 const static NodeInitProperties sharpenNodeInitProperties =
 {
-    NODE_TYPE_SHARPEN,
-    nodeStrings[NODE_TYPE_SHARPEN],
-    NODE_CATEGORY_FILTER,
+    NodeType::eSharpen,
+    nodeStrings[NodeType::eSharpen],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHARPEN] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Amount,0,100,1,1" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eSharpen] },
+        { UIElementType::eChannelSelect, "0" },
+        { UIElementType::eSliderBoxInt, "Amount,0,100,1,1" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/sharpen_comp.spv",
     1
 };
 
 const static NodeInitProperties mergeNodeInitProperties =
 {
-    NODE_TYPE_MERGE,
-    nodeStrings[NODE_TYPE_MERGE],
-    NODE_CATEGORY_MERGE,
+    NodeType::eMerge,
+    nodeStrings[NodeType::eMerge],
+    NodeCategory::eMerge,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbFront },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Over,Add,Divide,Minus,Multiply,0" },
-        { UI_ELEMENT_TYPE_SPINBOX, "X Offset,-10000,10000,1,0" },
-        { UI_ELEMENT_TYPE_SPINBOX, "Y Offset,-10000,10000,1,0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Opacity,0.0,1.0,0.01,1.0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eMerge] },
+        { UIElementType::eComboBox, "Mode:,Over,Add,Divide,Minus,Multiply,0" },
+        { UIElementType::eSpinBox, "X Offset,-10000,10000,1,0" },
+        { UIElementType::eSpinBox, "Y Offset,-10000,10000,1,0" },
+        { UIElementType::eSliderBoxDouble, "Opacity,0.0,1.0,0.01,1.0" }
     },
-    FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED,
+    FrontInputTrait::eRenderUpstreamOrClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamIfFrontDisconnected,
     ":/shaders/merge_comp.spv",
     1
 };
 
 const static NodeInitProperties shuffleNodeInitProperties =
 {
-    NODE_TYPE_SHUFFLE,
-    nodeStrings[NODE_TYPE_SHUFFLE],
-    NODE_CATEGORY_CHANNEL,
+    NodeType::eShuffle,
+    nodeStrings[NodeType::eShuffle],
+    NodeCategory::eChannel,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHUFFLE] },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Red,Green,Blue,Alpha,0" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Green:,Red,Green,Blue,Alpha,1" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Blue:,Red,Green,Blue,Alpha,2" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Alpha:,Red,Green,Blue,Alpha,3" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eShuffle] },
+        { UIElementType::eComboBox, "Red:,Red,Green,Blue,Alpha,0" },
+        { UIElementType::eComboBox, "Green:,Red,Green,Blue,Alpha,1" },
+        { UIElementType::eComboBox, "Blue:,Red,Green,Blue,Alpha,2" },
+        { UIElementType::eComboBox, "Alpha:,Red,Green,Blue,Alpha,3" }
     },
-    FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eRenderUpstreamOrClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/shuffle_comp.spv",
     1
 };
 
 const static NodeInitProperties pixelateNodeInitProperties =
 {
-    NODE_TYPE_PIXELATE,
-    nodeStrings[NODE_TYPE_PIXELATE],
-    NODE_CATEGORY_FILTER,
+    NodeType::ePixelate,
+    nodeStrings[NodeType::ePixelate],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PIXELATE] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Filter Size,0,100,1,5" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::ePixelate] },
+        { UIElementType::eSliderBoxInt, "Filter Size,0,100,1,5" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/pixelate_comp.spv",
     1
 };
 
 const static NodeInitProperties solarizeNodeInitProperties =
 {
-    NODE_TYPE_SOLARIZE,
-    nodeStrings[NODE_TYPE_SOLARIZE],
-    NODE_CATEGORY_FILTER,
+    NodeType::eSolarize,
+    nodeStrings[NodeType::eSolarize],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SOLARIZE] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red Thresh,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Green Thresh,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blue Thresh,0.0,1.0,0.01,0.5" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eSolarize] },
+        { UIElementType::eSliderBoxDouble, "Red Thresh,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Green Thresh,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Blue Thresh,0.0,1.0,0.01,0.5" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/solarize_comp.spv",
     1
 };
 
 const static NodeInitProperties constantNodeInitProperties =
 {
-    NODE_TYPE_CONSTANT,
-    nodeStrings[NODE_TYPE_CONSTANT],
-    NODE_CATEGORY_GENERATE,
+    NodeType::eConstant,
+    nodeStrings[NodeType::eConstant],
+    NodeCategory::eGenerate,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 1.0, 1.0, 1.0, 1.0" },
-        { UI_ELEMENT_TYPE_SIZEBOX, "" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eConstant] },
+        { UIElementType::eColorButton, "Color:, 1.0, 1.0, 1.0, 1.0" },
+        { UIElementType::eSizeBox, "" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/constant_comp.spv",
     1
 };
 
 const static NodeInitProperties noiseNodeInitProperties =
 {
-    NODE_TYPE_NOISE,
-    nodeStrings[NODE_TYPE_NOISE],
-    NODE_CATEGORY_GENERATE,
+    NodeType::eNoise,
+    nodeStrings[NodeType::eNoise],
+    NodeCategory::eGenerate,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_NOISE] },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Type:,Worley-Perlin,Worley,0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Size,1,256,1,32"},
-        { UI_ELEMENT_TYPE_SIZEBOX, "" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eNoise] },
+        { UIElementType::eComboBox, "Type:,Worley-Perlin,Worley,0" },
+        { UIElementType::eSliderBoxInt, "Size,1,256,1,32"},
+        { UIElementType::eSizeBox, "" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/noise_comp.spv",
     1
 };
 
 const static NodeInitProperties differenceNodeInitProperties =
 {
-    NODE_TYPE_DIFFERENCE,
-    nodeStrings[NODE_TYPE_DIFFERENCE],
-    NODE_CATEGORY_COLOR,
+    NodeType::eDifference,
+    nodeStrings[NodeType::eDifference],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbFront },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,4.0,0.01,1.0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eDifference] },
+        { UIElementType::eChannelSelect, "1" },
+        { UIElementType::eSliderBoxDouble, "Gain,0.0,4.0,0.01,1.0" }
     },
-    FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_IF_FRONT_DISCONNECTED,
+    FrontInputTrait::eRenderUpstreamOrClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamIfFrontDisconnected,
     ":/shaders/difference_comp.spv",
     1
 };
 
 const static NodeInitProperties premultNodeInitProperties =
 {
-    NODE_TYPE_PREMULT,
-    nodeStrings[NODE_TYPE_PREMULT],
-    NODE_CATEGORY_MERGE,
+    NodeType::ePremult,
+    nodeStrings[NodeType::ePremult],
+    NodeCategory::eMerge,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PREMULT] }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::ePremult] }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/premult_comp.spv",
     1
 };
 
 const static NodeInitProperties unpremultNodeInitProperties =
 {
-    NODE_TYPE_UNPREMULT,
-    nodeStrings[NODE_TYPE_UNPREMULT],
-    NODE_CATEGORY_MERGE,
+    NodeType::eUnPremult,
+    nodeStrings[NodeType::eUnPremult],
+    NodeCategory::eMerge,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_UNPREMULT] }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eUnPremult] }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/unpremult_comp.spv",
     1
 };
 
 const static NodeInitProperties writeNodeInitProperties =
 {
-    NODE_TYPE_WRITE,
-    nodeStrings[NODE_TYPE_WRITE],
-    NODE_CATEGORY_IO,
+    NodeType::eWrite,
+    nodeStrings[NodeType::eWrite],
+    NodeCategory::eIO,
     { NodeInputType::eRgbBack },
     { },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] },
-        { UI_ELEMENT_TYPE_WRITE_PROPERTIES, "" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Color Space:,sRGB,Linear,rec709,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eWrite] },
+        { UIElementType::eWriteProperties, "" },
+        { UIElementType::eComboBox, "Color Space:,sRGB,Linear,rec709,Gamma 1.8,Gamma 2.2,Panalog,REDLog,ViperLog,AlexaV3LogC,PLogLin,SLog,Raw,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/noop_comp.spv",
     1
 };
 
 const static NodeInitProperties invertNodeInitProperties =
 {
-    NODE_TYPE_INVERT,
-    nodeStrings[NODE_TYPE_INVERT],
-    NODE_CATEGORY_COLOR,
+    NodeType::eInvert,
+    nodeStrings[NodeType::eInvert],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbAlpha },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eInvert] },
+        { UIElementType::eChannelSelect, "0" },
+        { UIElementType::eCheckBox, "Use Mask,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/invert_comp.spv",
     1
 };
 
 const static NodeInitProperties edgeDetectNodeInitProperties =
 {
-    NODE_TYPE_EDGE_DETECT,
-    nodeStrings[NODE_TYPE_EDGE_DETECT],
-    NODE_CATEGORY_FILTER,
+    NodeType::eEdgeDetect,
+    nodeStrings[NodeType::eEdgeDetect],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EDGE_DETECT] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity X,0.0,10.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity Y,0.0,10.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,10.0,0.01,1.0" },
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eEdgeDetect] },
+        { UIElementType::eSliderBoxDouble, "Intensity X,0.0,10.0,0.01,1.0" },
+        { UIElementType::eSliderBoxDouble, "Intensity Y,0.0,10.0,0.01,1.0" },
+        { UIElementType::eSliderBoxDouble, "Gain,0.0,10.0,0.01,1.0" },
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/sobel_comp.spv",
     1
 };
 
 const static NodeInitProperties directionalBlurNodeInitProperties =
 {
-    NODE_TYPE_DIRECTIONAL_BLUR,
-    nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR],
-    NODE_CATEGORY_FILTER,
+    NodeType::eDirectionalBlur,
+    nodeStrings[NodeType::eDirectionalBlur],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR] },
-        { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Angle,0,360,1,0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Strength,1,100,1,1" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Iterations,1,100,1,10" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gain,0.0,2.0,0.01,1.0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eDirectionalBlur] },
+        { UIElementType::eChannelSelect, "0" },
+        { UIElementType::eSliderBoxInt, "Angle,0,360,1,0" },
+        { UIElementType::eSliderBoxInt, "Strength,1,100,1,1" },
+        { UIElementType::eSliderBoxInt, "Iterations,1,100,1,10" },
+        { UIElementType::eSliderBoxDouble, "Gain,0.0,2.0,0.01,1.0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/directionalblur_comp.spv",
     1
 };
 
 const static NodeInitProperties channelCopyNodeInitProperties =
     {
-        NODE_TYPE_CHANNEL_COPY,
-        nodeStrings[NODE_TYPE_CHANNEL_COPY],
-        NODE_CATEGORY_CHANNEL,
+        NodeType::eChannelCopy,
+        nodeStrings[NodeType::eChannelCopy],
+        NodeCategory::eChannel,
         { NodeInputType::eRgbBack,
           NodeInputType::eRgbFront },
         { NodeOutputType::eRgb },
         {
-            { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Green:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Blue:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
-            { UI_ELEMENT_TYPE_COMBOBOX, "Alpha:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
+            { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eChannelCopy] },
+            { UIElementType::eComboBox, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
+            { UIElementType::eComboBox, "Green:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,1" },
+            { UIElementType::eComboBox, "Blue:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,2" },
+            { UIElementType::eComboBox, "Alpha:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,3" }
         },
-        FRONT_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-        ALPHA_INPUT_ALWAYS_CLEAR,
-        OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+        FrontInputTrait::eRenderUpstreamOrClear,
+        BackInputTrait::eRenderUpstreamOrClear,
+        AlphaInputTrait::eAlwaysClear,
+        OutputTrait::eRenderUpstreamOrClear,
         ":/shaders/channelcopy_comp.spv",
         1
     };
 
 const static NodeInitProperties riverStyxNodeInitProperties =
 {
-    NODE_TYPE_RIVER_STYX,
-    nodeStrings[NODE_TYPE_RIVER_STYX],
-    NODE_CATEGORY_GENERATE,
+    NodeType::eRiverStyx,
+    nodeStrings[NodeType::eRiverStyx],
+    NodeCategory::eGenerate,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RIVER_STYX] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Seed,1,1000,1,100"},
-        { UI_ELEMENT_TYPE_SIZEBOX, "" },
-        { UI_ELEMENT_TYPE_TEXTBOX, "Original shader created by:\nhttps://github.com/gurumatcha" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eRiverStyx] },
+        { UIElementType::eSliderBoxInt, "Seed,1,1000,1,100"},
+        { UIElementType::eSizeBox, "" },
+        { UIElementType::eTextBox, "Original shader created by:\nhttps://github.com/gurumatcha" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/riverstyx_comp.spv",
     1
 };
 
 const static NodeInitProperties clampNodeInitProperties =
 {
-    NODE_TYPE_CLAMP,
-    nodeStrings[NODE_TYPE_CLAMP],
-    NODE_CATEGORY_COLOR,
+    NodeType::eClamp,
+    nodeStrings[NodeType::eClamp],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CLAMP] },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Black,1," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "White,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eClamp] },
+        { UIElementType::eCheckBox, "Black,1," },
+        { UIElementType::eCheckBox, "White,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/clamp_comp.spv",
     1
 };
 
 const static NodeInitProperties erodeNodeInitProperties =
 {
-    NODE_TYPE_ERODE,
-    nodeStrings[NODE_TYPE_ERODE],
-    NODE_CATEGORY_FILTER,
+    NodeType::eErode,
+    nodeStrings[NodeType::eErode],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ERODE] },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Erode,Dilate,0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Amount,1.0,50.0,0.01,5.0" },
-        { UI_ELEMENT_TYPE_COMBOBOX, "Shape:,Disc,Star,Diamond,Hexagon,Square,0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eErode] },
+        { UIElementType::eComboBox, "Mode:,Erode,Dilate,0" },
+        { UIElementType::eSliderBoxDouble, "Amount,1.0,50.0,0.01,5.0" },
+        { UIElementType::eComboBox, "Shape:,Disc,Star,Diamond,Hexagon,Square,0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/erodedilate_comp.spv",
     2
 };
 
 const static NodeInitProperties chromaKeyNodeInitProperties =
 {
-    NODE_TYPE_CHROMA_KEY,
-    nodeStrings[NODE_TYPE_CHROMA_KEY],
-    NODE_CATEGORY_COLOR,
+    NodeType::eChromaKey,
+    nodeStrings[NodeType::eChromaKey],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMA_KEY] },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color, 0.0, 0.0, 0.0, 0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range A,0.0,1.0,0.01,0.05" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range B,0.0,1.0,0.01,0.25" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eChromaKey] },
+        { UIElementType::eColorButton, "Key Color, 0.0, 0.0, 0.0, 0.0" },
+        { UIElementType::eSliderBoxDouble, "Range A,0.0,1.0,0.01,0.05" },
+        { UIElementType::eSliderBoxDouble, "Range B,0.0,1.0,0.01,0.25" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/chromakey_comp.spv",
     1
 };
 
 const static NodeInitProperties shaderNodeInitProperties =
 {
-    NODE_TYPE_SHADER,
-    nodeStrings[NODE_TYPE_SHADER],
-    NODE_CATEGORY_FILTER,
+    NodeType::eShader,
+    nodeStrings[NodeType::eShader],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbFront },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHADER] },
-        { UI_ELEMENT_TYPE_CODE_EDITOR, "" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eShader] },
+        { UIElementType::eCodeEditor, "" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/noop_comp.spv",
     1
 };
 
 const static NodeInitProperties flipNodeInitProperties =
 {
-    NODE_TYPE_FLIP,
-    nodeStrings[NODE_TYPE_FLIP],
-    NODE_CATEGORY_TRANSFORM,
+    NodeType::eFlip,
+    nodeStrings[NodeType::eFlip],
+    NodeCategory::eTransform,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_FLIP] },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Flip,1," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Flop,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eFlip] },
+        { UIElementType::eCheckBox, "Flip,1," },
+        { UIElementType::eCheckBox, "Flop,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/flip_comp.spv",
     1
 };
 
 const static NodeInitProperties checkerboardNodeInitProperties =
 {
-    NODE_TYPE_CHECKERBOARD,
-    nodeStrings[NODE_TYPE_CHECKERBOARD],
-    NODE_CATEGORY_GENERATE,
+    NodeType::eCheckerBoard,
+    nodeStrings[NodeType::eCheckerBoard],
+    NodeCategory::eGenerate,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHECKERBOARD] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Size,1.0,1000.0,0.01,20.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Aspect,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Phase X,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Phase Y,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color A:, 0.0, 0.0, 0.0, 0.0" },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color B:, 1.0, 1.0, 1.0, 1.0" },
-        { UI_ELEMENT_TYPE_SIZEBOX, "" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eCheckerBoard] },
+        { UIElementType::eSliderBoxDouble, "Size,1.0,1000.0,0.01,20.0" },
+        { UIElementType::eSliderBoxDouble, "Aspect,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Phase X,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Phase Y,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eColorButton, "Color A:, 0.0, 0.0, 0.0, 0.0" },
+        { UIElementType::eColorButton, "Color B:, 1.0, 1.0, 1.0, 1.0" },
+        { UIElementType::eSizeBox, "" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/checkerboard_comp.spv",
     1
 };
 
 const static NodeInitProperties colorBalanceNodeInitProperties =
 {
-    NODE_TYPE_COLOR_BALANCE,
-    nodeStrings[NODE_TYPE_COLOR_BALANCE],
-    NODE_CATEGORY_COLOR,
+    NodeType::eColorBalance,
+    nodeStrings[NodeType::eColorBalance],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbAlpha },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_BALANCE] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Green,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blue,-1.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Preserve Luminance,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eColorBalance] },
+        { UIElementType::eSliderBoxDouble, "Red,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Green,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Blue,-1.0,1.0,0.01,0.0" },
+        { UIElementType::eCheckBox, "Preserve Luminance,0," },
+        { UIElementType::eCheckBox, "Use Mask,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/colorbalance_comp.spv",
     1
 };
 
 const static NodeInitProperties hueSaturationNodeInitProperties =
 {
-    NODE_TYPE_HUE_SATURATION,
-    nodeStrings[NODE_TYPE_HUE_SATURATION],
-    NODE_CATEGORY_COLOR,
+    NodeType::eHueSaturation,
+    nodeStrings[NodeType::eHueSaturation],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbAlpha },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_HUE_SATURATION] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Hue,0.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Saturation,0.0,5.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Invert Luminance,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Invert Chroma,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eHueSaturation] },
+        { UIElementType::eSliderBoxDouble, "Hue,0.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Saturation,0.0,5.0,0.01,1.0" },
+        { UIElementType::eCheckBox, "Invert Luminance,0," },
+        { UIElementType::eCheckBox, "Invert Chroma,0," },
+        { UIElementType::eCheckBox, "Use Mask,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/huesat_comp.spv",
     1
 };
 
 const static NodeInitProperties levelsNodeInitProperties =
 {
-    NODE_TYPE_LEVELS,
-    nodeStrings[NODE_TYPE_LEVELS],
-    NODE_CATEGORY_COLOR,
+    NodeType::eLevels,
+    nodeStrings[NodeType::eLevels],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack,
       NodeInputType::eRgbAlpha },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_LEVELS] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "In Black,0.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "In White,0.0,1.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gamma,0.2,5.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out Black,0.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Out White,0.0,1.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Luminance Only,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Use Mask,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eLevels] },
+        { UIElementType::eSliderBoxDouble, "In Black,0.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "In White,0.0,1.0,0.01,1.0" },
+        { UIElementType::eSliderBoxDouble, "Gamma,0.2,5.0,0.01,1.0" },
+        { UIElementType::eSliderBoxDouble, "Out Black,0.0,1.0,0.01,0.0" },
+        { UIElementType::eSliderBoxDouble, "Out White,0.0,1.0,0.01,1.0" },
+        { UIElementType::eCheckBox, "Luminance Only,0," },
+        { UIElementType::eCheckBox, "Use Mask,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eRenderUpstreamOrClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/levels_comp.spv",
     1
 };
 
 const static NodeInitProperties colorMapNodeInitProperties =
 {
-    NODE_TYPE_COLOR_MAP,
-    nodeStrings[NODE_TYPE_COLOR_MAP],
-    NODE_CATEGORY_COLOR,
+    NodeType::eColorMap,
+    nodeStrings[NodeType::eColorMap],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_MAP] },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color A:, 0.0, 0.0, 0.0, 0.0" },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color B:, 1.0, 1.0, 1.0, 1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Gamma,0.2,3.0,0.01,1.0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eColorMap] },
+        { UIElementType::eColorButton, "Color A:, 0.0, 0.0, 0.0, 0.0" },
+        { UIElementType::eColorButton, "Color B:, 1.0, 1.0, 1.0, 1.0" },
+        { UIElementType::eSliderBoxDouble, "Gamma,0.2,3.0,0.01,1.0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/colormap_comp.spv",
     1
 };
 
 const static NodeInitProperties extractColorNodeInitProperties =
 {
-    NODE_TYPE_EXTRACT_COLOR,
-    nodeStrings[NODE_TYPE_EXTRACT_COLOR],
-    NODE_CATEGORY_COLOR,
+    NodeType::eExtractColor,
+    nodeStrings[NodeType::eExtractColor],
+    NodeCategory::eColor,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EXTRACT_COLOR] },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 0.0, 0.0, 0.0, 0.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Tolerance,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Smoothness,0.0,1.0,0.01,0.0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Hue Only,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Invert,0," },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Desaturate,0," }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eExtractColor] },
+        { UIElementType::eColorButton, "Color:, 0.0, 0.0, 0.0, 0.0" },
+        { UIElementType::eSliderBoxDouble, "Tolerance,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Smoothness,0.0,1.0,0.01,0.0" },
+        { UIElementType::eCheckBox, "Hue Only,0," },
+        { UIElementType::eCheckBox, "Invert,0," },
+        { UIElementType::eCheckBox, "Desaturate,0," }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/extractcolor_comp.spv",
     1
 };
 
 const static NodeInitProperties contoursNodeInitProperties =
 {
-    NODE_TYPE_CONTOURS,
-    nodeStrings[NODE_TYPE_CONTOURS],
-    NODE_CATEGORY_FILTER,
+    NodeType::eContours,
+    nodeStrings[NodeType::eContours],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONTOURS] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Threshold,0.0,4.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Range,0.01,4.0,0.01,1.0" },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 0.0, 0.0, 0.0, 0.0" },
-        { UI_ELEMENT_TYPE_CHECKBOX, "Contours Only,0," },
-        { UI_ELEMENT_TYPE_COLOR_BUTTON, "Background:, 1.0, 1.0, 1.0, 1.0" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eContours] },
+        { UIElementType::eSliderBoxDouble, "Threshold,0.0,4.0,0.01,1.0" },
+        { UIElementType::eSliderBoxDouble, "Range,0.01,4.0,0.01,1.0" },
+        { UIElementType::eColorButton, "Color:, 0.0, 0.0, 0.0, 0.0" },
+        { UIElementType::eCheckBox, "Contours Only,0," },
+        { UIElementType::eColorButton, "Background:, 1.0, 1.0, 1.0, 1.0" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/contours_comp.spv",
     1
 };
 
 const static NodeInitProperties smartDenoiseNodeInitProperties =
 {
-    NODE_TYPE_SMART_DENOISE,
-    nodeStrings[NODE_TYPE_SMART_DENOISE],
-    NODE_CATEGORY_FILTER,
+    NodeType::eSmartDenoise,
+    nodeStrings[NodeType::eSmartDenoise],
+    NodeCategory::eFilter,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SMART_DENOISE] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Sigma,1.0,20.0,0.01,7.0" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Threshold,0.01,1.0,0.01,0.195" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eSmartDenoise] },
+        { UIElementType::eSliderBoxDouble, "Sigma,1.0,20.0,0.01,7.0" },
+        { UIElementType::eSliderBoxDouble, "Threshold,0.01,1.0,0.01,0.195" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/smartdenoise_comp.spv",
     1
 };
 
 const static NodeInitProperties isfNodeInitProperties =
 {
-    NODE_TYPE_ISF,
-    nodeStrings[NODE_TYPE_ISF],
-    NODE_CATEGORY_ISF,
+    NodeType::eIsf,
+    nodeStrings[NodeType::eIsf],
+    NodeCategory::eIsf,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ISF] }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eIsf] }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/noop_comp.spv",
     1
 };
 
 const static NodeInitProperties bloomNodeInitProperties =
 {
-    NODE_TYPE_BLOOM,
-    nodeStrings[NODE_TYPE_BLOOM],
-    NODE_CATEGORY_EFFECTS,
+    NodeType::eBloom,
+    nodeStrings[NodeType::eBloom],
+    NodeCategory::eEffects,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLOOM] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blur,0.0,10.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity,0.01,10.0,0.01,0.5" }
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eBloom] },
+        { UIElementType::eSliderBoxDouble, "Blur,0.0,10.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Intensity,0.01,10.0,0.01,0.5" }
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/bloom_comp.spv",
     1
 };
 
 const static NodeInitProperties oldFilmNodeInitProperties =
 {
-    NODE_TYPE_OLD_FILM,
-    nodeStrings[NODE_TYPE_OLD_FILM],
-    NODE_CATEGORY_EFFECTS,
+    NodeType::eOldFilm,
+    nodeStrings[NodeType::eOldFilm],
+    NodeCategory::eEffects,
     { NodeInputType::eRgbBack },
     { NodeOutputType::eRgb },
     {
-        { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_OLD_FILM] },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Lines Seed,0.01,1.0,0.01,0.7" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Lines Intensity,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blotches Seed,0.01,1.0,0.01,0.7" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blotches Intensity,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Vignette Intensity,0.0,1.0,0.01,0.5" },
-        { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Grain Intensity,0.0,1.0,0.01,0.25" },
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eOldFilm] },
+        { UIElementType::eSliderBoxDouble, "Lines Seed,0.01,1.0,0.01,0.7" },
+        { UIElementType::eSliderBoxDouble, "Lines Intensity,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Blotches Seed,0.01,1.0,0.01,0.7" },
+        { UIElementType::eSliderBoxDouble, "Blotches Intensity,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Vignette Intensity,0.0,1.0,0.01,0.5" },
+        { UIElementType::eSliderBoxDouble, "Grain Intensity,0.0,1.0,0.01,0.25" },
     },
-    FRONT_INPUT_ALWAYS_CLEAR,
-    BACK_INPUT_RENDER_UPSTREAM_OR_CLEAR,
-    ALPHA_INPUT_ALWAYS_CLEAR,
-    OUTPUT_RENDER_UPSTREAM_OR_CLEAR,
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/oldfilm_comp.spv",
     1
 };
@@ -1060,155 +1060,155 @@ const static NodeInitProperties oldFilmNodeInitProperties =
 // TODO: Use std::map instead of QMap, then we don't need the lookup function
 [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
 {
-    if(t == NODE_TYPE_CROP)
+    if(t == NodeType::eCrop)
     {
         return cropNodeInitProperties;
     }
-    else if(t == NODE_TYPE_READ)
+    else if(t == NodeType::eRead)
     {
         return readNodeInitProperties;
     }
-    else if(t == NODE_TYPE_BLUR)
+    else if(t == NodeType::eBlur)
     {
         return blurNodeInitProperties;
     }
-    else if(t == NODE_TYPE_COLOR_CORRECT)
+    else if(t == NodeType::eColorCorrect)
     {
         return colorNodeInitProperties;
     }
-    else if(t == NODE_TYPE_RESIZE)
+    else if(t == NodeType::eResize)
     {
         return resizeNodeInitProperties;
     }
-    else if(t == NODE_TYPE_ROTATE)
+    else if(t == NodeType::eRotate)
     {
         return rotateNodeInitProperties;
     }
-    else if(t == NODE_TYPE_SHARPEN)
+    else if(t == NodeType::eSharpen)
     {
         return sharpenNodeInitProperties;
     }
-    else if(t == NODE_TYPE_MERGE)
+    else if(t == NodeType::eMerge)
     {
         return mergeNodeInitProperties;
     }
-    else if(t == NODE_TYPE_SHUFFLE)
+    else if(t == NodeType::eShuffle)
     {
         return shuffleNodeInitProperties;
     }
-    else if(t == NODE_TYPE_PIXELATE)
+    else if(t == NodeType::ePixelate)
     {
         return pixelateNodeInitProperties;
     }
-    else if(t == NODE_TYPE_SOLARIZE)
+    else if(t == NodeType::eSolarize)
     {
         return solarizeNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CONSTANT)
+    else if(t == NodeType::eConstant)
     {
         return constantNodeInitProperties;
     }
-    else if(t == NODE_TYPE_NOISE)
+    else if(t == NodeType::eNoise)
     {
         return noiseNodeInitProperties;
     }
-    else if(t == NODE_TYPE_DIFFERENCE)
+    else if(t == NodeType::eDifference)
     {
         return differenceNodeInitProperties;
     }
-    else if(t == NODE_TYPE_PREMULT)
+    else if(t == NodeType::ePremult)
     {
         return premultNodeInitProperties;
     }
-    else if(t == NODE_TYPE_UNPREMULT)
+    else if(t == NodeType::eUnPremult)
     {
         return unpremultNodeInitProperties;
     }
-    else if(t == NODE_TYPE_WRITE)
+    else if(t == NodeType::eWrite)
     {
         return writeNodeInitProperties;
     }
-    else if(t == NODE_TYPE_INVERT)
+    else if(t == NodeType::eInvert)
     {
         return invertNodeInitProperties;
     }
-    else if(t == NODE_TYPE_EDGE_DETECT)
+    else if(t == NodeType::eEdgeDetect)
     {
         return edgeDetectNodeInitProperties;
     }
-    else if(t == NODE_TYPE_DIRECTIONAL_BLUR)
+    else if(t == NodeType::eDirectionalBlur)
     {
         return directionalBlurNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CHANNEL_COPY)
+    else if(t == NodeType::eChannelCopy)
     {
         return channelCopyNodeInitProperties;
     }
-    else if(t == NODE_TYPE_RIVER_STYX)
+    else if(t == NodeType::eRiverStyx)
     {
         return riverStyxNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CLAMP)
+    else if(t == NodeType::eClamp)
     {
         return clampNodeInitProperties;
     }
-    else if(t == NODE_TYPE_ERODE)
+    else if(t == NodeType::eErode)
     {
         return erodeNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CHROMA_KEY)
+    else if(t == NodeType::eChromaKey)
     {
         return chromaKeyNodeInitProperties;
     }
-    else if(t == NODE_TYPE_SHADER)
+    else if(t == NodeType::eShader)
     {
         return shaderNodeInitProperties;
     }
-    else if(t == NODE_TYPE_FLIP)
+    else if(t == NodeType::eFlip)
     {
         return flipNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CHECKERBOARD)
+    else if(t == NodeType::eCheckerBoard)
     {
         return checkerboardNodeInitProperties;
     }
-    else if(t == NODE_TYPE_COLOR_BALANCE)
+    else if(t == NodeType::eColorBalance)
     {
         return colorBalanceNodeInitProperties;
     }
-    else if(t == NODE_TYPE_HUE_SATURATION)
+    else if(t == NodeType::eHueSaturation)
     {
         return hueSaturationNodeInitProperties;
     }
-    else if(t == NODE_TYPE_LEVELS)
+    else if(t == NodeType::eLevels)
     {
         return levelsNodeInitProperties;
     }
-    else if(t == NODE_TYPE_COLOR_MAP)
+    else if(t == NodeType::eColorMap)
     {
         return colorMapNodeInitProperties;
     }
-    else if(t == NODE_TYPE_EXTRACT_COLOR)
+    else if(t == NodeType::eExtractColor)
     {
         return extractColorNodeInitProperties;
     }
-    else if(t == NODE_TYPE_CONTOURS)
+    else if(t == NodeType::eContours)
     {
         return contoursNodeInitProperties;
     }
-    else if(t == NODE_TYPE_SMART_DENOISE)
+    else if(t == NodeType::eSmartDenoise)
     {
         return smartDenoiseNodeInitProperties;
     }
-    else if(t == NODE_TYPE_ISF)
+    else if(t == NodeType::eIsf)
     {
         return isfNodeInitProperties;
     }
-    else if(t == NODE_TYPE_BLOOM)
+    else if(t == NodeType::eBloom)
     {
         return bloomNodeInitProperties;
     }
-    else if(t == NODE_TYPE_OLD_FILM)
+    else if(t == NodeType::eOldFilm)
     {
         return oldFilmNodeInitProperties;
     }

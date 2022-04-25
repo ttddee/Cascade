@@ -65,18 +65,18 @@ NodeProperties::NodeProperties(
 
     foreach (auto& elem, initProps.uiElements)
     {
-        if(elem.first == UI_ELEMENT_TYPE_PROPERTIES_HEADING)
+        if(elem.first == UIElementType::ePropertiesHeading)
         {
             PropertiesHeading* item = new PropertiesHeading(
                         elem.second.toUpper(),
                         this);
             mLayout->addWidget(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SPINBOX)
+        else if (elem.first == UIElementType::eSpinBox)
         {
             SpinBoxEntity* item =
                     new SpinBoxEntity(
-                        UI_ELEMENT_TYPE_SPINBOX,
+                        UIElementType::eSpinBox,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
@@ -89,19 +89,19 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_FILEBOX)
+        else if (elem.first == UIElementType::eFileBox)
         {
             FileBoxEntity* item = new FileBoxEntity(
-                        UI_ELEMENT_TYPE_FILEBOX,
+                        UIElementType::eFileBox,
                         this);
             item->selfConnectToValueChanged(this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_COLOR_BUTTON)
+        else if (elem.first == UIElementType::eColorButton)
         {
             ColorButtonEntity* item = new ColorButtonEntity(
-                        UI_ELEMENT_TYPE_COLOR_BUTTON,
+                        UIElementType::eColorButton,
                         this);
             item->selfConnectToValueChanged(this);
             auto parts = elem.second.split(",");
@@ -115,19 +115,19 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_WRITE_PROPERTIES)
+        else if (elem.first == UIElementType::eWriteProperties)
         {
             WritePropertiesEntity* item = new WritePropertiesEntity(
-                        UI_ELEMENT_TYPE_WRITE_PROPERTIES,
+                        UIElementType::eWriteProperties,
                         this);
             item->selfConnectToRequestFileSave(this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_COMBOBOX)
+        else if (elem.first == UIElementType::eComboBox)
         {
             ComboBoxEntity* item = new ComboBoxEntity(
-                        UI_ELEMENT_TYPE_COMBOBOX,
+                        UIElementType::eComboBox,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts[0]);
@@ -141,10 +141,10 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_CHANNEL_SELECT)
+        else if (elem.first == UIElementType::eChannelSelect)
         {
             ChannelSelectEntity* item = new ChannelSelectEntity(
-                        UI_ELEMENT_TYPE_CHANNEL_SELECT,
+                        UIElementType::eChannelSelect,
                         this);
             auto parts = elem.second.split(",");
             if (parts.at(0).toInt() == 1)
@@ -155,11 +155,11 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE)
+        else if (elem.first == UIElementType::eSliderBoxDouble)
         {
             CsSliderBoxEntity* item =
                     new CsSliderBoxEntity(
-                        UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE,
+                        UIElementType::eSliderBoxDouble,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
@@ -172,11 +172,11 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SLIDER_BOX_INT)
+        else if (elem.first == UIElementType::eSliderBoxInt)
         {
             CsSliderBoxEntity* item =
                     new CsSliderBoxEntity(
-                        UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                        UIElementType::eSliderBoxInt,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts.at(0));
@@ -189,37 +189,37 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_COLOR_PROPERTIES)
+        else if (elem.first == UIElementType::eColorProperties)
         {
             ColorPropertiesEntity* item = new ColorPropertiesEntity(
-                        UI_ELEMENT_TYPE_COLOR_PROPERTIES,
+                        UIElementType::eColorProperties,
                         this);
             item->selfConnectToValueChanged(this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SIZEBOX)
+        else if (elem.first == UIElementType::eSizeBox)
         {
             SizeBoxEntity* item = new SizeBoxEntity(
-                        UI_ELEMENT_TYPE_SIZEBOX,
+                        UIElementType::eSizeBox,
                         this);
             item->selfConnectToValueChanged(this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_TEXTBOX)
+        else if (elem.first == UIElementType::eTextBox)
         {
             TextBoxEntity* item = new TextBoxEntity(
-                        UI_ELEMENT_TYPE_TEXTBOX,
+                        UIElementType::eTextBox,
                         this);
             item->setText(elem.second);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_CHECKBOX)
+        else if (elem.first == UIElementType::eCheckBox)
         {
             CheckBoxEntity* item = new CheckBoxEntity(
-                        UI_ELEMENT_TYPE_CHECKBOX,
+                        UIElementType::eCheckBox,
                         this);
             item->selfConnectToValueChanged(this);
             auto parts = elem.second.split(",");
@@ -228,27 +228,27 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_TEXTBROWSER)
+        else if (elem.first == UIElementType::eTextBrowser)
         {
             TextBrowserEntity* item = new TextBrowserEntity(
-                        UI_ELEMENT_TYPE_TEXTBOX,
+                        UIElementType::eTextBox,
                         this);
             item->setText(elem.second);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_SEPARATOR)
+        else if (elem.first == UIElementType::eSeparator)
         {
             SeparatorEntity* item = new SeparatorEntity(
-                        UI_ELEMENT_TYPE_SEPARATOR,
+                        UIElementType::eSeparator,
                         this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_LINEEDIT)
+        else if (elem.first == UIElementType::eLineEdit)
         {
             LineEditEntity* item = new LineEditEntity(
-                        UI_ELEMENT_TYPE_LINEEDIT,
+                        UIElementType::eLineEdit,
                         this);
             auto parts = elem.second.split(",");
             item->setName(parts[0]);
@@ -256,20 +256,20 @@ NodeProperties::NodeProperties(
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_FOLDERBOX)
+        else if (elem.first == UIElementType::eFolderBox)
         {
             FolderBoxEntity* item = new FolderBoxEntity(
-                        UI_ELEMENT_TYPE_FOLDERBOX,
+                        UIElementType::eFolderBox,
                         this);
             item->setName(elem.second);
             item->selfConnectToValueChanged(this);
             mLayout->addWidget(item);
             mWidgets.push_back(item);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_RESIZE_PROPERTIES)
+        else if (elem.first == UIElementType::eResizeProperties)
         {
             ResizePropertiesEntity* item = new ResizePropertiesEntity(
-                        UI_ELEMENT_TYPE_SIZEBOX,
+                        UIElementType::eSizeBox,
                         this);
             item->selfConnectToValueChanged(this);
             item->setParentNode(parentNode);
@@ -279,10 +279,10 @@ NodeProperties::NodeProperties(
             connect(parentNode, &NodeBase::nodeRequestUpdate,
                     item, &ResizePropertiesEntity::handleNodeRequestUpdate);
         }
-        else if (elem.first == UI_ELEMENT_TYPE_CODE_EDITOR)
+        else if (elem.first == UIElementType::eCodeEditor)
         {
             CodeEditorEntity* item = new CodeEditorEntity(
-                        UI_ELEMENT_TYPE_CODE_EDITOR,
+                        UIElementType::eCodeEditor,
                         this);
             item->selfConnectToValueChanged(this);
             item->setParentNode(parentNode);

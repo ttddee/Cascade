@@ -40,7 +40,7 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
     }
 
     jpegCompressionSlider = new CsSliderBoxEntity(
-                UI_ELEMENT_TYPE_SLIDER_BOX_INT,
+                UIElementType::eSliderBoxInt,
                 this);
     jpegCompressionSlider->setName("Quality");
     jpegCompressionSlider->setMinMaxStepValue(1, 100, 1, 100);
