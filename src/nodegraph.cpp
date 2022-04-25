@@ -318,7 +318,7 @@ void NodeGraph::viewNode(NodeBase *node)
         {
             emit requestSetNodeViewed(n, false);
         }
-        emit requestSetNodeViewed(node, false);
+        emit requestSetNodeViewed(node, true);
         emit requestNodeDisplay(node);
     }
 }

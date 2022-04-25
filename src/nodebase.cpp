@@ -100,17 +100,17 @@ void NodeBase::createInputs(const NodeInitProperties &props)
         label->move(nodeIn->pos() + QPoint(15, -7));
         label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-        if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_BACK)
+        if (props.nodeInputs[i] == NodeInputType::eRgbBack)
         {
             this->mRgbaBackIn = nodeIn;
             label->setText("RGB Back");
         }
-        else if (props.nodeInputs[i] == NODE_INPUT_TYPE_RGB_FRONT)
+        else if (props.nodeInputs[i] == NodeInputType::eRgbFront)
         {
             this->mRgbaFrontIn = nodeIn;
             label->setText("RGB Front");
         }
-        else if (props.nodeInputs[i] == NODE_INPUT_TYPE_ALPHA)
+        else if (props.nodeInputs[i] == NodeInputType::eRgbAlpha)
         {
             this->mRgbaFrontIn = nodeIn;
             label->setText("Alpha");
@@ -136,9 +136,9 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
         label->setText("Out");
         label->setAttribute(Qt::WA_TransparentForMouseEvents);
 
-        if (props.nodeOutputs[i] == NODE_OUTPUT_TYPE_RGB)
+        if (props.nodeOutputs[i] == NodeOutputType::eRgb)
         {
-            this->mRgbaOut = nodeOut;
+            mRgbaOut = nodeOut;
         }
         connect(nodeOut, &NodeOutput::nodeOutputLeftMouseClicked,
                 mNodeGraph, &NodeGraph::handleNodeOutputLeftClicked);

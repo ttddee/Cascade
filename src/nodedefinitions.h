@@ -29,20 +29,19 @@ namespace Cascade {
 ////////////////////////////////////
 // Node Input Types
 ////////////////////////////////////
-enum NodeInputType
+enum class NodeInputType
 {
-    NODE_INPUT_TYPE_NONE,
-    NODE_INPUT_TYPE_RGB_FRONT,
-    NODE_INPUT_TYPE_RGB_BACK,
-    NODE_INPUT_TYPE_ALPHA
+    eRgbFront,
+    eRgbBack,
+    eRgbAlpha
 };
 
 ////////////////////////////////////
 // Node Output Types
 ////////////////////////////////////
-enum NodeOutputType
+enum class NodeOutputType
 {
-    NODE_OUTPUT_TYPE_RGB
+    eRgb
 };
 
 ////////////////////////////////////
@@ -258,8 +257,8 @@ const static NodeInitProperties cropNodeInitProperties =
     NODE_TYPE_CROP,
     nodeStrings[NODE_TYPE_CROP],
     NODE_CATEGORY_TRANSFORM,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CROP] },
         { UI_ELEMENT_TYPE_SPINBOX, "Left,0,100000,1,0" },
@@ -281,7 +280,7 @@ const static NodeInitProperties readNodeInitProperties =
     nodeStrings[NODE_TYPE_READ],
     NODE_CATEGORY_IO,
     { },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_READ] },
         { UI_ELEMENT_TYPE_FILEBOX, "" },
@@ -300,8 +299,8 @@ const static NodeInitProperties blurNodeInitProperties =
     NODE_TYPE_BLUR,
     nodeStrings[NODE_TYPE_BLUR],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLUR] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
@@ -320,9 +319,9 @@ const static NodeInitProperties colorNodeInitProperties =
     NODE_TYPE_COLOR_CORRECT,
     nodeStrings[NODE_TYPE_COLOR_CORRECT],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_ALPHA },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbAlpha },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_CORRECT] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
@@ -341,8 +340,8 @@ const static NodeInitProperties resizeNodeInitProperties =
     NODE_TYPE_RESIZE,
     nodeStrings[NODE_TYPE_RESIZE],
     NODE_CATEGORY_TRANSFORM,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RESIZE] },
         { UI_ELEMENT_TYPE_RESIZE_PROPERTIES, "" },
@@ -361,8 +360,8 @@ const static NodeInitProperties rotateNodeInitProperties =
     NODE_TYPE_ROTATE,
     nodeStrings[NODE_TYPE_ROTATE],
     NODE_CATEGORY_TRANSFORM,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ROTATE] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Angle,0,360,1,0" }
@@ -380,8 +379,8 @@ const static NodeInitProperties sharpenNodeInitProperties =
     NODE_TYPE_SHARPEN,
     nodeStrings[NODE_TYPE_SHARPEN],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHARPEN] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
@@ -400,9 +399,9 @@ const static NodeInitProperties mergeNodeInitProperties =
     NODE_TYPE_MERGE,
     nodeStrings[NODE_TYPE_MERGE],
     NODE_CATEGORY_MERGE,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_RGB_FRONT },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbFront },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_MERGE] },
         { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Over,Add,Divide,Minus,Multiply,0" },
@@ -423,8 +422,8 @@ const static NodeInitProperties shuffleNodeInitProperties =
     NODE_TYPE_SHUFFLE,
     nodeStrings[NODE_TYPE_SHUFFLE],
     NODE_CATEGORY_CHANNEL,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHUFFLE] },
         { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Red,Green,Blue,Alpha,0" },
@@ -445,8 +444,8 @@ const static NodeInitProperties pixelateNodeInitProperties =
     NODE_TYPE_PIXELATE,
     nodeStrings[NODE_TYPE_PIXELATE],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PIXELATE] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Filter Size,0,100,1,5" }
@@ -464,8 +463,8 @@ const static NodeInitProperties solarizeNodeInitProperties =
     NODE_TYPE_SOLARIZE,
     nodeStrings[NODE_TYPE_SOLARIZE],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SOLARIZE] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red Thresh,0.0,1.0,0.01,0.5" },
@@ -485,8 +484,8 @@ const static NodeInitProperties constantNodeInitProperties =
     NODE_TYPE_CONSTANT,
     nodeStrings[NODE_TYPE_CONSTANT],
     NODE_CATEGORY_GENERATE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONSTANT] },
         { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 1.0, 1.0, 1.0, 1.0" },
@@ -505,8 +504,8 @@ const static NodeInitProperties noiseNodeInitProperties =
     NODE_TYPE_NOISE,
     nodeStrings[NODE_TYPE_NOISE],
     NODE_CATEGORY_GENERATE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_NOISE] },
         { UI_ELEMENT_TYPE_COMBOBOX, "Type:,Worley-Perlin,Worley,0" },
@@ -526,9 +525,9 @@ const static NodeInitProperties differenceNodeInitProperties =
     NODE_TYPE_DIFFERENCE,
     nodeStrings[NODE_TYPE_DIFFERENCE],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_RGB_FRONT },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbFront },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIFFERENCE] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "1" },
@@ -547,8 +546,8 @@ const static NodeInitProperties premultNodeInitProperties =
     NODE_TYPE_PREMULT,
     nodeStrings[NODE_TYPE_PREMULT],
     NODE_CATEGORY_MERGE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_PREMULT] }
     },
@@ -565,8 +564,8 @@ const static NodeInitProperties unpremultNodeInitProperties =
     NODE_TYPE_UNPREMULT,
     nodeStrings[NODE_TYPE_UNPREMULT],
     NODE_CATEGORY_MERGE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_UNPREMULT] }
     },
@@ -583,7 +582,7 @@ const static NodeInitProperties writeNodeInitProperties =
     NODE_TYPE_WRITE,
     nodeStrings[NODE_TYPE_WRITE],
     NODE_CATEGORY_IO,
-    { NODE_INPUT_TYPE_RGB_BACK },
+    { NodeInputType::eRgbBack },
     { },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_WRITE] },
@@ -603,9 +602,9 @@ const static NodeInitProperties invertNodeInitProperties =
     NODE_TYPE_INVERT,
     nodeStrings[NODE_TYPE_INVERT],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_ALPHA },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbAlpha },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_INVERT] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
@@ -624,8 +623,8 @@ const static NodeInitProperties edgeDetectNodeInitProperties =
     NODE_TYPE_EDGE_DETECT,
     nodeStrings[NODE_TYPE_EDGE_DETECT],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EDGE_DETECT] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Intensity X,0.0,10.0,0.01,1.0" },
@@ -645,8 +644,8 @@ const static NodeInitProperties directionalBlurNodeInitProperties =
     NODE_TYPE_DIRECTIONAL_BLUR,
     nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_DIRECTIONAL_BLUR] },
         { UI_ELEMENT_TYPE_CHANNEL_SELECT, "0" },
@@ -668,9 +667,9 @@ const static NodeInitProperties channelCopyNodeInitProperties =
         NODE_TYPE_CHANNEL_COPY,
         nodeStrings[NODE_TYPE_CHANNEL_COPY],
         NODE_CATEGORY_CHANNEL,
-        { NODE_INPUT_TYPE_RGB_BACK,
-          NODE_INPUT_TYPE_RGB_FRONT },
-        { NODE_OUTPUT_TYPE_RGB },
+        { NodeInputType::eRgbBack,
+          NodeInputType::eRgbFront },
+        { NodeOutputType::eRgb },
         {
             { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHANNEL_COPY] },
             { UI_ELEMENT_TYPE_COMBOBOX, "Red:,Back Red,Back Green,Back Blue,Back Alpha,Front Red,Front Green,Front Blue,Front Alpha,0" },
@@ -691,8 +690,8 @@ const static NodeInitProperties riverStyxNodeInitProperties =
     NODE_TYPE_RIVER_STYX,
     nodeStrings[NODE_TYPE_RIVER_STYX],
     NODE_CATEGORY_GENERATE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_RIVER_STYX] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_INT, "Seed,1,1000,1,100"},
@@ -712,8 +711,8 @@ const static NodeInitProperties clampNodeInitProperties =
     NODE_TYPE_CLAMP,
     nodeStrings[NODE_TYPE_CLAMP],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CLAMP] },
         { UI_ELEMENT_TYPE_CHECKBOX, "Black,1," },
@@ -732,8 +731,8 @@ const static NodeInitProperties erodeNodeInitProperties =
     NODE_TYPE_ERODE,
     nodeStrings[NODE_TYPE_ERODE],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ERODE] },
         { UI_ELEMENT_TYPE_COMBOBOX, "Mode:,Erode,Dilate,0" },
@@ -753,8 +752,8 @@ const static NodeInitProperties chromaKeyNodeInitProperties =
     NODE_TYPE_CHROMA_KEY,
     nodeStrings[NODE_TYPE_CHROMA_KEY],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHROMA_KEY] },
         { UI_ELEMENT_TYPE_COLOR_BUTTON, "Key Color, 0.0, 0.0, 0.0, 0.0" },
@@ -774,9 +773,9 @@ const static NodeInitProperties shaderNodeInitProperties =
     NODE_TYPE_SHADER,
     nodeStrings[NODE_TYPE_SHADER],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_RGB_FRONT },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbFront },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SHADER] },
         { UI_ELEMENT_TYPE_CODE_EDITOR, "" }
@@ -794,8 +793,8 @@ const static NodeInitProperties flipNodeInitProperties =
     NODE_TYPE_FLIP,
     nodeStrings[NODE_TYPE_FLIP],
     NODE_CATEGORY_TRANSFORM,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_FLIP] },
         { UI_ELEMENT_TYPE_CHECKBOX, "Flip,1," },
@@ -814,8 +813,8 @@ const static NodeInitProperties checkerboardNodeInitProperties =
     NODE_TYPE_CHECKERBOARD,
     nodeStrings[NODE_TYPE_CHECKERBOARD],
     NODE_CATEGORY_GENERATE,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CHECKERBOARD] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Size,1.0,1000.0,0.01,20.0" },
@@ -839,9 +838,9 @@ const static NodeInitProperties colorBalanceNodeInitProperties =
     NODE_TYPE_COLOR_BALANCE,
     nodeStrings[NODE_TYPE_COLOR_BALANCE],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_ALPHA },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbAlpha },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_BALANCE] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Red,-1.0,1.0,0.01,0.0" },
@@ -863,9 +862,9 @@ const static NodeInitProperties hueSaturationNodeInitProperties =
     NODE_TYPE_HUE_SATURATION,
     nodeStrings[NODE_TYPE_HUE_SATURATION],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_ALPHA },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbAlpha },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_HUE_SATURATION] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Hue,0.0,1.0,0.01,0.0" },
@@ -887,9 +886,9 @@ const static NodeInitProperties levelsNodeInitProperties =
     NODE_TYPE_LEVELS,
     nodeStrings[NODE_TYPE_LEVELS],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK,
-      NODE_INPUT_TYPE_ALPHA },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack,
+      NodeInputType::eRgbAlpha },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_LEVELS] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "In Black,0.0,1.0,0.01,0.0" },
@@ -913,8 +912,8 @@ const static NodeInitProperties colorMapNodeInitProperties =
     NODE_TYPE_COLOR_MAP,
     nodeStrings[NODE_TYPE_COLOR_MAP],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_COLOR_MAP] },
         { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color A:, 0.0, 0.0, 0.0, 0.0" },
@@ -934,8 +933,8 @@ const static NodeInitProperties extractColorNodeInitProperties =
     NODE_TYPE_EXTRACT_COLOR,
     nodeStrings[NODE_TYPE_EXTRACT_COLOR],
     NODE_CATEGORY_COLOR,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_EXTRACT_COLOR] },
         { UI_ELEMENT_TYPE_COLOR_BUTTON, "Color:, 0.0, 0.0, 0.0, 0.0" },
@@ -958,8 +957,8 @@ const static NodeInitProperties contoursNodeInitProperties =
     NODE_TYPE_CONTOURS,
     nodeStrings[NODE_TYPE_CONTOURS],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_CONTOURS] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Threshold,0.0,4.0,0.01,1.0" },
@@ -981,8 +980,8 @@ const static NodeInitProperties smartDenoiseNodeInitProperties =
     NODE_TYPE_SMART_DENOISE,
     nodeStrings[NODE_TYPE_SMART_DENOISE],
     NODE_CATEGORY_FILTER,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_SMART_DENOISE] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Sigma,1.0,20.0,0.01,7.0" },
@@ -1001,8 +1000,8 @@ const static NodeInitProperties isfNodeInitProperties =
     NODE_TYPE_ISF,
     nodeStrings[NODE_TYPE_ISF],
     NODE_CATEGORY_ISF,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_ISF] }
     },
@@ -1019,8 +1018,8 @@ const static NodeInitProperties bloomNodeInitProperties =
     NODE_TYPE_BLOOM,
     nodeStrings[NODE_TYPE_BLOOM],
     NODE_CATEGORY_EFFECTS,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_BLOOM] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Blur,0.0,10.0,0.01,0.5" },
@@ -1039,8 +1038,8 @@ const static NodeInitProperties oldFilmNodeInitProperties =
     NODE_TYPE_OLD_FILM,
     nodeStrings[NODE_TYPE_OLD_FILM],
     NODE_CATEGORY_EFFECTS,
-    { NODE_INPUT_TYPE_RGB_BACK },
-    { NODE_OUTPUT_TYPE_RGB },
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
     {
         { UI_ELEMENT_TYPE_PROPERTIES_HEADING, nodeStrings[NODE_TYPE_OLD_FILM] },
         { UI_ELEMENT_TYPE_SLIDER_BOX_DOUBLE, "Lines Seed,0.01,1.0,0.01,0.7" },

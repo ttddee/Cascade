@@ -32,11 +32,11 @@ NodeInput::NodeInput(NodeInputType t, QWidget *parent)
     mParentNode = static_cast<NodeBase*>(parent);
     this->resize(10, 18);
 
-    if (t == NODE_INPUT_TYPE_RGB_FRONT)
+    if (t == NodeInputType::eRgbFront)
         setObjectName("Front");
-    else if (t == NODE_INPUT_TYPE_RGB_BACK)
+    else if (t == NodeInputType::eRgbBack)
         setObjectName("Back");
-    else if (t == NODE_INPUT_TYPE_ALPHA)
+    else if (t == NodeInputType::eRgbAlpha)
         setObjectName("Alpha");
 }
 
