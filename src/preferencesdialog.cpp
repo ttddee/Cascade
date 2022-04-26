@@ -32,7 +32,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     QDialog(parent)
 {
     mTabWidget = new QTabWidget;
-    mTabWidget->addTab(new QWidget(), tr("General"));
+    //mTabWidget->addTab(new QWidget(), tr("General"));
 
     loadKeys();
 
@@ -49,7 +49,7 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     setLayout(mainLayout);
 
     setWindowTitle(tr("Preferences"));
-    setMinimumSize(600, 500);
+    setMinimumSize(600, 700);
 }
 
 void PreferencesDialog::loadKeys()

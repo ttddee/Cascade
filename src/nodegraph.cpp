@@ -90,6 +90,13 @@ void NodeGraph::createNode(
 
     connectNodeSignals(n);
 
+    // Connect node if necessary
+    if (mSelectedNode && n->getType() != NodeType::eRead)
+    {
+        createOpenConnection(mSelectedNode->getRgbaOut());
+        establishConnection(n->getOpenInput());
+    }
+
     if (view)
         viewNode(n);
 
