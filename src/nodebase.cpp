@@ -52,7 +52,7 @@ NodeBase::NodeBase(
 {
     ui->setupUi(this);
 
-    this->setUpNode(type, customName);
+    setUpNode(type, customName);
 
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeBase::nodeHasMoved,
@@ -73,15 +73,15 @@ void NodeBase::setUpNode(
     {
         auto isfManager = &ISFManager::getInstance();
         props = isfManager->getNodeProperties().at(cName);
-        this->setShaderCode(isfManager->getShaderCode(cName));
+        setShaderCode(isfManager->getShaderCode(cName));
         mCustomName = cName;
     }
 
     QString label = props.title.toUpper();
     ui->NodeTitleLabel->setText(label);
 
-    this->createInputs(props);
-    this->createOutputs(props);
+    createInputs(props);
+    createOutputs(props);
 
     mNodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
 }
@@ -102,17 +102,17 @@ void NodeBase::createInputs(const NodeInitProperties &props)
 
         if (props.nodeInputs[i] == NodeInputType::eRgbBack)
         {
-            this->mRgbaBackIn = nodeIn;
+            mRgbaBackIn = nodeIn;
             label->setText("RGB Back");
         }
         else if (props.nodeInputs[i] == NodeInputType::eRgbFront)
         {
-            this->mRgbaFrontIn = nodeIn;
+            mRgbaFrontIn = nodeIn;
             label->setText("RGB Front");
         }
         else if (props.nodeInputs[i] == NodeInputType::eRgbAlpha)
         {
-            this->mRgbaFrontIn = nodeIn;
+            mRgbaFrontIn = nodeIn;
             label->setText("Alpha");
         }
 
@@ -189,24 +189,6 @@ NodeInput* NodeBase::findNodeInput(const QString& id)
     {
         if (in->getID() == id)
             return in;
-    }
-    return nullptr;
-}
-
-NodeInput* NodeBase::getRgbaBackIn() const
-{
-    if (mRgbaBackIn)
-    {
-        return mRgbaBackIn;
-    }
-    return nullptr;
-}
-
-NodeInput* NodeBase::getRgbaFrontIn() const
-{
-    if (mRgbaFrontIn)
-    {
-        return mRgbaFrontIn;
     }
     return nullptr;
 }
@@ -601,10 +583,10 @@ void NodeBase::mouseMoveEvent(QMouseEvent *event)
     if (mIsDragging)
     {
         QPoint offset = event->globalPos() - mOldPos;
-        QPoint newPos = this->pos() + (offset / mNodeGraph->getViewScale());
-        this->move(newPos);
+        QPoint newPos = pos() + (offset / mNodeGraph->getViewScale());
+        move(newPos);
         mOldPos = event->globalPos();
-        this->updateConnectionPositions();
+        updateConnectionPositions();
     }
 }
 

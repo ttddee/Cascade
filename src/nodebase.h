@@ -67,8 +67,6 @@ public:
     QSize getTargetSize() const;
     void addNodeToJsonArray(QJsonArray& jsonNodesArray);
 
-    NodeInput* getRgbaBackIn() const;
-    NodeInput* getRgbaFrontIn() const;
     NodeOutput* getRgbaOut() const;
 
     NodeBase* getUpstreamNodeBack() const;
@@ -105,8 +103,6 @@ public:
 
     NodeInput* findNodeInput(const QString& id);
 
-    void updateConnectionPositions();
-
     void flushCache();
 
     const int getNumImages();
@@ -120,15 +116,20 @@ private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectOrderOfNodes);
     FRIEND_TEST(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes);
 
+    // Init
     void setUpNode(const NodeType nodeType, const QString& cName = "");
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
+    // Graph interaction
     void getAllDownstreamNodes(std::vector<NodeBase*>& nodes);
+    void updateConnectionPositions();
 
+    // Misc
     void updateCropSizes();
     void updateRotation();
 
+    // Events
     void mousePressEvent(QMouseEvent*) override;
     void mouseMoveEvent(QMouseEvent*) override;
     void mouseReleaseEvent(QMouseEvent*) override;
