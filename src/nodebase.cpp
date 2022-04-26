@@ -145,6 +145,13 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     }
 }
 
+const bool NodeBase::operator==(const NodeBase* node) const
+{
+    if (node->getID() == mId)
+        return true;
+    return false;
+}
+
 const bool NodeBase::isViewed() const
 {
     return mIsViewed;
@@ -538,7 +545,7 @@ void NodeBase::switchToNextImage()
 
 void NodeBase::handleSetSelected(NodeBase* node, const bool b)
 {
-    if (node->getID() == mId)
+    if (this == node)
     {
         mIsSelected = b;
         update();
@@ -547,7 +554,7 @@ void NodeBase::handleSetSelected(NodeBase* node, const bool b)
 
 void NodeBase::handleSetActive(NodeBase* node, const bool b)
 {
-    if (node->getID() == mId)
+    if (this == node)
     {
         mIsActive = b;
     }
@@ -555,7 +562,7 @@ void NodeBase::handleSetActive(NodeBase* node, const bool b)
 
 void NodeBase::handleSetViewed(NodeBase* node, const bool b)
 {
-    if (node->getID() == mId)
+    if (this == node)
     {
         mIsViewed = b;
     }

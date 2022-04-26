@@ -35,8 +35,8 @@ class NodeInput : public QPushButton
 public:
     explicit NodeInput(NodeInputType t, QWidget *parent = nullptr);
 
-    void addInConnection(Connection*);
-    void addInConnectionNoUpdate(Connection*);
+    void addInConnection(Connection* c);
+    void addInConnectionNoUpdate(Connection* c);
     void removeInConnection();
     void updateConnection();
     bool hasConnection();
@@ -53,7 +53,6 @@ public:
     NodeBase* getUpstreamNode();
 
     NodeBase* mParentNode = nullptr;
-
     Connection* mInConnection = nullptr;
 
 private:

@@ -58,6 +58,8 @@ public:
             QWidget *parent = nullptr,
             const QString& customName = "");
 
+    const bool operator==(const NodeBase* node) const;
+
     const bool isViewed() const;
 
     NodeInput* getNodeInputAtPosition(const QPoint pos);

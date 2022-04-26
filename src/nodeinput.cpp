@@ -47,7 +47,7 @@ NodeInputType NodeInput::getInputType()
 
 bool NodeInput::hasConnection()
 {
-    if(mInConnection)
+    if (mInConnection)
     {
         return true;
     }
