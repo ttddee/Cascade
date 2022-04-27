@@ -48,9 +48,7 @@ NodeInputType NodeInput::getInputType()
 bool NodeInput::hasConnection()
 {
     if (mInConnection)
-    {
         return true;
-    }
     return false;
 }
 
@@ -58,16 +56,13 @@ Connection* NodeInput::getConnection()
 {
     if (hasConnection())
         return mInConnection;
-
     return nullptr;
 }
 
 void NodeInput::updateConnection()
 {
     if(mInConnection)
-    {
         mInConnection->updatePosition();
-    }
 }
 
 void NodeInput::addInConnection(Connection* c)

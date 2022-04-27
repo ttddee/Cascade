@@ -59,9 +59,9 @@ private:
     WindowManager* mWindowManager;
 
 public slots:
-    void handleNodeDisplayRequest(NodeBase* node);
+    void handleNodeDisplayRequest(Cascade::NodeBase* node);
     void handleNodeFileSaveRequest(
-            NodeBase* node,
+            Cascade::NodeBase* node,
             const QString& path,
             const QMap<std::string, std::string>& attributes,
             const bool isBatch,

@@ -1,0 +1,44 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+*/
+
+#version 430
+
+layout (local_size_x = 16, local_size_y = 16) in;
+layout (binding = 0, rgba32f) uniform readonly image2D inputBack;
+layout (binding = 1, rgba32f) uniform readonly image2D inputFront;
+layout (binding = 2, rgba32f) uniform image2D outputImage;
+
+layout(set = 0, binding = 3) uniform InputBuffer
+{
+    layout(offset = 0) float exposure;
+} sb;
+
+ivec2 pixelCoords = ivec2(gl_GlobalInvocationID.xy);
+ivec2 imgSize = imageSize(inputBack);
+vec2 pixelCoordsNorm = vec2(float(pixelCoords.x) / imgSize.x, float(pixelCoords.y) / imgSize.y);
+
+vec4 pixelBack = imageLoad(inputBack, pixelCoords).rgba;
+vec4 pixelFront = imageLoad(inputFront, pixelCoords).rgba;
+
+void main()
+{
+    vec4 result = vec4(pixelBack.rgb * pow(2.0, sb.exposure), pixelBack.a);
+    
+    imageStore(outputImage, pixelCoords, result);
+}

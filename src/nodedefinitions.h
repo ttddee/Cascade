@@ -160,6 +160,7 @@ enum class NodeType
     eDirectionalBlur,
     eEdgeDetect,
     eErode,
+    eExposure,
     eExtractColor,
     eFlip,
     eHueSaturation,
@@ -206,6 +207,7 @@ const static QMap<NodeType, QString> nodeStrings =
     { NodeType::eDirectionalBlur,   "Directional Blur" },
     { NodeType::eEdgeDetect,        "Edge Detect" },
     { NodeType::eErode,             "Erode" },
+    { NodeType::eExposure,             "Exposure" },
     { NodeType::eExtractColor,      "Extract Color" },
     { NodeType::eFlip,              "Flip" },
     { NodeType::eHueSaturation,     "Hue Saturation" },
@@ -311,7 +313,7 @@ const static NodeInitProperties blurNodeInitProperties =
     AlphaInputTrait::eAlwaysClear,
     OutputTrait::eRenderUpstreamOrClear,
     ":/shaders/blur_comp.spv",
-    2
+    1
 };
 
 const static NodeInitProperties colorNodeInitProperties =
@@ -1057,6 +1059,25 @@ const static NodeInitProperties oldFilmNodeInitProperties =
     1
 };
 
+const static NodeInitProperties exposureNodeInitProperties =
+{
+    NodeType::eExposure,
+    nodeStrings[NodeType::eExposure],
+    NodeCategory::eColor,
+    { NodeInputType::eRgbBack },
+    { NodeOutputType::eRgb },
+    {
+        { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eExposure] },
+        { UIElementType::eSliderBoxDouble, "Exposure,-10.0,10.0,0.01,0.0" },
+    },
+    FrontInputTrait::eAlwaysClear,
+    BackInputTrait::eRenderUpstreamOrClear,
+    AlphaInputTrait::eAlwaysClear,
+    OutputTrait::eRenderUpstreamOrClear,
+    ":/shaders/exposure_comp.spv",
+    1
+};
+
 // TODO: Use std::map instead of QMap, then we don't need the lookup function
 [[maybe_unused]] static NodeInitProperties getPropertiesForType(const NodeType t)
 {
@@ -1211,6 +1232,10 @@ const static NodeInitProperties oldFilmNodeInitProperties =
     else if(t == NodeType::eOldFilm)
     {
         return oldFilmNodeInitProperties;
+    }
+    else if(t == NodeType::eExposure)
+    {
+        return exposureNodeInitProperties;
     }
     throw std::runtime_error("Node type not found.");
 }

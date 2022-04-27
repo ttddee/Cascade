@@ -1314,7 +1314,6 @@ void VulkanRenderer::releaseResources()
 
 void VulkanRenderer::shutdown()
 {
-    CS_LOG_INFO("Destroying Renderer.");
     auto result = mDevice.waitIdle();
 
 

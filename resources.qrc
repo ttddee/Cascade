@@ -182,5 +182,6 @@
         <file>shaders/isf/White Point Adjust.fs</file>
         <file>shaders/isf/XYZoom.fs</file>
         <file>shaders/isf/Zoom.fs</file>
+        <file>shaders/exposure_comp.spv</file>
     </qresource>
 </RCC>
