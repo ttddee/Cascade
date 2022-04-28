@@ -29,6 +29,7 @@
 
 #include "nodeinput.h"
 #include "nodeoutput.h"
+#include "nodefactory.h"
 #include "log.h"
 
 namespace Cascade {
@@ -63,18 +64,19 @@ NodeGraph::NodeGraph(QWidget* parent)
 
 void NodeGraph::createProject()
 {
-    createNode(NodeType::eRead, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
-    createNode(NodeType::eWrite, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
+    addNode(NodeType::eRead, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
+    addNode(NodeType::eWrite, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
 }
 
-void NodeGraph::createNode(
+void NodeGraph::addNode(
         const NodeType type,
         const NodeGraphPosition position,
         const QString& customName,
         const QPoint coords,
         const bool view)
 {
-    NodeBase* n = new NodeBase(type, this, nullptr, customName);
+    auto* n = NodeFactory::createNode(type, this, nullptr, customName);
+    //NodeBase* n = new NodeBase(type, this, nullptr, customName);
     mScene->addWidget(n);
 
     QPoint nodePos;
@@ -292,7 +294,7 @@ const QPoint NodeGraph::getCoordinatesForPosition(const NodeGraphPosition pos)
 void NodeGraph::selectNode(NodeBase *node)
 {
     mSelectedNode = node;
-    foreach(NodeBase* n, mNodes)
+    foreach(auto* n, mNodes)
     {
         emit requestSetNodeSelected(n, false);
     }
@@ -340,7 +342,7 @@ void NodeGraph::handleNodeCreationRequest(
         const NodeGraphPosition pos,
         const QString& customName)
 {
-    createNode(type, pos, customName);
+    addNode(type, pos, customName);
 }
 
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)
@@ -618,10 +620,11 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
 {
     if (event->button() == Qt::LeftButton)
     {
-        foreach(NodeBase* n, mNodes)
+        foreach(auto* n, mNodes)
         {
             emit requestSetNodeSelected(n, false);
         }
+        mSelectedNode = nullptr;
     }
     if (event->button() == Qt::RightButton)
     {

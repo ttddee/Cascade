@@ -56,7 +56,7 @@ public:
             const NodeType type,
             NodeGraph* graph,
             QWidget *parent = nullptr,
-            const QString& customName = "");
+            const QString& isfName = "");
 
     const bool operator==(const NodeBase* node) const;
 
@@ -66,7 +66,7 @@ public:
 
     NodeProperties* getProperties() const;
     QString getAllPropertyValues() const;
-    QSize getTargetSize() const;
+
     void addNodeToJsonArray(QJsonArray& jsonNodesArray);
 
     NodeOutput* getRgbaOut() const;
@@ -81,8 +81,6 @@ public:
     void setCachedImage(std::unique_ptr<CsImage> image);
 
     void invalidateAllDownstreamNodes();
-
-    bool canBeRendered() const;
 
     void requestUpdate();
 
@@ -111,7 +109,18 @@ public:
     void switchToFirstImage();
     void switchToNextImage();
 
+    // Custom behavior in child classes
+    virtual QSize getTargetSize() const;
+    virtual bool canBeRendered() const;
+
     virtual ~NodeBase();
+
+protected:
+    void setLabeltext(const QString& text);
+
+    std::unique_ptr<NodeProperties> mNodeProperties;
+    Ui::NodeBase *ui;
+    QString mIsfName = "";
 
 private:
     FRIEND_TEST(NodeBaseTest, getAllDownstreamNodes_CorrectNumberOfNodes);
@@ -119,17 +128,13 @@ private:
     FRIEND_TEST(NodeBaseTest, getAllUpstreamNodes_CorrectOrderOfNodes);
 
     // Init
-    void setUpNode(const NodeType nodeType, const QString& cName = "");
+    void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
 
     // Graph interaction
     void getAllDownstreamNodes(std::vector<NodeBase*>& nodes);
     void updateConnectionPositions();
-
-    // Misc
-    void updateCropSizes();
-    void updateRotation();
 
     // Events
     void mousePressEvent(QMouseEvent*) override;
@@ -143,7 +148,6 @@ private:
 
     std::unique_ptr<CsImage> mCachedImage;
 
-    Ui::NodeBase *ui;
     NodeGraph* mNodeGraph;
 
     QString mId;
@@ -155,9 +159,6 @@ private:
     NodeInput* mRgbaFrontIn = nullptr;
     NodeOutput* mRgbaOut = nullptr;
 
-    std::unique_ptr<NodeProperties> mNodeProperties;
-
-    QString mCustomName = "";
     std::vector<unsigned int> mShaderCode;
 
     bool mNeedsUpdate = true;
@@ -167,13 +168,6 @@ private:
     bool mIsDragging = false;
 
     QPoint mOldPos;
-
-    int mLeftCrop = 0;
-    int mTopCrop = 0;
-    int mRightCrop = 0;
-    int mBottomCrop = 0;
-
-    int mRotation = 0;
 
     const QBrush mDefaultColorBrush = QBrush(Config::sDefaultNodeColor);
     const QBrush mSelectedColorBrush = QBrush(Config::sSelectedNodeColor);

@@ -44,6 +44,7 @@ SOURCES += \
     src/codeeditor/QXMLHighlighter.cpp \
     src/colorbutton.cpp \
     src/connection.cpp \
+    src/cropnode.cpp \
     src/docking/DockAreaTabBar.cpp \
     src/docking/DockAreaTitleBar.cpp \
     src/docking/DockAreaWidget.cpp \
@@ -63,6 +64,7 @@ SOURCES += \
     src/docking/ads_globals.cpp \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
     src/isfmanager.cpp \
+    src/isfnode.cpp \
     src/log.cpp \
     src/main.cpp \
     src/mainmenu.cpp \
@@ -79,11 +81,13 @@ SOURCES += \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
+    src/readnode.cpp \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
+    src/resizenode.cpp \
     src/shadercompiler/SpvShaderCompiler.cpp \
     src/slidernoclick.cpp \
     src/uientities/channelselectentity.cpp \
@@ -131,6 +135,7 @@ HEADERS += \
     src/codeeditor/QXMLHighlighter.hpp \
     src/colorbutton.h \
     src/connection.h \
+    src/cropnode.h \
     src/docking/DockAreaTabBar.h \
     src/docking/DockAreaTitleBar.h \
     src/docking/DockAreaTitleBar_p.h \
@@ -152,6 +157,7 @@ HEADERS += \
     src/docking/linux/FloatingWidgetTitleBar.h \
     src/global.h \
     src/isfmanager.h \
+    src/isfnode.h \
     src/log.h \
     src/mainmenu.h \
     src/mainwindow.h \
@@ -159,6 +165,7 @@ HEADERS += \
     src/nodebase.h \
     src/nodecontextmenu.h \
     src/nodedefinitions.h \
+    src/nodefactory.h \
     src/nodegraph.h \
     src/nodegraphcontextmenu.h \
     src/nodegraphutility.h \
@@ -171,6 +178,7 @@ HEADERS += \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
+    src/readnode.h \
     src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
@@ -179,6 +187,7 @@ HEADERS += \
     src/renderer/vulkanhppinclude.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
+    src/resizenode.h \
     src/shadercompiler/DirStackFileIncluder.h \
     src/shadercompiler/SpvShaderCompiler.h \
     src/slidernoclick.h \

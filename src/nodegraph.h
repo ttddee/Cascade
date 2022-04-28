@@ -58,7 +58,7 @@ private:
     void clearGraph();
 
     // Nodes
-    void createNode(
+    void addNode(
             const NodeType type,
             const NodeGraphPosition position,
             const QString& customName = "",

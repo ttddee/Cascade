@@ -35,7 +35,6 @@
 #include "uientities/uientity.h"
 #include "log.h"
 #include "projectmanager.h"
-#include "isfmanager.h"
 
 namespace Cascade {
 
@@ -43,47 +42,38 @@ NodeBase::NodeBase(
         const NodeType type,
         NodeGraph* graph,
         QWidget *parent,
-        const QString& customName)
+        const QString& isfName)
     : QWidget(parent),
-      mNodeType(type),
       ui(new Ui::NodeBase),
+      mNodeType(type),
       mNodeGraph(graph),
       mId(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     ui->setupUi(this);
 
-    setUpNode(type, customName);
+    setUpNode(type);
 
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeBase::nodeHasMoved,
             pm, &ProjectManager::handleProjectIsDirty);
 }
 
-void NodeBase::setUpNode(
-        const NodeType nodeType,
-        const QString& cName)
+void NodeBase::setUpNode(const NodeType nodeType)
 {
-    NodeInitProperties props;
-
-    if (nodeType != NodeType::eIsf)
-    {
-        props = Cascade::getPropertiesForType(nodeType);
-    }
-    else
-    {
-        auto isfManager = &ISFManager::getInstance();
-        props = isfManager->getNodeProperties().at(cName);
-        setShaderCode(isfManager->getShaderCode(cName));
-        mCustomName = cName;
-    }
+    auto props = Cascade::getPropertiesForType(nodeType);
 
     QString label = props.title.toUpper();
-    ui->NodeTitleLabel->setText(label);
+    setLabeltext(label);
 
     createInputs(props);
     createOutputs(props);
 
     mNodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
+}
+
+void NodeBase::setLabeltext(const QString &text)
+{
+    ui->NodeTitleLabel->setText(text);
 }
 
 void NodeBase::createInputs(const NodeInitProperties &props)
@@ -242,15 +232,6 @@ void NodeBase::getAllUpstreamNodes(std::vector<NodeBase*>& nodes)
 
 void NodeBase::requestUpdate()
 {
-    if (mNodeType == NodeType::eCrop)
-    {
-        updateCropSizes();
-    }
-    else if (mNodeType == NodeType::eRotate)
-    {
-        updateRotation();
-    }
-
     mNeedsUpdate = true;
     invalidateAllDownstreamNodes();
 
@@ -292,31 +273,7 @@ void NodeBase::setNeedsUpdate(const bool b)
 
 QSize NodeBase::getTargetSize() const
 {
-    QSize size(0, 0);
-    size = getInputSize();
-
-    if (mNodeType == NodeType::eCrop)
-    {
-        // Crop
-        size.setWidth(size.width() - mLeftCrop - mRightCrop);
-        size.setHeight(size.height() - mTopCrop - mBottomCrop);
-        if(size.width() < 0)
-        {
-            size.setWidth(0);
-        }
-        if (size.height() < 0)
-        {
-            size.setHeight(0);
-        }
-    }
-    if (mNodeType == NodeType::eResize)
-    {
-        // Resize
-        auto vals = getAllPropertyValues().split(",");
-        size.setWidth(vals[0].toInt());
-        size.setHeight(vals[1].toInt());
-    }
-    return size;
+    return getInputSize();;
 }
 
 void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
@@ -343,7 +300,7 @@ void NodeBase::addNodeToJsonArray(QJsonArray& jsonNodesArray)
         { "posy", pos().y() },
         { "properties", jsonProps },
         { "inputs", jsonInputs },
-        { "customname", mCustomName }
+        { "customname", mIsfName }
     };
 
     jsonNodesArray.push_back(jsonNode);
@@ -476,15 +433,7 @@ NodeInput* NodeBase::getNodeInputAtPosition(const QPoint position)
 
 bool NodeBase::canBeRendered() const
 {
-    if (mNodeType == NodeType::eRead)
-    {
-        auto vals = getAllPropertyValues();
-        if (vals.size() == 0)
-        {
-            return false;
-        }
-    }
-    else if (mRgbaBackIn && !mRgbaBackIn->hasConnection())
+    if (mRgbaBackIn && !mRgbaBackIn->hasConnection())
     {
         return false;
     }
@@ -506,21 +455,6 @@ void NodeBase::updateConnectionPositions()
     {
         nodeOut->updateConnections();
     }
-}
-
-void NodeBase::updateCropSizes()
-{
-    auto vals = getAllPropertyValues().split(",");
-    mLeftCrop = vals[0].toInt();
-    mTopCrop = vals[1].toInt();
-    mRightCrop = vals[2].toInt();
-    mBottomCrop = vals[3].toInt();
-}
-
-void NodeBase::updateRotation()
-{
-    auto vals = getAllPropertyValues().split(",");
-    mRotation = vals[0].toInt();
 }
 
 void NodeBase::flushCache()
