@@ -35,6 +35,10 @@ public:
              const QString& customName = "");
 
     bool canBeRendered() const override;
+
+    const int getNumImages();
+    void switchToFirstImage();
+    void switchToNextImage();
 };
 
 } // namespace Cascade

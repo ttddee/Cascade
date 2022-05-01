@@ -58,6 +58,9 @@ private:
 
     WindowManager* mWindowManager;
 
+signals:
+    void nodeHasBeenRendered(Cascade::NodeBase* node);
+
 public slots:
     void handleNodeDisplayRequest(Cascade::NodeBase* node);
     void handleNodeFileSaveRequest(

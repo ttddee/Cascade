@@ -19,6 +19,8 @@
 
 #include "readnode.h"
 
+#include "log.h"
+
 namespace Cascade {
 
 ReadNode::ReadNode(const NodeType type,
@@ -38,6 +40,21 @@ bool ReadNode::canBeRendered() const
         return false;
     }
     return true;
+}
+
+const int ReadNode::getNumImages()
+{
+    return mNodeProperties->getNumImages();
+}
+
+void ReadNode::switchToFirstImage()
+{
+    mNodeProperties->switchToFirstImage();
+}
+
+void ReadNode::switchToNextImage()
+{
+    mNodeProperties->switchToNextImage();
 }
 
 } // namespace Cascade

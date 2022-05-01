@@ -109,16 +109,14 @@ void NodeGraph::addNode(
 
 NodeBase* NodeGraph::loadNode(const NodePersistentProperties& p)
 {
-    NodeBase* n = new NodeBase(p.mNodeType, this, nullptr, p.mCustomName);
+    NodeBase* n = new NodeBase(p.nodeType, this, nullptr, p.customName);
     mScene->addWidget(n);
-    n->move(p.mPos);
-    n->setID(p.mUuid);
+    n->move(p.pos);
     mNodes.push_back(n);
 
     connectNodeSignals(n);
 
-    n->setInputIDs(p.mInputs);
-    n->loadNodePropertyValues(p.mProperties);
+    n->loadNodePropertyValues(p);
 
     return n;
 }
@@ -165,23 +163,23 @@ void NodeGraph::loadProject(const QJsonArray& jsonNodeGraph)
 
         // Set properties to loaded values
         NodePersistentProperties p;
-        p.mNodeType = nodeStrings.key(jsonNode["type"].toString());
-        p.mPos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
-        p.mUuid = jsonNode["uuid"].toString();
-        p.mCustomName = jsonNode["customname"].toString();
+        p.nodeType = nodeStrings.key(jsonNode["type"].toString());
+        p.pos = QPoint(jsonNode["posx"].toInt(), jsonNode["posy"].toInt());
+        p.uuid = jsonNode["uuid"].toString();
+        p.customName = jsonNode["customname"].toString();
 
         // Get UUID for Node Inputs
         QJsonObject ins = jsonNode["inputs"].toObject();
         for (int i = 0; i < ins.size(); i++)
         {
-            p.mInputs[i] = ins.value(QString::number(i)).toString();
+            p.inputs[i] = ins.value(QString::number(i)).toString();
         }
 
         // Load properties to array
         QJsonObject props = jsonNode["properties"].toObject();
         for (int i = 0; i < props.size(); i++)
         {
-            p.mProperties[i] = props.value(QString::number(i)).toString();
+            p.properties[i] = props.value(QString::number(i)).toString();
         }
 
         loadNode(p);
@@ -371,7 +369,7 @@ void NodeGraph::handleNodeOutputLeftClicked(NodeOutput* nodeOut)
 
 void NodeGraph::handleNodeUpdateRequest(NodeBase* node)
 {
-    if (node->isViewed())
+    if (node->getIsViewed())
     {
         emit requestNodeDisplay(node);
     }
@@ -395,11 +393,11 @@ void NodeGraph::handleFileSaveRequest(
         std::vector<NodeBase*> upstreamNodes;
         node->getAllUpstreamNodes(upstreamNodes);
 
-        std::vector<NodeBase*> readNodes;
+        std::vector<ReadNode*> readNodes;
         for (auto& n : mNodes)
         {
             if (n->getType() == NodeType::eRead)
-                readNodes.push_back(n);
+                readNodes.push_back(static_cast<ReadNode*>(n));
         }
 
         // Get how many images we need to render

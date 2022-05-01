@@ -62,6 +62,8 @@ NodeProperties::NodeProperties(
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeProperties::projectIsDirty,
             pm, &ProjectManager::handleProjectIsDirty);
+    connect(this, &NodeProperties::requestNodeUpdate,
+            parentNode, &NodeBase::handleRequestNodeUpdate);
 
     foreach (auto& elem, initProps.uiElements)
     {
@@ -302,7 +304,7 @@ void NodeProperties::loadNodePropertyValues(const QMap<int, QString> &values)
 
 void NodeProperties::handleSomeValueChanged()
 {
-    mParentNode->requestUpdate();
+    emit requestNodeUpdate();
 
     emit projectIsDirty();
 }

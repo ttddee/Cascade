@@ -62,6 +62,7 @@ private:
 
 signals:
     void connectedNodeInputClicked(Cascade::Connection* c);
+    void requestNodeUpdate();
 };
 
 } // namespace Cascade

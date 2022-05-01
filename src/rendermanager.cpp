@@ -220,7 +220,7 @@ void RenderManager::renderNode(NodeBase *node)
             mRenderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
         }
     }
-    node->setNeedsUpdate(false);
+    emit nodeHasBeenRendered(node);
 }
 
 } // namespace Cascade

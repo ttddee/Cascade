@@ -38,6 +38,9 @@ NodeInput::NodeInput(NodeInputType t, QWidget *parent)
         setObjectName("Back");
     else if (t == NodeInputType::eRgbAlpha)
         setObjectName("Alpha");
+
+    connect(this, &NodeInput::requestNodeUpdate,
+            mParentNode, &NodeBase::handleRequestNodeUpdate);
 }
 
 NodeInputType NodeInput::getInputType()
@@ -69,7 +72,7 @@ void NodeInput::addInConnection(Connection* c)
 {
     mInConnection = c;
     updateConnection();
-    mParentNode->requestUpdate();
+    emit requestNodeUpdate();
 }
 
 void NodeInput::addInConnectionNoUpdate(Connection* c)
@@ -81,7 +84,7 @@ void NodeInput::addInConnectionNoUpdate(Connection* c)
 void NodeInput::removeInConnection()
 {
     mInConnection = nullptr;
-    mParentNode->requestUpdate();
+    emit requestNodeUpdate();
 }
 
 QString NodeInput::getID() const

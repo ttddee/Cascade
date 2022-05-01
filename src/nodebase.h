@@ -33,6 +33,7 @@
 #include "windowmanager.h"
 #include "global.h"
 #include "nodecontextmenu.h"
+#include "nodegraphutility.h"
 
 namespace Ui {
 class NodeBase;
@@ -60,54 +61,38 @@ public:
 
     const bool operator==(const NodeBase* node) const;
 
-    const bool isViewed() const;
-
-    NodeInput* getNodeInputAtPosition(const QPoint pos);
+    const NodeType getType() const;
+    const bool getIsViewed() const;
+    const bool getNeedsUpdate() const;
+    const QSize getInputSize() const;
+    const QString getID() const;
 
     NodeProperties* getProperties() const;
+    NodeInput* getNodeInputAtPosition(const QPoint pos);
     QString getAllPropertyValues() const;
+    void getAllUpstreamNodes(std::vector<NodeBase*>& nodes);
+    std::set<Connection*> getAllConnections();
+    NodeInput* getOpenInput() const;
 
     void addNodeToJsonArray(QJsonArray& jsonNodesArray);
 
-    NodeOutput* getRgbaOut() const;
-
     NodeBase* getUpstreamNodeBack() const;
     NodeBase* getUpstreamNodeFront()const;
-
-    void getAllUpstreamNodes(std::vector<NodeBase*>& nodes);
-    std::set<Connection*> getAllConnections();
+    NodeOutput* getRgbaOut() const;
 
     CsImage* getCachedImage() const;
     void setCachedImage(std::unique_ptr<CsImage> image);
 
     void invalidateAllDownstreamNodes();
 
-    void requestUpdate();
-
-    NodeInput* getOpenInput() const;
-    QSize getInputSize() const;
-
-    const NodeType getType() const;
-    const bool getNeedsUpdate() const;
-    void setNeedsUpdate(const bool b); // We don't want this in here
-
-    QString getID() const;
-    void setID(const QString& s);
-
-    void setInputIDs(const QMap<int, QString>& ids);
-
     const std::vector<unsigned int>& getShaderCode();
     void setShaderCode(const std::vector<unsigned int> code);
 
-    void loadNodePropertyValues(const QMap<int, QString>& values);
+    void loadNodePropertyValues(const NodePersistentProperties& p);
 
     NodeInput* findNodeInput(const QString& id);
 
     void flushCache();
-
-    const int getNumImages();
-    void switchToFirstImage();
-    void switchToNextImage();
 
     // Custom behavior in child classes
     virtual QSize getTargetSize() const;
@@ -131,6 +116,8 @@ private:
     void setUpNode(const NodeType nodeType);
     void createInputs(const NodeInitProperties& props);
     void createOutputs(const NodeInitProperties& props);
+    void setID(const QString& s);
+    void setInputIDs(const QMap<int, QString>& ids);
 
     // Graph interaction
     void getAllDownstreamNodes(std::vector<NodeBase*>& nodes);
@@ -143,6 +130,9 @@ private:
     void mouseDoubleClickEvent(QMouseEvent*) override;
     void paintEvent(QPaintEvent*) override;
     void moveEvent(QMoveEvent*) override;
+
+    void requestUpdate();
+    void setNeedsUpdate(const bool b);
 
     const NodeType mNodeType;
 
@@ -189,6 +179,9 @@ public slots:
     void handleSetSelected(Cascade::NodeBase* node, const bool b);
     void handleSetActive(Cascade::NodeBase* node, const bool b);
     void handleSetViewed(Cascade::NodeBase* node, const bool b);
+    void handleRequestNodeUpdate();
+
+    void onNodeHasBeenRendered(Cascade::NodeBase* node);
 };
 
 } // namespace Cascade

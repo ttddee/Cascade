@@ -57,6 +57,7 @@ private:
 
 signals:
     void projectIsDirty();
+    void requestNodeUpdate();
 
 public slots:
     void handleSomeValueChanged();

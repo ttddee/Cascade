@@ -26,7 +26,7 @@ static const QMap<ViewerMode, QString> sViewerModeText =
 {
     { ViewerMode::eFrontRgb,        "RGB Front" },
     { ViewerMode::eBackRgb,         "RGB Back" },
-    { ViewerMode::eInputAlpha,      "Input Alpha" },
+    { ViewerMode::eInputAlpha,      "Alpha Input" },
     { ViewerMode::eOutputRgb,       "RGB Out" },
     { ViewerMode::eOutputAlpha,     "Alpha Out" }
 };

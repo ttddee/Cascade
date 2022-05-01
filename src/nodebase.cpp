@@ -57,6 +57,9 @@ NodeBase::NodeBase(
     ProjectManager* pm = &ProjectManager::getInstance();
     connect(this, &NodeBase::nodeHasMoved,
             pm, &ProjectManager::handleProjectIsDirty);
+    RenderManager* rm = &RenderManager::getInstance();
+    connect(rm, &RenderManager::nodeHasBeenRendered,
+            this, &NodeBase::onNodeHasBeenRendered);
 }
 
 void NodeBase::setUpNode(const NodeType nodeType)
@@ -143,12 +146,12 @@ const bool NodeBase::operator==(const NodeBase* node) const
     return false;
 }
 
-const bool NodeBase::isViewed() const
+const bool NodeBase::getIsViewed() const
 {
     return mIsViewed;
 }
 
-QString NodeBase::getID() const
+const QString NodeBase::getID() const
 {
     return mId;
 }
@@ -176,9 +179,11 @@ void NodeBase::setShaderCode(const std::vector<unsigned int> code)
     mShaderCode = code;
 }
 
-void NodeBase::loadNodePropertyValues(const QMap<int, QString> &values)
+void NodeBase::loadNodePropertyValues(const NodePersistentProperties& p)
 {
-    mNodeProperties->loadNodePropertyValues(values);
+    setID(p.uuid);
+    setInputIDs(p.inputs);
+    mNodeProperties->loadNodePropertyValues(p.properties);
 }
 
 NodeInput* NodeBase::findNodeInput(const QString& id)
@@ -239,7 +244,7 @@ void NodeBase::requestUpdate()
     emit nodeRequestUpdate(this);
 }
 
-QSize NodeBase::getInputSize() const
+const QSize NodeBase::getInputSize() const
 {
     auto upstreamNode = getUpstreamNodeBack();
 
@@ -471,21 +476,6 @@ void NodeBase::flushCache()
     mCachedImage = nullptr;
 }
 
-const int NodeBase::getNumImages()
-{
-    return mNodeProperties->getNumImages();
-}
-
-void NodeBase::switchToFirstImage()
-{
-    mNodeProperties->switchToFirstImage();
-}
-
-void NodeBase::switchToNextImage()
-{
-    mNodeProperties->switchToNextImage();
-}
-
 void NodeBase::handleSetSelected(NodeBase* node, const bool b)
 {
     if (this == node)
@@ -509,6 +499,19 @@ void NodeBase::handleSetViewed(NodeBase* node, const bool b)
     {
         mIsViewed = b;
         update();
+    }
+}
+
+void NodeBase::handleRequestNodeUpdate()
+{
+    requestUpdate();
+}
+
+void NodeBase::onNodeHasBeenRendered(Cascade::NodeBase* node)
+{
+    if (this == node)
+    {
+        setNeedsUpdate(false);
     }
 }
 
