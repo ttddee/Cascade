@@ -35,6 +35,7 @@
 #include "uientities/uientity.h"
 #include "log.h"
 #include "projectmanager.h"
+#include "global.h"
 
 namespace Cascade {
 
@@ -406,6 +407,14 @@ void NodeBase::paintEvent(QPaintEvent *event)
         painter.setClipRect(0, 0, 120, 33, Qt::ReplaceClip);
         painter.fillPath(path, mSelectedColorBrush);
     }
+    if (mIsViewed)
+    {
+        painter.setClipRect(0, 0, size().width(), size().height(), Qt::ReplaceClip);
+        QPoint circlePos(size().width()- 18, size().height() - 18);
+        painter.setBrush(mSelectedColorBrush);
+        painter.setPen(Qt::NoPen);
+        painter.drawEllipse(circlePos, 8, 8);
+    }
 
     Q_UNUSED(event);
 }
@@ -499,6 +508,7 @@ void NodeBase::handleSetViewed(NodeBase* node, const bool b)
     if (this == node)
     {
         mIsViewed = b;
+        update();
     }
 }
 
