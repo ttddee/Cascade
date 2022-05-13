@@ -32,10 +32,10 @@
 #include "nodeoutput.h"
 #include "nodegraph.h"
 #include "connection.h"
-#include "uientities/uientity.h"
-#include "log.h"
-#include "projectmanager.h"
-#include "global.h"
+#include "../uientities/uientity.h"
+#include "../log.h"
+#include "../projectmanager.h"
+#include "../global.h"
 
 namespace Cascade {
 
@@ -139,19 +139,19 @@ void NodeBase::createOutputs(const NodeInitProperties &props)
     }
 }
 
-const bool NodeBase::operator==(const NodeBase* node) const
+bool NodeBase::operator==(const NodeBase* node) const
 {
     if (node->getID() == mId)
         return true;
     return false;
 }
 
-const bool NodeBase::getIsViewed() const
+bool NodeBase::getIsViewed() const
 {
     return mIsViewed;
 }
 
-const QString NodeBase::getID() const
+QString NodeBase::getID() const
 {
     return mId;
 }
@@ -244,7 +244,7 @@ void NodeBase::requestUpdate()
     emit nodeRequestUpdate(this);
 }
 
-const QSize NodeBase::getInputSize() const
+QSize NodeBase::getInputSize() const
 {
     auto upstreamNode = getUpstreamNodeBack();
 
@@ -262,12 +262,12 @@ const QSize NodeBase::getInputSize() const
     return size;
 }
 
-const NodeType NodeBase::getType() const
+NodeType NodeBase::getType() const
 {
     return mNodeType;
 }
 
-const bool NodeBase::getNeedsUpdate() const
+bool NodeBase::getNeedsUpdate() const
 {
     return mNeedsUpdate;
 }

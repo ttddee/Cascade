@@ -24,7 +24,7 @@
 #include <QPen>
 #include <QColor>
 
-#include "log.h"
+#include "../log.h"
 
 namespace Cascade {
 

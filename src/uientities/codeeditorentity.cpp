@@ -23,7 +23,7 @@
 #include "../codeeditor/QGLSLHighlighter.hpp"
 #include "../codeeditor/QSyntaxStyle.hpp"
 
-#include "../nodebase.h"
+#include "../nodegraph/nodebase.h"
 
 namespace Cascade {
 

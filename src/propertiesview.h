@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <QLayout>
 
-#include "nodeproperties.h"
+#include "nodegraph/nodeproperties.h"
 
 namespace Cascade {
 

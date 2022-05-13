@@ -23,8 +23,8 @@
 #include <QObject>
 #include <QWidget>
 
-#include "../nodedefinitions.h"
-#include "../nodeproperties.h"
+#include "../nodegraph/nodedefinitions.h"
+#include "../nodegraph/nodeproperties.h"
 #include "../log.h"
 
 namespace Cascade {

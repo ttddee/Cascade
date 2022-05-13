@@ -21,7 +21,7 @@
 
 #include <QMouseEvent>
 
-#include "../nodeproperties.h"
+#include "../nodegraph/nodeproperties.h"
 
 namespace Cascade {
 

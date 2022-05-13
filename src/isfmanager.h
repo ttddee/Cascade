@@ -26,7 +26,7 @@
 #include <QJsonDocument>
 
 #include "shadercompiler/SpvShaderCompiler.h"
-#include "nodedefinitions.h"
+#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 

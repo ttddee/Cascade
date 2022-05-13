@@ -30,7 +30,7 @@
 #include "nodeinput.h"
 #include "nodeoutput.h"
 #include "nodefactory.h"
-#include "log.h"
+#include "../log.h"
 
 namespace Cascade {
 
@@ -273,7 +273,7 @@ QWidget* NodeGraph::getWidgetFromGraphicsItem(QGraphicsItem *item)
     return nullptr;
 }
 
-const QPoint NodeGraph::getCoordinatesForPosition(const NodeGraphPosition pos)
+QPoint NodeGraph::getCoordinatesForPosition(const NodeGraphPosition pos)
 {
     if (pos == NodeGraphPosition::eRelativeToLastNode)
     {

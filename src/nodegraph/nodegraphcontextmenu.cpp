@@ -20,8 +20,8 @@
 #include "nodegraphcontextmenu.h"
 
 #include "nodedefinitions.h"
-#include "log.h"
-#include "isfmanager.h"
+#include "../log.h"
+#include "../isfmanager.h"
 #include "nodegraph.h"
 
 namespace Cascade {

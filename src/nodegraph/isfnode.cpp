@@ -19,8 +19,8 @@
 
 #include "isfnode.h"
 
-#include "isfmanager.h"
-#include "log.h"
+#include "../isfmanager.h"
+#include "../log.h"
 
 namespace Cascade {
 

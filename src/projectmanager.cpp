@@ -26,7 +26,7 @@
 #include <QMessageBox>
 
 #include "log.h"
-#include "nodedefinitions.h"
+#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 

@@ -31,7 +31,7 @@
 #include "windowmanager.h"
 #include "rendermanager.h"
 #include "vulkanview.h"
-#include "nodegraph.h"
+#include "nodegraph/nodegraph.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "mainmenu.h"

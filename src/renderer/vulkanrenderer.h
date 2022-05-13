@@ -31,8 +31,8 @@
 #include <OpenColorIO/OpenColorIO.h>
 
 #include "renderconfig.h"
-#include "../nodedefinitions.h"
-#include "../nodebase.h"
+#include "../nodegraph/nodedefinitions.h"
+#include "../nodegraph/nodebase.h"
 #include "../windowmanager.h"
 #include "cssettingsbuffer.h"
 #include "csimage.h"

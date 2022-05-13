@@ -43,8 +43,6 @@ SOURCES += \
     src/codeeditor/QSyntaxStyle.cpp \
     src/codeeditor/QXMLHighlighter.cpp \
     src/colorbutton.cpp \
-    src/connection.cpp \
-    src/cropnode.cpp \
     src/docking/DockAreaTabBar.cpp \
     src/docking/DockAreaTitleBar.cpp \
     src/docking/DockAreaWidget.cpp \
@@ -64,30 +62,32 @@ SOURCES += \
     src/docking/ads_globals.cpp \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
     src/isfmanager.cpp \
-    src/isfnode.cpp \
     src/log.cpp \
     src/main.cpp \
     src/mainmenu.cpp \
     src/mainwindow.cpp \
-    src/nodebase.cpp \
-    src/nodecontextmenu.cpp \
-    src/nodegraph.cpp \
-    src/nodegraphcontextmenu.cpp \
-    src/nodeinput.cpp \
-    src/nodeoutput.cpp \
-    src/nodeproperties.cpp \
+    src/nodegraph/connection.cpp \
+    src/nodegraph/cropnode.cpp \
+    src/nodegraph/isfnode.cpp \
+    src/nodegraph/nodebase.cpp \
+    src/nodegraph/nodecontextmenu.cpp \
+    src/nodegraph/nodegraph.cpp \
+    src/nodegraph/nodegraphcontextmenu.cpp \
+    src/nodegraph/nodeinput.cpp \
+    src/nodegraph/nodeoutput.cpp \
+    src/nodegraph/nodeproperties.cpp \
+    src/nodegraph/readnode.cpp \
+    src/nodegraph/resizenode.cpp \
     src/preferencesdialog.cpp \
     src/preferencesmanager.cpp \
     src/projectmanager.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
-    src/readnode.cpp \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
-    src/resizenode.cpp \
     src/shadercompiler/SpvShaderCompiler.cpp \
     src/slidernoclick.cpp \
     src/uientities/channelselectentity.cpp \
@@ -134,8 +134,6 @@ HEADERS += \
     src/codeeditor/QSyntaxStyle.hpp \
     src/codeeditor/QXMLHighlighter.hpp \
     src/colorbutton.h \
-    src/connection.h \
-    src/cropnode.h \
     src/docking/DockAreaTabBar.h \
     src/docking/DockAreaTitleBar.h \
     src/docking/DockAreaTitleBar_p.h \
@@ -157,28 +155,31 @@ HEADERS += \
     src/docking/linux/FloatingWidgetTitleBar.h \
     src/global.h \
     src/isfmanager.h \
-    src/isfnode.h \
     src/log.h \
     src/mainmenu.h \
     src/mainwindow.h \
     src/multithreading.h \
-    src/nodebase.h \
-    src/nodecontextmenu.h \
-    src/nodedefinitions.h \
-    src/nodefactory.h \
-    src/nodegraph.h \
-    src/nodegraphcontextmenu.h \
-    src/nodegraphutility.h \
-    src/nodeinput.h \
-    src/nodeoutput.h \
-    src/nodeproperties.h \
+    src/nodegraph/connection.h \
+    src/nodegraph/cropnode.h \
+    src/nodegraph/isfnode.h \
+    src/nodegraph/nodebase.h \
+    src/nodegraph/nodecontextmenu.h \
+    src/nodegraph/nodedefinitions.h \
+    src/nodegraph/nodefactory.h \
+    src/nodegraph/nodegraph.h \
+    src/nodegraph/nodegraphcontextmenu.h \
+    src/nodegraph/nodegraphutility.h \
+    src/nodegraph/nodeinput.h \
+    src/nodegraph/nodeoutput.h \
+    src/nodegraph/nodeproperties.h \
+    src/nodegraph/readnode.h \
+    src/nodegraph/resizenode.h \
     src/popupmessages.h \
     src/preferencesdialog.h \
     src/preferencesmanager.h \
     src/projectmanager.h \
     src/propertiesheading.h \
     src/propertiesview.h \
-    src/readnode.h \
     src/renderer/cscommandbuffer.h \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
@@ -187,7 +188,6 @@ HEADERS += \
     src/renderer/vulkanhppinclude.h \
     src/renderer/vulkanrenderer.h \
     src/rendermanager.h \
-    src/resizenode.h \
     src/shadercompiler/DirStackFileIncluder.h \
     src/shadercompiler/SpvShaderCompiler.h \
     src/slidernoclick.h \
@@ -216,7 +216,7 @@ HEADERS += \
 
 FORMS += \
     src/mainwindow.ui \
-    src/nodebase.ui \
+    src/nodegraph/nodebase.ui \
     src/propertiesheading.ui \
     src/uientities/channelselectentity.ui \
     src/uientities/checkboxentity.ui \

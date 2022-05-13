@@ -29,9 +29,9 @@
 
 #include "nodedefinitions.h"
 #include "nodeproperties.h"
-#include "renderer/csimage.h"
-#include "windowmanager.h"
-#include "global.h"
+#include "../renderer/csimage.h"
+#include "../windowmanager.h"
+#include "../global.h"
 #include "nodecontextmenu.h"
 #include "nodegraphutility.h"
 
@@ -59,13 +59,13 @@ public:
             QWidget *parent = nullptr,
             const QString& isfName = "");
 
-    const bool operator==(const NodeBase* node) const;
+    bool operator==(const NodeBase* node) const;
 
-    const NodeType getType() const;
-    const bool getIsViewed() const;
-    const bool getNeedsUpdate() const;
-    const QSize getInputSize() const;
-    const QString getID() const;
+    NodeType getType() const;
+    bool getIsViewed() const;
+    bool getNeedsUpdate() const;
+    QSize getInputSize() const;
+    QString getID() const;
 
     NodeProperties* getProperties() const;
     NodeInput* getNodeInputAtPosition(const QPoint pos);

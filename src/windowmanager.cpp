@@ -22,10 +22,10 @@
 #include <QKeyEvent>
 
 #include "vulkanwindow.h"
-#include "nodegraph.h"
+#include "nodegraph/nodegraph.h"
+#include "nodegraph/nodebase.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
-#include "nodebase.h"
 #include "rendermanager.h"
 
 namespace Cascade {

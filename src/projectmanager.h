@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QJsonDocument>
 
-#include "nodegraph.h"
+#include "nodegraph/nodegraph.h"
 
 namespace Cascade {
 

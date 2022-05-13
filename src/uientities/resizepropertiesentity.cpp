@@ -20,7 +20,7 @@
 #include "resizepropertiesentity.h"
 #include "ui_resizepropertiesentity.h"
 
-#include "../nodebase.h"
+#include "../nodegraph/nodebase.h"
 
 namespace Cascade {
 

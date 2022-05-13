@@ -17,44 +17,32 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "readnode.h"
+#include "cropnode.h"
 
-#include "log.h"
+#include "../log.h"
 
 namespace Cascade {
 
-ReadNode::ReadNode(const NodeType type,
+CropNode::CropNode(const NodeType type,
                    NodeGraph* graph,
                    QWidget *parent,
-                   const QString& customName)
-    : NodeBase(type, graph, parent, customName)
+                   const QString& isfName)
+      : NodeBase(type, graph, parent, isfName)
 {
 
 }
 
-bool ReadNode::canBeRendered() const
+QSize CropNode::getTargetSize() const
 {
-    auto vals = getAllPropertyValues();
-    if (vals.size() == 0)
-    {
-        return false;
-    }
-    return true;
-}
+    QSize size(0, 0);
+    size = getInputSize();
 
-const int ReadNode::getNumImages()
-{
-    return mNodeProperties->getNumImages();
-}
+    auto vals = getAllPropertyValues().split(",");
 
-void ReadNode::switchToFirstImage()
-{
-    mNodeProperties->switchToFirstImage();
-}
+    size.setWidth(std::max(1, size.width() - vals[0].toInt() - vals[2].toInt()));
+    size.setHeight(std::max(1, size.height() - vals[1].toInt() - vals[3].toInt()));
 
-void ReadNode::switchToNextImage()
-{
-    mNodeProperties->switchToNextImage();
+    return size;
 }
 
 } // namespace Cascade

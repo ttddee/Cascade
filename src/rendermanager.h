@@ -22,8 +22,8 @@
 
 #include <QObject>
 
-#include "nodebase.h"
-#include "nodedefinitions.h"
+#include "nodegraph/nodebase.h"
+#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade::Renderer
 {

@@ -20,7 +20,7 @@
 #include "mainmenu.h"
 
 #include "mainwindow.h"
-#include "nodedefinitions.h"
+#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 

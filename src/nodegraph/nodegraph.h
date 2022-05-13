@@ -29,8 +29,8 @@
 #include "nodebase.h"
 #include "nodegraphcontextmenu.h"
 #include "connection.h"
-#include "windowmanager.h"
-#include "rendermanager.h"
+#include "../windowmanager.h"
+#include "../rendermanager.h"
 #include "nodegraphutility.h"
 
 namespace Cascade {
@@ -83,7 +83,7 @@ private:
     // Graphics Scene
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
-    const QPoint getCoordinatesForPosition(const NodeGraphPosition pos);
+    QPoint getCoordinatesForPosition(const NodeGraphPosition pos);
 
     // Misc
     void mousePressEvent(QMouseEvent*) override;

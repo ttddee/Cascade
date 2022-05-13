@@ -22,7 +22,7 @@
 
 #include <QMenuBar>
 
-#include "nodegraphutility.h"
+#include "nodegraph/nodegraphutility.h"
 
 namespace Cascade {
 
