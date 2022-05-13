@@ -94,10 +94,6 @@ else
     OS='uname -s'
 fi
 
-
-echo ${OS}
-echo ${fs}
-
 case "$OS" in
     arch)
         deps_arch 
