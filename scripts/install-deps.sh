@@ -14,7 +14,7 @@ external_and_glslang()
     mkdir install
     cd build
     cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-    make -j8
+    make 
     make install
 
     cd ${CASCADE_BASE_DIR}
@@ -60,12 +60,12 @@ deps_arch()
     glew
     freeglut        
     "
-    sudo pacman -S  $packages
+    sudo pacman -S $packages
 }
 deps_fedora()
 {
     local packages="
-    openimageio-devel
+    OpenImageIO-devel
     gtest-devel
     tbb-devel
     qt-creator
@@ -74,6 +74,8 @@ deps_fedora()
     cmake
     glew-devel
     freeglut-devel
+    wget
+    unzip
     "
     sudo dnf install -y $packages
 }
@@ -88,23 +90,29 @@ if test x$OS != x ; then
     OS=$OS
 elif test -f /etc/os-release; then
     OS=`grep ^ID= /etc/os-release | cut -d= -f2`
+else
+    OS='uname -s'
 fi
 
+
+echo ${OS}
+echo ${fs}
+
 case "$OS" in
-     arch)
-          deps_arch 
-          external_and_glslang
-          ;;
-     fedora)
-         deps_fedora
-         external_and_glslang
-         ;;
-     ubuntu|debian)
-         deps_ubuntu
-         external_and_glslang
-         ;;
-     *)
-         echo "OS not supported. You can try to specify OS via OS=NAME sh isntall-deps.sh"
+    arch)
+        deps_arch 
+        external_and_glslang
+        ;;
+    fedora)
+        deps_fedora
+        external_and_glslang
+        ;;
+    ubuntu|debian)
+        deps_ubuntu
+        external_and_glslang
+        ;;
+    *)
+        echo "OS not supported. You can try to specify OS. Run OS=NAME sh isntall-deps.sh"
 
 esac
 
