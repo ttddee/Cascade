@@ -41,9 +41,16 @@
 
 #include <iostream>
 
+#if QT_VERSION > QT_VERSION_CHECK(5,14,0)
+    auto SkipEmptyParts = Qt::SkipEmptyParts;
+#else
+    #include <QString>
+    auto SkipEmptyParts = QT::QString::SkipEmptyParts;
+#endif
+
+
 namespace ads
 {
-
 /**
  * Private data class of CDockOverlay
  */
@@ -806,10 +813,10 @@ void CDockOverlayCross::setIconColors(const QString& Colors)
 		{"Arrow", CDockOverlayCross::ArrowColor},
 		{"Shadow", CDockOverlayCross::ShadowColor}};
 
-    auto ColorList = Colors.split(' ', Qt::SkipEmptyParts);
+    auto ColorList = Colors.split(' ', SkipEmptyParts);
 	for (const auto& ColorListEntry : ColorList)
 	{
-        auto ComponentColor = ColorListEntry.split('=', Qt::SkipEmptyParts);
+        auto ComponentColor = ColorListEntry.split('=', SkipEmptyParts);
 		int Component = ColorCompenentStringMap.value(ComponentColor[0], -1);
 		if (Component < 0)
 		{
