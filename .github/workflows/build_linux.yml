@@ -23,4 +23,6 @@ jobs:
         run: | 
             cd scripts
             sh install-deps.sh 
+            qmake
+            make
             echo "Done"
