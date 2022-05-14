@@ -45,7 +45,7 @@
     auto SkipEmptyParts = Qt::SkipEmptyParts;
 #else
     #include <QString>
-    auto SkipEmptyParts = QT::QString::SkipEmptyParts;
+    auto SkipEmptyParts = Qt::QString::SkipEmptyParts;
 #endif
 
 
