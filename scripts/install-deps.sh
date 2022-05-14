@@ -81,7 +81,7 @@ deps_fedora()
 }
 
 CASCADE_BASE_DIR="$PWD/.."
-EXTERNAL_DIR="${CASCADE_BASE_DIR}/extenal"
+EXTERNAL_DIR="${CASCADE_BASE_DIR}/external"
 
 echo "Cascade directory: ${CASCADE_BASE_DIR}"
 echo "External directory path: ${EXTERNAL_DIR}"
