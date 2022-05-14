@@ -108,7 +108,7 @@ case "$OS" in
         external_and_glslang
         ;;
     *)
-        echo "OS not supported. You can try to specify OS. Run OS=NAME sh isntall-deps.sh"
+        echo "OS not supported. You can try to specify OS. Run OS=NAME sh install-deps.sh"
 
 esac
 
