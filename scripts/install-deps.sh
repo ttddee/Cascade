@@ -14,7 +14,7 @@ external_and_glslang()
     mkdir install
     cd build
     cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-    make -j
+    make
     make install
 
     cd ${EXTERNAL_DIR}
@@ -31,7 +31,7 @@ external_and_glslang()
 
     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
 
-    make -j
+    make
     make install
 
 
