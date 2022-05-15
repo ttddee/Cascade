@@ -14,15 +14,26 @@ external_and_glslang()
     mkdir install
     cd build
     cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-    make 
+    make -j
     make install
 
-    cd ${CASCADE_BASE_DIR}
-    mkdir glslang
+    cd ${EXTERNAL_DIR}
+    git clone https://github.com/KhronosGroup/glslang.git
     cd glslang
-    wget https://github.com/KhronosGroup/glslang/releases/download/master-tot/glslang-master-linux-Debug.zip
-    unzip glslang-master-linux-Debug.zip
-    rm glslang-master-linux-Debug.zip
+    git clone https://github.com/google/googletest.git External/googletest
+
+    cd External/googletest
+    git checkout 0c400f67fcf305869c5fb113dd296eca266c9725
+    cd ../..
+
+
+    ./update_glslang_sources.py
+
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
+
+    make -j
+    make install
+
 
 
 }
