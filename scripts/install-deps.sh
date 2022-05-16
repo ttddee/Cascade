@@ -53,6 +53,7 @@ deps_ubuntu()
     cmake
     libglew-dev
     freeglut3-dev
+    python3-distutils
     "
     sudo apt install -y $packages
 }
