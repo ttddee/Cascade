@@ -90,6 +90,21 @@ QPainterPath Connection::shape() const
     return ret;
 }
 
+void Connection::connectToTarget(NodeInput *in)
+{
+    mTargetInput = in;
+}
+
+NodeOutput* Connection::getSourceOutput()
+{
+    return mSourceOutput;
+}
+
+NodeInput* Connection::getTargetInput()
+{
+    return mTargetInput;
+}
+
 void Connection::updatePosition()
 {
     this->show();
@@ -101,16 +116,6 @@ void Connection::updatePosition()
                   + mSourceOutput->mVisualWidth / 2,
                   mTargetInput->mParentNode->mapToParent(mTargetInput->pos()).y()
                   + mSourceOutput->mVisualHeight / 2);
-}
-
-void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
-{
-    QJsonObject jsonConnection {
-        { "src", mSourceOutput->mParentNode->getID() },
-        { "dst-node", mTargetInput->mParentNode->getID() },
-        { "dst", mTargetInput->getID()}
-    };
-    jsonConnectionsArray.push_back(jsonConnection);
 }
 
 void Connection::updatePosition(const QPoint end)
@@ -126,6 +131,16 @@ void Connection::updatePosition(const QPoint end)
                       end.x() - 5,
                       end.y() - 3);
     }
+}
+
+void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
+{
+    QJsonObject jsonConnection {
+        { "src", mSourceOutput->mParentNode->getID() },
+        { "dst-node", mTargetInput->mParentNode->getID() },
+        { "dst", mTargetInput->getID()}
+    };
+    jsonConnectionsArray.push_back(jsonConnection);
 }
 
 } //namespace Cascade

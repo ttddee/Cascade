@@ -50,8 +50,6 @@ public:
     QString getID() const;
     void setID(const QString& uuid);
 
-    NodeBase* getUpstreamNode();
-
     NodeBase* mParentNode = nullptr;
     Connection* mInConnection = nullptr;
 

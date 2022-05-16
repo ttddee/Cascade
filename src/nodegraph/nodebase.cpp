@@ -209,7 +209,7 @@ NodeBase* NodeBase::getUpstreamNodeBack() const
 {
     if(mRgbaBackIn && mRgbaBackIn->hasConnection())
     {
-        return mRgbaBackIn->mInConnection->mSourceOutput->mParentNode;
+        return mRgbaBackIn->mInConnection->getSourceOutput()->mParentNode;
     }
     return nullptr;
 }
@@ -218,7 +218,7 @@ NodeBase* NodeBase::getUpstreamNodeFront() const
 {
     if(mRgbaFrontIn && mRgbaFrontIn->hasConnection())
     {
-        return mRgbaFrontIn->mInConnection->mSourceOutput->mParentNode;
+        return mRgbaFrontIn->mInConnection->getSourceOutput()->mParentNode;
     }
     return nullptr;
 }
@@ -344,8 +344,8 @@ void NodeBase::getAllDownstreamNodes(std::vector<NodeBase*>& nodes)
     {
         foreach(Connection* c, mRgbaOut->getConnections())
         {
-            nodes.push_back(c->mTargetInput->mParentNode);
-            c->mTargetInput->mParentNode->getAllDownstreamNodes(nodes);
+            nodes.push_back(c->getTargetInput()->mParentNode);
+            c->getTargetInput()->mParentNode->getAllDownstreamNodes(nodes);
         }
     }
 }

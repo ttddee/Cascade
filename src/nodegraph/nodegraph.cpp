@@ -496,8 +496,8 @@ void NodeGraph::destroyOpenConnection()
 
 void NodeGraph::establishConnection(NodeInput *nodeIn)
 {
-    mOpenConnection->mTargetInput = nodeIn;
-    mOpenConnection->mSourceOutput->addConnection(mOpenConnection);
+    mOpenConnection->connectToTarget(nodeIn);
+    mOpenConnection->getSourceOutput()->addConnection(mOpenConnection);
     mConnections.push_back(mOpenConnection);
     nodeIn->addInConnection(mOpenConnection);
     mOpenConnection = nullptr;
@@ -509,8 +509,8 @@ void NodeGraph::loadConnection(NodeOutput* src, NodeInput* dst)
 {
     Connection* c = new Connection(src);
     mScene->addItem(c);
-    c->mTargetInput = dst;
-    c->mSourceOutput->addConnection(c);
+    c->connectToTarget(dst);
+    c->getSourceOutput()->addConnection(c);
     mConnections.push_back(c);
     dst->addInConnectionNoUpdate(c);
 }
@@ -525,8 +525,8 @@ void NodeGraph::deleteConnection(Connection* c)
         }
     }
 
-    c->mSourceOutput->removeConnection(c);
-    c->mTargetInput->removeInConnection();
+    c->getSourceOutput()->removeConnection(c);
+    c->getTargetInput()->removeInConnection();
 
     mScene->removeItem(c);
     delete c;
@@ -543,7 +543,7 @@ NodeBase* NodeGraph::getSelectedNode()
 void NodeGraph::handleConnectedNodeInputClicked(Connection* c)
 {
     mLeftMouseIsDragging = true;
-    auto sourceOut = c->mSourceOutput;
+    auto sourceOut = c->getSourceOutput();
     createOpenConnection(sourceOut);
     deleteConnection(c);
 }

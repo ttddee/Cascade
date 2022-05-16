@@ -38,13 +38,18 @@ public:
     void updatePosition();
     void updatePosition(const QPoint end);
 
-    void addConnectionToJsonObject(QJsonArray& jsonConnectionsArray);
+    void connectToTarget(NodeInput* in);
 
-    NodeOutput* mSourceOutput = nullptr;
-    NodeInput* mTargetInput = nullptr;
+    NodeOutput* getSourceOutput();
+    NodeInput* getTargetInput();
+
+    void addConnectionToJsonObject(QJsonArray& jsonConnectionsArray);
 
 private:
     void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
+
+    NodeOutput* mSourceOutput = nullptr;
+    NodeInput* mTargetInput = nullptr;
 
     const QPen mNormalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
     const QPen mFrontConnectedPen = QPen(Config::sRed, 1);
