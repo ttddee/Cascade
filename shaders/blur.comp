@@ -52,7 +52,7 @@ void main()
 
     if (sb.strength != 0)
     {
-        if (sb.shaderPass == 0.0)
+        if (sb.shaderPass == 1.0)
         {
             for (int i = -strength; i <= strength; ++i)
             {

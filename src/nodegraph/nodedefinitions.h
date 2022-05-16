@@ -314,7 +314,7 @@ const static std::map<NodeType, NodeInitProperties> nodeDefinitions =
           AlphaInputTrait::eAlwaysClear,
           OutputTrait::eRenderUpstreamOrClear,
           ":/shaders/blur_comp.spv",
-          1
+          2
       }
     },
     { NodeType::eColorCorrect,
