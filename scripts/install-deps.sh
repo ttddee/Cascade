@@ -14,15 +14,26 @@ external_and_glslang()
     mkdir install
     cd build
     cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-    make 
+    make
     make install
 
-    cd ${CASCADE_BASE_DIR}
-    mkdir glslang
+    cd ${EXTERNAL_DIR}
+    git clone https://github.com/KhronosGroup/glslang.git
     cd glslang
-    wget https://github.com/KhronosGroup/glslang/releases/download/master-tot/glslang-master-linux-Debug.zip
-    unzip glslang-master-linux-Debug.zip
-    rm glslang-master-linux-Debug.zip
+    git clone https://github.com/google/googletest.git External/googletest
+
+    cd External/googletest
+    git checkout 0c400f67fcf305869c5fb113dd296eca266c9725
+    cd ../..
+
+
+    ./update_glslang_sources.py
+
+    cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
+
+    make
+    make install
+
 
 
 }
@@ -42,6 +53,7 @@ deps_ubuntu()
     cmake
     libglew-dev
     freeglut3-dev
+    python3-distutils
     "
     sudo apt install -y $packages
 }
@@ -81,7 +93,7 @@ deps_fedora()
 }
 
 CASCADE_BASE_DIR="$PWD/.."
-EXTERNAL_DIR="${CASCADE_BASE_DIR}/extenal"
+EXTERNAL_DIR="${CASCADE_BASE_DIR}/external"
 
 echo "Cascade directory: ${CASCADE_BASE_DIR}"
 echo "External directory path: ${EXTERNAL_DIR}"
