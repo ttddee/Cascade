@@ -46,8 +46,7 @@ class CsSliderBoxEntity : public UiEntity
 public:
     explicit CsSliderBoxEntity
     (UIElementType et,
-     QWidget *parent = nullptr,
-     bool onlyUpdateOnSliderRelease = false);
+     QWidget *parent = nullptr);
 
     template<typename T>
     void setMinMaxStepValue(
@@ -56,39 +55,39 @@ public:
             T step,
             T value)
     {
-        baseValue = value;
+        mBaseValue = value;
 
         if (std::is_same<T , double>::value)
         {
-            valueBoxDouble->blockSignals(true);
-            valueBoxDouble->setMinimum(min);
-            valueBoxDouble->setMaximum(max);
-            valueBoxDouble->setSingleStep(step);
-            valueBoxDouble->setValue(value);
-            valueBoxDouble->blockSignals(false);
+            mValueBoxDouble->blockSignals(true);
+            mValueBoxDouble->setMinimum(min);
+            mValueBoxDouble->setMaximum(max);
+            mValueBoxDouble->setSingleStep(step);
+            mValueBoxDouble->setValue(value);
+            mValueBoxDouble->blockSignals(false);
 
-            ui->slider->blockSignals(true);
-            ui->slider->setMinimum(min *= DOUBLE_MULT);
-            ui->slider->setMaximum(max *= DOUBLE_MULT);
-            ui->slider->setSingleStep(step *= DOUBLE_MULT);
-            ui->slider->setValue(value *= DOUBLE_MULT);
-            ui->slider->blockSignals(false);
+            mUi->slider->blockSignals(true);
+            mUi->slider->setMinimum(min *= DOUBLE_MULT);
+            mUi->slider->setMaximum(max *= DOUBLE_MULT);
+            mUi->slider->setSingleStep(step *= DOUBLE_MULT);
+            mUi->slider->setValue(value *= DOUBLE_MULT);
+            mUi->slider->blockSignals(false);
         }
         else
         {
-            valueBoxInt->blockSignals(true);
-            valueBoxInt->setMinimum(min);
-            valueBoxInt->setMaximum(max);
-            valueBoxInt->setSingleStep(step);
-            valueBoxInt->setValue(value);
-            valueBoxInt->blockSignals(false);
+            mValueBoxInt->blockSignals(true);
+            mValueBoxInt->setMinimum(min);
+            mValueBoxInt->setMaximum(max);
+            mValueBoxInt->setSingleStep(step);
+            mValueBoxInt->setValue(value);
+            mValueBoxInt->blockSignals(false);
 
-            ui->slider->blockSignals(true);
-            ui->slider->setMinimum(min);
-            ui->slider->setMaximum(max);
-            ui->slider->setSingleStep(step);
-            ui->slider->setValue(value);
-            ui->slider->blockSignals(false);
+            mUi->slider->blockSignals(true);
+            mUi->slider->setMinimum(min);
+            mUi->slider->setMaximum(max);
+            mUi->slider->setSingleStep(step);
+            mUi->slider->setValue(value);
+            mUi->slider->blockSignals(false);
         }
     }
 
@@ -122,12 +121,11 @@ private:
         {
             val *= DOUBLE_MULT;
         }
-        ui->slider->blockSignals(true);
-        ui->slider->setValue(static_cast<int>(val));
-        ui->slider->blockSignals(false);
+        mUi->slider->blockSignals(true);
+        mUi->slider->setValue(static_cast<int>(val));
+        mUi->slider->blockSignals(false);
 
-        if(!onlyUpdateOnSliderRelease)
-            emit valueChanged();
+        emit valueChanged();
     }
 
     template<typename T>
@@ -135,18 +133,18 @@ private:
     {
         if (elementType == UIElementType::eSliderBoxDouble)
         {
-            valueBoxDouble->blockSignals(true);
-            valueBoxDouble->setValue(val / DOUBLE_MULT);
-            valueBoxDouble->blockSignals(false);
+            mValueBoxDouble->blockSignals(true);
+            mValueBoxDouble->setValue(val / DOUBLE_MULT);
+            mValueBoxDouble->blockSignals(false);
         }
         else
         {
-            valueBoxInt->blockSignals(true);
-            valueBoxInt->setValue(val);
-            valueBoxInt->blockSignals(false);
+            mValueBoxInt->blockSignals(true);
+            mValueBoxInt->setValue(val);
+            mValueBoxInt->blockSignals(false);
         }
-        if(!onlyUpdateOnSliderRelease)
-            emit valueChanged();
+
+        emit valueChanged();
     }
 
     void reset();
@@ -155,19 +153,16 @@ private:
 
     void mouseMoveEvent(QMouseEvent*) override;
 
-    Ui::CsSliderBox *ui;
+    Ui::CsSliderBox *mUi;
 
-    QLabel* nameLabel;
-    QDoubleSpinBox* valueBoxDouble;
-    QSpinBox* valueBoxInt;
+    QLabel* mNameLabel;
+    QDoubleSpinBox* mValueBoxDouble;
+    QSpinBox* mValueBoxInt;
 
-    bool isDragging = false;
-    QPoint lastPos;
-
-    bool isDouble = false;
-
-    float baseValue;
-    bool onlyUpdateOnSliderRelease = false;
+    bool mIsDragging = false;
+    bool mIsDouble = false;
+    float mBaseValue;
+    QPoint mLastPos;
 
 signals:
     void valueChanged();
