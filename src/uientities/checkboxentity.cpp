@@ -24,32 +24,32 @@ namespace Cascade {
 
 CheckBoxEntity::CheckBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::CheckBoxEntity)
+    mUi(new Ui::CheckBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->checkBox, &QCheckBox::stateChanged,
+    connect(mUi->checkBox, &QCheckBox::stateChanged,
             this, &CheckBoxEntity::valueChanged);
 }
 
 const QString CheckBoxEntity::name()
 {
-    return ui->checkBox->text();
+    return mUi->checkBox->text();
 }
 
 void CheckBoxEntity::setName(const QString &name)
 {
-    ui->checkBox->setText(name);
+    mUi->checkBox->setText(name);
 }
 
 void CheckBoxEntity::setChecked(bool b)
 {
-    ui->checkBox->setChecked(b);
+    mUi->checkBox->setChecked(b);
 }
 
 bool CheckBoxEntity::isChecked()
 {
-    return ui->checkBox->isChecked();
+    return mUi->checkBox->isChecked();
 }
 
 void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -60,19 +60,19 @@ void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString CheckBoxEntity::getValuesAsString()
 {
-    return QString::number(ui->checkBox->isChecked());
+    return QString::number(mUi->checkBox->isChecked());
 }
 
 void CheckBoxEntity::loadPropertyValues(const QString &values)
 {
     values.toInt() == 1 ?
-                ui->checkBox->setCheckState(Qt::CheckState::Checked) :
-                ui->checkBox->setCheckState(Qt::CheckState::Unchecked);
+                mUi->checkBox->setCheckState(Qt::CheckState::Checked) :
+                mUi->checkBox->setCheckState(Qt::CheckState::Unchecked);
 }
 
 CheckBoxEntity::~CheckBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

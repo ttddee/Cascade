@@ -26,24 +26,24 @@ namespace Cascade {
 
 FolderBoxEntity::FolderBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::FolderBoxEntity)
+    mUi(new Ui::FolderBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->lineEdit->setText(QCoreApplication::applicationDirPath());
+    mUi->lineEdit->setText(QCoreApplication::applicationDirPath());
 
-    connect(ui->pushButton, &QPushButton::clicked,
+    connect(mUi->pushButton, &QPushButton::clicked,
             this, &FolderBoxEntity::handleFolderButtonClicked);
 }
 
 const QString FolderBoxEntity::name()
 {
-    return ui->label->text();
+    return mUi->label->text();
 }
 
 void FolderBoxEntity::setName(const QString &name)
 {
-    ui->label->setText(name);
+    mUi->label->setText(name);
 }
 
 void FolderBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -54,7 +54,7 @@ void FolderBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString FolderBoxEntity::getValuesAsString()
 {
-    return "\"" +  ui->lineEdit->text() + "\"";
+    return "\"" +  mUi->lineEdit->text() + "\"";
 }
 
 void FolderBoxEntity::loadPropertyValues(const QString &values)
@@ -70,13 +70,13 @@ void FolderBoxEntity::handleFolderButtonClicked()
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
     {
-        ui->lineEdit->setText(dialog.selectedFiles().at(0));
+        mUi->lineEdit->setText(dialog.selectedFiles().at(0));
     }
 }
 
 FolderBoxEntity::~FolderBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

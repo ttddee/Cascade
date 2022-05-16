@@ -54,7 +54,7 @@ public:
     ~LineEditEntity();
 
 private:
-    Ui::LineEditEntity *ui;
+    Ui::LineEditEntity *mUi;
 
 signals:
     void valueChanged();

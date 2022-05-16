@@ -55,14 +55,14 @@ private:
     void updateAttributes();
     void hideAllAttributeElements();
 
-    Ui::WritePropertiesEntity *ui;
+    Ui::WritePropertiesEntity *mUi;
 
-    CsSliderBoxEntity* jpegCompressionSlider;
+    CsSliderBoxEntity* mJpegCompressionSlider;
 
-    QString fileName = "unnamed";
-    QString folder = "";
-    QStringList filetypes = { "jpg", "jp2", "png", "tga", "tif", "exr" };
-    QMap<std::string, std::string> attributes;
+    QString mFileName = "unnamed";
+    QString mFolder = "";
+    QStringList mFiletypes = { "jpg", "jp2", "png", "tga", "tif", "exr" };
+    QMap<std::string, std::string> mAttributes;
 
 signals:
     void requestFileSave(

@@ -53,7 +53,7 @@ public:
     ~ComboBoxEntity();
 
 private:
-    Ui::ComboBoxEntity *ui;
+    Ui::ComboBoxEntity *mUi;
 
 signals:
     void valueChanged();

@@ -51,7 +51,7 @@ public:
     ~ChannelSelectEntity();
 
 private:
-    Ui::ChannelSelectEntity *ui;
+    Ui::ChannelSelectEntity *mUi;
 
 signals:
     void valueChanged();

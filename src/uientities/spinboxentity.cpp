@@ -24,33 +24,33 @@ namespace Cascade {
 
 SpinBoxEntity::SpinBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::SpinBoxEntity)
+    mUi(new Ui::SpinBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(mUi->spinBox, QOverload<int>::of(&QSpinBox::valueChanged),
             this, [this]{ emit valueChanged(); });
-    connect(ui->resetButton, &QPushButton::clicked,
+    connect(mUi->resetButton, &QPushButton::clicked,
             this, &SpinBoxEntity::reset);
 }
 
 const QString SpinBoxEntity::name()
 {
-    return ui->nameLabel->text();
+    return mUi->nameLabel->text();
 }
 
 void SpinBoxEntity::setName(const QString &name)
 {
-    ui->nameLabel->setText(name);
+    mUi->nameLabel->setText(name);
 }
 
 void SpinBoxEntity::setMinMaxStepValue(int min, int max, int step, int value)
 {
-    ui->spinBox->setMinimum(min);
-    ui->spinBox->setMaximum(max);
-    ui->spinBox->setSingleStep(step);
-    ui->spinBox->setValue(value);
-    baseValue = value;
+    mUi->spinBox->setMinimum(min);
+    mUi->spinBox->setMaximum(max);
+    mUi->spinBox->setSingleStep(step);
+    mUi->spinBox->setValue(value);
+    mBaseValue = value;
 }
 
 void SpinBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -61,23 +61,23 @@ void SpinBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 void SpinBoxEntity::reset()
 {
-    ui->spinBox->setValue(baseValue);
+    mUi->spinBox->setValue(mBaseValue);
     emit valueChanged();
 }
 
 QString SpinBoxEntity::getValuesAsString()
 {
-    return QString::number(ui->spinBox->value());
+    return QString::number(mUi->spinBox->value());
 }
 
 void SpinBoxEntity::loadPropertyValues(const QString &values)
 {
-    ui->spinBox->setValue(values.toInt());
+    mUi->spinBox->setValue(values.toInt());
 }
 
 SpinBoxEntity::~SpinBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

@@ -48,7 +48,7 @@ public:
     ~TextBoxEntity();
 
 private:
-    Ui::TextBoxEntity *ui;
+    Ui::TextBoxEntity *mUi;
 };
 
 } // namespace Cascade

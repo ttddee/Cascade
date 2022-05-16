@@ -24,32 +24,32 @@ namespace Cascade {
 
 ColorButtonEntity::ColorButtonEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::ColorButtonEntity)
+    mUi(new Ui::ColorButtonEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->colorButton, &ColorButton::colorChanged,
+    connect(mUi->colorButton, &ColorButton::colorChanged,
                 this, &ColorButtonEntity::handleColorChanged);
 }
 
 QColor ColorButtonEntity::getColor()
 {
-    return ui->colorButton->getColor();
+    return mUi->colorButton->getColor();
 }
 
 void ColorButtonEntity::setColor(QColor c)
 {
-    ui->colorButton->setColor(c);
+    mUi->colorButton->setColor(c);
 }
 
 const QString ColorButtonEntity::name()
 {
-    return ui->label->text();
+    return mUi->label->text();
 }
 
 void ColorButtonEntity::setName(const QString &s)
 {
-    ui->label->setText(s);
+    mUi->label->setText(s);
 }
 
 void ColorButtonEntity::handleColorChanged(QColor c)
@@ -90,7 +90,7 @@ void ColorButtonEntity::selfConnectToValueChanged(NodeProperties *p)
 
 ColorButtonEntity::~ColorButtonEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

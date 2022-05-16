@@ -54,9 +54,9 @@ public:
 private:
     void reset();
 
-    Ui::SpinBoxEntity *ui;
+    Ui::SpinBoxEntity *mUi;
 
-    int baseValue = 0;
+    int mBaseValue = 0;
 
 signals:
     void valueChanged();

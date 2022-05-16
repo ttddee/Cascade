@@ -24,23 +24,23 @@ namespace Cascade {
 
 ChannelSelectEntity::ChannelSelectEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
-    ui(new Ui::ChannelSelectEntity)
+    mUi(new Ui::ChannelSelectEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->redBox, &QCheckBox::toggled,
+    connect(mUi->redBox, &QCheckBox::toggled,
             this, &ChannelSelectEntity::valueChanged);
-    connect(ui->greenBox, &QCheckBox::toggled,
+    connect(mUi->greenBox, &QCheckBox::toggled,
             this, &ChannelSelectEntity::valueChanged);
-    connect(ui->blueBox, &QCheckBox::toggled,
+    connect(mUi->blueBox, &QCheckBox::toggled,
             this, &ChannelSelectEntity::valueChanged);
-    connect(ui->alphaBox, &QCheckBox::toggled,
+    connect(mUi->alphaBox, &QCheckBox::toggled,
             this, &ChannelSelectEntity::valueChanged);
 }
 
 void ChannelSelectEntity::hideAlphaChannel()
 {
-    ui->alphaBox->setHidden(true);
+    mUi->alphaBox->setHidden(true);
 }
 
 void ChannelSelectEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -51,10 +51,10 @@ void ChannelSelectEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString ChannelSelectEntity::getValuesAsString()
 {
-    auto s = QString::number(ui->redBox->isChecked()) + "," +
-             QString::number(ui->greenBox->isChecked()) + "," +
-             QString::number(ui->blueBox->isChecked()) + "," +
-             QString::number(ui->alphaBox->isChecked());
+    auto s = QString::number(mUi->redBox->isChecked()) + "," +
+             QString::number(mUi->greenBox->isChecked()) + "," +
+             QString::number(mUi->blueBox->isChecked()) + "," +
+             QString::number(mUi->alphaBox->isChecked());
     return s;
 }
 
@@ -62,7 +62,7 @@ void ChannelSelectEntity::loadPropertyValues(const QString &values)
 {
     auto split = values.split(",");
     std::vector<QCheckBox*> boxes = {
-        ui->redBox, ui->greenBox, ui->blueBox, ui->alphaBox
+        mUi->redBox, mUi->greenBox, mUi->blueBox, mUi->alphaBox
     };
     for (int i = 0; i < split.size(); i++)
     {
@@ -74,7 +74,7 @@ void ChannelSelectEntity::loadPropertyValues(const QString &values)
 
 ChannelSelectEntity::~ChannelSelectEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

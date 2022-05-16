@@ -24,22 +24,22 @@ namespace Cascade {
 
 TextBrowserEntity::TextBrowserEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::TextBrowserEntity)
+    mUi(new Ui::TextBrowserEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->textBrowser->setReadOnly(true);
+    mUi->textBrowser->setReadOnly(true);
 }
 
 void TextBrowserEntity::setText(const QString &s)
 {
-    ui->textBrowser->setText(s);
+    mUi->textBrowser->setText(s);
 
-    ui->textBrowser->document()->adjustSize();
+    mUi->textBrowser->document()->adjustSize();
 
-    auto size = ui->textBrowser->document()->size().height();
+    auto size = mUi->textBrowser->document()->size().height();
 
-    ui->textBrowser->setFixedHeight(size);
+    mUi->textBrowser->setFixedHeight(size);
 }
 
 QString TextBrowserEntity::getValuesAsString()
@@ -54,7 +54,7 @@ void TextBrowserEntity::loadPropertyValues(const QString &values)
 
 TextBrowserEntity::~TextBrowserEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

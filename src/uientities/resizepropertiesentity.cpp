@@ -26,17 +26,17 @@ namespace Cascade {
 
 ResizePropertiesEntity::ResizePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::ResizePropertiesEntity)
+    mUi(new Ui::ResizePropertiesEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->widthPercent, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+    connect(mUi->widthPercent, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
             this, &ResizePropertiesEntity::widthPercentChanged);
-    connect(ui->heightPercent, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+    connect(mUi->heightPercent, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
             this, &ResizePropertiesEntity::heightPercentChanged);
-    connect(ui->widthPixels, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(mUi->widthPixels, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &ResizePropertiesEntity::widthPixelsChanged);
-    connect(ui->heightPixels, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(mUi->heightPixels, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &ResizePropertiesEntity::heightPixelsChanged);
 }
 
@@ -48,11 +48,11 @@ void ResizePropertiesEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString ResizePropertiesEntity::getValuesAsString()
 {
-    QString s = QString::number(ui->widthPixels->value());
+    QString s = QString::number(mUi->widthPixels->value());
     s.append(",");
-    s.append(QString::number(ui->heightPixels->value()));
+    s.append(QString::number(mUi->heightPixels->value()));
     s.append(",");
-    s.append(QString::number(ui->linkCheckBox->isChecked()));
+    s.append(QString::number(mUi->linkCheckBox->isChecked()));
 
     return s;
 }
@@ -62,25 +62,25 @@ void ResizePropertiesEntity::loadPropertyValues(const QString &values)
     emit valueChanged();
 
     auto split = values.split(",");
-    setSpinBoxNoSignal(ui->widthPixels, split[0].toInt());
-    setSpinBoxNoSignal(ui->heightPixels, split[1].toInt());
+    setSpinBoxNoSignal(mUi->widthPixels, split[0].toInt());
+    setSpinBoxNoSignal(mUi->heightPixels, split[1].toInt());
 }
 
 void ResizePropertiesEntity::handleNodeRequestUpdate()
 {
-    setInputSize(parentNode->getInputSize());
+    setInputSize(mParentNode->getInputSize());
 }
 
 void ResizePropertiesEntity::setParentNode(NodeBase* node)
 {
-    parentNode = node;
+    mParentNode = node;
 }
 
 void ResizePropertiesEntity::setInputSize(const QSize& s)
 {
-    if (inputSize != s)
+    if (mInputSize != s)
     {
-        inputSize = s;
+        mInputSize = s;
         updatePercentWidth();
         updatePercentHeight();
         updatePixelWidth();
@@ -104,17 +104,17 @@ void ResizePropertiesEntity::setDoubleSpinBoxNoSignal(QDoubleSpinBox* box, doubl
 
 void ResizePropertiesEntity::setLinked(bool b)
 {
-    ui->linkCheckBox->setChecked(b);
+    mUi->linkCheckBox->setChecked(b);
 }
 
 void ResizePropertiesEntity::widthPercentChanged()
 {
-    factorX = static_cast<float>(ui->widthPercent->value()) / 100.0;
+    mFactorX = static_cast<float>(mUi->widthPercent->value()) / 100.0;
     updatePixelWidth();
 
-    if (ui->linkCheckBox->isChecked())
+    if (mUi->linkCheckBox->isChecked())
     {
-        factorY = factorX;
+        mFactorY = mFactorX;
         updatePercentHeight();
         updatePixelHeight();
     }
@@ -124,12 +124,12 @@ void ResizePropertiesEntity::widthPercentChanged()
 
 void ResizePropertiesEntity::heightPercentChanged()
 {
-    factorY = static_cast<float>(ui->heightPercent->value()) / 100.0;
+    mFactorY = static_cast<float>(mUi->heightPercent->value()) / 100.0;
     updatePixelHeight();
 
-    if (ui->linkCheckBox->isChecked())
+    if (mUi->linkCheckBox->isChecked())
     {
-        factorX = factorY;
+        mFactorX = mFactorY;
         updatePercentWidth();
         updatePixelWidth();
     }
@@ -139,12 +139,12 @@ void ResizePropertiesEntity::heightPercentChanged()
 
 void ResizePropertiesEntity::widthPixelsChanged()
 {
-    factorX = static_cast<float>(ui->widthPixels->value()) / inputSize.width();
+    mFactorX = static_cast<float>(mUi->widthPixels->value()) / mInputSize.width();
     updatePercentWidth();
 
-    if (ui->linkCheckBox->isChecked())
+    if (mUi->linkCheckBox->isChecked())
     {
-        factorY = factorX;
+        mFactorY = mFactorX;
         updatePercentHeight();
         updatePixelHeight();
     }
@@ -154,12 +154,12 @@ void ResizePropertiesEntity::widthPixelsChanged()
 
 void ResizePropertiesEntity::heightPixelsChanged()
 {
-    factorY = static_cast<float>(ui->heightPixels->value()) / inputSize.height();
+    mFactorY = static_cast<float>(mUi->heightPixels->value()) / mInputSize.height();
     updatePercentHeight();
 
-    if (ui->linkCheckBox->isChecked())
+    if (mUi->linkCheckBox->isChecked())
     {
-        factorX = factorY;
+        mFactorX = mFactorY;
         updatePercentWidth();
         updatePixelWidth();
     }
@@ -169,57 +169,57 @@ void ResizePropertiesEntity::heightPixelsChanged()
 
 void ResizePropertiesEntity::updatePercentWidth()
 {
-    setDoubleSpinBoxNoSignal(ui->widthPercent, factorX * 100);
+    setDoubleSpinBoxNoSignal(mUi->widthPercent, mFactorX * 100);
 }
 
 void ResizePropertiesEntity::updatePercentHeight()
 {
-    setDoubleSpinBoxNoSignal(ui->heightPercent, factorY * 100);
+    setDoubleSpinBoxNoSignal(mUi->heightPercent, mFactorY * 100);
 }
 
 void ResizePropertiesEntity::updatePixelWidth()
 {
-    setSpinBoxNoSignal(ui->widthPixels, inputSize.width() * factorX);
+    setSpinBoxNoSignal(mUi->widthPixels, mInputSize.width() * mFactorX);
 }
 
 void ResizePropertiesEntity::updatePixelHeight()
 {
-    setSpinBoxNoSignal(ui->heightPixels, inputSize.height() * factorY);
+    setSpinBoxNoSignal(mUi->heightPixels, mInputSize.height() * mFactorY);
 }
 
 double ResizePropertiesEntity::getWidthPercent() const
 {
-    return ui->widthPercent->value();
+    return mUi->widthPercent->value();
 }
 
 double ResizePropertiesEntity::getHeightPercent() const
 {
-    return ui->heightPercent->value();
+    return mUi->heightPercent->value();
 }
 
 void ResizePropertiesEntity::setWidthPercent(const double d)
 {
-    ui->widthPercent->setValue(d);
+    mUi->widthPercent->setValue(d);
 }
 
 void ResizePropertiesEntity::setHeightPercent(const double d)
 {
-    ui->heightPercent->setValue(d);
+    mUi->heightPercent->setValue(d);
 }
 
 void ResizePropertiesEntity::setWidthPixels(const int i)
 {
-    ui->widthPixels->setValue(i);
+    mUi->widthPixels->setValue(i);
 }
 
 void ResizePropertiesEntity::setHeightPixels(const int i)
 {
-    ui->heightPixels->setValue(i);
+    mUi->heightPixels->setValue(i);
 }
 
 ResizePropertiesEntity::~ResizePropertiesEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

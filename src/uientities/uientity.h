@@ -42,7 +42,7 @@ public:
 
     virtual const QString name();
 
-    const UIElementType elementType;
+    const UIElementType mElementType;
 };
 
 } // namespace Cascade

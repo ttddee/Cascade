@@ -24,27 +24,27 @@ namespace Cascade {
 
 LineEditEntity::LineEditEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::LineEditEntity)
+    mUi(new Ui::LineEditEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->lineEdit, &QLineEdit::editingFinished,
+    connect(mUi->lineEdit, &QLineEdit::editingFinished,
             this, &LineEditEntity::valueChanged);
 }
 
 const QString LineEditEntity::name()
 {
-    return ui->label->text();
+    return mUi->label->text();
 }
 
 void LineEditEntity::setName(const QString &name)
 {
-    ui->label->setText(name);
+    mUi->label->setText(name);
 }
 
 void LineEditEntity::setText(const QString &text)
 {
-    ui->lineEdit->setText(text);
+    mUi->lineEdit->setText(text);
 }
 
 void LineEditEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -55,7 +55,7 @@ void LineEditEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString LineEditEntity::getValuesAsString()
 {
-    return "\"" + ui->lineEdit->text() + "\"";
+    return "\"" + mUi->lineEdit->text() + "\"";
 }
 
 void LineEditEntity::loadPropertyValues(const QString &values)
@@ -65,7 +65,7 @@ void LineEditEntity::loadPropertyValues(const QString &values)
 
 LineEditEntity::~LineEditEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } //namespace Cascade

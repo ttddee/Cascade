@@ -54,7 +54,7 @@ public:
     ~CheckBoxEntity();
 
 private:
-    Ui::CheckBoxEntity *ui;
+    Ui::CheckBoxEntity *mUi;
 
 signals:
     void valueChanged();

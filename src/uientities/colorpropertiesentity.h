@@ -47,9 +47,9 @@ public:
     ~ColorPropertiesEntity();
 
 private:
-    Ui::ColorPropertiesEntity *ui;
+    Ui::ColorPropertiesEntity *mUi;
 
-    std::vector<CsSliderBoxEntity*> uiItems;
+    std::vector<CsSliderBoxEntity*> mUiItems;
 
 signals:
     void valueChanged();

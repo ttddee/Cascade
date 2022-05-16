@@ -38,7 +38,7 @@ CsSliderBoxEntity::CsSliderBoxEntity(
     mNameLabel->setObjectName("nameLabel");
     mUi->gridLayout->addWidget(mNameLabel, 0, 0, Qt::AlignLeft | Qt::AlignVCenter);
 
-    if (elementType == UIElementType::eSliderBoxDouble)
+    if (mElementType == UIElementType::eSliderBoxDouble)
     {
         mValueBoxDouble = new QDoubleSpinBox(this);
         mValueBoxDouble->setButtonSymbols(QAbstractSpinBox::NoButtons);
@@ -60,7 +60,7 @@ CsSliderBoxEntity::CsSliderBoxEntity(
     connect(mUi->slider, &SliderNoClick::valueChanged,
             this, &CsSliderBoxEntity::handleSliderValueChanged);
 
-    if (elementType == UIElementType::eSliderBoxDouble)
+    if (mElementType == UIElementType::eSliderBoxDouble)
         connect(mValueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
                 this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
     else
@@ -86,7 +86,7 @@ void CsSliderBoxEntity::setName(const QString &name)
 
 QString CsSliderBoxEntity::getValuesAsString()
 {
-    if (elementType == UIElementType::eSliderBoxDouble)
+    if (mElementType == UIElementType::eSliderBoxDouble)
         return QString::number(mUi->slider->value() / DOUBLE_MULT);
     else
         return QString::number(mUi->slider->value());
@@ -107,7 +107,7 @@ void CsSliderBoxEntity::handleSliderValueChanged()
 
 void CsSliderBoxEntity::handleSpinBoxValueChanged()
 {
-    if (elementType == UIElementType::eSliderBoxDouble)
+    if (mElementType == UIElementType::eSliderBoxDouble)
         setSliderNoSignal(mValueBoxDouble->value());
     else
         setSliderNoSignal(mValueBoxInt->value());
@@ -115,7 +115,7 @@ void CsSliderBoxEntity::handleSpinBoxValueChanged()
 
 void CsSliderBoxEntity::reset()
 {
-    if (elementType == UIElementType::eSliderBoxDouble)
+    if (mElementType == UIElementType::eSliderBoxDouble)
         mValueBoxDouble->setValue(mBaseValue);
     else
         mValueBoxInt->setValue(mBaseValue);

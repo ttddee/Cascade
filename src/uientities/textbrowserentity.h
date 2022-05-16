@@ -46,7 +46,7 @@ public:
     ~TextBrowserEntity();
 
 private:
-    Ui::TextBrowserEntity *ui;
+    Ui::TextBrowserEntity *mUi;
 };
 
 } // namespace Cascade

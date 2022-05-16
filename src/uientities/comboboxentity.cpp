@@ -24,31 +24,31 @@ namespace Cascade {
 
 ComboBoxEntity::ComboBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::ComboBoxEntity)
+    mUi(new Ui::ComboBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    connect(ui->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(mUi->comboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, [this]{ emit valueChanged();});
 }
 
 const QString ComboBoxEntity::name()
 {
-    return ui->label->text();
+    return mUi->label->text();
 }
 
 void ComboBoxEntity::setName(const QString &name)
 {
-    ui->label->setText(name);
+    mUi->label->setText(name);
 }
 
 void ComboBoxEntity::setOptions(const std::vector<QString> options, int index)
 {
     foreach(auto& o, options)
     {
-        ui->comboBox->addItem(o);
+        mUi->comboBox->addItem(o);
     }
-    ui->comboBox->setCurrentIndex(index);
+    mUi->comboBox->setCurrentIndex(index);
 }
 
 void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -59,17 +59,17 @@ void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString ComboBoxEntity::getValuesAsString()
 {
-    return QString::number(ui->comboBox->currentIndex());
+    return QString::number(mUi->comboBox->currentIndex());
 }
 
 void ComboBoxEntity::loadPropertyValues(const QString &values)
 {
-    ui->comboBox->setCurrentIndex(values.toInt());
+    mUi->comboBox->setCurrentIndex(values.toInt());
 }
 
 ComboBoxEntity::~ComboBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

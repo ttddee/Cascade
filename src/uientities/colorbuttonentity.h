@@ -55,7 +55,7 @@ public:
     ~ColorButtonEntity();
 
 private:
-    Ui::ColorButtonEntity *ui;
+    Ui::ColorButtonEntity *mUi;
 
 private slots:
     void handleColorChanged(QColor);

@@ -46,7 +46,7 @@ public:
     ~SeparatorEntity();
 
 private:
-    Ui::SeparatorEntity *ui;
+    Ui::SeparatorEntity *mUi;
 };
 
 } // namespace Cascade

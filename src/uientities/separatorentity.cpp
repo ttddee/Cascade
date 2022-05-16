@@ -24,9 +24,9 @@ namespace Cascade {
 
 SeparatorEntity::SeparatorEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::SeparatorEntity)
+    mUi(new Ui::SeparatorEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 }
 
 QString SeparatorEntity::getValuesAsString()
@@ -41,7 +41,7 @@ void SeparatorEntity::loadPropertyValues(const QString &values)
 
 SeparatorEntity::~SeparatorEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

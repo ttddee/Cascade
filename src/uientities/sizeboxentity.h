@@ -53,21 +53,7 @@ private:
     void hideCustomSizeElements();
     void unHideCustomSizeElements();
 
-    Ui::SizeBoxEntity *ui;
-
-    QMap<QString, QPair<int, int>> sizePresets =
-    {
-        { "NTSC", { 720, 486 } },
-        { "PAL", { 720, 576 } },
-        { "HD 720p", { 1280, 720 } },
-        { "HD 1080p", { 1920, 1080 } },
-        { "2K", { 2048, 1024 } },
-        { "4K", { 4096, 2160 } },
-        { "256 Square", { 256, 256 } },
-        { "512 Square", { 512, 512 } },
-        { "1K Square", { 1024, 1024 } },
-        { "2K Square", { 2048, 2048 } }
-    };
+    Ui::SizeBoxEntity *mUi;
 
 signals:
     void valueChanged();

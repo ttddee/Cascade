@@ -46,19 +46,19 @@ ListItem::~ListItem()
 
 FileBoxEntity::FileBoxEntity(UIElementType et, QWidget *parent)
     : UiEntity(et, parent),
-    ui(new Ui::FileBoxEntity)
+    mUi(new Ui::FileBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
 #ifdef QT_DEBUG
     addEntries(QStringList("C:\\Users\\ryzen\\Cascade\\images\\bay.jpg"));
 #endif
 
-    connect(ui->loadButton, &QPushButton::clicked,
+    connect(mUi->loadButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleLoadButtonClicked);
-    connect(ui->deleteButton, &QPushButton::clicked,
+    connect(mUi->deleteButton, &QPushButton::clicked,
             this, &FileBoxEntity::handleDeleteButtonClicked);
-    connect(ui->fileListWidget, &QListWidget::currentItemChanged,
+    connect(mUi->fileListWidget, &QListWidget::currentItemChanged,
             this, &FileBoxEntity::valueChanged);
 }
 
@@ -81,9 +81,9 @@ void FileBoxEntity::addEntries(const QStringList& entries)
     {
         ListItem *item = new ListItem();
         item->setText(path);
-        int idx = ui->fileListWidget->count();
-        ui->fileListWidget->insertItem(idx, item);
-        ui->fileListWidget->setCurrentRow(idx);
+        int idx = mUi->fileListWidget->count();
+        mUi->fileListWidget->insertItem(idx, item);
+        mUi->fileListWidget->setCurrentRow(idx);
 
         if (!fileExists(path))
         {
@@ -95,12 +95,12 @@ void FileBoxEntity::addEntries(const QStringList& entries)
 
 void FileBoxEntity::deleteCurrentEntry()
 {
-    int row = ui->fileListWidget->currentRow();
-    delete ui->fileListWidget->takeItem(row);
+    int row = mUi->fileListWidget->currentRow();
+    delete mUi->fileListWidget->takeItem(row);
 
     if (row > 0)
     {
-        ui->fileListWidget->setCurrentRow(row - 1);
+        mUi->fileListWidget->setCurrentRow(row - 1);
     }
     emit valueChanged();
 }
@@ -114,13 +114,13 @@ void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 QString FileBoxEntity::getValuesAsString()
 {
     QString str;
-    for (int i = 0; i < ui->fileListWidget->count(); ++i)
+    for (int i = 0; i < mUi->fileListWidget->count(); ++i)
     {
-        str.append(ui->fileListWidget->item(i)->text());
+        str.append(mUi->fileListWidget->item(i)->text());
         str.append(",");
     }
-    if (ui->fileListWidget->count() > 0)
-        str.append(QString::number(ui->fileListWidget->currentRow()));
+    if (mUi->fileListWidget->count() > 0)
+        str.append(QString::number(mUi->fileListWidget->currentRow()));
 
     return str;
 }
@@ -140,19 +140,19 @@ bool FileBoxEntity::fileExists(const QString& path)
 
 int FileBoxEntity::getNumImages()
 {
-    return ui->fileListWidget->count();
+    return mUi->fileListWidget->count();
 }
 
 void FileBoxEntity::switchToFirstImage()
 {
-    ui->fileListWidget->setCurrentRow(0);
+    mUi->fileListWidget->setCurrentRow(0);
 }
 
 void FileBoxEntity::switchToNextImage()
 {
-    int count = ui->fileListWidget->count();
-    if (ui->fileListWidget->currentRow() < (count - 1))
-        ui->fileListWidget->setCurrentRow(ui->fileListWidget->currentRow() + 1);
+    int count = mUi->fileListWidget->count();
+    if (mUi->fileListWidget->currentRow() < (count - 1))
+        mUi->fileListWidget->setCurrentRow(mUi->fileListWidget->currentRow() + 1);
 }
 
 void FileBoxEntity::handleDeleteButtonClicked()
@@ -162,7 +162,7 @@ void FileBoxEntity::handleDeleteButtonClicked()
 
 FileBoxEntity::~FileBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

@@ -24,16 +24,16 @@ namespace Cascade {
 
 TextBoxEntity::TextBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::TextBoxEntity)
+    mUi(new Ui::TextBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->textEdit->setReadOnly(true);
+    mUi->textEdit->setReadOnly(true);
 }
 
 void TextBoxEntity::setText(const QString &s)
 {
-    ui->textEdit->document()->setPlainText(s);
+    mUi->textEdit->document()->setPlainText(s);
 }
 
 QString TextBoxEntity::getValuesAsString()
@@ -48,7 +48,7 @@ void TextBoxEntity::loadPropertyValues(const QString &values)
 
 TextBoxEntity::~TextBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

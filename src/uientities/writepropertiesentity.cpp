@@ -28,33 +28,33 @@ namespace Cascade {
 
 WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::WritePropertiesEntity)
+    mUi(new Ui::WritePropertiesEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->fileNameEdit->setText(this->fileName);
+    mUi->fileNameEdit->setText(this->mFileName);
 
-    foreach(auto& t, filetypes)
+    foreach(auto& t, mFiletypes)
     {
-        ui->fileTypeBox->addItem(t);
+        mUi->fileTypeBox->addItem(t);
     }
 
-    jpegCompressionSlider = new CsSliderBoxEntity(
+    mJpegCompressionSlider = new CsSliderBoxEntity(
                 UIElementType::eSliderBoxInt,
                 this);
-    jpegCompressionSlider->setName("Quality");
-    jpegCompressionSlider->setMinMaxStepValue(1, 100, 1, 100);
-    ui->verticalLayout->insertWidget(4, jpegCompressionSlider);
+    mJpegCompressionSlider->setName("Quality");
+    mJpegCompressionSlider->setMinMaxStepValue(1, 100, 1, 100);
+    mUi->verticalLayout->insertWidget(4, mJpegCompressionSlider);
 
-    connect(ui->fileNameEdit, &QLineEdit::textChanged,
+    connect(mUi->fileNameEdit, &QLineEdit::textChanged,
             this, &WritePropertiesEntity::handleFileNametextChanged);
-    connect(ui->setFolderButton, &QPushButton::clicked,
+    connect(mUi->setFolderButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSetFolderButtonClicked);
-    connect(ui->saveImageButton, &QPushButton::clicked,
+    connect(mUi->saveImageButton, &QPushButton::clicked,
             this, &WritePropertiesEntity::handleSaveFileButtonClicked);
-    connect(ui->fileTypeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(mUi->fileTypeBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &WritePropertiesEntity::handleFileTypeChanged);
-    connect(jpegCompressionSlider, &CsSliderBoxEntity::valueChanged,
+    connect(mJpegCompressionSlider, &CsSliderBoxEntity::valueChanged,
             this, &WritePropertiesEntity::updateAttributes);
 
     updateAttributes();
@@ -72,15 +72,15 @@ void WritePropertiesEntity::selfConnectToRequestFileSave(NodeProperties *p)
 
 QString WritePropertiesEntity::getValuesAsString()
 {
-    QString str = folder;
+    QString str = mFolder;
     str.append(",");
-    str.append(QString::number(ui->fileTypeBox->currentIndex()));
+    str.append(QString::number(mUi->fileTypeBox->currentIndex()));
     str.append(",");
-    str.append(fileName),
+    str.append(mFileName),
     str.append(","),
-    str.append(QString::number(ui->batchCheckBox->isChecked()));
+    str.append(QString::number(mUi->batchCheckBox->isChecked()));
     str.append(","),
-    str.append(jpegCompressionSlider->getValuesAsString());
+    str.append(mJpegCompressionSlider->getValuesAsString());
 
     return str;
 }
@@ -93,59 +93,59 @@ void WritePropertiesEntity::loadPropertyValues(const QString &values)
         setFolder(split[0]);
     else
         setFolder("");
-    ui->fileTypeBox->setCurrentIndex(split[1].toInt());
+    mUi->fileTypeBox->setCurrentIndex(split[1].toInt());
     setFileName(split[2]);
-    ui->batchCheckBox->setChecked(split[3].toInt());
-    jpegCompressionSlider->setMinMaxStepValue(1, 100, 1, split[4].toInt());
+    mUi->batchCheckBox->setChecked(split[3].toInt());
+    mJpegCompressionSlider->setMinMaxStepValue(1, 100, 1, split[4].toInt());
 }
 
 void WritePropertiesEntity::setFileName(const QString& f)
 {
-    fileName = f;
+    mFileName = f;
     updateFileNameLabel();
 }
 
 void WritePropertiesEntity::setFolder(const QString& f)
 {
-    folder = f;
+    mFolder = f;
     updateFileNameLabel();
 
     auto parts = f.split("/");
-    ui->folderLabel->setText(parts[parts.size() - 1]);
+    mUi->folderLabel->setText(parts[parts.size() - 1]);
 }
 
 void WritePropertiesEntity::updateFileNameLabel()
 {
-    QString text = fileName + "." + ui->fileTypeBox->currentText();
-    ui->fileNameLabel->setText(text);
+    QString text = mFileName + "." + mUi->fileTypeBox->currentText();
+    mUi->fileNameLabel->setText(text);
 }
 
 void WritePropertiesEntity::updateAttributes()
 {
-    attributes.clear();
-    if (ui->fileTypeBox->currentText() == "jpg")
+    mAttributes.clear();
+    if (mUi->fileTypeBox->currentText() == "jpg")
     {
-        attributes.insert("Compression", "jpeg:" +
-            jpegCompressionSlider->getValuesAsString().toStdString());
+        mAttributes.insert("Compression", "jpeg:" +
+            mJpegCompressionSlider->getValuesAsString().toStdString());
     }
 }
 
 void WritePropertiesEntity::hideAllAttributeElements()
 {
-    jpegCompressionSlider->setVisible(false);
+    mJpegCompressionSlider->setVisible(false);
 }
 
 void WritePropertiesEntity::handleFileNametextChanged()
 {
-    setFileName(ui->fileNameEdit->text());
+    setFileName(mUi->fileNameEdit->text());
 }
 
 void WritePropertiesEntity::handleFileTypeChanged()
 {
     this->hideAllAttributeElements();
-    if (ui->fileTypeBox->currentText() == "jpg")
+    if (mUi->fileTypeBox->currentText() == "jpg")
     {
-        jpegCompressionSlider->setVisible(true);
+        mJpegCompressionSlider->setVisible(true);
     }
 
     updateFileNameLabel();
@@ -166,13 +166,13 @@ void WritePropertiesEntity::handleSetFolderButtonClicked()
 
 void WritePropertiesEntity::handleSaveFileButtonClicked()
 {
-    if (folder != "")
+    if (mFolder != "")
     {
         emit requestFileSave(
-                    folder + "/" + fileName,
-                    ui->fileTypeBox->currentText(),
-                    attributes,
-                    ui->batchCheckBox->isChecked());
+                    mFolder + "/" + mFileName,
+                    mUi->fileTypeBox->currentText(),
+                    mAttributes,
+                    mUi->batchCheckBox->isChecked());
     }
     else
     {
@@ -182,7 +182,7 @@ void WritePropertiesEntity::handleSaveFileButtonClicked()
 
 WritePropertiesEntity::~WritePropertiesEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

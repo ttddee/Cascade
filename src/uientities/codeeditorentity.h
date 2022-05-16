@@ -47,16 +47,16 @@ public:
     void setParentNode(NodeBase* node);
 
 private:
-    QVBoxLayout* layout;
-    QCompleter* completer;
-    QStyleSyntaxHighlighter* highlighter;
-    QSyntaxStyle* style;
-    QSplitter* splitter;
-    QCodeEditor* codeEditor;
-    QTextEdit* debugOutput;
-    SpvCompiler compiler;
+    QVBoxLayout* mLayout;
+    QCompleter* mCompleter;
+    QStyleSyntaxHighlighter* mHighlighter;
+    QSyntaxStyle* mStyle;
+    QSplitter* mSplitter;
+    QCodeEditor* mCodeEditor;
+    QTextEdit* mDebugOutput;
+    SpvCompiler mCompiler;
 
-    NodeBase* parentNode;
+    NodeBase* mParentNode;
 
 
 signals:

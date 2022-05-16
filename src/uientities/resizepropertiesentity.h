@@ -88,13 +88,13 @@ private:
     void setSpinBoxNoSignal(QSpinBox* box, int i);
     void setDoubleSpinBoxNoSignal(QDoubleSpinBox* box, double d);
 
-    Ui::ResizePropertiesEntity *ui;
+    Ui::ResizePropertiesEntity *mUi;
 
-    NodeBase* parentNode;
-    QSize inputSize = QSize(0, 0);
+    NodeBase* mParentNode;
+    QSize mInputSize = QSize(0, 0);
 
-    double factorX = 1.0;
-    double factorY = 1.0;
+    double mFactorX = 1.0;
+    double mFactorY = 1.0;
 
 signals:
     void valueChanged();

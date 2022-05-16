@@ -72,7 +72,7 @@ private:
     void deleteCurrentEntry();
     bool fileExists(const QString& path);
 
-    Ui::FileBoxEntity *ui;
+    Ui::FileBoxEntity *mUi;
 
 signals:
     void valueChanged();

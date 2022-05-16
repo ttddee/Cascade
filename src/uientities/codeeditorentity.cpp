@@ -30,34 +30,34 @@ namespace Cascade {
 CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent)
 {
-    layout = new QVBoxLayout();
-    layout->setAlignment(Qt::AlignTop);
-    layout->setContentsMargins(QMargins(0,0,0,0));
-    layout->setSpacing(15);
-    this->setLayout(layout);
+    mLayout = new QVBoxLayout();
+    mLayout->setAlignment(Qt::AlignTop);
+    mLayout->setContentsMargins(QMargins(0,0,0,0));
+    mLayout->setSpacing(15);
+    this->setLayout(mLayout);
 
-    completer = new QGLSLCompleter(this);
-    highlighter = new QGLSLHighlighter;
-    style = QSyntaxStyle::defaultStyle();
+    mCompleter = new QGLSLCompleter(this);
+    mHighlighter = new QGLSLHighlighter;
+    mStyle = QSyntaxStyle::defaultStyle();
 
-    splitter = new QSplitter(this);
-    splitter->setOrientation(Qt::Vertical);
-    splitter->setObjectName("CodeEditSplitter");
+    mSplitter = new QSplitter(this);
+    mSplitter->setOrientation(Qt::Vertical);
+    mSplitter->setObjectName("CodeEditSplitter");
 
-    codeEditor = new QCodeEditor(this);
-    codeEditor->setCompleter(completer);
-    codeEditor->setHighlighter(highlighter);
-    codeEditor->setSyntaxStyle(style);
-    splitter->addWidget(codeEditor);
+    mCodeEditor = new QCodeEditor(this);
+    mCodeEditor->setCompleter(mCompleter);
+    mCodeEditor->setHighlighter(mHighlighter);
+    mCodeEditor->setSyntaxStyle(mStyle);
+    mSplitter->addWidget(mCodeEditor);
 
-    debugOutput = new QTextEdit(this);
-    debugOutput->setReadOnly(true);
-    splitter->addWidget(debugOutput);
+    mDebugOutput = new QTextEdit(this);
+    mDebugOutput->setReadOnly(true);
+    mSplitter->addWidget(mDebugOutput);
 
-    splitter->setStretchFactor(0, 3);
-    splitter->setStretchFactor(1, 1);
+    mSplitter->setStretchFactor(0, 3);
+    mSplitter->setStretchFactor(1, 1);
 
-    layout->addWidget(splitter);
+    mLayout->addWidget(mSplitter);
 
     QString noopShader(
             "#version 430\n"
@@ -83,9 +83,9 @@ CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
             "    imageStore(outputImage, pixelCoords, result);\n"
             "}");
 
-    codeEditor->setText(noopShader);
+    mCodeEditor->setText(noopShader);
 
-    connect(codeEditor, &QCodeEditor::textChanged,
+    connect(mCodeEditor, &QCodeEditor::textChanged,
             this, &CodeEditorEntity::handleTextChanged);
 }
 
@@ -97,36 +97,36 @@ void CodeEditorEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString CodeEditorEntity::getValuesAsString()
 {
-    return codeEditor->toPlainText();
+    return mCodeEditor->toPlainText();
 }
 
 void CodeEditorEntity::loadPropertyValues(const QString &values)
 {
-    codeEditor->setText(values);
+    mCodeEditor->setText(values);
 }
 
 void CodeEditorEntity::handleTextChanged()
 {
-    QByteArray bytes = codeEditor->toPlainText().toLocal8Bit();
+    QByteArray bytes = mCodeEditor->toPlainText().toLocal8Bit();
     const char* cStr = bytes.data();
 
-    if (compiler.compileGLSLFromCode(cStr, "comp"))
+    if (mCompiler.compileGLSLFromCode(cStr, "comp"))
     {
-        debugOutput->setText("Done.");
-        parentNode->setShaderCode(compiler.getSpirV());
+        mDebugOutput->setText("Done.");
+        mParentNode->setShaderCode(mCompiler.getSpirV());
 
         emit valueChanged();
     }
     else
     {
-        debugOutput->setText(QString::fromStdString(compiler.getError()));
+        mDebugOutput->setText(QString::fromStdString(mCompiler.getError()));
     }
-    debugOutput->update();
+    mDebugOutput->update();
 }
 
 void CodeEditorEntity::setParentNode(NodeBase* node)
 {
-    parentNode = node;
+    mParentNode = node;
 }
 
 } // namespace Cascade

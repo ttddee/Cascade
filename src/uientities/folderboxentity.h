@@ -51,7 +51,7 @@ public:
     ~FolderBoxEntity();
 
 private:
-    Ui::FolderBoxEntity *ui;
+    Ui::FolderBoxEntity *mUi;
 
 signals:
     void valueChanged();

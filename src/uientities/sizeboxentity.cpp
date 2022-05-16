@@ -20,30 +20,32 @@
 #include "sizeboxentity.h"
 #include "ui_sizeboxentity.h"
 
+#include "../global.h"
+
 namespace Cascade {
 
 SizeBoxEntity::SizeBoxEntity(UIElementType et, QWidget *parent) :
     UiEntity(et, parent),
-    ui(new Ui::SizeBoxEntity)
+    mUi(new Ui::SizeBoxEntity)
 {
-    ui->setupUi(this);
+    mUi->setupUi(this);
 
-    ui->modeComboBox->addItem("As Input");
-    ui->modeComboBox->addItem("Custom");
+    mUi->modeComboBox->addItem("As Input");
+    mUi->modeComboBox->addItem("Custom");
 
-    QMapIterator<QString, QPair<int, int>> i(sizePresets);
+    QMapIterator<QString, QPair<int, int>> i(Config::sImageSizePresets);
     i.toBack();
     while (i.hasPrevious())
     {
         i.previous();
-        ui->modeComboBox->addItem(i.key());
+        mUi->modeComboBox->addItem(i.key());
     }
 
-    connect(ui->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
+    connect(mUi->modeComboBox, QOverload<int>::of(&QComboBox::currentIndexChanged),
             this, &SizeBoxEntity::handleSelectionChanged);
-    connect(ui->widthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(mUi->widthSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &SizeBoxEntity::valueChanged);
-    connect(ui->heightSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
+    connect(mUi->heightSpinBox, QOverload<int>::of(&QSpinBox::valueChanged),
             this, &SizeBoxEntity::valueChanged);
 
     hideCustomSizeElements();
@@ -51,20 +53,20 @@ SizeBoxEntity::SizeBoxEntity(UIElementType et, QWidget *parent) :
 
 void SizeBoxEntity::hideCustomSizeElements()
 {
-    ui->widthLabel->setHidden(true);
-    ui->widthSpinBox->setHidden(true);
-    ui->heightLabel->setHidden(true);
-    ui->heightSpinBox->setHidden(true);
-    ui->bottomLine->setHidden(true);
+    mUi->widthLabel->setHidden(true);
+    mUi->widthSpinBox->setHidden(true);
+    mUi->heightLabel->setHidden(true);
+    mUi->heightSpinBox->setHidden(true);
+    mUi->bottomLine->setHidden(true);
 }
 
 void SizeBoxEntity::unHideCustomSizeElements()
 {
-    ui->widthLabel->setHidden(false);
-    ui->widthSpinBox->setHidden(false);
-    ui->heightLabel->setHidden(false);
-    ui->heightSpinBox->setHidden(false);
-    ui->bottomLine->setHidden(false);
+    mUi->widthLabel->setHidden(false);
+    mUi->widthSpinBox->setHidden(false);
+    mUi->heightLabel->setHidden(false);
+    mUi->heightSpinBox->setHidden(false);
+    mUi->bottomLine->setHidden(false);
 }
 
 void SizeBoxEntity::selfConnectToValueChanged(NodeProperties *p)
@@ -75,25 +77,25 @@ void SizeBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 
 QString SizeBoxEntity::getValuesAsString()
 {
-    if (ui->modeComboBox->currentIndex() == 0)
+    if (mUi->modeComboBox->currentIndex() == 0)
     {
         return "";
     }
-    else if (ui->modeComboBox->currentIndex() == 1)
+    else if (mUi->modeComboBox->currentIndex() == 1)
     {
         QString size =
-                QString::number(ui->widthSpinBox->value()) +
+                QString::number(mUi->widthSpinBox->value()) +
                 "," +
-                QString::number(ui->heightSpinBox->value());
+                QString::number(mUi->heightSpinBox->value());
         return size;
     }
     else
     {
-        auto k = ui->modeComboBox->currentText();
+        auto k = mUi->modeComboBox->currentText();
         QString size =
-                QString::number(sizePresets[k].first) +
+                QString::number(Config::sImageSizePresets[k].first) +
                 "," +
-                QString::number(sizePresets[k].second);
+                QString::number(Config::sImageSizePresets[k].second);
         return size;
     }
 }
@@ -102,31 +104,31 @@ void SizeBoxEntity::loadPropertyValues(const QString &values)
 {
     if (values == "")
     {
-        ui->modeComboBox->setCurrentIndex(0);
+        mUi->modeComboBox->setCurrentIndex(0);
     }
     else
     {
         auto split = values.split(",");
-        ui->modeComboBox->setCurrentIndex(1);
-        ui->widthSpinBox->setValue(split[0].toInt());
-        ui->heightSpinBox->setValue(split[1].toInt());
+        mUi->modeComboBox->setCurrentIndex(1);
+        mUi->widthSpinBox->setValue(split[0].toInt());
+        mUi->heightSpinBox->setValue(split[1].toInt());
         handleSelectionChanged();
     }
 }
 
 void SizeBoxEntity::setSizeBoxNoSignal(const QSize& size)
 {
-    ui->widthSpinBox->blockSignals(true);
-    ui->heightSpinBox->blockSignals(true);
-    ui->widthSpinBox->setValue(size.width());
-    ui->heightSpinBox->setValue(size.height());
-    ui->widthSpinBox->blockSignals(false);
-    ui->heightSpinBox->blockSignals(false);
+    mUi->widthSpinBox->blockSignals(true);
+    mUi->heightSpinBox->blockSignals(true);
+    mUi->widthSpinBox->setValue(size.width());
+    mUi->heightSpinBox->setValue(size.height());
+    mUi->widthSpinBox->blockSignals(false);
+    mUi->heightSpinBox->blockSignals(false);
 }
 
 void SizeBoxEntity::handleSelectionChanged()
 {
-    if (ui->modeComboBox->currentIndex() == 1)
+    if (mUi->modeComboBox->currentIndex() == 1)
     {
         unHideCustomSizeElements();
     }
@@ -134,19 +136,19 @@ void SizeBoxEntity::handleSelectionChanged()
     {
         hideCustomSizeElements();
     }
-    if (ui->modeComboBox->currentIndex() > 1)
+    if (mUi->modeComboBox->currentIndex() > 1)
     {
-        QString item = ui->modeComboBox->currentText();
+        QString item = mUi->modeComboBox->currentText();
         setSizeBoxNoSignal(QSize(
-                           sizePresets[item].first,
-                           sizePresets[item].second));
+                           Config::sImageSizePresets[item].first,
+                           Config::sImageSizePresets[item].second));
     }
     emit valueChanged();
 }
 
 SizeBoxEntity::~SizeBoxEntity()
 {
-    delete ui;
+    delete mUi;
 }
 
 } // namespace Cascade

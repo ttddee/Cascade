@@ -131,7 +131,7 @@ private:
     template<typename T>
     void setSpinBoxNoSignal(T val)
     {
-        if (elementType == UIElementType::eSliderBoxDouble)
+        if (mElementType == UIElementType::eSliderBoxDouble)
         {
             mValueBoxDouble->blockSignals(true);
             mValueBoxDouble->setValue(val / DOUBLE_MULT);
