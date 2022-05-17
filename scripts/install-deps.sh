@@ -14,7 +14,7 @@ external_and_glslang()
     mkdir install
     cd build
     cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-    make
+    make -j4
     make install
 
     cd ${EXTERNAL_DIR}
@@ -26,16 +26,12 @@ external_and_glslang()
     git checkout 0c400f67fcf305869c5fb113dd296eca266c9725
     cd ../..
 
-
     ./update_glslang_sources.py
 
     cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
 
-    make
+    make -j4
     make install
-
-
-
 }
 
 deps_ubuntu()
