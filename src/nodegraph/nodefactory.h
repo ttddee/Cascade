@@ -33,29 +33,28 @@ class NodeFactory
 public:
     static NodeBase* createNode(
             const NodeType type,
-            NodeGraph* graph,
             QWidget *parent,
             const QString& customName)
     {
         if (type == NodeType::eRead)
         {
-            return new ReadNode(type, graph, parent, customName);
+            return new ReadNode(type, parent, customName);
         }
         else if (type == NodeType::eCrop)
         {
-            return new CropNode(type, graph, parent, customName);
+            return new CropNode(type, parent, customName);
         }
         else if (type == NodeType::eResize)
         {
-            return new ResizeNode(type, graph, parent, customName);
+            return new ResizeNode(type, parent, customName);
         }
         else if (type == NodeType::eIsf)
         {
-            return new IsfNode(type, graph, parent, customName);
+            return new IsfNode(type, parent, customName);
         }
         else
         {
-            return new NodeBase(type, graph, parent, customName);
+            return new NodeBase(type, parent, customName);
         }
     }
 };

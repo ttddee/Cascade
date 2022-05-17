@@ -25,10 +25,9 @@
 namespace Cascade {
 
 IsfNode::IsfNode(const NodeType type,
-                 NodeGraph* graph,
                  QWidget *parent,
                  const QString& isfName)
-    : NodeBase(type, graph, parent, isfName)
+    : NodeBase(type, parent, isfName)
 {
     auto isfManager = &ISFManager::getInstance();
     auto props = isfManager->getNodeProperties().at(isfName);

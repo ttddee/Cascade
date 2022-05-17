@@ -41,13 +41,11 @@ namespace Cascade {
 
 NodeBase::NodeBase(
         const NodeType type,
-        NodeGraph* graph,
         QWidget *parent,
         const QString& isfName)
     : QWidget(parent),
       ui(new Ui::NodeBase),
       mNodeType(type),
-      mNodeGraph(graph),
       mId(QUuid::createUuid().toString(QUuid::WithoutBraces))
 {
     ui->setupUi(this);

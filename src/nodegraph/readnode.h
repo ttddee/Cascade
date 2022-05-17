@@ -30,7 +30,6 @@ class ReadNode : public NodeBase
 
 public:
     ReadNode(const NodeType type,
-             NodeGraph* graph,
              QWidget *parent = nullptr,
              const QString& customName = "");
 

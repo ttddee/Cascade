@@ -206,7 +206,7 @@ void ProjectManager::writeJsonToDisk(const QJsonDocument& project,
 QJsonObject ProjectManager::getJsonFromNodeGraph()
 {
     QJsonArray jsonNodeGraph;
-    mNodeGraph->getNodeGraphAsJson(jsonNodeGraph);
+    //mNodeGraph->getNodeGraphAsJson(jsonNodeGraph);
 
     QJsonObject jsonProject {
         { "nodegraph", jsonNodeGraph },

@@ -24,10 +24,9 @@
 namespace Cascade {
 
 ReadNode::ReadNode(const NodeType type,
-                   NodeGraph* graph,
                    QWidget *parent,
                    const QString& customName)
-    : NodeBase(type, graph, parent, customName)
+    : NodeBase(type, parent, customName)
 {
 
 }

@@ -30,7 +30,6 @@ class ResizeNode : public NodeBase
 
 public:
     ResizeNode(const NodeType type,
-             NodeGraph* graph,
              QWidget *parent = nullptr,
              const QString& isfName = "");
 

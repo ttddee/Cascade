@@ -101,15 +101,15 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
-            if (mNodeGraph->getSelectedNode() == mNodeGraph->getViewedNode() &&
-                mCurrentViewerMode == ViewerMode::eOutputRgb)
-            {
-                setViewerMode(ViewerMode::eOutputAlpha);
-            }
-            else
-            {
-                setViewerMode(ViewerMode::eOutputRgb);
-            }
+//            if (mNodeGraph->getSelectedNode() == mNodeGraph->getViewedNode() &&
+//                mCurrentViewerMode == ViewerMode::eOutputRgb)
+//            {
+//                setViewerMode(ViewerMode::eOutputAlpha);
+//            }
+//            else
+//            {
+//                setViewerMode(ViewerMode::eOutputRgb);
+//            }
         }
         else if (keyEvent->key() == Qt::Key_Delete)
         {
@@ -168,11 +168,11 @@ void WindowManager::handleViewerStatusBarValueChanged()
 {
     mRenderManager->updateViewerPushConstants(mViewerStatusBar->getViewerSettings());
 
-    auto node = mNodeGraph->getViewedNode();
-    if (node)
-    {
-        emit mNodeGraph->requestNodeDisplay(node);
-    }
+//    auto node = mNodeGraph->getViewedNode();
+//    if (node)
+//    {
+//        emit mNodeGraph->requestNodeDisplay(node);
+//    }
 }
 
 } // namespace Cascade

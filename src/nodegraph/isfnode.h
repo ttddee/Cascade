@@ -30,7 +30,6 @@ class IsfNode : public NodeBase
 
 public:
     IsfNode(const NodeType type,
-            NodeGraph* graph,
             QWidget *parent = nullptr,
             const QString& isfName = "");
 

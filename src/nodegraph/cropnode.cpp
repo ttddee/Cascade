@@ -24,10 +24,9 @@
 namespace Cascade {
 
 CropNode::CropNode(const NodeType type,
-                   NodeGraph* graph,
                    QWidget *parent,
                    const QString& isfName)
-      : NodeBase(type, graph, parent, isfName)
+      : NodeBase(type, parent, isfName)
 {
 
 }

@@ -30,7 +30,6 @@ class CropNode : public NodeBase
 
 public:
     CropNode(const NodeType type,
-             NodeGraph* graph,
              QWidget *parent = nullptr,
              const QString& isfName = "");
 

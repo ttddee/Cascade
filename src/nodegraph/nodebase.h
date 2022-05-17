@@ -55,7 +55,6 @@ class NodeBase : public QWidget
 public:
     explicit NodeBase(
             const NodeType type,
-            NodeGraph* graph,
             QWidget *parent = nullptr,
             const QString& isfName = "");
 

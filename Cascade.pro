@@ -73,6 +73,7 @@ SOURCES += \
     src/nodegraph/nodecontextmenu.cpp \
     src/nodegraph/nodegraph.cpp \
     src/nodegraph/nodegraphcontextmenu.cpp \
+    src/nodegraph/nodegraphmodel.cpp \
     src/nodegraph/nodeinput.cpp \
     src/nodegraph/nodeoutput.cpp \
     src/nodegraph/nodeproperties.cpp \
@@ -168,6 +169,7 @@ HEADERS += \
     src/nodegraph/nodefactory.h \
     src/nodegraph/nodegraph.h \
     src/nodegraph/nodegraphcontextmenu.h \
+    src/nodegraph/nodegraphmodel.h \
     src/nodegraph/nodegraphutility.h \
     src/nodegraph/nodeinput.h \
     src/nodegraph/nodeoutput.h \

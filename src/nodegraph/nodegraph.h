@@ -32,6 +32,8 @@
 #include "../windowmanager.h"
 #include "../rendermanager.h"
 #include "nodegraphutility.h"
+#include "nodegraphmodel.h"
+
 
 namespace Cascade {
 
@@ -44,41 +46,10 @@ friend class NodeBaseTest;
 public:
     NodeGraph(QWidget* parent = nullptr);
 
-    NodeBase* getViewedNode();
-    NodeBase* getSelectedNode();
-
     float getViewScale() const;
 
-    void getNodeGraphAsJson(QJsonArray& jsonNodeGraph);
-
 private:
-    // Project
-    void createProject();
-    void loadProject(const QJsonArray& jsonNodeGraph);
-    void clearGraph();
-
-    // Nodes
-    void addNode(
-            const NodeType type,
-            const NodeGraphPosition position,
-            const QString& customName = "",
-            const QPoint coords = QPoint(0, 0),
-            const bool view = true);
-    void viewNode(NodeBase* node);
-    void deleteNode(NodeBase* node);
-    void selectNode(NodeBase* node);
-    void activateNode(NodeBase* node);
-    NodeBase* findNodeById(const QString& id);
-    NodeBase* loadNode(const NodePersistentProperties& p);
-    void connectNodeSignals(NodeBase* n);
-    void flushCacheAllNodes();
-
-    // Connections
-    Connection* createOpenConnection(NodeOutput* nodeOut);
-    void establishConnection(NodeInput* nodeIn);
-    void destroyOpenConnection();
-    void deleteConnection(Connection* c);
-    void loadConnection(NodeOutput* src, NodeInput* dst);
+    NodeGraphModel* mModel;
 
     // Graphics Scene
     QGraphicsItem* getObjectUnderCursor();
@@ -97,16 +68,6 @@ private:
     RenderManager* mRenderManager;
     NodeGraphContextMenu* mContextMenu;
 
-    std::vector<NodeBase*> mNodes;
-    std::vector<Connection*> mConnections;
-
-    // The selected node
-    NodeBase* mSelectedNode = nullptr;
-    // The node with active properties
-    NodeBase* mActiveNode = nullptr;
-    // The node that is being displayed
-    NodeBase* mViewedNode = nullptr;
-
     // Mouse and zoom
     const int mViewWidth = 60000;
     const int mViewHeight = 60000;
@@ -114,9 +75,6 @@ private:
     bool mLeftMouseIsDragging = false;
     bool mMiddleMouseIsDragging = false;
     QPoint mLastMousePos;
-    QPoint mLastCreatedNodePos = QPoint(29700, 29920);
-
-    Connection* mOpenConnection = nullptr;
 
 signals:
     void requestNodeDisplay(Cascade::NodeBase* node);
