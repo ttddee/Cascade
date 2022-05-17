@@ -28,5 +28,6 @@ jobs:
         .\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
         
     - name: Build
+      run: |
         qmake
         make
