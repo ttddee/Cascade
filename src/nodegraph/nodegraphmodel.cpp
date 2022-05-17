@@ -29,44 +29,38 @@ NodeBase* NodeGraphModel::getSelectedNode()
 
 void NodeGraphModel::createProject()
 {
-    addNode(NodeType::eRead, NodeGraphPosition::eCustom, "", QPoint(29600, 29920), false);
-    addNode(NodeType::eWrite, NodeGraphPosition::eCustom, "", QPoint(30200, 29920), false);
+    addNode(NodeType::eRead, QPoint(29600, 29920), "", false);
+    addNode(NodeType::eWrite, QPoint(30200, 29920), "", false);
 }
 
 void NodeGraphModel::addNode(
         const NodeType type,
-        const NodeGraphPosition position,
+        const QPoint position,
         const QString& customName,
-        const QPoint coords,
         const bool view)
 {
     auto* n = NodeFactory::createNode(type, nullptr, customName);
     //mScene->addWidget(n);
 
     QPoint nodePos;
-
-    if (position == NodeGraphPosition::eCustom)
-        nodePos = coords;
-//    else
-//        nodePos = getCoordinatesForPosition(position);
-
+    if (position == QPoint(0, 0))
+        nodePos = mLastCreatedNodePos = QPoint(100, 30);
     n->move(nodePos);
+    mLastCreatedNodePos = nodePos;
 
     mNodes.push_back(n);
 
-    connectNodeSignals(n);
+    //connectNodeSignals(n);
 
     // Connect node if necessary
-    if (mSelectedNode && n->getType() != NodeType::eRead)
-    {
-        createOpenConnection(mSelectedNode->getRgbaOut());
-        establishConnection(n->getOpenInput());
-    }
+//    if (mSelectedNode && n->getType() != NodeType::eRead)
+//    {
+//        createOpenConnection(mSelectedNode->getRgbaOut());
+//        establishConnection(n->getOpenInput());
+//    }
 
     if (view)
         viewNode(n);
-
-    mLastCreatedNodePos = nodePos;
 
     emit nodeGraphIsDirty();
 }
@@ -338,6 +332,22 @@ void NodeGraphModel::getNodeGraphAsJson(QJsonArray& jsonNodeGraph)
     jsonNodeGraph.push_back(jsonConnectionsHeading);
 }
 
+//QPoint NodeGraphModel::getCoordinatesForPosition(const NodeGraphPosition pos)
+//{
+//    if (pos == NodeGraphPosition::eRelativeToLastNode)
+//    {
+//        return mLastCreatedNodePos + QPoint(100, 30);
+//    }
+//    else if (pos == NodeGraphPosition::eAtCursor)
+//    {
+//        return mapToScene(mLastMousePos).toPoint();
+//    }
+//    else
+//    {
+//        return QPoint(0, 0);
+//    }
+//}
+
 void NodeGraphModel::clearGraph()
 {
     foreach (const auto& connection, mConnections)
@@ -354,6 +364,14 @@ void NodeGraphModel::flushCacheAllNodes()
 {
     for (auto& n : mNodes)
         n->flushCache();
+}
+
+void NodeGraphModel::handleNodeCreationRequest(
+        const NodeType type,
+        const QPoint position,
+        const QString& customName)
+{
+    addNode(type, position, customName);
 }
 
 } // namespace Cascade

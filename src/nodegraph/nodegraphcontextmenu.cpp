@@ -61,7 +61,7 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     &QAction::triggered,
                     this,
                     [this, t]{ emit requestNodeCreation(
-                        t, NodeGraphPosition::eAtCursor); });
+                        t, this->pos()); });
     }
 
     // Add ISF categories
@@ -94,11 +94,11 @@ NodeGraphContextMenu::NodeGraphContextMenu(NodeGraph* parent)
                     this,
                     [this, t, nodeName]{ emit requestNodeCreation(
                         t,
-                        NodeGraphPosition::eAtCursor,
+                        this->pos(),
                         nodeName); });
     }
     connect(this, &NodeGraphContextMenu::requestNodeCreation,
-            parent, &NodeGraph::handleNodeCreationRequest);
+            parent->getModel(), &NodeGraphModel::handleNodeCreationRequest);
 }
 
 NodeGraphContextMenu::~NodeGraphContextMenu()

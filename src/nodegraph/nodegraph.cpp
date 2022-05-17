@@ -64,6 +64,10 @@ NodeGraph::NodeGraph(QWidget* parent)
             mWindowManager, &WindowManager::handleClearPropertiesRequest);
 }
 
+NodeGraphModel* NodeGraph::getModel()
+{
+    return mModel;
+}
 
 float NodeGraph::getViewScale() const
 {
@@ -91,30 +95,6 @@ QWidget* NodeGraph::getWidgetFromGraphicsItem(QGraphicsItem *item)
         return pWidget->widget();
     }
     return nullptr;
-}
-
-QPoint NodeGraph::getCoordinatesForPosition(const NodeGraphPosition pos)
-{
-    if (pos == NodeGraphPosition::eRelativeToLastNode)
-    {
-        return /*mLastCreatedNodePos + */QPoint(100, 30);
-    }
-    else if (pos == NodeGraphPosition::eAtCursor)
-    {
-        return mapToScene(mLastMousePos).toPoint();
-    }
-    else
-    {
-        return QPoint(0, 0);
-    }
-}
-
-void NodeGraph::handleNodeCreationRequest(
-        const NodeType type,
-        const NodeGraphPosition pos,
-        const QString& customName)
-{
-    //addNode(type, pos, customName);
 }
 
 void NodeGraph::handleNodeLeftClicked(NodeBase* node)
@@ -287,22 +267,21 @@ void NodeGraph::mousePressEvent(QMouseEvent* event)
 //        }
 //        mSelectedNode = nullptr;
 //    }
-//    if (event->button() == Qt::RightButton)
-//    {
-//        // Check if we clicked on something
-//        // Show context menu if not
-//        auto item = getWidgetFromGraphicsItem(getObjectUnderCursor());
-//        if (!item)
-//        {
-//            showContextMenu();
-//        }
-//    }
-//    else if (event->button() == Qt::MiddleButton)
-//    {
-//        mMiddleMouseIsDragging = true;
-//    }
-//    mLastMousePos = event->pos();
-//    QGraphicsView::mousePressEvent(event);
+    if (event->button() == Qt::RightButton)
+    {
+        // Check if we clicked on something, show context menu if not
+        auto item = getWidgetFromGraphicsItem(getObjectUnderCursor());
+        if (!item)
+        {
+            showContextMenu();
+        }
+    }
+    else if (event->button() == Qt::MiddleButton)
+    {
+        mMiddleMouseIsDragging = true;
+    }
+    mLastMousePos = event->pos();
+    QGraphicsView::mousePressEvent(event);
 }
 
 void NodeGraph::mouseMoveEvent(QMouseEvent* event)

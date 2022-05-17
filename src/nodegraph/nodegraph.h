@@ -46,15 +46,13 @@ friend class NodeBaseTest;
 public:
     NodeGraph(QWidget* parent = nullptr);
 
+    NodeGraphModel* getModel();
     float getViewScale() const;
 
 private:
-    NodeGraphModel* mModel;
-
     // Graphics Scene
     QGraphicsItem* getObjectUnderCursor();
     QWidget* getWidgetFromGraphicsItem(QGraphicsItem* item);
-    QPoint getCoordinatesForPosition(const NodeGraphPosition pos);
 
     // Misc
     void mousePressEvent(QMouseEvent*) override;
@@ -62,6 +60,8 @@ private:
     void mouseReleaseEvent(QMouseEvent*) override;
     void wheelEvent(QWheelEvent*) override;
     void showContextMenu();
+
+    NodeGraphModel* mModel;
 
     QGraphicsScene* mScene;
     WindowManager* mWindowManager;
@@ -95,10 +95,6 @@ signals:
 
 public slots:
     // Nodes
-    void handleNodeCreationRequest(
-            const Cascade::NodeType type,
-            const Cascade::NodeGraphPosition pos,
-            const QString& customName = "");
     void handleNodeLeftClicked(Cascade::NodeBase* node);
     void handleNodeDoubleClicked(Cascade::NodeBase* node);
     void handleNodeOutputLeftClicked(Cascade::NodeOutput* nodeOut);

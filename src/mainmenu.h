@@ -58,7 +58,7 @@ private:
 signals:
     void requestNodeCreation(
             const Cascade::NodeType type,
-            const Cascade::NodeGraphPosition,
+            const QPoint position,
             const QString& customName = "");
 };
 

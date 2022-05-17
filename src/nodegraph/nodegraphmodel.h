@@ -28,9 +28,8 @@ private:
     // Nodes
     void addNode(
             const NodeType type,
-            const NodeGraphPosition position,
+            const QPoint position = QPoint(0, 0),
             const QString& customName = "",
-            const QPoint coords = QPoint(0, 0),
             const bool view = true);
     void viewNode(NodeBase* node);
     void deleteNode(NodeBase* node);
@@ -47,6 +46,8 @@ private:
     void destroyOpenConnection();
     void deleteConnection(Connection* c);
     void loadConnection(NodeOutput* src, NodeInput* dst);
+
+    //QPoint getCoordinatesForPosition(const NodeGraphPosition pos);
 
     std::vector<NodeBase*> mNodes;
     std::vector<Connection*> mConnections;
@@ -65,6 +66,13 @@ signals:
     void nodeGraphIsDirty();
     void viewedNodeHasBeenDeleted();
     void activeNodeHasBeenDeleted();
+
+public slots:
+    // Nodes
+    void handleNodeCreationRequest(
+            const Cascade::NodeType type,
+            const QPoint position,
+            const QString& customName = "");
 };
 
 } // namespace Cascade

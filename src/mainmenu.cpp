@@ -108,7 +108,7 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                     &QAction::triggered,
                     this,
                     [this, t]{ emit requestNodeCreation(
-                        t, NodeGraphPosition::eRelativeToLastNode); });
+                        t, QPoint(0, 0)); });
     }
 
     // Add ISF categories
@@ -141,12 +141,12 @@ MainMenu::MainMenu(MainWindow* mainWindow)
                     this,
                     [this, t, nodeName]{ emit requestNodeCreation(
                         t,
-                        NodeGraphPosition::eRelativeToLastNode,
+                        QPoint(0, 0),
                         nodeName); });
     }
     auto graph = mainWindow->getNodeGraph();
     connect(this, &MainMenu::requestNodeCreation,
-            graph, &NodeGraph::handleNodeCreationRequest);
+            graph->getModel(), &NodeGraphModel::handleNodeCreationRequest);
 
     mEditMenu->addSeparator();
 

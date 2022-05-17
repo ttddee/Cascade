@@ -34,13 +34,6 @@ struct NodePersistentProperties
     QString             customName;
 };
 
-enum class NodeGraphPosition
-{
-    eRelativeToLastNode,
-    eAtCursor,
-    eCustom
-};
-
 } // namespace Cascade
 
 #endif // NODEGRAPHUTILITY_H

@@ -67,8 +67,8 @@ void NodeBase::setUpNode(const NodeType nodeType)
     QString label = props.title.toUpper();
     setLabeltext(label);
 
-    createInputs(props);
-    createOutputs(props);
+    //createInputs(props);
+    //createOutputs(props);
 
     mNodeProperties = std::make_unique<NodeProperties>(nodeType, this, props);
 }
