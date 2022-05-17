@@ -129,8 +129,9 @@ bool CsSliderBoxEntity::eventFilter(QObject *watched, QEvent *event)
 
         if(mouseEvent->button() == Qt::LeftButton)
         {
-            mLastPos = QCursor::pos();
             mIsDragging = true;
+            double factorPixelsToValue = mUi->slider->maximum() / this->size().width(); // factor for scaling pixels into value of slider
+            mUi->slider->setValue( static_cast<int>(mouseEvent->x() *factorPixelsToValue));
 
             if (QApplication::queryKeyboardModifiers() == Qt::ControlModifier)
             {
@@ -155,23 +156,21 @@ bool CsSliderBoxEntity::eventFilter(QObject *watched, QEvent *event)
 
 void CsSliderBoxEntity::mouseMoveEvent(QMouseEvent* event)
 {
+    auto sign = [](int a) { return (0 < a) - (a < 0); }; // lambda function to get sign of the value
     if(mIsDragging)
     {
-        float dx = QCursor::pos().x() - mLastPos.x();
-        int lastValue = mUi->slider->value();
-        float offset = dx * (mUi->slider->singleStep() * ((mUi->slider->maximum() - mUi->slider->minimum()) / 200.0));
-        if (offset > 0.0 && offset  < 1.0)
-            offset = 1.0;
-        else if (offset > -1.0 && offset < 0.0)
-            offset = -1.0;
-        int newValue = lastValue + offset;
-
-        mUi->slider->setValue(newValue);
-    }
-    mLastPos = QCursor::pos();
-
+        double factorPixelsToValue = mUi->slider->maximum() / this->size().width(); // factor for scaling pixels into value of slider
+        auto cursorPos = event->windowPos();
+        int sliderValue = mUi->slider->value();
+        auto offsetFromPrev = (cursorPos.x() - mLastPos.x());
+        auto offset = event->x() * factorPixelsToValue; //event->x shows local position of the cursor for the QWidget
+        if(QApplication::queryKeyboardModifiers() == Qt::ShiftModifier) offset = sliderValue + sign(offsetFromPrev); // when shift is pressed we want make changes of the slider value small
+        mUi->slider->setValue( static_cast<int>(offset) );
+        mLastPos = cursorPos;
+     }
     Q_UNUSED(event);
 }
+
 
 CsSliderBoxEntity::~CsSliderBoxEntity()
 {

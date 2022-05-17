@@ -162,7 +162,7 @@ private:
     bool mIsDragging = false;
     bool mIsDouble = false;
     float mBaseValue;
-    QPoint mLastPos;
+    QPointF mLastPos;
 
 signals:
     void valueChanged();
