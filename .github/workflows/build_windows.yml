@@ -31,7 +31,6 @@ jobs:
         .\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
         
     - name: Build
-      uses: ilammy/msvc-dev-cmd@v1
       run: |
         qmake
         make -j4
