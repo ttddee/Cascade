@@ -263,10 +263,10 @@ linux-g++ {
 win32-msvc* {
     DEPENDENCY_ROOT = vcpkg_installed/x64-windows
     LIB_ROOT = ../vcpkg_installed/x64-windows
-    QT_ROOT = C:/Qt515/5.15.0/msvc2019_64
+    QT_ROOT = $$(QT5_DIR)
 
     INCLUDEPATH += $$DEPENDENCY_ROOT/include
-    INCLUDEPATH += C:/VulkanSDK/1.2.198.1/include
+    INCLUDEPATH += $$(VULKAN_SDK)/include
 
     COPIES += dlls
     COPIES += platforms
