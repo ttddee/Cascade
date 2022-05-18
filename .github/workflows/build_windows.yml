@@ -30,6 +30,8 @@ jobs:
         .\vcpkg\bootstrap-vcpkg.bat
         .\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
         
+    - uses: ilammy/msvc-dev-cmd@v1
+        
     - name: Build
       run: |
         qmake
