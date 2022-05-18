@@ -24,15 +24,10 @@ jobs:
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
       
-    - uses: friendlyanon/setup-vcpkg@v1
-      with: 
-        { committish: 63aa65e65b9d2c08772ea15d25fb8fdb0d32e557 }
-      
     - name: Install vcpkg packages
       run: |
-        cd vcpkg
-        git pull
-        cd ..
+        git clone https://github.com/microsoft/vcpkg
+        .\vcpkg\bootstrap-vcpkg.bat
         .\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
         
     - uses: ilammy/msvc-dev-cmd@v1
