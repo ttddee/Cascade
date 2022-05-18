@@ -30,6 +30,9 @@ jobs:
       
     - name: Install vcpkg packages
       run: |
+        cd vcpkg
+        git pull
+        cd ..
         .\vcpkg\vcpkg --feature-flags="versions" --triplet=x64-windows  install
         
     - uses: ilammy/msvc-dev-cmd@v1
