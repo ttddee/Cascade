@@ -156,16 +156,23 @@ bool CsSliderBoxEntity::eventFilter(QObject *watched, QEvent *event)
 
 void CsSliderBoxEntity::mouseMoveEvent(QMouseEvent* event)
 {
-    auto sign = [](int a) { return (0 < a) - (a < 0); }; // lambda function to get sign of the value
+    // lambda function to get sign of the value
+    auto sign = [](int a) { return (0 < a) - (a < 0); };
+
     if(mIsDragging)
     {
-        double factorPixelsToValue = mUi->slider->maximum() / static_cast<double>(this->size().width()); // factor for scaling pixels into value of slider
+        // factor for scaling pixels into value of slider
+        double factorPixelsToValue = mUi->slider->maximum() / static_cast<double>(this->size().width());
         auto cursorPos = event->windowPos();
         int sliderValue = mUi->slider->value();
         auto offsetFromPrev = (cursorPos.x() - mLastPos.x());
-        auto offset = event->x() * factorPixelsToValue; //event->x shows local position of the cursor for the QWidget
-        if(QApplication::queryKeyboardModifiers() == Qt::ShiftModifier) offset = sliderValue + sign(offsetFromPrev)*mUi->slider->singleStep(); // when shift is pressed we want make changes of the slider value small
-        mUi->slider->setValue( offset);
+        auto newPos = event->x() * factorPixelsToValue;
+
+        // when shift is pressed we want to have more precision in the slider movement
+        if (QApplication::queryKeyboardModifiers() == Qt::ShiftModifier)
+            newPos = sliderValue + sign(offsetFromPrev) * mUi->slider->singleStep();
+
+        mUi->slider->setValue(newPos);
         mLastPos = cursorPos;
      }
     Q_UNUSED(event);
