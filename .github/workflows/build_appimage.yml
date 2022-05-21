@@ -31,8 +31,8 @@ jobs:
         echo "Cascade.AppDir" >> .git/info/sparse-checkout
         git pull origin main
         cd
-        ls /home/runner/work/Cascade/Cascade
-        cp /home/runner/work/Cascade/Cascade/Cascade /home/runner/work/Cascade/CascadeExtra/Cascade.AppDir/Cascade
+        ls /home/runner/work/Cascade/Cascade/release
+        cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/CascadeExtra/Cascade.AppDir/Cascade
      
     - name: Build AppImage
       run: |
