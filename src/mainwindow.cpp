@@ -46,6 +46,8 @@ MainWindow::MainWindow(QWidget *parent)
     std::setlocale(LC_NUMERIC, "C");
     QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
 
+    setWindowIcon(QIcon(":/cascade.ico"));
+
     mUi->setupUi(this);
 
     mDockManager = new CDockManager(this);
