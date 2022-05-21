@@ -30,7 +30,8 @@ jobs:
             echo "Cascade.AppDir" >> .git/info/sparse-checkout
             git pull origin master
             cd
-            
+            ls
+            ls Cascade           
      
     - name: Build AppImage
         run: |
