@@ -4,50 +4,36 @@ on:
   [workflow_dispatch]
 
 jobs:
-  build-windows:
+  build-appimage:
 
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
 
     steps:
     - uses: actions/checkout@v3
     
-    - name: Install apt packages
-      run: |
-        sudo apt install -y libtbb-dev qtcreator build-essential libopenexr-dev cmake 
-    
-    - name: Build OCIO
-      run: |
-        git clone https://github.com/AcademySoftwareFoundation/OpenColorIO
-        cd OpenColorIO
-        OpenColorPATH=$PWD
-        git checkout tags/v2.1.0
-        mkdir build
-        mkdir install
-        cd build
-        cmake  "${OpenColorPATH}" -DCMAKE_INSTALL_PREFIX="${OpenColorPATH}/install" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Debug
-        make -j4
-        make install
-        cd
-        
-    - name: Build OIIO
-      run: |
-        git clone https://github.com/OpenImageIO/oiio
-        cd oiio
-        git checkout 858c13b
-        mkdir build 
-        cd build
-        cmake -DUSE_OPENGL=0 -DUSE_QT=0 -DUSE_PYTHON=0 -DOIIO_BUILD_TOOLS=0 -DOIIO_BUILD_TESTS=0 ..
-    
-    - name: Build Qt
-      run: |
-        git clone https://code.qt.io/qt/qt5.git
-        cd qt5
-        git checkout 5.15
-        mkdir build
-        cd build
-        ../configure -recheck-all -opensource -confirm-license -platform linux-g++ -release -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
-        
-    - name: Build
-      run: |
-        qmake
-        make -j4
+    - name: Build Cascade
+        run: | 
+            cd scripts
+            sh install-deps.sh 
+            cd ..
+            qmake
+            make
+            cd
+     
+    - name: Prepare AppDir
+        run: |
+            mkdir CascadeExtra
+            cd CascadeExtra
+            git init
+            git remote add -f origin https://github.com/ttddee/CascadeExtra
+            git config core.sparseCheckout true
+            echo "Cascade.AppDir" >> .git/info/sparse-checkout
+            git pull origin master
+            cd
+            
+     
+    - name: Build AppImage
+        run: |
+            wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+            chmod +x linuxdeployqt-continuous-x86_64.AppImage
+            
