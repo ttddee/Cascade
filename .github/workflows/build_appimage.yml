@@ -32,7 +32,7 @@ jobs:
         git pull origin main
         cd
         ls /home/runner/work/Cascade/Cascade/release
-        cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/CascadeExtra/Cascade.AppDir/Cascade
+        cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/Cascade
      
     - name: Build AppImage
       run: |
