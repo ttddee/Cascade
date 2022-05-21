@@ -12,29 +12,29 @@ jobs:
     - uses: actions/checkout@v3
     
     - name: Build Cascade
-        run: | 
-            cd scripts
-            sh install-deps.sh 
-            cd ..
-            qmake
-            make
-            cd
+      run: | 
+          cd scripts
+          sh install-deps.sh 
+          cd ..
+          qmake
+          make
+          cd
      
     - name: Prepare AppDir
-        run: |
-            mkdir CascadeExtra
-            cd CascadeExtra
-            git init
-            git remote add -f origin https://github.com/ttddee/CascadeExtra
-            git config core.sparseCheckout true
-            echo "Cascade.AppDir" >> .git/info/sparse-checkout
-            git pull origin master
-            cd
-            ls
-            ls Cascade           
+      run: |
+          mkdir CascadeExtra
+          cd CascadeExtra
+          git init
+          git remote add -f origin https://github.com/ttddee/CascadeExtra
+          git config core.sparseCheckout true
+          echo "Cascade.AppDir" >> .git/info/sparse-checkout
+          git pull origin master
+          cd
+          ls
+          ls Cascade           
      
     - name: Build AppImage
-        run: |
-            wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-            chmod +x linuxdeployqt-continuous-x86_64.AppImage
+      run: |
+          wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+          chmod +x linuxdeployqt-continuous-x86_64.AppImage
             
