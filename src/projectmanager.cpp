@@ -67,7 +67,7 @@ void ProjectManager::createNewProject()
     }
 }
 
-const bool ProjectManager::checkIfDiscardChanges()
+bool ProjectManager::checkIfDiscardChanges()
 {
     if (mProjectIsDirty)
     {

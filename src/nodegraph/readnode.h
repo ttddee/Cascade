@@ -36,7 +36,7 @@ public:
 
     bool canBeRendered() const override;
 
-    const int getNumImages();
+    int getNumImages();
     void switchToFirstImage();
     void switchToNextImage();
 };

@@ -49,7 +49,7 @@ const std::map<QString, NodeInitProperties>& ISFManager::getNodeProperties() con
     return mIsfNodeProperties;
 }
 
-const QString ISFManager::getCategoryPerNode(const QString &name) const
+QString ISFManager::getCategoryPerNode(const QString &name) const
 {
     return mIsfCategoryPerNode.at(name);
 }
@@ -143,7 +143,7 @@ NodeInitProperties ISFManager::createISFNodeProperties(
     return props;
 }
 
-const int ISFManager::getRenderpassesFromJson(
+int ISFManager::getRenderpassesFromJson(
         const QJsonObject &json) const
 {
     int passes = 1;
@@ -155,7 +155,7 @@ const int ISFManager::getRenderpassesFromJson(
     return passes;
 }
 
-const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElementsFromJson(
+std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElementsFromJson(
         const QString& nodeName,
         const QJsonObject &json)
 {
@@ -273,7 +273,7 @@ const std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElement
     return elements;
 }
 
-const QString ISFManager::convertISFShaderToCompute(
+QString ISFManager::convertISFShaderToCompute(
         QString& shader,
         const QJsonDocument& properties)
 {
@@ -433,7 +433,7 @@ const QString ISFManager::convertISFShaderToCompute(
     return compute;
 }
 
-const int ISFManager::getIndexFromArray(const QJsonArray& array, const QString& value) const
+int ISFManager::getIndexFromArray(const QJsonArray& array, const QString& value) const
 {
     for (int i = 0; i < array.size(); ++i)
     {

@@ -59,7 +59,7 @@ QString FolderBoxEntity::getValuesAsString()
 
 void FolderBoxEntity::loadPropertyValues(const QString &values)
 {
-
+    Q_UNUSED(values);
 }
 
 void FolderBoxEntity::handleFolderButtonClicked()

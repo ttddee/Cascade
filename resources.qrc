@@ -183,5 +183,6 @@
         <file>shaders/isf/XYZoom.fs</file>
         <file>shaders/isf/Zoom.fs</file>
         <file>shaders/exposure_comp.spv</file>
+        <file>cascade.ico</file>
     </qresource>
 </RCC>

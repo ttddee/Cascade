@@ -42,7 +42,7 @@ bool ReadNode::canBeRendered() const
     return true;
 }
 
-const int ReadNode::getNumImages()
+int ReadNode::getNumImages()
 {
     return mNodeProperties->getNumImages();
 }

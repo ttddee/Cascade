@@ -50,7 +50,7 @@ private:
     void writeJsonToDisk(const QJsonDocument& project,
                         const QString& path);
     QJsonObject getJsonFromNodeGraph();
-    const bool checkIfDiscardChanges();
+    bool checkIfDiscardChanges();
 
     NodeGraph* mNodeGraph;
 

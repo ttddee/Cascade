@@ -44,12 +44,12 @@ public:
     const std::vector<unsigned int>& getShaderCode(const QString& nodeName);
     const std::set<QString>& getCategories() const;
     const std::map<QString, NodeInitProperties>& getNodeProperties() const;
-    const QString getCategoryPerNode(const QString& name) const;
+    QString getCategoryPerNode(const QString& name) const;
 
 private:
     ISFManager() {}
 
-    const QString convertISFShaderToCompute(
+    QString convertISFShaderToCompute(
             QString& shader,
             const QJsonDocument& properties);
 
@@ -57,13 +57,13 @@ private:
             const QJsonObject& json,
             const QString& name);
 
-    const std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(
+    std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(
             const QString& nodeName,
             const QJsonObject& json);
 
-    const int getRenderpassesFromJson(const QJsonObject& json) const;
+    int getRenderpassesFromJson(const QJsonObject& json) const;
 
-    const int getIndexFromArray(const QJsonArray& array, const QString& value) const;
+    int getIndexFromArray(const QJsonArray& array, const QString& value) const;
 
     SpvCompiler mCompiler;
 
