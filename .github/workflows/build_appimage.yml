@@ -20,6 +20,7 @@ jobs:
         git clone https://code.qt.io/qt/qt5.git
         cd qt5
         git checkout 5.15
+        git submodule update --init --recursive
         ./configure -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
         make -j4
         make install
