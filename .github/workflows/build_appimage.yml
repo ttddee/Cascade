@@ -17,18 +17,19 @@ jobs:
           sh install-deps.sh 
           cd ..
           qmake
-          make
+          make -j4
           cd
      
     - name: Prepare AppDir
       run: |
           mkdir CascadeExtra
           cd CascadeExtra
+          git config --global init.defaultBranch main
           git init
           git remote add -f origin https://github.com/ttddee/CascadeExtra
           git config core.sparseCheckout true
           echo "Cascade.AppDir" >> .git/info/sparse-checkout
-          git pull origin master
+          git pull origin main
           cd
           ls
           ls Cascade           
