@@ -13,7 +13,7 @@ jobs:
     
     - name: Install packages
       run: |
-        sudo apt install -y libgtest-dev libtbb-dev build-essential libopenexr-dev cmake libxkbcommon-x11-0 libvulkan-dev vulkan-utils libx11-xcb-dev
+        sudo apt install -y libgtest-dev libtbb-dev build-essential libopenexr-dev cmake libxkbcommon-x11-0 libxcb-xinerama0-dev libvulkan-dev vulkan-utils libx11-xcb-dev
     
     - name: Build Qt
       run: |
