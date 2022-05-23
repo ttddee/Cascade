@@ -13,7 +13,9 @@ jobs:
     
     - name: Install packages
       run: |
-        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev build-essential libopenexr-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libvulkan-dev vulkan-utils libx11-xcb-dev
+        pwd
+        ls
+        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev openjpeg2 build-essential libopenexr-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libvulkan-dev vulkan-utils libx11-xcb-dev
     
     - name: Build Qt
       run: |
