@@ -34,7 +34,7 @@ jobs:
         cd build
         cmake -DCMAKE_INSTALL_PREFIX="/usr/local" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ..
         make -j4
-        make install
+        sudo make install
         cd
         
     - name: Build OIIO
@@ -46,7 +46,7 @@ jobs:
         cd build
         cmake -DUSE_OPENGL=0 -DUSE_QT=0 -DUSE_PYTHON=0 -DOIIO_BUILD_TOOLS=0 -DOIIO_BUILD_TESTS=0 ..
         make -j4
-        make install
+        sudo make install
         cd
     
     - name: Build Cascade
