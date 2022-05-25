@@ -15,7 +15,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt update
-        sudo apt install -y gcc-9 g++-9 libgtest-dev libtbb-dev zlib1g-dev libboost-all-dev libgif-dev libopenjp2-7-dev build-essential cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
+        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
     
     - name: Prepare Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -24,10 +24,22 @@ jobs:
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
     
+    - name: Build Imath
+      run: |
+        git clone https://github.com/AcademySoftwareFoundation/Imath.git
+        cd Imath
+        git checkout release
+        mkdir build
+        cd build
+        cmake ..
+        make -j4
+        sudo make install
+    
     - name: Build OpenEXR
       run: |
         git clone https://github.com/AcademySoftwareFoundation/openexr
         cd openexr
+        git checkout tags/v3.1.5
         mkdir build
         cd build
         cmake ..
