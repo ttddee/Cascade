@@ -78,7 +78,7 @@ jobs:
         cd /home/runner/work/Cascade/Cascade
         mkdir external
         cd external
-        cp -r /usr/local/OpenColorIO .
+        sudo cp -r /usr/local/OpenColorIO .
         
         git clone https://github.com/KhronosGroup/glslang.git
         cd glslang
