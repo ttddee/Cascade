@@ -17,7 +17,7 @@ jobs:
         sudo apt update
         sudo apt install -y gcc-9 g++-9 libgtest-dev libtbb-dev zlib1g-dev libboost-all-dev libgif-dev libopenjp2-7-dev build-essential cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
     
-    -name: Prepare Vulkan SDK
+    - name: Prepare Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
       with:
         vulkan-query-version: 1.2.198.1
