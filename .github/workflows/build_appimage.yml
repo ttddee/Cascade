@@ -13,7 +13,18 @@ jobs:
     
     - name: Install packages
       run: |
-        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev libopenjp2-7-dev build-essential libopenexr-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libvulkan-dev vulkan-utils libx11-xcb-dev
+        sudo apt install -y libgtest-dev libtbb-dev zlib1g-dev libboost-all-dev libgif-dev libopenjp2-7-dev build-essential cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxrender-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libvulkan-dev vulkan-utils libx11-xcb-dev
+    
+    - name: Build OpenEXR
+      run: |
+        git clone https://github.com/AcademySoftwareFoundation/openexr
+        cd openexr
+        mkdir build
+        cd build
+        cmake ..
+        make -j4
+        make install
+        cd        
     
     - name: Build Qt
       run: |
