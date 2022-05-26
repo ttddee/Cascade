@@ -72,7 +72,7 @@ jobs:
         key: ${{ runner.os }}-oiio
      
     - name: Build OIIO
-      if: steps.cache-oiio.outputs.cache-hit != 'true'
+      if: steps.cache-oiio.outputs.cache-hit != 'true' 
       run: |
         git clone https://github.com/OpenImageIO/oiio.git
         cd oiio
