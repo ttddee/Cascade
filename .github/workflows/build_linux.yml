@@ -12,30 +12,31 @@ on:
 jobs:
 
   build-ubuntu:
+  
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
-      
-      - uses: actions/cache@v3
-      id: cache-deps
-      with:
-        path: external
-        key: ${{ runner.os }}-deps-${{ hashFiles('scripts/install_deps.sh') }}
+    - uses: actions/checkout@v3
+    
+    - uses: actions/cache@v3
+    id: cache-deps
+    with:
+      path: external
+      key: ${{ runner.os }}-deps-${{ hashFiles('scripts/install_deps.sh') }}
 
-      - name: Build dependencies
-        if: steps.cache-deps.outputs.cache-hit != 'true'
-        run: | 
-          cd scripts
-          sh install-deps.sh 
-          cd ..
-      
-      - name: Install packages
-        if: steps.cache-deps.outputs.cache-hit == 'true'
-        run: | 
-          sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev python3-distutils
+    - name: Build dependencies
+      if: steps.cache-deps.outputs.cache-hit != 'true'
+      run: | 
+        cd scripts
+        sh install-deps.sh 
+        cd ..
+    
+    - name: Install packages
+      if: steps.cache-deps.outputs.cache-hit == 'true'
+      run: | 
+        sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev python3-distutils
 
-      - name: Build Cascade
-        run: | 
-          qmake
-          make
+    - name: Build Cascade
+      run: | 
+        qmake
+        make
