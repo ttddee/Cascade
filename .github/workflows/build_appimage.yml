@@ -36,7 +36,14 @@ jobs:
         sudo make install
         cd        
     
+    - uses: actions/cache@v3
+      id: cache-qt
+      with:
+        path: /home/runner/work/Cascade/Cascade/qtbase
+        key: ${{ runner.os }}
+    
     - name: Build Qt
+      if: steps.cache-qt.outputs.cache-hit != 'true'
       run: |
         git clone https://code.qt.io/qt/qtbase.git
         cd qtbase
