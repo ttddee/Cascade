@@ -1,32 +1,41 @@
-# This is a basic workflow to help you get started with Actions
-
 name: Linux Build
 
-# Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the master branch
   push:
     branches: master
     
   pull_request:
     branches: '*'
+    
+  workflow_dispatch:
 
 jobs:
 
   build-ubuntu:
-    # The type of runner that the job will run on
     runs-on: ubuntu-latest
 
-    # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
-      # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v3
+      
+      - uses: actions/cache@v3
+      id: cache-deps
+      with:
+        path: external
+        key: ${{ runner.os }}-deps-${{ hashFiles('scripts/install_deps.sh') }}
 
-      # Runs a single command using the runners shell
-      - name: build
+      - name: Build dependencies
+        if: steps.cache-deps.outputs.cache-hit != 'true'
         run: | 
-            cd scripts
-            sh install-deps.sh 
-            cd ..
-            qmake
-            make
+          cd scripts
+          sh install-deps.sh 
+          cd ..
+      
+      - name: Install packages
+        if: steps.cache-deps.outputs.cache-hit == 'true'
+        run: | 
+          sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev python3-distutils
+
+      - name: Build Cascade
+        run: | 
+          qmake
+          make
