@@ -113,6 +113,8 @@ jobs:
         mkdir OpenColorIO/include
         sudo cp /usr/local/lib/libOpenColorIO* OpenColorIO/lib
         sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
+        ls /usr/local/include
+        ls /usr/local/include/OpenColorIO
      
         cd ..
         qmake
