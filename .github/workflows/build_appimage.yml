@@ -15,7 +15,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt update
-        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
+        sudo apt install -y libgtest-dev libtbb-dev libvulkan1 libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
     
     - name: Prepare Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -60,6 +60,7 @@ jobs:
         key: ${{ runner.os }}-oiio
    
     # Also need /usr/local/include/Imath from this, so cache is disabled for now
+    # We can build Imath separately and cache OpenEXR
     - name: Build OpenEXR
       #if: steps.cache-oiio.outputs.cache-hit != 'true' 
       run: |
@@ -122,6 +123,7 @@ jobs:
         mkdir OpenColorIO
         sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* /usr/local
         sudo cp -r /usr/local/include/Imath /usr/local/include/OpenImageIO
+        sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
      
         cd ..
         qmake
