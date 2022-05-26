@@ -15,7 +15,7 @@ jobs:
       run: |
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt update
-        sudo apt install -y libgtest-dev libtbb-dev vulkan-utils libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
+        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
     
     - name: Prepare Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -31,13 +31,13 @@ jobs:
         key: ${{ runner.os }}-qt
     
     - name: Build Qt
-      if: steps.cache-qt.outputs.cache-hit != 'true'
+      if: steps.cache-qt---.outputs.cache-hit != 'true'
       run: |
         git clone https://code.qt.io/qt/qtbase.git
         cd qtbase
         git checkout 5.15
         git submodule update --init --recursive
-        ./configure -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
+        ./configure -I $VULKAN_SDK/include -L $VULKAN_SDK/lib -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
         make -j4
         cd
         
@@ -124,7 +124,6 @@ jobs:
         sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* /usr/local
         sudo cp -r /usr/local/include/Imath /usr/local/include/OpenImageIO
         sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
-        ls /home/runner/work/Cascade/Cascade/VULKAN_SDK
      
         cd ..
         qmake
