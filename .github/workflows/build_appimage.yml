@@ -40,7 +40,7 @@ jobs:
       id: cache-qt
       with:
         path: /home/runner/work/Cascade/Cascade/qtbase
-        key: ${{ runner.os }}
+        key: ${{ runner.os }}-qt
     
     - name: Build Qt
       if: steps.cache-qt.outputs.cache-hit != 'true'
@@ -77,19 +77,21 @@ jobs:
         sudo make install
         cd
     
-    - name: Build Cascade
-      run: | 
-        export QT_SELECT=qt5
-        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
-        
+    - name: Create external dir
+      run: |
         cd /home/runner/work/Cascade/Cascade
         mkdir external
-        cd external
-        mkdir -p OpenColorIO/lib
-        mkdir OpenColorIO/include
-        sudo cp /usr/local/lib/libOpenColorIO* OpenColorIO/lib
-        sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
         
+    - uses: actions/cache@v3
+      id: cache-glslang
+      with:
+        path: /home/runner/work/Cascade/Cascade/external/glslang
+        key: ${{ runner.os }}-glslang
+    
+    - name: Build glslang
+      if: steps.cache-glslang.outputs.cache-hit != 'true'
+      run: |
+        cd /home/runner/work/Cascade/Cascade/external
         git clone https://github.com/KhronosGroup/glslang.git
         cd glslang
         git clone https://github.com/google/googletest.git External/googletest
@@ -100,8 +102,19 @@ jobs:
         cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
         make -j4
         make install
+    
+    - name: Build Cascade
+      run: | 
+        export QT_SELECT=qt5
+        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+        
+        cd /home/runner/work/Cascade/Cascade/external
+        mkdir -p OpenColorIO/lib
+        mkdir OpenColorIO/include
+        sudo cp /usr/local/lib/libOpenColorIO* OpenColorIO/lib
+        sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
      
-        cd /home/runner/work/Cascade/Cascade
+        cd ..
         qmake
         make -j4
         cd
