@@ -75,6 +75,7 @@ jobs:
     - name: Build OIIO
       if: steps.cache-oiio---.outputs.cache-hit != 'true' 
       run: |
+        rm -r oiio
         git clone https://github.com/OpenImageIO/oiio.git
         cd oiio
         git checkout tags/v2.3.15.0
