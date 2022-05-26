@@ -118,10 +118,7 @@ jobs:
         
         cd /home/runner/work/Cascade/Cascade/external
         mkdir OpenColorIO
-        sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* OpenColorIO
-        sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
-        ls /usr/local/include
-        ls /usr/local/include/OpenColorIO
+        sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* /usr/local
      
         cd ..
         qmake
