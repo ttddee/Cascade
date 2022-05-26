@@ -10,7 +10,6 @@ on:
   workflow_dispatch:
 
 jobs:
-
   build-ubuntu:
   
     runs-on: ubuntu-latest
