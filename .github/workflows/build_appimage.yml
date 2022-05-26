@@ -127,7 +127,7 @@ jobs:
         sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
      
         cd ..
-        qmake
+        qmake -I $VULKAN_SDK/include
         make -j4
         cd
      
