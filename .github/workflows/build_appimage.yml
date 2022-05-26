@@ -124,6 +124,7 @@ jobs:
         sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* /usr/local
         sudo cp -r /usr/local/include/Imath /usr/local/include/OpenImageIO
         sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
+        ls /home/runner/work/Cascade/Cascade/VULKAN_SDK
      
         cd ..
         qmake
