@@ -239,6 +239,7 @@ FORMS += \
 linux-g++ {
     INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
     INCLUDEPATH += $$PWD/external/glslang/include
+	INCLUDEPATH += $$VULKAN_SDK/include
 
     LIBS += -L/usr/local/lib -lOpenImageIO
     LIBS += -L/usr/local/lib -lOpenImageIO_Util
