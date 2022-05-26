@@ -33,6 +33,7 @@ jobs:
     - name: Build Qt
       if: steps.cache-qt---.outputs.cache-hit != 'true'
       run: |
+        rm -rf qtbase
         git clone https://code.qt.io/qt/qtbase.git
         cd qtbase
         git checkout 5.15
