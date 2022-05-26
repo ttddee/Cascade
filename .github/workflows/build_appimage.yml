@@ -119,6 +119,7 @@ jobs:
       run: | 
         export QT_SELECT=qt5
         export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+        export PATH="/home/runner/work/Cascade/Cascade/VULKAN_SDK/:$PATH"
         
         cd /home/runner/work/Cascade/Cascade/external
         mkdir OpenColorIO
@@ -127,7 +128,7 @@ jobs:
         sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
      
         cd ..
-        qmake -I $VULKAN_SDK/include
+        qmake
         make -j4
         cd
      
