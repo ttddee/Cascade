@@ -103,53 +103,53 @@ jobs:
         make -j4
         make install
     
-    - name: Build Cascade
-      run: | 
-        export QT_SELECT=qt5
-        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+    # - name: Build Cascade
+      # run: | 
+        # export QT_SELECT=qt5
+        # export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
         
-        cd /home/runner/work/Cascade/Cascade/external
-        mkdir -p OpenColorIO/lib
-        mkdir OpenColorIO/include
-        sudo cp /usr/local/lib/libOpenColorIO* OpenColorIO/lib
-        sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
+        # cd /home/runner/work/Cascade/Cascade/external
+        # mkdir -p OpenColorIO/lib
+        # mkdir OpenColorIO/include
+        # sudo cp /usr/local/lib/libOpenColorIO* OpenColorIO/lib
+        # sudo cp -r /usr/local/include/OpenColorIO OpenColorIO/include
      
-        cd ..
-        qmake
-        make -j4
-        cd
+        # cd ..
+        # qmake
+        # make -j4
+        # cd
      
-    - name: Prepare AppDir
-      run: |
-        mkdir CascadeExtra
-        cd CascadeExtra
-        git config --global init.defaultBranch main
-        git init
-        git remote add -f origin https://github.com/ttddee/CascadeExtra
-        git config core.sparseCheckout true
-        echo "Cascade.AppDir" >> .git/info/sparse-checkout
-        git pull origin main
-        cd
-        mkdir /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin
-        cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin/Cascade
+    # - name: Prepare AppDir
+      # run: |
+        # mkdir CascadeExtra
+        # cd CascadeExtra
+        # git config --global init.defaultBranch main
+        # git init
+        # git remote add -f origin https://github.com/ttddee/CascadeExtra
+        # git config core.sparseCheckout true
+        # echo "Cascade.AppDir" >> .git/info/sparse-checkout
+        # git pull origin main
+        # cd
+        # mkdir /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin
+        # cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin/Cascade
      
-    - name: Build AppImage
-      run: |
-        wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
-        chmod +x linuxdeployqt-continuous-x86_64.AppImage
-        ./linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/share/applications/Cascade.desktop -verbose=2 -no-translations -appimage -always-overwrite
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        mv Cascade-x86_64.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
+    # - name: Build AppImage
+      # run: |
+        # wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
+        # chmod +x linuxdeployqt-continuous-x86_64.AppImage
+        # ./linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/share/applications/Cascade.desktop -verbose=2 -no-translations -appimage -always-overwrite
+        # git_hash=$(git rev-parse --short "$GITHUB_SHA")
+        # mv Cascade-x86_64.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
           
-    - name: Prepare upload
-      run: |
-        mkdir downloads
-        cp Cascade-Image* downloads
+    # - name: Prepare upload
+      # run: |
+        # mkdir downloads
+        # cp Cascade-Image* downloads
           
-    - uses: actions/upload-artifact@v3
-      with:
-        name: appimage
-        path: downloads
+    # - uses: actions/upload-artifact@v3
+      # with:
+        # name: appimage
+        # path: downloads
           
         
          
