@@ -60,10 +60,10 @@ jobs:
         # path: /home/runner/work/Cascade/Cascade/oiio/dist
         # key: ${{ runner.os }}-oiio
    
-    Also need /usr/local/include/Imath from this, so cache is disabled for now
-    We can build Imath separately and cache OpenEXR
+    #Also need /usr/local/include/Imath from this, so cache is disabled for now
+    #We can build Imath separately and cache OpenEXR
     # - name: Build OpenEXR
-      if: steps.cache-oiio.outputs.cache-hit != 'true' 
+      #if: steps.cache-oiio.outputs.cache-hit != 'true' 
       # run: |
         # git clone https://github.com/AcademySoftwareFoundation/openexr
         # cd openexr
