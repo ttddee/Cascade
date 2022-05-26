@@ -94,7 +94,7 @@ jobs:
         make -j4
         make install
      
-        cd ..
+        cd /home/runner/work/Cascade/Cascade
         qmake
         make -j4
         cd
