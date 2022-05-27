@@ -149,6 +149,7 @@ jobs:
         cd
         mkdir /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin
         cp /home/runner/work/Cascade/Cascade/release/Cascade /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin/Cascade
+        ldd /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/bin/Cascade
      
     - name: Build AppImage
       run: |
