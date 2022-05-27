@@ -152,8 +152,8 @@ jobs:
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x linuxdeployqt-continuous-x86_64.AppImage
         ./linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/share/applications/Cascade.desktop -verbose=2 -no-translations -appimage -always-overwrite
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        mv Cascade-x86_64.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
+        git_hash=$(git rev-parse --short HEAD)
+        mv Cascade-*.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
           
     - name: Prepare upload
       run: |
