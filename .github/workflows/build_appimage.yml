@@ -42,7 +42,7 @@ jobs:
         make -j4
         cd
         
-    -name: Test
+    - name: Test
       run: |
         ls /home/runner/work/Cascade/Cascade/qtbase
         echo "---"
