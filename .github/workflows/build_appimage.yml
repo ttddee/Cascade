@@ -13,17 +13,33 @@ jobs:
     
     - name: Install packages
       run: |
-        sudo apt install -y libgtest-dev libtbb-dev build-essential libopenexr-dev cmake
+        sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+        sudo apt update
+        sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
+    
+    - name: Prepare Vulkan SDK
+      uses: humbletim/setup-vulkan-sdk@v1.2.0
+      with:
+        vulkan-query-version: 1.2.198.1
+        vulkan-components: Vulkan-Headers, Vulkan-Loader
+        vulkan-use-cache: true   
+    
+    - uses: actions/cache@v3
+      id: cache-qt
+      with:
+        path: /home/runner/work/Cascade/Cascade/qtbase
+        key: ${{ runner.os }}-qt
     
     - name: Build Qt
+      if: steps.cache-qt.outputs.cache-hit != 'true'
       run: |
-        git clone https://code.qt.io/qt/qt5.git
-        cd qt5
+        rm -rf qtbase
+        git clone https://code.qt.io/qt/qtbase.git
+        cd qtbase
         git checkout 5.15
         git submodule update --init --recursive
-        ./configure -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
+        ./configure -I $VULKAN_SDK/include -L $VULKAN_SDK/lib -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
         make -j4
-        make install
         cd
         
     - name: Build OCIO
@@ -35,11 +51,34 @@ jobs:
         cd build
         cmake -DCMAKE_INSTALL_PREFIX="/usr/local" -DOCIO_BUILD_PYTHON=OFF -DOCIO_BUILD_APPS=OFF -DOCIO_BUILD_TESTS=OFF -DOCIO_BUILD_GPU_TESTS=OFF -DCMAKE_BUILD_TYPE=Release ..
         make -j4
-        make install
+        sudo make install
         cd
-        
-    - name: Build OIIO
+     
+    - uses: actions/cache@v3
+      id: cache-oiio
+      with:
+        path: /home/runner/work/Cascade/Cascade/oiio/dist
+        key: ${{ runner.os }}-oiio
+   
+    # Also need /usr/local/include/Imath from this, so cache is disabled for now
+    # We can build Imath separately and cache OpenEXR
+    - name: Build OpenEXR
+      #if: steps.cache-oiio.outputs.cache-hit != 'true' 
       run: |
+        git clone https://github.com/AcademySoftwareFoundation/openexr
+        cd openexr
+        git checkout tags/v3.1.5
+        mkdir build
+        cd build
+        cmake ..
+        make -j4
+        sudo make install
+        cd     
+   
+    - name: Build OIIO
+      if: steps.cache-oiio.outputs.cache-hit != 'true' 
+      run: |
+        rm -rf oiio
         git clone https://github.com/OpenImageIO/oiio.git
         cd oiio
         git checkout tags/v2.3.15.0
@@ -47,13 +86,45 @@ jobs:
         cd build
         cmake -DUSE_OPENGL=0 -DUSE_QT=0 -DUSE_PYTHON=0 -DOIIO_BUILD_TOOLS=0 -DOIIO_BUILD_TESTS=0 ..
         make -j4
-        make install
+        sudo make install
         cd
+    
+    - name: Create external dir
+      run: |
+        cd /home/runner/work/Cascade/Cascade
+        mkdir external
+        
+    - uses: actions/cache@v3
+      id: cache-glslang
+      with:
+        path: /home/runner/work/Cascade/Cascade/external/glslang
+        key: ${{ runner.os }}-glslang
+    
+    - name: Build glslang
+      if: steps.cache-glslang.outputs.cache-hit != 'true'
+      run: |
+        cd /home/runner/work/Cascade/Cascade/external
+        git clone https://github.com/KhronosGroup/glslang.git
+        cd glslang
+        git clone https://github.com/google/googletest.git External/googletest
+        cd External/googletest
+        git checkout 0c400f67fcf305869c5fb113dd296eca266c9725
+        cd ../..
+        ./update_glslang_sources.py
+        cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX="$(pwd)" .
+        make -j4
+        make install
     
     - name: Build Cascade
       run: | 
-        cd Cascade/scripts
-        sh install-deps.sh 
+        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+        
+        cd /home/runner/work/Cascade/Cascade/external
+        mkdir OpenColorIO
+        sudo cp -r /home/runner/work/Cascade/Cascade/oiio/dist/* /usr/local
+        sudo cp -r /usr/local/include/Imath /usr/local/include/OpenImageIO
+        sudo cp -r /home/runner/work/Cascade/Cascade/VULKAN_SDK /usr/local
+     
         cd ..
         qmake
         make -j4
@@ -75,11 +146,14 @@ jobs:
      
     - name: Build AppImage
       run: |
+        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+        sudo cp /home/runner/work/Cascade/Cascade/qtbase/lib/libQt5* /usr/local/lib
+
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x linuxdeployqt-continuous-x86_64.AppImage
         ./linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/share/applications/Cascade.desktop -verbose=2 -no-translations -appimage -always-overwrite
-        git_hash=$(git rev-parse --short "$GITHUB_SHA")
-        mv Cascade-x86_64.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
+        git_hash=$(git rev-parse --short HEAD)
+        mv Cascade-*.AppImage Cascade-Image-Editor-x86_64-dev-${git_hash}.AppImage
           
     - name: Prepare upload
       run: |

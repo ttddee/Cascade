@@ -237,8 +237,15 @@ FORMS += \
     src/viewerstatusbar.ui
 
 linux-g++ {
+	# Check if we are on Ubuntu 18.04 LTS
+	OS = $$system(uname -a | grep -o "18.04.1-Ubuntu") 
+	contains(OS, "18.04.1-Ubuntu"): 
+	{     
+		INCLUDEPATH += $$(VULKAN_SDK)/include
+	} 
+
     INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
-    INCLUDEPATH += $$PWD/external/glslang/include
+    INCLUDEPATH += $$PWD/external/glslang/include	
 
     LIBS += -L/usr/local/lib -lOpenImageIO
     LIBS += -L/usr/local/lib -lOpenImageIO_Util
