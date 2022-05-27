@@ -46,11 +46,7 @@ jobs:
       run: |
         ls /home/runner/work/Cascade/Cascade/qtbase
         echo "---"
-        ls /home/runner/work/Cascade/Cascade/qtbase/5.15
-        echo "---"
-        ls /home/runner/work/Cascade/Cascade/qtbase/5.15/gcc_64
-        echo "---"
-        ls /home/runner/work/Cascade/Cascade/qtbase/5.15/gcc_64/lib
+        ls /home/runner/work/Cascade/Cascade/qtbase/lib
         
     - name: Build OCIO
       run: |
