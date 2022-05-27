@@ -14,6 +14,7 @@ jobs:
     - name: Install packages
       run: |
         uname -a
+        uname -r
         sudo add-apt-repository ppa:ubuntu-toolchain-r/test
         sudo apt update
         sudo apt install -y libgtest-dev libtbb-dev libboost-all-dev libgif-dev python3-distutils libopenjp2-7-dev cmake '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
