@@ -14,7 +14,7 @@ Welcome to the Cascade project!
 
 [Usage](https://cascadedocs.readthedocs.io/en/latest/usage.html) - [Quickstart](https://cascadedocs.readthedocs.io/en/latest/quickstart.html) - [Building from Source](https://cascadedocs.readthedocs.io/en/latest/buildingfromsource.html) - [Contributing](https://cascadedocs.readthedocs.io/en/latest/contributing.html) - [Documentation](https://cascadedocs.readthedocs.io/en/latest/index.html) - [Discord](https://discord.gg/SHPHqgKtFM)
   
-[![Linux Build](https://github.com/ttddee/Cascade/actions/workflows/build_linux.yml/badge.svg)](https://github.com/ttddee/Cascade/actions/workflows/build_linux.yml)
+[![Linux Build](https://github.com/ttddee/Cascade/actions/workflows/build_linux.yml/badge.svg)](https://github.com/ttddee/Cascade/actions/workflows/build_linux.yml) [![AppImage Build](https://github.com/ttddee/Cascade/actions/workflows/build_appimage.yml/badge.svg)](https://github.com/ttddee/Cascade/actions/workflows/build_appimage.yml)
 </div>
 <hr>
 
