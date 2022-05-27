@@ -238,10 +238,9 @@ FORMS += \
 
 linux-g++ {
 	# Check if we are on Ubuntu 18.04 LTS
-	KERNEL = $$system(uname -r | grep -o "5.4.0") 
-	contains(KERNEL, "5.4.0"): 
+	KERNEL = $$system(uname -a | grep -o "18.04.1-Ubuntu") 
+	contains(KERNEL, "18.04.1-Ubuntu"): 
 	{     
-		message("YES")
 		INCLUDEPATH += $$(VULKAN_SDK)/include
 	} 
 
