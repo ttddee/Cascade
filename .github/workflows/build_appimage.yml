@@ -42,6 +42,16 @@ jobs:
         make -j4
         cd
         
+    -name: Test
+      run: |
+        ls /home/runner/work/Cascade/Cascade/qtbase
+        echo "---"
+        ls /home/runner/work/Cascade/Cascade/qtbase/5.15
+        echo "---"
+        ls /home/runner/work/Cascade/Cascade/qtbase/5.15/gcc_64
+        echo "---"
+        ls /home/runner/work/Cascade/Cascade/qtbase/5.15/gcc_64/lib
+        
     - name: Build OCIO
       run: |
         git clone https://github.com/AcademySoftwareFoundation/OpenColorIO
@@ -147,7 +157,7 @@ jobs:
     - name: Build AppImage
       run: |
         export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
-        export PATH="/home/runner/work/Cascade/Cascade/qtbase/lib/:$PATH"
+
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x linuxdeployqt-continuous-x86_64.AppImage
         ./linuxdeployqt-continuous-x86_64.AppImage /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/share/applications/Cascade.desktop -verbose=2 -no-translations -appimage -always-overwrite
