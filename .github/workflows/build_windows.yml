@@ -55,7 +55,6 @@ jobs:
         
     - name: Build
       run: |
-        set PATH=%PATH%;D:\a\Cascade\Cascade\vcpkg_installed\x64-windows\include\
         mkdir build
         cd build
         qmake ../Cascade.pro
