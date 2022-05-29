@@ -53,7 +53,8 @@ jobs:
         
     - uses: ilammy/msvc-dev-cmd@v1
         
-    # - name: Build
-      # run: |
-        # qmake
-        # make -j4
+     - name: Build
+       run: |
+         cd Cascade
+         qmake Cascade.pro
+         make -j4
