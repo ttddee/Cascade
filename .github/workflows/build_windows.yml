@@ -41,7 +41,7 @@ jobs:
     - uses: actions/cache@v3
       id: cache-vcpkg-installed
       with:
-        path: /home/runner/work/Cascade/Cascade/vcpkg_installed
+        path: D:\a\Cascade\Cascade\vcpkg_installed
         key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
     
     - name: Install vcpkg packages
