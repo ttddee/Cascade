@@ -56,4 +56,4 @@ jobs:
     - name: Build
       run: |
         qmake Cascade.pro
-        jom.exe
+        nmake
