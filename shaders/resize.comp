@@ -87,7 +87,7 @@ void main()
         }
         else if (sb.mode == 1.0)
         {
-            // Laczos interpolation
+            // Lanczos interpolation
             ivec2 centerCoordinate = ivec2(sourceCoords);
             ivec2 oneStepLeftCoordinate = ivec2(sourceCoords.x - 1, sourceCoords.y);
             ivec2 twoStepsLeftCoordinate = ivec2(sourceCoords.x - 2, sourceCoords.y);
@@ -151,6 +151,11 @@ void main()
             vec4 tB = mix( bl, br, f.x );
             rgba = mix( tA, tB, f.y );
         }
+		else if (sb.mode == 3.0)
+		{
+			// Nearest interpolation
+			rgba = imageLoad(inputImage, ivec2(floor(pixelCoords.x / factorX), floor(pixelCoords.y / factorY)));
+		}
     }
 
     imageStore(resultImage, pixelCoords, rgba);

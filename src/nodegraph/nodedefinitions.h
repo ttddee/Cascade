@@ -348,7 +348,7 @@ const static std::map<NodeType, NodeInitProperties> nodeDefinitions =
           {
               { UIElementType::ePropertiesHeading, nodeStrings[NodeType::eResize] },
               { UIElementType::eResizeProperties, "" },
-              { UIElementType::eComboBox, "Filter,Bicubic,Lanczos,Bilinear,0" }
+              { UIElementType::eComboBox, "Filter,Bicubic,Lanczos,Bilinear,Nearest,0" }
           },
           FrontInputTrait::eAlwaysClear,
           BackInputTrait::eRenderUpstreamOrClear,
