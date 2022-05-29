@@ -55,6 +55,5 @@ jobs:
         
     - name: Build
       run: |
-        cd Cascade
         qmake Cascade.pro
         make -j4
