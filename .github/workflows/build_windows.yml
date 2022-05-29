@@ -39,13 +39,14 @@ jobs:
         vulkan-use-cache: true
     
     - uses: actions/cache@v3
-      id: cache-vcpkg
+      id: cache-vcpkg-installed
       with:
-        path: /home/runner/work/Cascade/Cascade/qtbase
+        path: D:\a\Cascade\Cascade\vcpkg_installed
         key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
     
     - name: Install vcpkg packages
-      if: steps.cache-vcpkg.outputs.cache-hit != 'true'
+      if: steps.cache-vcpkg-installed.outputs.cache-hit != 'true'
+
       run: |
         git clone https://github.com/microsoft/vcpkg
         .\vcpkg\bootstrap-vcpkg.bat
@@ -53,7 +54,10 @@ jobs:
         
     - uses: ilammy/msvc-dev-cmd@v1
         
-    # - name: Build
-      # run: |
-        # qmake
-        # make -j4
+    - name: Build
+      run: |
+        mkdir build
+        cd build
+        qmake ../Cascade.pro
+        nmake
+
