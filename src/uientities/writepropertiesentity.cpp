@@ -23,6 +23,7 @@
 #include <QFileDialog>
 
 #include "../popupmessages.h"
+#include "../global.h"
 
 namespace Cascade {
 
@@ -34,7 +35,7 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
 
     mUi->fileNameEdit->setText(this->mFileName);
 
-    mUi->batchCheckBox->setToolTip("Renders all images contained in connected Read Node.");
+    mUi->batchCheckBox->setToolTip(Config::sBatchRenderCheckBoxTooltip);
 
     foreach(auto& t, mFiletypes)
     {

@@ -58,6 +58,10 @@ static const QMap<ViewerMode, QString> sViewerModeText =
             { "2K Square",      { 2048, 2048 } }
         };
 
+        // Tooltips
+        static const QString sBatchRenderCheckBoxTooltip(
+            "Renders all images contained in connected Read Node.");
+
     } // namespace Cascade::Config
 
     namespace Renderer
