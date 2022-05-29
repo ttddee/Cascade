@@ -34,6 +34,8 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
 
     mUi->fileNameEdit->setText(this->mFileName);
 
+    mUi->batchCheckBox->setToolTip("Renders all images contained in connected Read Node.");
+
     foreach(auto& t, mFiletypes)
     {
         mUi->fileTypeBox->addItem(t);
