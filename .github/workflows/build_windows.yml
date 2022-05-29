@@ -1,7 +1,13 @@
 name: Windows Build
 
 on:
-  [push , pull_request]
+  push:
+    branches: master
+    
+  pull_request:
+    branches: '*'
+    
+  workflow_dispatch:
 
 jobs:
   build-windows:
