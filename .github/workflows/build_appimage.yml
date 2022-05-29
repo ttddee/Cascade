@@ -148,6 +148,7 @@ jobs:
       run: |
         export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
         sudo cp /home/runner/work/Cascade/Cascade/qtbase/lib/libQt5* /usr/local/lib
+        patchelf --set-rpath '$ORIGIN/../../lib' /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/plugins/platforms/libqxcb.so
 
         wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
         chmod +x linuxdeployqt-continuous-x86_64.AppImage
