@@ -11,11 +11,19 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     
+    - name: Cache Qt
+      id: cache-qt
+      uses: actions/cache@v1  # not v2!
+      with:
+        path: ../Qt
+        key: ${{ runner.os }}-qtcache
+    
     - name: Install Qt
       uses: jurplel/install-qt-action@v2
       with:
         arch: win64_msvc2019_64
         setup-python: false
+        cached: ${{ steps.cache-qt.outputs.cache-hit }}
       
     - name: Install Vulkan SDK
       uses: humbletim/setup-vulkan-sdk@v1.2.0
@@ -23,8 +31,15 @@ jobs:
         vulkan-query-version: 1.2.198.1
         vulkan-components: Vulkan-Headers, Vulkan-Loader
         vulkan-use-cache: true
-      
+    
+    - uses: actions/cache@v3
+      id: cache-vcpkg
+      with:
+        path: /home/runner/work/Cascade/Cascade/qtbase
+        key: ${{ runner.os }}-vcpkg-${{ hashFiles('vcpkg.json') }}
+    
     - name: Install vcpkg packages
+      if: steps.cache-vcpkg.outputs.cache-hit != 'true'
       run: |
         git clone https://github.com/microsoft/vcpkg
         .\vcpkg\bootstrap-vcpkg.bat
@@ -32,7 +47,7 @@ jobs:
         
     - uses: ilammy/msvc-dev-cmd@v1
         
-    - name: Build
-      run: |
-        qmake
-        make -j4
+    # - name: Build
+      # run: |
+        # qmake
+        # make -j4
