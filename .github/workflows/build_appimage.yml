@@ -25,17 +25,17 @@ jobs:
         vulkan-use-cache: true   
     
     - uses: actions/cache@v3
-      id: cache-qt
+      id: cache-qt5
       with:
         path: /home/runner/work/Cascade/Cascade/qtbase
         key: ${{ runner.os }}-qt
     
     - name: Build Qt
-      if: steps.cache-qt.outputs.cache-hit != 'true'
+      if: steps.cache-qt5.outputs.cache-hit != 'true'
       run: |
-        rm -rf qtbase
-        git clone https://code.qt.io/qt/qtbase.git
-        cd qtbase
+        rm -rf qt5
+        git clone https://code.qt.io/qt/qt5.git
+        cd qt5
         git checkout 5.15
         git submodule update --init --recursive
         ./configure -I $VULKAN_SDK/include -L $VULKAN_SDK/lib -recheck-all -opensource -confirm-license -platform linux-g++ -release -prefix /usr/local -qt-freetype -no-pch -no-sql-sqlite -no-sql-odbc -qt-zlib -no-compile-examples -no-libjpeg -no-libpng -nomake tests -nomake examples -no-opengl -no-feature-concurrent -no-feature-network -no-feature-sql -no-openssl -no-feature-testlib -skip qt3d -skip qtactiveqt -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d -skip qtdeclarative -skip qtdoc -skip qtgamepad -skip qtgraphicaleffects -skip qtimageformats -skip qtlocation -skip qtmacextras -skip qtmultimedia -skip qtnetworkauth -skip qtpurchasing -skip qtquickcontrols -skip qtquickcontrols2 -skip qtremoteobjects -skip qtscript -skip qtscxml -skip qtsensors -skip qtserialbus -skip qtserialport -skip qtsvg -skip qtspeech -skip qttools -skip qttranslations -skip qtvirtualkeyboard -skip qtwayland -skip qtwebchannel -skip qtwebsockets -skip qtwebview -skip qtwinextras -skip qtxmlpatterns -skip qtwebengine -feature-vulkan -xcb -xcb-xlib
@@ -117,7 +117,7 @@ jobs:
     
     - name: Build Cascade
       run: | 
-        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
+        export PATH="/home/runner/work/Cascade/Cascade/qt5/bin/:$PATH"
         
         cd /home/runner/work/Cascade/Cascade/external
         mkdir OpenColorIO
@@ -146,8 +146,8 @@ jobs:
      
     - name: Build AppImage
       run: |
-        export PATH="/home/runner/work/Cascade/Cascade/qtbase/bin/:$PATH"
-        sudo cp /home/runner/work/Cascade/Cascade/qtbase/lib/libQt5* /usr/local/lib
+        export PATH="/home/runner/work/Cascade/Cascade/qt5/bin/:$PATH"
+        sudo cp /home/runner/work/Cascade/Cascade/qt5/lib/libQt5* /usr/local/lib
         sudo mkdir -p /usr/local/plugins/platforms
         sudo cp /home/runner/work/Cascade/Cascade/CascadeExtra/Cascade.AppDir/usr/plugins/platforms/libqxcb.so /usr/local/plugins/platforms/libqxcb.so
 
