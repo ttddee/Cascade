@@ -26,6 +26,8 @@
 #include <QSplashScreen>
 #include <QDirIterator>
 
+#include "renderer/vulkanhppinclude.h"
+
 #include "log.h"
 
 #include <OpenImageIO/imagebuf.h>

@@ -22,7 +22,7 @@
 
 #include <QMenuBar>
 
-#include "nodegraph/nodegraphutility.h"
+//#include "nodegraph/nodegraphutility.h"
 
 namespace Cascade {
 
@@ -56,10 +56,10 @@ private:
     std::vector<QAction*> mCreateNodeActions;
 
 signals:
-    void requestNodeCreation(
-            const Cascade::NodeType type,
-            const Cascade::NodeGraphPosition,
-            const QString& customName = "");
+//    void requestNodeCreation(
+//            const Cascade::NodeType type,
+//            const Cascade::NodeGraphPosition,
+//            const QString& customName = "");
 };
 
 } // namespace Cascade

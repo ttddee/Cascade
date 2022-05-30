@@ -23,11 +23,34 @@
 #include <QObject>
 #include <QWidget>
 
-#include "../nodegraph/nodedefinitions.h"
-#include "../nodegraph/nodeproperties.h"
+//#include "../nodegraph/nodedefinitions.h"
+//#include "../nodegraph/nodeproperties.h"
 #include "../log.h"
 
 namespace Cascade {
+
+enum class UIElementType
+{
+    ePropertiesHeading,
+    eSpinBox,
+    eFileBox,
+    eColorButton,
+    eWriteProperties,
+    eComboBox,
+    eChannelSelect,
+    eSliderBoxDouble,
+    eSliderBoxInt,
+    eColorProperties,
+    eSizeBox,
+    eTextBox,
+    eCheckBox,
+    eTextBrowser, // TODO: This is not used anywhere
+    eSeparator,
+    eLineEdit, // TODO: This is not used anywhere
+    eFolderBox, // TODO: This is not used anywhere
+    eResizeProperties,
+    eCodeEditor
+};
 
 class UiEntity : public QWidget
 {

@@ -22,8 +22,8 @@
 #include <QKeyEvent>
 
 #include "vulkanwindow.h"
-#include "nodegraph/nodegraph.h"
-#include "nodegraph/nodebase.h"
+//#include "nodegraph/nodegraph.h"
+//#include "nodegraph/nodebase.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "rendermanager.h"
@@ -37,44 +37,44 @@ WindowManager& WindowManager::getInstance()
     return instance;
 }
 
-void WindowManager::setUp(
-        VulkanWindow *vw,
-        NodeGraph *ng,
-        PropertiesView *pv,
-        ViewerStatusBar* vb)
-{
-    mVulkanWindow = vw;
-    mNodeGraph = ng;
-    mPropertiesView = pv;
-    mViewerStatusBar = vb;
+//void WindowManager::setUp(
+//        VulkanWindow *vw,
+//        NodeGraph *ng,
+//        PropertiesView *pv,
+//        ViewerStatusBar* vb)
+//{
+//    mVulkanWindow = vw;
+//    mNodeGraph = ng;
+//    mPropertiesView = pv;
+//    mViewerStatusBar = vb;
 
-    mVulkanWindow->installEventFilter(this);
-    mNodeGraph->installEventFilter(this);
-    mPropertiesView->installEventFilter(this);
-    mViewerStatusBar->installEventFilter(this);
+//    mVulkanWindow->installEventFilter(this);
+//    mNodeGraph->installEventFilter(this);
+//    mPropertiesView->installEventFilter(this);
+//    mViewerStatusBar->installEventFilter(this);
 
-    // Incoming
-    connect(mVulkanWindow, &VulkanWindow::requestZoomTextUpdate,
-            this, &WindowManager::handleZoomTextUpdateRequest);
-    connect(mViewerStatusBar, &ViewerStatusBar::requestZoomReset,
-            mVulkanWindow, &VulkanWindow::handleZoomResetRequest);
-    connect(mVulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
-            this, &WindowManager::handleRenderTargetCreated);
-    connect(mViewerStatusBar, &ViewerStatusBar::valueChanged,
-            this, &WindowManager::handleViewerStatusBarValueChanged);
-    connect(mViewerStatusBar, &ViewerStatusBar::viewerModeChanged,
-            this, &WindowManager::handleViewerModeChanged);
+//    // Incoming
+//    connect(mVulkanWindow, &VulkanWindow::requestZoomTextUpdate,
+//            this, &WindowManager::handleZoomTextUpdateRequest);
+//    connect(mViewerStatusBar, &ViewerStatusBar::requestZoomReset,
+//            mVulkanWindow, &VulkanWindow::handleZoomResetRequest);
+//    connect(mVulkanWindow, &VulkanWindow::renderTargetHasBeenCreated,
+//            this, &WindowManager::handleRenderTargetCreated);
+//    connect(mViewerStatusBar, &ViewerStatusBar::valueChanged,
+//            this, &WindowManager::handleViewerStatusBarValueChanged);
+//    connect(mViewerStatusBar, &ViewerStatusBar::viewerModeChanged,
+//            this, &WindowManager::handleViewerModeChanged);
 
-    // Outgoing
-    connect(this, &WindowManager::deleteKeyPressed,
-            mNodeGraph, &NodeGraph::handleDeleteKeyPressed);
-    connect(this, &WindowManager::switchToViewerMode,
-            mNodeGraph, &NodeGraph::handleSwitchToViewerMode);
-    connect(this, &WindowManager::switchToViewerMode,
-            mViewerStatusBar, &ViewerStatusBar::handleSwitchToViewerMode);
+//    // Outgoing
+//    connect(this, &WindowManager::deleteKeyPressed,
+//            mNodeGraph, &NodeGraph::handleDeleteKeyPressed);
+//    connect(this, &WindowManager::switchToViewerMode,
+//            mNodeGraph, &NodeGraph::handleSwitchToViewerMode);
+//    connect(this, &WindowManager::switchToViewerMode,
+//            mViewerStatusBar, &ViewerStatusBar::handleSwitchToViewerMode);
 
-    mRenderManager = &RenderManager::getInstance();
-}
+//    mRenderManager = &RenderManager::getInstance();
+//}
 
 ViewerMode WindowManager::getViewerMode()
 {
@@ -101,15 +101,15 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
-            if (mNodeGraph->getSelectedNode() == mNodeGraph->getViewedNode() &&
-                mCurrentViewerMode == ViewerMode::eOutputRgb)
-            {
-                setViewerMode(ViewerMode::eOutputAlpha);
-            }
-            else
-            {
-                setViewerMode(ViewerMode::eOutputRgb);
-            }
+//            if (mNodeGraph->getSelectedNode() == mNodeGraph->getViewedNode() &&
+//                mCurrentViewerMode == ViewerMode::eOutputRgb)
+//            {
+//                setViewerMode(ViewerMode::eOutputAlpha);
+//            }
+//            else
+//            {
+//                setViewerMode(ViewerMode::eOutputRgb);
+//            }
         }
         else if (keyEvent->key() == Qt::Key_Delete)
         {
@@ -145,7 +145,7 @@ void WindowManager::handleClearPropertiesRequest()
 
 void WindowManager::handleNodeDoubleClicked(NodeBase* node)
 {
-    mPropertiesView->loadProperties(node->getProperties());
+    //mPropertiesView->loadProperties(node->getProperties());
 }
 
 void WindowManager::handleZoomTextUpdateRequest(float f)
@@ -168,11 +168,11 @@ void WindowManager::handleViewerStatusBarValueChanged()
 {
     mRenderManager->updateViewerPushConstants(mViewerStatusBar->getViewerSettings());
 
-    auto node = mNodeGraph->getViewedNode();
-    if (node)
-    {
-        emit mNodeGraph->requestNodeDisplay(node);
-    }
+//    auto node = mNodeGraph->getViewedNode();
+//    if (node)
+//    {
+//        emit mNodeGraph->requestNodeDisplay(node);
+//    }
 }
 
 } // namespace Cascade

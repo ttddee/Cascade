@@ -22,6 +22,7 @@
 
 #include <QWidget>
 #include <QSplitter>
+#include <QVBoxLayout>
 
 #include "../codeeditor/QCodeEditor.hpp"
 #include "../shadercompiler/SpvShaderCompiler.h"
@@ -44,7 +45,7 @@ public:
 
     void loadPropertyValues(const QString& values) override;
 
-    void setParentNode(NodeBase* node);
+    //void setParentNode(NodeBase* node);
 
 private:
     QVBoxLayout* mLayout;
@@ -56,7 +57,7 @@ private:
     QTextEdit* mDebugOutput;
     SpvCompiler mCompiler;
 
-    NodeBase* mParentNode;
+    //NodeBase* mParentNode;
 
 
 signals:

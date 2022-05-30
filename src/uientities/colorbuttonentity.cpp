@@ -84,8 +84,8 @@ void ColorButtonEntity::loadPropertyValues(const QString &values)
 
 void ColorButtonEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &ColorButtonEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &ColorButtonEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 ColorButtonEntity::~ColorButtonEntity()

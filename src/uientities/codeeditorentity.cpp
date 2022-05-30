@@ -23,7 +23,7 @@
 #include "../codeeditor/QGLSLHighlighter.hpp"
 #include "../codeeditor/QSyntaxStyle.hpp"
 
-#include "../nodegraph/nodebase.h"
+//#include "../nodegraph/nodebase.h"
 
 namespace Cascade {
 
@@ -91,8 +91,8 @@ CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
 
 void CodeEditorEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &CodeEditorEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &CodeEditorEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString CodeEditorEntity::getValuesAsString()
@@ -113,7 +113,7 @@ void CodeEditorEntity::handleTextChanged()
     if (mCompiler.compileGLSLFromCode(cStr, "comp"))
     {
         mDebugOutput->setText("Done.");
-        mParentNode->setShaderCode(mCompiler.getSpirV());
+        //mParentNode->setShaderCode(mCompiler.getSpirV());
 
         emit valueChanged();
     }
@@ -124,10 +124,10 @@ void CodeEditorEntity::handleTextChanged()
     mDebugOutput->update();
 }
 
-void CodeEditorEntity::setParentNode(NodeBase* node)
-{
-    mParentNode = node;
-}
+//void CodeEditorEntity::setParentNode(NodeBase* node)
+//{
+//    mParentNode = node;
+//}
 
 } // namespace Cascade
 

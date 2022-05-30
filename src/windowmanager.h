@@ -27,7 +27,7 @@
 namespace Cascade {
 
 class VulkanWindow;
-class NodeGraph;
+//class NodeGraph;
 class PropertiesView;
 class ViewerStatusBar;
 class NodeBase;
@@ -42,10 +42,10 @@ public:
     WindowManager(WindowManager const&) = delete;
     void operator=(WindowManager const&) = delete;
 
-    void setUp(VulkanWindow* vw,
-               NodeGraph* ng,
-               PropertiesView* pv,
-               ViewerStatusBar* vb);
+//    void setUp(VulkanWindow* vw,
+//               NodeGraph* ng,
+//               PropertiesView* pv,
+//               ViewerStatusBar* vb);
 
     ViewerMode getViewerMode();
 
@@ -57,7 +57,7 @@ private:
     void setViewerMode(const ViewerMode mode);
 
     VulkanWindow* mVulkanWindow;
-    NodeGraph* mNodeGraph;
+    //NodeGraph* mNodeGraph;
     PropertiesView* mPropertiesView;
     ViewerStatusBar* mViewerStatusBar;
 

@@ -31,21 +31,21 @@ PropertiesView::PropertiesView(QWidget *parent)
 
 void PropertiesView::clear()
 {
-    if (mCurrentProperties)
-    {
-        mCurrentProperties->hide();
-        mLayout->removeWidget(mCurrentProperties);
-        mCurrentProperties = nullptr;
-    }
+//    if (mCurrentProperties)
+//    {
+//        mCurrentProperties->hide();
+//        mLayout->removeWidget(mCurrentProperties);
+//        mCurrentProperties = nullptr;
+//    }
 }
 
-void PropertiesView::loadProperties(NodeProperties *prop)
-{
-    clear();
+//void PropertiesView::loadProperties(NodeProperties *prop)
+//{
+//    clear();
 
-    mLayout->addWidget(prop);
-    mCurrentProperties = prop;
-    mCurrentProperties->show();
-}
+//    mLayout->addWidget(prop);
+//    mCurrentProperties = prop;
+//    mCurrentProperties->show();
+//}
 
 } // namespace Cascade

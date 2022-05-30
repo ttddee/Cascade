@@ -26,7 +26,7 @@
 #include <QMessageBox>
 
 #include "log.h"
-#include "nodegraph/nodedefinitions.h"
+//#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 
@@ -37,22 +37,22 @@ ProjectManager& ProjectManager::getInstance()
     return instance;
 }
 
-void ProjectManager::setUp(NodeGraph* ng)
-{
-    mNodeGraph = ng;
+//void ProjectManager::setUp(NodeGraph* ng)
+//{
+//    mNodeGraph = ng;
 
-    // Incoming
-    connect(mNodeGraph, &NodeGraph::projectIsDirty,
-            this, &ProjectManager::handleProjectIsDirty);
+//    // Incoming
+//    connect(mNodeGraph, &NodeGraph::projectIsDirty,
+//            this, &ProjectManager::handleProjectIsDirty);
 
-    // Outgoing
-    connect(this, &ProjectManager::requestCreateStartupProject,
-            mNodeGraph, &NodeGraph::handleCreateStartupProject);
-    connect(this, &ProjectManager::requestCreateNewProject,
-            mNodeGraph, &NodeGraph::handleCreateNewProject);
-    connect(this, &ProjectManager::requestLoadProject,
-            mNodeGraph, &NodeGraph::handleLoadProject);
-}
+//    // Outgoing
+//    connect(this, &ProjectManager::requestCreateStartupProject,
+//            mNodeGraph, &NodeGraph::handleCreateStartupProject);
+//    connect(this, &ProjectManager::requestCreateNewProject,
+//            mNodeGraph, &NodeGraph::handleCreateNewProject);
+//    connect(this, &ProjectManager::requestLoadProject,
+//            mNodeGraph, &NodeGraph::handleLoadProject);
+//}
 
 void ProjectManager::createStartupProject()
 {
@@ -206,7 +206,7 @@ void ProjectManager::writeJsonToDisk(const QJsonDocument& project,
 QJsonObject ProjectManager::getJsonFromNodeGraph()
 {
     QJsonArray jsonNodeGraph;
-    mNodeGraph->getNodeGraphAsJson(jsonNodeGraph);
+   // mNodeGraph->getNodeGraphAsJson(jsonNodeGraph);
 
     QJsonObject jsonProject {
         { "nodegraph", jsonNodeGraph },

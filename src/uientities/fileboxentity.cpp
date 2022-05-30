@@ -107,8 +107,8 @@ void FileBoxEntity::deleteCurrentEntry()
 
 void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &FileBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &FileBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString FileBoxEntity::getValuesAsString()

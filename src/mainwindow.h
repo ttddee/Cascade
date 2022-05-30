@@ -31,7 +31,7 @@
 #include "windowmanager.h"
 #include "rendermanager.h"
 #include "vulkanview.h"
-#include "nodegraph/nodegraph.h"
+#include "nodegraph/nodegraphview.h"
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "mainmenu.h"
@@ -39,13 +39,20 @@
 #include "preferencesmanager.h"
 #include "isfmanager.h"
 
+#include "nodegraph/nodegraphview.h"
+
+using Cascade::NodeGraph::NodeGraphView;
+
 QT_BEGIN_NAMESPACE
-namespace Ui {
-class MainWindow;
+namespace Ui
+{
+    class MainWindow;
 }
 QT_END_NAMESPACE
 
 namespace Cascade {
+
+using NodeGraph::NodeGraphView;
 
 class MainWindow : public QMainWindow
 {
@@ -57,14 +64,14 @@ public:
     ads::CDockWidget* mNodeGraphDockWidget;
     ads::CDockWidget* mPropertiesViewDockWidget;
 
-    NodeGraph* getNodeGraph() const;
+    //NodeGraph* getNodeGraph() const;
 
     ~MainWindow();
 
 private:
     Ui::MainWindow *mUi;
     VulkanView* mVulkanView;
-    NodeGraph* mNodeGraph;
+    NodeGraphView* mNodeGraph;
     PropertiesView* mPropertiesView;
     ViewerStatusBar* mViewerStatusBar;
 

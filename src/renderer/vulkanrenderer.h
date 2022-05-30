@@ -31,8 +31,8 @@
 #include <OpenColorIO/OpenColorIO.h>
 
 #include "renderconfig.h"
-#include "../nodegraph/nodedefinitions.h"
-#include "../nodegraph/nodebase.h"
+//#include "../nodegraph/nodedefinitions.h"
+//#include "../nodegraph/nodebase.h"
 #include "../windowmanager.h"
 #include "cssettingsbuffer.h"
 #include "csimage.h"
@@ -209,8 +209,8 @@ private:
     std::unique_ptr<CsImage>                mTmpCacheImage;
     std::unique_ptr<CsImage>                mComputeRenderTarget;
 
-    std::map<NodeType, vk::UniqueShaderModule>  mShaders;
-    std::map<NodeType, vk::UniquePipeline>      mPipelines;
+    //std::map<NodeType, vk::UniqueShaderModule>  mShaders;
+    //std::map<NodeType, vk::UniquePipeline>      mPipelines;
 
     // TODO: Move this out of here
     std::vector<float> mViewerPushConstants = { 0.0f, 0.5f, 0.0f, 1.0f, 1.0f };

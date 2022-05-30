@@ -273,9 +273,9 @@ void VulkanRenderer::createGraphicsPipelineLayout()
 
 void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
 {
-    auto props = node->getAllPropertyValues();
+//    auto props = node->getAllPropertyValues();
 
-    mSettingsBuffer->fillBuffer(props);
+//    mSettingsBuffer->fillBuffer(props);
 }
 
 void VulkanRenderer::createGraphicsPipeline(
@@ -458,14 +458,14 @@ vk::UniqueShaderModule VulkanRenderer::createShaderFromCode(const std::vector<un
 
 void VulkanRenderer::loadShadersFromDisk()
 {
-    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
-    {
-        NodeType nodeType = static_cast<NodeType>(i);
+//    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
+//    {
+//        NodeType nodeType = static_cast<NodeType>(i);
 
-        auto props = getPropertiesForType(nodeType);
+//        auto props = getPropertiesForType(nodeType);
 
-        mShaders[nodeType] = createShaderFromFile(props.shaderPath);
-    }
+//        mShaders[nodeType] = createShaderFromFile(props.shaderPath);
+//    }
 }
 
 bool VulkanRenderer::createComputeRenderTarget(uint32_t width, uint32_t height)
@@ -726,12 +726,12 @@ void VulkanRenderer::createComputePipelineLayout()
 
 void VulkanRenderer::createComputePipelines()
 {
-    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
-    {
-        NodeType nodeType = static_cast<NodeType>(i);
+//    for (int i = 0; i != static_cast<int>(NodeType::eLast); i++)
+//    {
+//        NodeType nodeType = static_cast<NodeType>(i);
 
-        mPipelines[nodeType] = createComputePipeline(mShaders[nodeType].get());
-    }
+//        mPipelines[nodeType] = createComputePipeline(mShaders[nodeType].get());
+//    }
 }
 
 vk::UniquePipeline VulkanRenderer::createComputePipeline(
@@ -1011,58 +1011,58 @@ void VulkanRenderer::setViewerPushConstants(const QString &s)
 
 void VulkanRenderer::processReadNode(NodeBase *node)
 {
-    auto parts = node->getAllPropertyValues().split(",");
-    int index = parts[parts.size() - 2].toInt();
-    if ( index < 0 )
-        index = 0;
-    QString path = parts[index];
-    int colorSpace = parts.last().toInt();
+//    auto parts = node->getAllPropertyValues().split(",");
+//    int index = parts[parts.size() - 2].toInt();
+//    if ( index < 0 )
+//        index = 0;
+//    QString path = parts[index];
+//    int colorSpace = parts.last().toInt();
 
-    QFileInfo checkFile(path);
+//    QFileInfo checkFile(path);
 
-    if(path != "" && checkFile.exists() && checkFile.isFile())
-    {
-        mImagePath = path;
+//    if(path != "" && checkFile.exists() && checkFile.isFile())
+//    {
+//        mImagePath = path;
 
-        // Create texture
-        if (!createImageFromFile(mImagePath, colorSpace))
-            CS_LOG_WARNING("Failed to create texture");
+//        // Create texture
+//        if (!createImageFromFile(mImagePath, colorSpace))
+//            CS_LOG_WARNING("Failed to create texture");
 
-        mTmpCacheImage = std::unique_ptr<CsImage>(
-                    new CsImage(mWindow,
-                                &mDevice,
-                                &mPhysicalDevice,
-                                mCpuImage->xend(),
-                                mCpuImage->yend(),
-                                false,
-                                "Tmp Cache Image"));
+//        mTmpCacheImage = std::unique_ptr<CsImage>(
+//                    new CsImage(mWindow,
+//                                &mDevice,
+//                                &mPhysicalDevice,
+//                                mCpuImage->xend(),
+//                                mCpuImage->yend(),
+//                                false,
+//                                "Tmp Cache Image"));
 
-        // Create render target
-        if (!createComputeRenderTarget(mCpuImage->xend(), mCpuImage->yend()))
-            CS_LOG_WARNING("Failed to create compute render target.");
+//        // Create render target
+//        if (!createComputeRenderTarget(mCpuImage->xend(), mCpuImage->yend()))
+//            CS_LOG_WARNING("Failed to create compute render target.");
 
-        updateComputeDescriptors(mTmpCacheImage.get(), nullptr, mComputeRenderTarget.get());
+//        updateComputeDescriptors(mTmpCacheImage.get(), nullptr, mComputeRenderTarget.get());
 
-        mComputeCommandBuffer->recordImageLoad(
-                    mLoadImageStaging.get(),
-                    mTmpCacheImage.get(),
-                    mComputeRenderTarget.get(),
-                    &mPipelines[NodeType::eRead].get());
+//        mComputeCommandBuffer->recordImageLoad(
+//                    mLoadImageStaging.get(),
+//                    mTmpCacheImage.get(),
+//                    mComputeRenderTarget.get(),
+//                    &mPipelines[NodeType::eRead].get());
 
-        mComputeCommandBuffer->submitImageLoad();
+//        mComputeCommandBuffer->submitImageLoad();
 
-        node->setCachedImage(std::move(mComputeRenderTarget));
+//        node->setCachedImage(std::move(mComputeRenderTarget));
 
-        // Delete the staging image
-        auto result = mDevice.waitIdle();
-        Q_UNUSED(result);
+//        // Delete the staging image
+//        auto result = mDevice.waitIdle();
+//        Q_UNUSED(result);
 
-        mLoadImageStaging = nullptr;
-    }
-    else
-    {
-        node->flushCache();
-    }
+//        mLoadImageStaging = nullptr;
+//    }
+//    else
+//    {
+//        node->flushCache();
+//    }
 }
 
 void VulkanRenderer::processNode(
@@ -1071,170 +1071,170 @@ void VulkanRenderer::processNode(
         CsImage* inputImageFront,
         const QSize targetSize)
 {
-    auto result = mDevice.waitIdle();
+//    auto result = mDevice.waitIdle();
 
-    fillSettingsBuffer(node);
+//    fillSettingsBuffer(node);
 
-    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
-        CS_LOG_WARNING("Failed to create compute render target.");
+//    if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+//        CS_LOG_WARNING("Failed to create compute render target.");
 
-    // Tells the shader if we have a mask on the front input
-    mSettingsBuffer->appendValue(0.0);
-    if (inputImageFront)
-    {
-        mSettingsBuffer->incrementLastValue();
-    }
+//    // Tells the shader if we have a mask on the front input
+//    mSettingsBuffer->appendValue(0.0);
+//    if (inputImageFront)
+//    {
+//        mSettingsBuffer->incrementLastValue();
+//    }
 
-    // TODO: This is a workaround for generative nodes without input
-    // but needs to be fixed
-    if (!inputImageBack)
-    {
-        mTmpCacheImage = std::unique_ptr<CsImage>(
-                    new CsImage(mWindow,
-                                &mDevice,
-                                &mPhysicalDevice,
-                                targetSize.width(),
-                                targetSize.height(),
-                                false,
-                                "Tmp Cache Image"));
-        inputImageBack = mTmpCacheImage.get();
-    }
+//    // TODO: This is a workaround for generative nodes without input
+//    // but needs to be fixed
+//    if (!inputImageBack)
+//    {
+//        mTmpCacheImage = std::unique_ptr<CsImage>(
+//                    new CsImage(mWindow,
+//                                &mDevice,
+//                                &mPhysicalDevice,
+//                                targetSize.width(),
+//                                targetSize.height(),
+//                                false,
+//                                "Tmp Cache Image"));
+//        inputImageBack = mTmpCacheImage.get();
+//    }
 
-    auto pipeline = mPipelines[node->getType()].get();
+//    auto pipeline = mPipelines[node->getType()].get();
 
-    auto nodeType = node->getType();
+//    auto nodeType = node->getType();
 
-    if (nodeType == NodeType::eShader || nodeType == NodeType::eIsf)
-    {
-        if (node->getShaderCode().size() != 0)
-        {
-            mShaderUser = createShaderFromCode(node->getShaderCode());
+//    if (nodeType == NodeType::eShader || nodeType == NodeType::eIsf)
+//    {
+//        if (node->getShaderCode().size() != 0)
+//        {
+//            mShaderUser = createShaderFromCode(node->getShaderCode());
 
-            mComputePipelineUser = createComputePipeline(mShaderUser.get());
+//            mComputePipelineUser = createComputePipeline(mShaderUser.get());
 
-            pipeline = mComputePipelineUser.get();
-        }
-        else
-        {
-            pipeline = mComputePipelineNoop.get();
-        }
-    }
+//            pipeline = mComputePipelineUser.get();
+//        }
+//        else
+//        {
+//            pipeline = mComputePipelineNoop.get();
+//        }
+//    }
 
-    int numShaderPasses = getPropertiesForType(node->getType()).numShaderPasses;
-    int currentShaderPass = 1;
+//    int numShaderPasses = getPropertiesForType(node->getType()).numShaderPasses;
+//    int currentShaderPass = 1;
 
-    if (numShaderPasses == 1)
-    {
-        updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
+//    if (numShaderPasses == 1)
+//    {
+//        updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
 
-        mComputeCommandBuffer->recordGeneric(
-                    inputImageBack,
-                    inputImageFront,
-                    mComputeRenderTarget.get(),
-                    pipeline,
-                    numShaderPasses,
-                    currentShaderPass);
+//        mComputeCommandBuffer->recordGeneric(
+//                    inputImageBack,
+//                    inputImageFront,
+//                    mComputeRenderTarget.get(),
+//                    pipeline,
+//                    numShaderPasses,
+//                    currentShaderPass);
 
-        mComputeCommandBuffer->submitGeneric();
+//        mComputeCommandBuffer->submitGeneric();
 
-        mWindow->requestUpdate();
+//        mWindow->requestUpdate();
 
-        result = mDevice.waitIdle();
+//        result = mDevice.waitIdle();
 
-        node->setCachedImage(std::move(mComputeRenderTarget));
-    }
-    else
-    {
-        for (int i = 1; i <= numShaderPasses; ++i)
-        {
-            // TODO: Shorten this
-            if (currentShaderPass == 1)
-            {
-                // First pass of multipass shader
-                mSettingsBuffer->appendValue(0.0);
+//        node->setCachedImage(std::move(mComputeRenderTarget));
+//    }
+//    else
+//    {
+//        for (int i = 1; i <= numShaderPasses; ++i)
+//        {
+//            // TODO: Shorten this
+//            if (currentShaderPass == 1)
+//            {
+//                // First pass of multipass shader
+//                mSettingsBuffer->appendValue(0.0);
 
-                updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
+//                updateComputeDescriptors(inputImageBack, inputImageFront, mComputeRenderTarget.get());
 
-                mComputeCommandBuffer->recordGeneric(
-                            inputImageBack,
-                            inputImageFront,
-                            mComputeRenderTarget.get(),
-                            pipeline,
-                            numShaderPasses,
-                            currentShaderPass);
+//                mComputeCommandBuffer->recordGeneric(
+//                            inputImageBack,
+//                            inputImageFront,
+//                            mComputeRenderTarget.get(),
+//                            pipeline,
+//                            numShaderPasses,
+//                            currentShaderPass);
 
-                mComputeCommandBuffer->submitGeneric();
-            }
-            else if (currentShaderPass <= numShaderPasses)
-            {
-                // Subsequent passes
-                mSettingsBuffer->incrementLastValue();
+//                mComputeCommandBuffer->submitGeneric();
+//            }
+//            else if (currentShaderPass <= numShaderPasses)
+//            {
+//                // Subsequent passes
+//                mSettingsBuffer->incrementLastValue();
 
-                if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
-                    CS_LOG_WARNING("Failed to create compute render target.");
+//                if (!createComputeRenderTarget(targetSize.width(), targetSize.height()))
+//                    CS_LOG_WARNING("Failed to create compute render target.");
 
-                updateComputeDescriptors(node->getCachedImage(), inputImageFront, mComputeRenderTarget.get());
+//                updateComputeDescriptors(node->getCachedImage(), inputImageFront, mComputeRenderTarget.get());
 
-                mComputeCommandBuffer->recordGeneric(
-                            node->getCachedImage(),
-                            inputImageFront,
-                            mComputeRenderTarget.get(),
-                            pipeline,
-                            numShaderPasses,
-                            currentShaderPass);
+//                mComputeCommandBuffer->recordGeneric(
+//                            node->getCachedImage(),
+//                            inputImageFront,
+//                            mComputeRenderTarget.get(),
+//                            pipeline,
+//                            numShaderPasses,
+//                            currentShaderPass);
 
-                mComputeCommandBuffer->submitGeneric();
-            }
-            currentShaderPass++;
+//                mComputeCommandBuffer->submitGeneric();
+//            }
+//            currentShaderPass++;
 
-            result = mDevice.waitIdle();
+//            result = mDevice.waitIdle();
 
-            node->setCachedImage(std::move(mComputeRenderTarget));
-        }
+//            node->setCachedImage(std::move(mComputeRenderTarget));
+//        }
 
-        mWindow->requestUpdate();
-    }
+//        mWindow->requestUpdate();
+//    }
 }
 
 void VulkanRenderer::displayNode(const NodeBase *node)
 {
-    if(CsImage* image = node->getCachedImage())
-    {
-        // Execute a NoOp shader on the node
-        mClearScreen = false;
+//    if(CsImage* image = node->getCachedImage())
+//    {
+//        // Execute a NoOp shader on the node
+//        mClearScreen = false;
 
-        updateVertexData(image->getWidth(), image->getHeight());
-        createVertexBuffer();
+//        updateVertexData(image->getWidth(), image->getHeight());
+//        createVertexBuffer();
 
-        if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
-            CS_LOG_WARNING("Failed to create compute render target.");
+//        if (!createComputeRenderTarget(image->getWidth(), image->getHeight()))
+//            CS_LOG_WARNING("Failed to create compute render target.");
 
-        CsImage* upstreamImage = nullptr;
-        if (node->getUpstreamNodeBack())
-            upstreamImage = node->getUpstreamNodeBack()->getCachedImage();
-        if (!upstreamImage)
-            upstreamImage = image;
+//        CsImage* upstreamImage = nullptr;
+//        if (node->getUpstreamNodeBack())
+//            upstreamImage = node->getUpstreamNodeBack()->getCachedImage();
+//        if (!upstreamImage)
+//            upstreamImage = image;
 
-        updateGraphicsDescriptors(image, upstreamImage);
-        updateComputeDescriptors(image, nullptr, mComputeRenderTarget.get());
+//        updateGraphicsDescriptors(image, upstreamImage);
+//        updateComputeDescriptors(image, nullptr, mComputeRenderTarget.get());
 
-        mComputeCommandBuffer->recordGeneric(
-                    image,
-                    nullptr,
-                    mComputeRenderTarget.get(),
-                    *mComputePipelineNoop,
-                    1,
-                    1);
+//        mComputeCommandBuffer->recordGeneric(
+//                    image,
+//                    nullptr,
+//                    mComputeRenderTarget.get(),
+//                    *mComputePipelineNoop,
+//                    1,
+//                    1);
 
-        mComputeCommandBuffer->submitGeneric();
+//        mComputeCommandBuffer->submitGeneric();
 
-        mWindow->requestUpdate();
-    }
-    else
-    {
-        CS_LOG_INFO("Clearing screen");
-        doClearScreen();
-    }
+//        mWindow->requestUpdate();
+//    }
+//    else
+//    {
+//        CS_LOG_INFO("Clearing screen");
+//        doClearScreen();
+//    }
 }
 
 void VulkanRenderer::doClearScreen()
@@ -1321,16 +1321,16 @@ void VulkanRenderer::shutdown()
     mTmpCacheImage = nullptr;
     mComputeRenderTarget = nullptr;
     mSettingsBuffer = nullptr;
-    for(auto& pl : mPipelines)
-        mDevice.destroy(*pl.second);
+//    for(auto& pl : mPipelines)
+//        mDevice.destroy(*pl.second);
     mDevice.destroy(*mComputePipelineNoop);
     mDevice.destroy(*mComputePipelineUser);
     mDevice.destroy(*mGraphicsPipelineRGB);
     mDevice.destroy(*mGraphicsPipelineAlpha);
     mDevice.destroy(*mPipelineCache);
     mDevice.destroy(*mDescriptorPool);
-    for(auto& sh : mShaders)
-        mDevice.destroy(*sh.second);
+//    for(auto& sh : mShaders)
+//        mDevice.destroy(*sh.second);
     mDevice.destroy(*mShaderUser);
     mDevice.destroy(*mGraphicsPipelineLayout);
     mDevice.destroy(*mComputePipelineLayout);

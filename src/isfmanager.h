@@ -26,7 +26,7 @@
 #include <QJsonDocument>
 
 #include "shadercompiler/SpvShaderCompiler.h"
-#include "nodegraph/nodedefinitions.h"
+//#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 
@@ -43,7 +43,7 @@ public:
 
     const std::vector<unsigned int>& getShaderCode(const QString& nodeName);
     const std::set<QString>& getCategories() const;
-    const std::map<QString, NodeInitProperties>& getNodeProperties() const;
+   // const std::map<QString, NodeInitProperties>& getNodeProperties() const;
     QString getCategoryPerNode(const QString& name) const;
 
 private:
@@ -53,13 +53,13 @@ private:
             QString& shader,
             const QJsonDocument& properties);
 
-    NodeInitProperties createISFNodeProperties(
-            const QJsonObject& json,
-            const QString& name);
+//    NodeInitProperties createISFNodeProperties(
+//            const QJsonObject& json,
+//            const QString& name);
 
-    std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(
-            const QString& nodeName,
-            const QJsonObject& json);
+//    std::vector<std::pair<UIElementType, QString>> createUIElementsFromJson(
+//            const QString& nodeName,
+//            const QJsonObject& json);
 
     int getRenderpassesFromJson(const QJsonObject& json) const;
 
@@ -70,7 +70,7 @@ private:
     std::map<QString, QJsonDocument> mIsfProperties;
     std::map<QString, std::vector<unsigned int>> mIsfShaderCode;
     std::set<QString> mIsfNodeCategories;
-    std::map<QString, NodeInitProperties> mIsfNodeProperties;
+    //std::map<QString, NodeInitProperties> mIsfNodeProperties;
     std::map<QString, QString> mIsfCategoryPerNode;
 };
 

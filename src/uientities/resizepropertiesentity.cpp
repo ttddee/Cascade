@@ -20,7 +20,7 @@
 #include "resizepropertiesentity.h"
 #include "ui_resizepropertiesentity.h"
 
-#include "../nodegraph/nodebase.h"
+//#include "../nodegraph/nodebase.h"
 
 namespace Cascade {
 
@@ -42,8 +42,8 @@ ResizePropertiesEntity::ResizePropertiesEntity(UIElementType et, QWidget *parent
 
 void ResizePropertiesEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &ResizePropertiesEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &ResizePropertiesEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString ResizePropertiesEntity::getValuesAsString()
@@ -68,7 +68,7 @@ void ResizePropertiesEntity::loadPropertyValues(const QString &values)
 
 void ResizePropertiesEntity::handleNodeRequestUpdate()
 {
-    setInputSize(mParentNode->getInputSize());
+    //setInputSize(mParentNode->getInputSize());
 }
 
 void ResizePropertiesEntity::setParentNode(NodeBase* node)

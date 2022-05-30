@@ -48,8 +48,8 @@ void FolderBoxEntity::setName(const QString &name)
 
 void FolderBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &FolderBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &FolderBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString FolderBoxEntity::getValuesAsString()

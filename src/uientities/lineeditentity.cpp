@@ -49,8 +49,8 @@ void LineEditEntity::setText(const QString &text)
 
 void LineEditEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &LineEditEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &LineEditEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString LineEditEntity::getValuesAsString()

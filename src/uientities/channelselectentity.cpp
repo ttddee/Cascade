@@ -45,8 +45,8 @@ void ChannelSelectEntity::hideAlphaChannel()
 
 void ChannelSelectEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &ChannelSelectEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &ChannelSelectEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString ChannelSelectEntity::getValuesAsString()

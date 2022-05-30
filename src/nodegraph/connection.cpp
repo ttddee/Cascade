@@ -1,147 +1,374 @@
-/*
- *  Cascade Image Editor
- *
- *  Copyright (C) 2022 Till Dechent and contributors
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
-
 #include "connection.h"
 
-#include <math.h>
+#include <cmath>
+#include <utility>
 
-#include <QPen>
-#include <QColor>
-#include <QWidget>
-#include <QGraphicsSceneMouseEvent>
-#include <QJsonObject>
-#include <QJsonArray>
-#include <QPainter>
+#include <QtWidgets/QtWidgets>
+#include <QtGlobal>
 
-#include "nodeinput.h"
-#include "nodeoutput.h"
+#include "node.h"
+#include "NodeGraphScene.h"
+#include "nodegraphview.h"
 
-// No M_PI on Windows
-#ifndef M_PI
-    #define M_PI 3.14159265358979323846
-#endif
+#include "nodegeometry.h"
+#include "nodegraphicsobject.h"
+#include "nodedatamodel.h"
 
-namespace Cascade {
+#include "connectionstate.h"
+#include "connectiongeometry.h"
+#include "connectiongraphicsobject.h"
 
-Connection::Connection(NodeOutput* source)
-    : QGraphicsLineItem(),
-      mSourceOutput(source)
+using Cascade::NodeGraph::Connection;
+using Cascade::NodeGraph::PortType;
+using Cascade::NodeGraph::PortIndex;
+using Cascade::NodeGraph::ConnectionState;
+using Cascade::NodeGraph::Node;
+using Cascade::NodeGraph::NodeData;
+using Cascade::NodeGraph::NodeDataType;
+using Cascade::NodeGraph::ConnectionGraphicsObject;
+using Cascade::NodeGraph::ConnectionGeometry;
+
+Connection::Connection(
+    PortType portType,
+    Node& node,
+    PortIndex portIndex) :
+    mUid(QUuid::createUuid()),
+    mOutPortIndex(INVALID),
+    mInPortIndex(INVALID),
+    mConnectionState()
 {
-    this->setPen(mNormalPen);
-    this->setLine(source->mapToParent(source->pos()).x(),
-                  source->mapToParent(source->pos()).y(),
-                  source->mapToParent(source->pos()).x(),
-                  source->mapToParent(source->pos()).y());
-    this->setZValue(-1);
-    this->hide();
+    setNodeToPort(node, portType, portIndex);
+
+    setRequiredPort(oppositePort(portType));
 }
 
-void Connection::paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt)
+
+Connection:: Connection(
+    Node& nodeIn,
+    PortIndex portIndexIn,
+    Node& nodeOut,
+    PortIndex portIndexOut) :
+    mUid(QUuid::createUuid()),
+    mOutNode(&nodeOut),
+    mInNode(&nodeIn),
+    mOutPortIndex(portIndexOut),
+    mInPortIndex(portIndexIn),
+    mConnectionState()
 {
-    if(mTargetInput)
+    setNodeToPort(nodeIn, PortType::In, portIndexIn);
+    setNodeToPort(nodeOut, PortType::Out, portIndexOut);
+}
+
+Connection::~Connection()
+{
+    if (isComplete())
     {
-        auto t = mTargetInput->getInputType();
-        if (t == NodeInputType::eRgbFront)
-            this->setPen(mFrontConnectedPen);
-        else if (t == NodeInputType::eRgbBack)
-            this->setPen(mBackConnectedPen);
-        else if (t == NodeInputType::eRgbAlpha)
-            this->setPen(mAlphaConnectedPen);
+        emit connectionMadeIncomplete(*this);
+    }
+
+    if (mInNode)
+    {
+        mInNode->nodeGraphicsObject().update();
+    }
+
+    if (mOutNode)
+    {
+        propagateEmptyData();
+        mOutNode->nodeGraphicsObject().update();
+    }
+}
+
+
+QJsonObject Connection::save() const
+{
+    QJsonObject connectionJson;
+
+    if (mInNode && mOutNode)
+    {
+        connectionJson["in_id"] = mInNode->id().toString();
+        connectionJson["in_index"] = mInPortIndex;
+
+        connectionJson["out_id"] = mOutNode->id().toString();
+        connectionJson["out_index"] = mOutPortIndex;
+    }
+
+    return connectionJson;
+}
+
+
+QUuid Connection:: id() const
+{
+    return mUid;
+}
+
+
+bool Connection::isComplete() const
+{
+    return mInNode != nullptr && mOutNode != nullptr;
+}
+
+
+void Connection::setRequiredPort(PortType dragging)
+{
+    mConnectionState.setRequiredPort(dragging);
+
+    switch (dragging)
+    {
+    case PortType::Out:
+        mOutNode      = nullptr;
+        mOutPortIndex = INVALID;
+        break;
+
+    case PortType::In:
+        mInNode      = nullptr;
+        mInPortIndex = INVALID;
+        break;
+
+    default:
+        break;
+    }
+}
+
+
+PortType Connection::requiredPort() const
+{
+    return mConnectionState.requiredPort();
+}
+
+
+void Connection::setGraphicsObject(
+    std::unique_ptr<ConnectionGraphicsObject>&& graphics)
+{
+    mConnectionGraphicsObject = std::move(graphics);
+
+    // This function is only called when the ConnectionGraphicsObject
+    // is newly created. At this moment both end coordinates are (0, 0)
+    // in Connection G.O. coordinates. The position of the whole
+    // Connection G. O. in scene coordinate system is also (0, 0).
+    // By moving the whole object to the Node Port position
+    // we position both connection ends correctly.
+
+    if (requiredPort() != PortType::None)
+    {
+
+        PortType attachedPort = oppositePort(requiredPort());
+
+        PortIndex attachedPortIndex = getPortIndex(attachedPort);
+
+        auto node = getNode(attachedPort);
+
+        QTransform nodeSceneTransform =
+            node->nodeGraphicsObject().sceneTransform();
+
+        QPointF pos = node->nodeGeometry().portScenePosition(attachedPortIndex,
+                                                             attachedPort,
+                                                             nodeSceneTransform);
+
+        mConnectionGraphicsObject->setPos(pos);
+    }
+
+    mConnectionGraphicsObject->move();
+}
+
+
+
+PortIndex Connection::getPortIndex(PortType portType) const
+{
+    PortIndex result = INVALID;
+
+    switch (portType)
+    {
+    case PortType::In:
+        result = mInPortIndex;
+        break;
+
+    case PortType::Out:
+        result = mOutPortIndex;
+
+        break;
+
+    default:
+        break;
+    }
+
+    return result;
+}
+
+
+void Connection::setNodeToPort(
+    Node& node,
+    PortType portType,
+    PortIndex portIndex)
+{
+    bool wasIncomplete = !isComplete();
+
+    auto& nodeWeak = getNode(portType);
+
+    nodeWeak = &node;
+
+    if (portType == PortType::Out)
+        mOutPortIndex = portIndex;
+    else
+        mInPortIndex = portIndex;
+
+    mConnectionState.setNoRequiredPort();
+
+    emit updated(*this);
+    if (isComplete() && wasIncomplete) {
+        emit connectionCompleted(*this);
+    }
+}
+
+
+void Connection::removeFromNodes() const
+{
+    if (mInNode)
+        mInNode->nodeState().eraseConnection(PortType::In, mInPortIndex, id());
+
+    if (mOutNode)
+        mOutNode->nodeState().eraseConnection(PortType::Out, mOutPortIndex, id());
+}
+
+
+ConnectionGraphicsObject& Connection::getConnectionGraphicsObject() const
+{
+    return *mConnectionGraphicsObject;
+}
+
+
+ConnectionState& Connection::connectionState()
+{
+    return mConnectionState;
+}
+
+
+ConnectionState const& Connection::connectionState() const
+{
+    return mConnectionState;
+}
+
+
+ConnectionGeometry& Connection::connectionGeometry()
+{
+    return mConnectionGeometry;
+}
+
+
+ConnectionGeometry const& Connection::connectionGeometry() const
+{
+    return mConnectionGeometry;
+}
+
+
+Node* Connection::getNode(PortType portType) const
+{
+    switch (portType)
+    {
+    case PortType::In:
+        return mInNode;
+        break;
+
+    case PortType::Out:
+        return mOutNode;
+        break;
+
+    default:
+        // not possible
+        break;
+    }
+    return nullptr;
+}
+
+
+Node*& Connection::getNode(PortType portType)
+{
+    switch (portType)
+    {
+    case PortType::In:
+        return mInNode;
+        break;
+
+    case PortType::Out:
+        return mOutNode;
+        break;
+
+    default:
+        // not possible
+        break;
+    }
+    Q_UNREACHABLE();
+}
+
+
+void Connection::clearNode(PortType portType)
+{
+    if (isComplete())
+    {
+        emit connectionMadeIncomplete(*this);
+    }
+
+    getNode(portType) = nullptr;
+
+    if (portType == PortType::In)
+        mInPortIndex = INVALID;
+    else
+        mOutPortIndex = INVALID;
+}
+
+
+NodeDataType Connection::dataType(PortType portType) const
+{
+    if (mInNode && mOutNode)
+    {
+        auto const & model = (portType == PortType::In) ?
+                                mInNode->nodeDataModel() :
+                                mOutNode->nodeDataModel();
+        PortIndex index = (portType == PortType::In) ?
+                              mInPortIndex :
+                              mOutPortIndex;
+
+        return model->dataType(portType, index);
     }
     else
     {
-        this->setPen(mNormalPen);
+        Node* validNode;
+        PortIndex index = INVALID;
+
+        if ((validNode = mInNode))
+        {
+            index    = mInPortIndex;
+            portType = PortType::In;
+        }
+        else if ((validNode = mOutNode))
+        {
+            index    = mOutPortIndex;
+            portType = PortType::Out;
+        }
+
+        if (validNode)
+        {
+            auto const &model = validNode->nodeDataModel();
+
+            return model->dataType(portType, index);
+        }
     }
-    QGraphicsLineItem::paint(painter, opt, wdgt);
+
+    Q_UNREACHABLE();
 }
 
-QPainterPath Connection::shape() const
+
+void Connection::propagateData(std::shared_ptr<NodeData> nodeData) const
 {
-    // Expand clickable region beyond line
-    int selectionOffset = 10;
-    QPainterPath ret;
-    QPolygonF nPolygon;
-    qreal radAngle = line().angle()* M_PI / 180;
-    qreal dx = selectionOffset * sin(radAngle);
-    qreal dy = selectionOffset * cos(radAngle);
-    QPointF offset1 = QPointF(dx, dy);
-    QPointF offset2 = QPointF(-dx, -dy);
-    nPolygon << line().p1() + offset1
-             << line().p1() + offset2
-             << line().p2() + offset2
-             << line().p2() + offset1;
-    ret.addPolygon(nPolygon);
-    return ret;
-}
-
-void Connection::connectToTarget(NodeInput *in)
-{
-    mTargetInput = in;
-}
-
-NodeOutput* Connection::getSourceOutput()
-{
-    return mSourceOutput;
-}
-
-NodeInput* Connection::getTargetInput()
-{
-    return mTargetInput;
-}
-
-void Connection::updatePosition()
-{
-    this->show();
-    auto start = mSourceOutput->mParentNode->mapToParent(mSourceOutput->pos());
-
-    this->setLine(start.x() + mSourceOutput->mVisualWidth / 2,
-                  start.y() + mSourceOutput->mVisualHeight / 2,
-                  mTargetInput->mParentNode->mapToParent(mTargetInput->pos()).x()
-                  + mSourceOutput->mVisualWidth / 2,
-                  mTargetInput->mParentNode->mapToParent(mTargetInput->pos()).y()
-                  + mSourceOutput->mVisualHeight / 2);
-}
-
-void Connection::updatePosition(const QPoint end)
-{
-    this->show();
-    auto start = mSourceOutput->mParentNode->mapToParent(mSourceOutput->pos());
-
-    if (!mTargetInput)
-    // Connection is open
+    if (mInNode)
     {
-        this->setLine(start.x() + mSourceOutput->mVisualWidth / 2,
-                      start.y() + mSourceOutput->mVisualHeight / 2,
-                      end.x() - 5,
-                      end.y() - 3);
+        mInNode->propagateData(nodeData, mInPortIndex, id());
     }
 }
 
-void Connection::addConnectionToJsonObject(QJsonArray &jsonConnectionsArray)
+
+void Connection::propagateEmptyData() const
 {
-    QJsonObject jsonConnection {
-        { "src", mSourceOutput->mParentNode->getID() },
-        { "dst-node", mTargetInput->mParentNode->getID() },
-        { "dst", mTargetInput->getID()}
-    };
-    jsonConnectionsArray.push_back(jsonConnection);
+    std::shared_ptr<NodeData> emptyData;
+
+    propagateData(emptyData);
 }
-
-} //namespace Cascade
-

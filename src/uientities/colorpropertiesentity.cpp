@@ -216,8 +216,8 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
 
 void ColorPropertiesEntity::selfConnectToValueChanged(NodeProperties* p)
 {
-    connect(this, &ColorPropertiesEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &ColorPropertiesEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString ColorPropertiesEntity::getValuesAsString()

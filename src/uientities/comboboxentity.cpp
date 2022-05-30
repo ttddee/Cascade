@@ -53,8 +53,8 @@ void ComboBoxEntity::setOptions(const std::vector<QString> options, int index)
 
 void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &ComboBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &ComboBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString ComboBoxEntity::getValuesAsString()

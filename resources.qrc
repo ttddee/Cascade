@@ -184,5 +184,6 @@
         <file>shaders/isf/Zoom.fs</file>
         <file>shaders/exposure_comp.spv</file>
         <file>cascade.ico</file>
+        <file>style/nodegraphstyle.json</file>
     </qresource>
 </RCC>

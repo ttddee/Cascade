@@ -44,10 +44,10 @@ const std::set<QString>& ISFManager::getCategories() const
     return mIsfNodeCategories;
 }
 
-const std::map<QString, NodeInitProperties>& ISFManager::getNodeProperties() const
-{
-    return mIsfNodeProperties;
-}
+//const std::map<QString, NodeInitProperties>& ISFManager::getNodeProperties() const
+//{
+//    return mIsfNodeProperties;
+//}
 
 QString ISFManager::getCategoryPerNode(const QString &name) const
 {
@@ -105,7 +105,7 @@ void ISFManager::setUp()
                 mIsfCategoryPerNode[name] = categoryName;
 
                 // Create properties for the creation of the node
-                mIsfNodeProperties[name] = createISFNodeProperties(propObject, name);
+                //mIsfNodeProperties[name] = createISFNodeProperties(propObject, name);
 
                 this->mIsfShaderCode[name] = mCompiler.getSpirV();
             }
@@ -121,27 +121,27 @@ void ISFManager::setUp()
     CS_LOG_WARNING("Compilation failed for:" + QString::number(failure));
 }
 
-NodeInitProperties ISFManager::createISFNodeProperties(
-        const QJsonObject& json,
-        const QString& name)
-{
-    NodeInitProperties props =
-    {
-        NodeType::eIsf,
-        name,
-        NodeCategory::eIsf,
-        { NodeInputType::eRgbBack },
-        { NodeOutputType::eRgb },
-        createUIElementsFromJson(name, json),
-        FrontInputTrait::eAlwaysClear,
-        BackInputTrait::eRenderUpstreamOrClear,
-        AlphaInputTrait::eAlwaysClear,
-        OutputTrait::eRenderUpstreamOrClear,
-        ":/shaders/noop_comp.spv",
-        1
-    };
-    return props;
-}
+//NodeInitProperties ISFManager::createISFNodeProperties(
+//        const QJsonObject& json,
+//        const QString& name)
+//{
+//    NodeInitProperties props =
+//    {
+//        NodeType::eIsf,
+//        name,
+//        NodeCategory::eIsf,
+//        { NodeInputType::eRgbBack },
+//        { NodeOutputType::eRgb },
+//        createUIElementsFromJson(name, json),
+//        FrontInputTrait::eAlwaysClear,
+//        BackInputTrait::eRenderUpstreamOrClear,
+//        AlphaInputTrait::eAlwaysClear,
+//        OutputTrait::eRenderUpstreamOrClear,
+//        ":/shaders/noop_comp.spv",
+//        1
+//    };
+//    return props;
+//}
 
 int ISFManager::getRenderpassesFromJson(
         const QJsonObject &json) const
@@ -155,123 +155,123 @@ int ISFManager::getRenderpassesFromJson(
     return passes;
 }
 
-std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElementsFromJson(
-        const QString& nodeName,
-        const QJsonObject &json)
-{
-    std::vector<std::pair<UIElementType, QString>> elements;
-    elements.push_back({ UIElementType::ePropertiesHeading, nodeName });
+//std::vector<std::pair<UIElementType, QString>> ISFManager::createUIElementsFromJson(
+//        const QString& nodeName,
+//        const QJsonObject &json)
+//{
+//    std::vector<std::pair<UIElementType, QString>> elements;
+//    elements.push_back({ UIElementType::ePropertiesHeading, nodeName });
 
-    QJsonArray inputsArray = json.value("INPUTS").toArray();
+//    QJsonArray inputsArray = json.value("INPUTS").toArray();
 
-    for (int i = 0; i < inputsArray.size(); i++)
-    {
-        QJsonObject property = inputsArray.at(i).toObject();
-        QString label = property["LABEL"].toString();
-        // If control is missing the label, use the name
-        if (label == "")
-        {
-            label = property["NAME"].toString();
-        }
-        QString propType = property["TYPE"].toString();
+//    for (int i = 0; i < inputsArray.size(); i++)
+//    {
+//        QJsonObject property = inputsArray.at(i).toObject();
+//        QString label = property["LABEL"].toString();
+//        // If control is missing the label, use the name
+//        if (label == "")
+//        {
+//            label = property["NAME"].toString();
+//        }
+//        QString propType = property["TYPE"].toString();
 
-        if (propType == "float")
-        {
-            elements.push_back(
-                {
-                    UIElementType::eSliderBoxDouble,
-                    label + "," +
-                    QString::number(property["MIN"].toDouble()) +
-                    "," +
-                    QString::number(property["MAX"].toDouble()) +
-                    ",0.01," +
-                    QString::number(property["DEFAULT"].toDouble())
-                });
-        }
-        if (propType == "color")
-        {
-            auto array = property["DEFAULT"].toArray();
-            elements.push_back(
-                {
-                    UIElementType::eColorButton,
-                    label +
-                    "," +
-                    QString::number(array.at(0).toDouble()) +
-                    "," +
-                    QString::number(array.at(1).toDouble()) +
-                    "," +
-                    QString::number(array.at(2).toDouble()) +
-                    "," +
-                    QString::number(array.at(3).toDouble())
-                });
-        }
-        if (propType == "bool")
-        {
-            elements.push_back(
-                {
-                   UIElementType::eCheckBox,
-                   label + "," + QString::number(property["DEFAULT"].toInt())
-                });
-        }
-        if (propType == "int")
-        {
-            elements.push_back(
-                {
-                   UIElementType::eSliderBoxInt,
-                   label + "," +
-                   QString::number(property["MIN"].toInt()) +
-                   "," +
-                   QString::number(property["MAX"].toInt()) +
-                   ",1," +
-                   QString::number(property["DEFAULT"].toInt())
-                });
-        }
-        if (propType == "point2D")
-        {
-            auto min = property["MIN"].toArray();
-            auto max = property["MAX"].toArray();
-            auto def = property["DEFAULT"].toArray();
-            elements.push_back(
-                {
-                    UIElementType::eSliderBoxDouble,
-                    label + " X," +
-                    QString::number(min.first().toDouble()) +
-                    "," +
-                    QString::number(max.first().toDouble()) +
-                    ",0.01," +
-                    QString::number(def.first().toDouble())
-                });
-            elements.push_back(
-                {
-                    UIElementType::eSliderBoxDouble,
-                    label + " Y," +
-                    QString::number(min.last().toDouble()) +
-                    "," +
-                    QString::number(max.last().toDouble()) +
-                    ",0.01," +
-                    QString::number(def.last().toDouble())
-                });
-        }
-        if (propType == "long")
-        {
-            auto array = property["LABELS"].toArray();
-            QString labels;
-            for (int i = 0; i < array.size(); ++i)
-            {
-                labels.append(array[i].toString() + ",");
-            }
-            elements.push_back(
-                {
-                   UIElementType::eComboBox,
-                   label + "," +
-                   labels +
-                   QString::number(property["DEFAULT"].toInt())
-                });
-        }
-    }
-    elements.push_back({ UIElementType::eTextBox, "CREDIT: " + json.value("CREDIT").toString() });
-    return elements;
-}
+//        if (propType == "float")
+//        {
+//            elements.push_back(
+//                {
+//                    UIElementType::eSliderBoxDouble,
+//                    label + "," +
+//                    QString::number(property["MIN"].toDouble()) +
+//                    "," +
+//                    QString::number(property["MAX"].toDouble()) +
+//                    ",0.01," +
+//                    QString::number(property["DEFAULT"].toDouble())
+//                });
+//        }
+//        if (propType == "color")
+//        {
+//            auto array = property["DEFAULT"].toArray();
+//            elements.push_back(
+//                {
+//                    UIElementType::eColorButton,
+//                    label +
+//                    "," +
+//                    QString::number(array.at(0).toDouble()) +
+//                    "," +
+//                    QString::number(array.at(1).toDouble()) +
+//                    "," +
+//                    QString::number(array.at(2).toDouble()) +
+//                    "," +
+//                    QString::number(array.at(3).toDouble())
+//                });
+//        }
+//        if (propType == "bool")
+//        {
+//            elements.push_back(
+//                {
+//                   UIElementType::eCheckBox,
+//                   label + "," + QString::number(property["DEFAULT"].toInt())
+//                });
+//        }
+//        if (propType == "int")
+//        {
+//            elements.push_back(
+//                {
+//                   UIElementType::eSliderBoxInt,
+//                   label + "," +
+//                   QString::number(property["MIN"].toInt()) +
+//                   "," +
+//                   QString::number(property["MAX"].toInt()) +
+//                   ",1," +
+//                   QString::number(property["DEFAULT"].toInt())
+//                });
+//        }
+//        if (propType == "point2D")
+//        {
+//            auto min = property["MIN"].toArray();
+//            auto max = property["MAX"].toArray();
+//            auto def = property["DEFAULT"].toArray();
+//            elements.push_back(
+//                {
+//                    UIElementType::eSliderBoxDouble,
+//                    label + " X," +
+//                    QString::number(min.first().toDouble()) +
+//                    "," +
+//                    QString::number(max.first().toDouble()) +
+//                    ",0.01," +
+//                    QString::number(def.first().toDouble())
+//                });
+//            elements.push_back(
+//                {
+//                    UIElementType::eSliderBoxDouble,
+//                    label + " Y," +
+//                    QString::number(min.last().toDouble()) +
+//                    "," +
+//                    QString::number(max.last().toDouble()) +
+//                    ",0.01," +
+//                    QString::number(def.last().toDouble())
+//                });
+//        }
+//        if (propType == "long")
+//        {
+//            auto array = property["LABELS"].toArray();
+//            QString labels;
+//            for (int i = 0; i < array.size(); ++i)
+//            {
+//                labels.append(array[i].toString() + ",");
+//            }
+//            elements.push_back(
+//                {
+//                   UIElementType::eComboBox,
+//                   label + "," +
+//                   labels +
+//                   QString::number(property["DEFAULT"].toInt())
+//                });
+//        }
+//    }
+//    elements.push_back({ UIElementType::eTextBox, "CREDIT: " + json.value("CREDIT").toString() });
+//    return elements;
+//}
 
 QString ISFManager::convertISFShaderToCompute(
         QString& shader,

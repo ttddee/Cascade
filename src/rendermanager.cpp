@@ -35,192 +35,192 @@ RenderManager& RenderManager::getInstance()
     return instance;
 }
 
-void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
-{
-    mRenderer = r;
-    mNodeGraph = ng;
+//void RenderManager::setUp(VulkanRenderer *r, NodeGraph* ng)
+//{
+//    mRenderer = r;
+//    mNodeGraph = ng;
 
-    mWindowManager = &WindowManager::getInstance();
-}
+//    mWindowManager = &WindowManager::getInstance();
+//}
 
 void RenderManager::updateViewerPushConstants(const QString &s)
 {
     mRenderer->setViewerPushConstants(s);
 }
 
-void RenderManager::handleNodeDisplayRequest(NodeBase* node)
-{
-    auto props = getPropertiesForType(node->getType());
+//void RenderManager::handleNodeDisplayRequest(NodeBase* node)
+//{
+//    auto props = getPropertiesForType(node->getType());
 
-    auto viewerMode = mWindowManager->getViewerMode();
+//    auto viewerMode = mWindowManager->getViewerMode();
 
-    mRenderer->setDisplayMode(DisplayMode::eRgb);
+//    mRenderer->setDisplayMode(DisplayMode::eRgb);
 
-    if (viewerMode == ViewerMode::eFrontRgb)
-    {
-        if (props.frontInputTrait == FrontInputTrait::eAlwaysClear)
-        {
-            mRenderer->doClearScreen();
-        }
-        else if (props.frontInputTrait == FrontInputTrait::eRenderUpstreamOrClear)
-        {
-            displayNode(node->getUpstreamNodeFront());
-        }
-    }
-    else if (viewerMode == ViewerMode::eBackRgb)
-    {
-        if (props.backInputTrait == BackInputTrait::eAlwaysClear)
-        {
-            mRenderer->doClearScreen();
-        }
-        else if (props.backInputTrait == BackInputTrait::eRenderUpstreamOrClear)
-        {
-            displayNode(node->getUpstreamNodeBack());
-        }
-    }
-    else if (viewerMode == ViewerMode::eInputAlpha)
-    {
-        if (props.alphaInputTrait == AlphaInputTrait::eAlwaysClear)
-        {
-            mRenderer->doClearScreen();
-        }
-        else if (props.alphaInputTrait == AlphaInputTrait::eRenderUpstreamOrClear)
-        {
-            mRenderer->setDisplayMode(DisplayMode::eAlpha);
-            displayNode(node->getUpstreamNodeFront());
-        }
-    }
-    else if (viewerMode == ViewerMode::eOutputRgb || viewerMode == ViewerMode::eOutputAlpha)
-    {
-        NodeBase* nodeToDisplay = node;
+//    if (viewerMode == ViewerMode::eFrontRgb)
+//    {
+//        if (props.frontInputTrait == FrontInputTrait::eAlwaysClear)
+//        {
+//            mRenderer->doClearScreen();
+//        }
+//        else if (props.frontInputTrait == FrontInputTrait::eRenderUpstreamOrClear)
+//        {
+//            displayNode(node->getUpstreamNodeFront());
+//        }
+//    }
+//    else if (viewerMode == ViewerMode::eBackRgb)
+//    {
+//        if (props.backInputTrait == BackInputTrait::eAlwaysClear)
+//        {
+//            mRenderer->doClearScreen();
+//        }
+//        else if (props.backInputTrait == BackInputTrait::eRenderUpstreamOrClear)
+//        {
+//            displayNode(node->getUpstreamNodeBack());
+//        }
+//    }
+//    else if (viewerMode == ViewerMode::eInputAlpha)
+//    {
+//        if (props.alphaInputTrait == AlphaInputTrait::eAlwaysClear)
+//        {
+//            mRenderer->doClearScreen();
+//        }
+//        else if (props.alphaInputTrait == AlphaInputTrait::eRenderUpstreamOrClear)
+//        {
+//            mRenderer->setDisplayMode(DisplayMode::eAlpha);
+//            displayNode(node->getUpstreamNodeFront());
+//        }
+//    }
+//    else if (viewerMode == ViewerMode::eOutputRgb || viewerMode == ViewerMode::eOutputAlpha)
+//    {
+//        NodeBase* nodeToDisplay = node;
 
-        if (viewerMode == ViewerMode::eOutputAlpha)
-        {
-            mRenderer->setDisplayMode(DisplayMode::eAlpha);
-        }
-        if (props.rgbOutputTrait == OutputTrait::eRenderUpstreamIfFrontDisconnected)
-        {
-            if (!node->getUpstreamNodeFront())
-            {
-                if (node->getUpstreamNodeBack())
-                {
-                    nodeToDisplay = node->getUpstreamNodeBack();
-                }
-            }
-        }
-        displayNode(nodeToDisplay);
-    }
-}
-
-void RenderManager::handleNodeFileSaveRequest(
-        NodeBase* node,
-        const QString& path,
-        const QMap<std::string, std::string>& attributes,
-        const bool isBatch,
-        const bool isLast)
-{
-    if (node->canBeRendered())
-    {
-        auto upstream = node->getUpstreamNodeBack();
-        auto image = upstream->getCachedImage();
-        if(image)
-        {
-            auto parts = node->getAllPropertyValues().split(",");
-
-//            auto handle = std::async(std::launch::async, [this, image, path, parts]()
+//        if (viewerMode == ViewerMode::eOutputAlpha)
+//        {
+//            mRenderer->setDisplayMode(DisplayMode::eAlpha);
+//        }
+//        if (props.rgbOutputTrait == OutputTrait::eRenderUpstreamIfFrontDisconnected)
+//        {
+//            if (!node->getUpstreamNodeFront())
 //            {
-//                return renderer->saveImageToDisk(image, path, parts.last().toInt());
-//            });
-//            bool success = handle.get();
+//                if (node->getUpstreamNodeBack())
+//                {
+//                    nodeToDisplay = node->getUpstreamNodeBack();
+//                }
+//            }
+//        }
+//        displayNode(nodeToDisplay);
+//    }
+//}
 
-            if(mRenderer->saveImageToDisk(image, path, attributes, parts.last().toInt()))
-            {
-                if (!isBatch)
-                {
-                    executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
-                }
-                if (isBatch && isLast)
-                {
-                    executeMessageBox(MESSAGEBOX_FILES_SAVE_SUCCESS);
-                }
-            }
-            else
-            {
-                executeMessageBox(MESSAGEBOX_FILE_SAVE_PROBLEM);
-            }
-        }
-    }
-}
+//void RenderManager::handleNodeFileSaveRequest(
+//        NodeBase* node,
+//        const QString& path,
+//        const QMap<std::string, std::string>& attributes,
+//        const bool isBatch,
+//        const bool isLast)
+//{
+//    if (node->canBeRendered())
+//    {
+//        auto upstream = node->getUpstreamNodeBack();
+//        auto image = upstream->getCachedImage();
+//        if(image)
+//        {
+//            auto parts = node->getAllPropertyValues().split(",");
+
+////            auto handle = std::async(std::launch::async, [this, image, path, parts]()
+////            {
+////                return renderer->saveImageToDisk(image, path, parts.last().toInt());
+////            });
+////            bool success = handle.get();
+
+//            if(mRenderer->saveImageToDisk(image, path, attributes, parts.last().toInt()))
+//            {
+//                if (!isBatch)
+//                {
+//                    executeMessageBox(MESSAGEBOX_FILE_SAVE_SUCCESS);
+//                }
+//                if (isBatch && isLast)
+//                {
+//                    executeMessageBox(MESSAGEBOX_FILES_SAVE_SUCCESS);
+//                }
+//            }
+//            else
+//            {
+//                executeMessageBox(MESSAGEBOX_FILE_SAVE_PROBLEM);
+//            }
+//        }
+//    }
+//}
 
 void RenderManager::handleClearScreenRequest()
 {
     mRenderer->doClearScreen();
 }
 
-void RenderManager::displayNode(NodeBase* node)
-{
-    if (node && node->canBeRendered())
-    {
-        if (renderNodes(node))
-            mRenderer->displayNode(node);
-        else
-            mRenderer->doClearScreen();
-    }
-    else
-    {
-        mRenderer->doClearScreen();
-    }
-}
+//void RenderManager::displayNode(NodeBase* node)
+//{
+//    if (node && node->canBeRendered())
+//    {
+//        if (renderNodes(node))
+//            mRenderer->displayNode(node);
+//        else
+//            mRenderer->doClearScreen();
+//    }
+//    else
+//    {
+//        mRenderer->doClearScreen();
+//    }
+//}
 
-bool RenderManager::renderNodes(NodeBase *node)
-{
-    bool allNodesRendered = true;
+//bool RenderManager::renderNodes(NodeBase *node)
+//{
+//    bool allNodesRendered = true;
 
-    std::vector<NodeBase*> nodes;
-    node->getAllUpstreamNodes(nodes);
+//    std::vector<NodeBase*> nodes;
+//    node->getAllUpstreamNodes(nodes);
 
-    foreach(NodeBase* n, nodes)
-    {
-        if (n->canBeRendered())
-            renderNode(n);
-        else
-            allNodesRendered = false;
-    }
+//    foreach(NodeBase* n, nodes)
+//    {
+//        if (n->canBeRendered())
+//            renderNode(n);
+//        else
+//            allNodesRendered = false;
+//    }
 
-    return allNodesRendered;
-}
+//    return allNodesRendered;
+//}
 
-void RenderManager::renderNode(NodeBase *node)
-{
-    // Read node
-    if (node->getType() == NodeType::eRead && node->getNeedsUpdate())
-    {
-        if (node->canBeRendered())
-        {
-            mRenderer->processReadNode(node);
-        }
-    }
-    // All other nodes
-    else if (node->getUpstreamNodeBack() && node->getNeedsUpdate())
-    {
-        CsImage* inputImageBack = nullptr;
-        CsImage* inputImageFront = nullptr;
+//void RenderManager::renderNode(NodeBase *node)
+//{
+//    // Read node
+//    if (node->getType() == NodeType::eRead && node->getNeedsUpdate())
+//    {
+//        if (node->canBeRendered())
+//        {
+//            mRenderer->processReadNode(node);
+//        }
+//    }
+//    // All other nodes
+//    else if (node->getUpstreamNodeBack() && node->getNeedsUpdate())
+//    {
+//        CsImage* inputImageBack = nullptr;
+//        CsImage* inputImageFront = nullptr;
 
-        inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
+//        inputImageBack = node->getUpstreamNodeBack()->getCachedImage();
 
-        // A node that has a front and back image
-        if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
-        {
-            inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
-            mRenderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
-        }
-        // A node without a front image
-        else if (inputImageBack)
-        {
-            mRenderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
-        }
-    }
-    emit nodeHasBeenRendered(node);
-}
+//        // A node that has a front and back image
+//        if(node->getUpstreamNodeFront() && node->getUpstreamNodeFront()->getCachedImage())
+//        {
+//            inputImageFront = node->getUpstreamNodeFront()->getCachedImage();
+//            mRenderer->processNode(node, inputImageBack, inputImageFront, node->getTargetSize());
+//        }
+//        // A node without a front image
+//        else if (inputImageBack)
+//        {
+//            mRenderer->processNode(node, inputImageBack, nullptr, node->getTargetSize());
+//        }
+//    }
+//    emit nodeHasBeenRendered(node);
+//}
 
 } // namespace Cascade

@@ -20,7 +20,7 @@
 #include "mainmenu.h"
 
 #include "mainwindow.h"
-#include "nodegraph/nodedefinitions.h"
+//#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade {
 
@@ -78,82 +78,82 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     // TODO: This is doubled in nodegraphcontextmenu
 
     // Populate menu with submenus aka categories
-    QMap<NodeCategory, QMenu*> categories;
+//    QMap<NodeCategory, QMenu*> categories;
 
-    {
-        QMapIterator<NodeCategory, QString> i(categoryStrings);
-        while (i.hasNext())
-        {
-            i.next();
-            auto submenu = createNodeMenu->addMenu(categoryStrings[i.key()]);
-            categories[i.key()] = submenu;
-        }
-    }
+//    {
+//        QMapIterator<NodeCategory, QString> i(categoryStrings);
+//        while (i.hasNext())
+//        {
+//            i.next();
+//            auto submenu = createNodeMenu->addMenu(categoryStrings[i.key()]);
+//            categories[i.key()] = submenu;
+//        }
+//    }
 
-    // Add nodes to corresponding submenus
-    auto nodes = nodeStrings;
-    nodes.remove(NodeType::eIsf);
-    QMapIterator<NodeType, QString> i(nodes);
-    while (i.hasNext())
-    {
-        i.next();
-        auto a = new QAction();
-        mCreateNodeActions.push_back(a);
-        a->setText(i.value());
-        auto t = i.key();
-        categories[getPropertiesForType(t).category]->addAction(a);
+//    // Add nodes to corresponding submenus
+//    auto nodes = nodeStrings;
+//    nodes.remove(NodeType::eIsf);
+//    QMapIterator<NodeType, QString> i(nodes);
+//    while (i.hasNext())
+//    {
+//        i.next();
+//        auto a = new QAction();
+//        mCreateNodeActions.push_back(a);
+//        a->setText(i.value());
+//        auto t = i.key();
+//        categories[getPropertiesForType(t).category]->addAction(a);
 
-        QObject::connect(
-                    a,
-                    &QAction::triggered,
-                    this,
-                    [this, t]{ emit requestNodeCreation(
-                        t, NodeGraphPosition::eRelativeToLastNode); });
-    }
+//        QObject::connect(
+//                    a,
+//                    &QAction::triggered,
+//                    this,
+//                    [this, t]{ emit requestNodeCreation(
+//                        t, NodeGraphPosition::eRelativeToLastNode); });
+//    }
 
     // Add ISF categories
-    auto isfManager = &ISFManager::getInstance();
-    std::set<QString> isfCategoryStrings = isfManager->getCategories();
+//    auto isfManager = &ISFManager::getInstance();
+//    std::set<QString> isfCategoryStrings = isfManager->getCategories();
 
-    QMap<QString, QMenu*> isfCategories;
-    {
-        for (auto& cat : isfCategoryStrings)
-        {
-            auto submenu = categories.value(NodeCategory::eIsf)->addMenu(cat);
-            isfCategories[cat] = submenu;
-        }
-    }
+//    QMap<QString, QMenu*> isfCategories;
+//    {
+//        for (auto& cat : isfCategoryStrings)
+//        {
+//            auto submenu = categories.value(NodeCategory::eIsf)->addMenu(cat);
+//            isfCategories[cat] = submenu;
+//        }
+//    }
 
     // Add ISF nodes
-    auto isfNodeProperties = isfManager->getNodeProperties();
-    for (auto& prop : isfNodeProperties)
-    {
-        QString nodeName = prop.second.title;
-        auto a = new QAction();
-        mCreateNodeActions.push_back(a);
-        a->setText(nodeName);
-        auto t = NodeType::eIsf;
-        isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
+//    auto isfNodeProperties = isfManager->getNodeProperties();
+//    for (auto& prop : isfNodeProperties)
+//    {
+//        QString nodeName = prop.second.title;
+//        auto a = new QAction();
+//        mCreateNodeActions.push_back(a);
+//        a->setText(nodeName);
+//        auto t = NodeType::eIsf;
+//        isfCategories[isfManager->getCategoryPerNode(nodeName)]->addAction(a);
 
-        QObject::connect(
-                    a,
-                    &QAction::triggered,
-                    this,
-                    [this, t, nodeName]{ emit requestNodeCreation(
-                        t,
-                        NodeGraphPosition::eRelativeToLastNode,
-                        nodeName); });
-    }
-    auto graph = mainWindow->getNodeGraph();
-    connect(this, &MainMenu::requestNodeCreation,
-            graph, &NodeGraph::handleNodeCreationRequest);
+//        QObject::connect(
+//                    a,
+//                    &QAction::triggered,
+//                    this,
+//                    [this, t, nodeName]{ emit requestNodeCreation(
+//                        t,
+//                        NodeGraphPosition::eRelativeToLastNode,
+//                        nodeName); });
+//    }
+//    auto graph = mainWindow->getNodeGraph();
+//    connect(this, &MainMenu::requestNodeCreation,
+//            graph, &NodeGraph::handleNodeCreationRequest);
 
-    mEditMenu->addSeparator();
+//    mEditMenu->addSeparator();
 
-    mPreferencesAction = new QAction("Preferences..." , mEditMenu);
-    mEditMenu->addAction(mPreferencesAction);
-    connect(mPreferencesAction, &QAction::triggered,
-            mainWindow, &MainWindow::handlePreferencesAction);
+//    mPreferencesAction = new QAction("Preferences..." , mEditMenu);
+//    mEditMenu->addAction(mPreferencesAction);
+//    connect(mPreferencesAction, &QAction::triggered,
+//            mainWindow, &MainWindow::handlePreferencesAction);
 
     // View Menu
     mViewMenu = new QMenu("View");

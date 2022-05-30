@@ -22,8 +22,8 @@
 
 #include <QObject>
 
-#include "nodegraph/nodebase.h"
-#include "nodegraph/nodedefinitions.h"
+//#include "nodegraph/nodebase.h"
+//#include "nodegraph/nodedefinitions.h"
 
 namespace Cascade::Renderer
 {
@@ -32,7 +32,9 @@ namespace Cascade::Renderer
 
 namespace Cascade {
 
-class NodeGraph;
+using namespace Renderer;
+
+//class NodeGraph;
 
 class RenderManager : public QObject
 {
@@ -43,32 +45,32 @@ public:
     RenderManager(RenderManager const&) = delete;
     void operator=(RenderManager const&) = delete;
 
-    void setUp(VulkanRenderer* r, NodeGraph* ng);
+    //void setUp(VulkanRenderer* r, NodeGraph* ng);
 
     void updateViewerPushConstants(const QString& s);
 
 private:
     RenderManager() {}
-    void displayNode(NodeBase* node);
-    bool renderNodes(NodeBase* node);
-    void renderNode(NodeBase* node);
+//    void displayNode(NodeBase* node);
+//    bool renderNodes(NodeBase* node);
+//    void renderNode(NodeBase* node);
 
     VulkanRenderer* mRenderer;
-    NodeGraph* mNodeGraph;
+    //NodeGraph* mNodeGraph;
 
-    WindowManager* mWindowManager;
+    //WindowManager* mWindowManager;
 
 signals:
-    void nodeHasBeenRendered(Cascade::NodeBase* node);
+    //void nodeHasBeenRendered(Cascade::NodeBase* node);
 
 public slots:
-    void handleNodeDisplayRequest(Cascade::NodeBase* node);
-    void handleNodeFileSaveRequest(
-            Cascade::NodeBase* node,
-            const QString& path,
-            const QMap<std::string, std::string>& attributes,
-            const bool isBatch,
-            const bool isLast);
+//    void handleNodeDisplayRequest(Cascade::NodeBase* node);
+//    void handleNodeFileSaveRequest(
+//            Cascade::NodeBase* node,
+//            const QString& path,
+//            const QMap<std::string, std::string>& attributes,
+//            const bool isBatch,
+//            const bool isLast);
     void handleClearScreenRequest();
 };
 

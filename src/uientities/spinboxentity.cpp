@@ -55,8 +55,8 @@ void SpinBoxEntity::setMinMaxStepValue(int min, int max, int step, int value)
 
 void SpinBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &SpinBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &SpinBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 void SpinBoxEntity::reset()

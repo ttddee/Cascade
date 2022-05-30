@@ -1,63 +1,126 @@
-/*
- *  Cascade Image Editor
- *
- *  Copyright (C) 2022 Till Dechent and contributors
- *
- *  This program is free software: you can redistribute it and/or modify
- *  it under the terms of the GNU General Public License as published by
- *  the Free Software Foundation, either version 3 of the License, or
- *  (at your option) any later version.
- *
- *  This program is distributed in the hope that it will be useful,
- *  but WITHOUT ANY WARRANTY; without even the implied warranty of
- *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- *  GNU General Public License for more details.
- *
- *  You should have received a copy of the GNU General Public License
- *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
-*/
+#pragma once
 
-#ifndef CONNECTION_H
-#define CONNECTION_H
+#include <QtCore/QObject>
+#include <QtCore/QUuid>
+#include <QtCore/QVariant>
 
-#include <QWidget>
-#include <QGraphicsItem>
+#include "porttype.h"
+#include "nodedata.h"
 
-#include "nodebase.h"
+#include "serializable.h"
+#include "connectionstate.h"
+#include "connectiongeometry.h"
+#include "quuidstdhash.h"
+#include "memory.h"
 
-namespace Cascade {
+namespace Cascade::NodeGraph
+{
 
-class Connection : public QObject, public QGraphicsLineItem
+class Node;
+class NodeData;
+class ConnectionGraphicsObject;
+
+class Connection
+    : public QObject,
+      public Serializable
 {
     Q_OBJECT
 
 public:
-    explicit Connection(NodeOutput* source);
-    QPainterPath shape() const override;
 
-    void updatePosition();
-    void updatePosition(const QPoint end);
+    /// New Connection is attached to the port of the given Node.
+    /// The port has parameters (portType, portIndex).
+    /// The opposite connection end will require another port.
+    Connection(PortType portType,
+               Node& node,
+               PortIndex portIndex);
 
-    void connectToTarget(NodeInput* in);
+    Connection(Node& nodeIn,
+               PortIndex portIndexIn,
+               Node& nodeOut,
+               PortIndex portIndexOut);
 
-    NodeOutput* getSourceOutput();
-    NodeInput* getTargetInput();
+    Connection(const Connection&) = delete;
+    Connection operator=(const Connection&) = delete;
 
-    void addConnectionToJsonObject(QJsonArray& jsonConnectionsArray);
+    ~Connection();
+
+public:
+    QJsonObject save() const override;
+
+public:
+    QUuid id() const;
+
+    /// Remembers the end being dragged.
+    /// Invalidates Node address.
+    /// Grabs mouse.
+    void setRequiredPort(PortType portType);
+    PortType requiredPort() const;
+
+    void setGraphicsObject(std::unique_ptr<ConnectionGraphicsObject>&& graphics);
+
+    /// Assigns a node to the required port.
+    /// It is assumed that there is a required port, no extra checks
+    void setNodeToPort(
+        Node& node,
+        PortType portType,
+        PortIndex portIndex);
+
+    void removeFromNodes() const;
+
+public:
+    ConnectionGraphicsObject& getConnectionGraphicsObject() const;
+
+    ConnectionState const& connectionState() const;
+    ConnectionState& connectionState();
+
+    ConnectionGeometry& connectionGeometry();
+
+    ConnectionGeometry const& connectionGeometry() const;
+
+    Node* getNode(PortType portType) const;
+
+    Node*& getNode(PortType portType);
+
+    PortIndex getPortIndex(PortType portType) const;
+
+    void clearNode(PortType portType);
+
+    NodeDataType dataType(PortType portType) const;
+
+    bool isComplete() const;
+
+public: // data propagation
+    void propagateData(std::shared_ptr<NodeData> nodeData) const;
+
+    void propagateEmptyData() const;
+
+Q_SIGNALS:
+    void connectionCompleted(Cascade::NodeGraph::Connection const&);
+
+    void connectionMadeIncomplete(Cascade::NodeGraph::Connection const&);
 
 private:
-    void paint(QPainter* painter, const QStyleOptionGraphicsItem*  opt, QWidget* wdgt) override;
 
-    NodeOutput* mSourceOutput = nullptr;
-    NodeInput* mTargetInput = nullptr;
+    QUuid mUid;
 
-    const QPen mNormalPen = QPen(QColor(0x92, 0x99, 0xa1), 1);
-    const QPen mFrontConnectedPen = QPen(Config::sRed, 1);
-    const QPen mBackConnectedPen = QPen(Config::sGreen, 1);
-    const QPen mAlphaConnectedPen = QPen(Config::sBlue, 1);
+private:
 
+    Node* mOutNode = nullptr;
+    Node* mInNode  = nullptr;
+
+    PortIndex mOutPortIndex;
+    PortIndex mInPortIndex;
+
+private:
+
+    ConnectionState    mConnectionState;
+    ConnectionGeometry mConnectionGeometry;
+
+    std::unique_ptr<ConnectionGraphicsObject> mConnectionGraphicsObject;
+
+Q_SIGNALS:
+
+    void updated(Cascade::NodeGraph::Connection& conn);
 };
-
-} // namespace Cascade
-
-#endif // CONNECTION_H
+}

@@ -67,17 +67,26 @@ SOURCES += \
     src/mainmenu.cpp \
     src/mainwindow.cpp \
     src/nodegraph/connection.cpp \
-    src/nodegraph/cropnode.cpp \
-    src/nodegraph/isfnode.cpp \
-    src/nodegraph/nodebase.cpp \
-    src/nodegraph/nodecontextmenu.cpp \
-    src/nodegraph/nodegraph.cpp \
-    src/nodegraph/nodegraphcontextmenu.cpp \
-    src/nodegraph/nodeinput.cpp \
-    src/nodegraph/nodeoutput.cpp \
-    src/nodegraph/nodeproperties.cpp \
-    src/nodegraph/readnode.cpp \
-    src/nodegraph/resizenode.cpp \
+    src/nodegraph/connectiongeometry.cpp \
+    src/nodegraph/connectiongraphicsobject.cpp \
+    src/nodegraph/connectionpainter.cpp \
+    src/nodegraph/connectionstate.cpp \
+    src/nodegraph/connectionstyle.cpp \
+    src/nodegraph/contextmenu.cpp \
+    src/nodegraph/datamodelregistry.cpp \
+    src/nodegraph/node.cpp \
+    src/nodegraph/nodeconnectioninteraction.cpp \
+    src/nodegraph/nodedatamodel.cpp \
+    src/nodegraph/nodegeometry.cpp \
+    src/nodegraph/nodegraphicsobject.cpp \
+    src/nodegraph/nodegraphscene.cpp \
+    src/nodegraph/nodegraphview.cpp \
+    src/nodegraph/nodegraphviewstyle.cpp \
+    src/nodegraph/nodepainter.cpp \
+    src/nodegraph/nodestate.cpp \
+    src/nodegraph/nodestyle.cpp \
+    src/nodegraph/properties.cpp \
+    src/nodegraph/stylecollection.cpp \
     src/preferencesdialog.cpp \
     src/preferencesmanager.cpp \
     src/projectmanager.cpp \
@@ -160,20 +169,35 @@ HEADERS += \
     src/mainwindow.h \
     src/multithreading.h \
     src/nodegraph/connection.h \
-    src/nodegraph/cropnode.h \
-    src/nodegraph/isfnode.h \
-    src/nodegraph/nodebase.h \
-    src/nodegraph/nodecontextmenu.h \
-    src/nodegraph/nodedefinitions.h \
-    src/nodegraph/nodefactory.h \
-    src/nodegraph/nodegraph.h \
-    src/nodegraph/nodegraphcontextmenu.h \
-    src/nodegraph/nodegraphutility.h \
-    src/nodegraph/nodeinput.h \
-    src/nodegraph/nodeoutput.h \
-    src/nodegraph/nodeproperties.h \
-    src/nodegraph/readnode.h \
-    src/nodegraph/resizenode.h \
+    src/nodegraph/connectiongeometry.h \
+    src/nodegraph/connectiongraphicsobject.h \
+    src/nodegraph/connectionpainter.h \
+    src/nodegraph/connectionstate.h \
+    src/nodegraph/connectionstyle.h \
+    src/nodegraph/contextmenu.h \
+    src/nodegraph/datamodelregistry.h \
+    src/nodegraph/memory.h \
+    src/nodegraph/node.h \
+    src/nodegraph/nodeconnectioninteraction.h \
+    src/nodegraph/nodedata.h \
+    src/nodegraph/nodedatamodel.h \
+    src/nodegraph/nodegeometry.h \
+    src/nodegraph/nodegraphicsobject.h \
+    src/nodegraph/nodegraphscene.h \
+    src/nodegraph/nodegraphview.h \
+    src/nodegraph/nodegraphviewstyle.h \
+    src/nodegraph/nodepainter.h \
+    src/nodegraph/nodepainterdelegate.h \
+    src/nodegraph/nodes/testdatamodel.h \
+    src/nodegraph/nodestate.h \
+    src/nodegraph/nodestyle.h \
+    src/nodegraph/porttype.h \
+    src/nodegraph/properties.h \
+    src/nodegraph/qstringstdhash.h \
+    src/nodegraph/quuidstdhash.h \
+    src/nodegraph/serializable.h \
+    src/nodegraph/style.h \
+    src/nodegraph/stylecollection.h \
     src/popupmessages.h \
     src/preferencesdialog.h \
     src/preferencesmanager.h \
@@ -216,7 +240,6 @@ HEADERS += \
 
 FORMS += \
     src/mainwindow.ui \
-    src/nodegraph/nodebase.ui \
     src/propertiesheading.ui \
     src/uientities/channelselectentity.ui \
     src/uientities/checkboxentity.ui \

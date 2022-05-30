@@ -21,7 +21,7 @@
 
 #include <QMouseEvent>
 
-#include "../nodegraph/nodeproperties.h"
+//#include "../nodegraph/nodeproperties.h"
 
 namespace Cascade {
 
@@ -70,8 +70,8 @@ CsSliderBoxEntity::CsSliderBoxEntity(
 
 void CsSliderBoxEntity::selfConnectToValueChanged(NodeProperties* p)
 {
-    connect(this, &CsSliderBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &CsSliderBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 const QString CsSliderBoxEntity::name()

@@ -69,8 +69,8 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
 
 void WritePropertiesEntity::selfConnectToRequestFileSave(NodeProperties *p)
 {
-    connect(this, &WritePropertiesEntity::requestFileSave,
-            p, &NodeProperties::handleFileSaveRequest);
+//    connect(this, &WritePropertiesEntity::requestFileSave,
+//            p, &NodeProperties::handleFileSaveRequest);
 }
 
 QString WritePropertiesEntity::getValuesAsString()

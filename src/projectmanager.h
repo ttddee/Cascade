@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QJsonDocument>
 
-#include "nodegraph/nodegraph.h"
+//#include "nodegraph/nodegraph.h"
 
 namespace Cascade {
 
@@ -36,7 +36,7 @@ public:
     ProjectManager(ProjectManager const&) = delete;
     void operator=(ProjectManager const&) = delete;
 
-    void setUp(NodeGraph* ng);
+    //void setUp(NodeGraph* ng);
 
     void createStartupProject();
     void createNewProject();
@@ -52,7 +52,7 @@ private:
     QJsonObject getJsonFromNodeGraph();
     bool checkIfDiscardChanges();
 
-    NodeGraph* mNodeGraph;
+    //NodeGraph* mNodeGraph;
 
     QJsonDocument mProject;
     QString mCurrentProjectPath;

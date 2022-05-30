@@ -23,7 +23,7 @@
 #include <QWidget>
 #include <QListWidgetItem>
 
-#include "../nodegraph/nodedefinitions.h"
+//#include "../nodegraph/nodedefinitions.h"
 #include "uientity.h"
 
 namespace Ui {

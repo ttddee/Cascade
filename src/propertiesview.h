@@ -24,7 +24,7 @@
 #include <QWidget>
 #include <QLayout>
 
-#include "nodegraph/nodeproperties.h"
+//#include "nodegraph/nodeproperties.h"
 
 namespace Cascade {
 
@@ -35,12 +35,12 @@ class PropertiesView : public QWidget
 public:
     explicit PropertiesView(QWidget *parent = nullptr);
 
-    void loadProperties(NodeProperties* prop);
+    //void loadProperties(NodeProperties* prop);
     void clear();
 
 private:
     QVBoxLayout* mLayout;
-    NodeProperties* mCurrentProperties = nullptr;
+    //NodeProperties* mCurrentProperties = nullptr;
 
 };
 

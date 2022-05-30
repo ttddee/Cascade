@@ -63,9 +63,7 @@ MainWindow::MainWindow(QWidget *parent)
     mIsfManager = &ISFManager::getInstance();
     mIsfManager->setUp();
 
-    mNodeGraph = new NodeGraph();
-    mNodeGraph->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    mNodeGraph->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
+    mNodeGraph = new NodeGraphView();
     mNodeGraphDockWidget = new CDockWidget("Node Graph");
     mNodeGraphDockWidget->setWidget(mNodeGraph);
     mDockManager->addDockWidget(
@@ -86,14 +84,14 @@ MainWindow::MainWindow(QWidget *parent)
     this->setMenuBar(mMainMenu);
 
     mWindowManager = &WindowManager::getInstance();
-    mWindowManager->setUp(
-                mVulkanView->getVulkanWindow(),
-                mNodeGraph,
-                mPropertiesView,
-                mViewerStatusBar);
+//    mWindowManager->setUp(
+//                mVulkanView->getVulkanWindow(),
+//                mNodeGraph,
+//                mPropertiesView,
+//                mViewerStatusBar);
 
     mProjectManager = &ProjectManager::getInstance();
-    mProjectManager->setUp(mNodeGraph);
+    //mProjectManager->setUp(mNodeGraph);
     connect(mProjectManager, &ProjectManager::projectTitleChanged,
             this, &MainWindow::handleProjectTitleChanged);
 
@@ -109,8 +107,8 @@ MainWindow::MainWindow(QWidget *parent)
             this, &MainWindow::handleDeviceLost);
 
     // Outgoing
-    connect(this, &MainWindow::requestShutdown,
-            mNodeGraph, &NodeGraph::handleShutdownRequest);
+//    connect(this, &MainWindow::requestShutdown,
+//            mNodeGraph, &NodeGraph::handleShutdownRequest);
 
     QSettings::setPath(
                 QSettings::IniFormat,
@@ -123,17 +121,17 @@ MainWindow::MainWindow(QWidget *parent)
     this->setWindowState(Qt::WindowActive);
 }
 
-NodeGraph* MainWindow::getNodeGraph() const
-{
-    return mNodeGraph;
-}
+//NodeGraph* MainWindow::getNodeGraph() const
+//{
+//    return mNodeGraph;
+//}
 
 void MainWindow::handleRendererHasBeenCreated()
 {
     // We are waiting for the renderer to be fully
     // initialized here before using it
     mRenderManager = &RenderManager::getInstance();
-    mRenderManager->setUp(mVulkanView->getVulkanWindow()->getRenderer(), mNodeGraph);
+    //mRenderManager->setUp(mVulkanView->getVulkanWindow()->getRenderer(), mNodeGraph);
 
     this->statusBar()->showMessage("GPU: " + mVulkanView->getVulkanWindow()->getRenderer()->getGpuName());
 }

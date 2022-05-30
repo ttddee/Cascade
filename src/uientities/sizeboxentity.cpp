@@ -71,8 +71,8 @@ void SizeBoxEntity::unHideCustomSizeElements()
 
 void SizeBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &SizeBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &SizeBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString SizeBoxEntity::getValuesAsString()

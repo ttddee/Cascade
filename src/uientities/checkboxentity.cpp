@@ -54,8 +54,8 @@ bool CheckBoxEntity::isChecked()
 
 void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
 {
-    connect(this, &CheckBoxEntity::valueChanged,
-            p, [p]{p->handleSomeValueChanged();});
+//    connect(this, &CheckBoxEntity::valueChanged,
+//            p, [p]{p->handleSomeValueChanged();});
 }
 
 QString CheckBoxEntity::getValuesAsString()

@@ -1,0 +1,154 @@
+#pragma once
+
+#include <QtCore/QUuid>
+#include <QtWidgets/QGraphicsScene>
+
+#include <unordered_map>
+#include <tuple>
+#include <functional>
+
+#include "quuidstdhash.h"
+#include "datamodelregistry.h"
+#include "memory.h"
+
+namespace Cascade::NodeGraph
+{
+
+class NodeDataModel;
+class FlowItemInterface;
+class Node;
+class NodeGraphicsObject;
+class Connection;
+class ConnectionGraphicsObject;
+class NodeStyle;
+
+/// Scene holds connections and nodes.
+class NodeGraphScene : public QGraphicsScene
+{
+    Q_OBJECT
+public:
+    NodeGraphScene(std::shared_ptr<DataModelRegistry> registry,
+              QObject * parent = Q_NULLPTR);
+
+    NodeGraphScene(QObject * parent = Q_NULLPTR);
+
+    ~NodeGraphScene();
+
+public:
+    std::shared_ptr<Connection> createConnection(
+        PortType connectedPort,
+        Node& node,
+        PortIndex portIndex);
+
+    std::shared_ptr<Connection> createConnection(
+        Node& nodeIn,
+        PortIndex portIndexIn,
+        Node& nodeOut,
+        PortIndex portIndexOut);
+
+    std::shared_ptr<Connection> restoreConnection(QJsonObject const &connectionJson);
+
+    void deleteConnection(Connection const& connection);
+
+    Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
+
+    Node& restoreNode(QJsonObject const& nodeJson);
+
+    void removeNode(Node& node);
+
+    DataModelRegistry&registry() const;
+
+    void setRegistry(std::shared_ptr<DataModelRegistry> registry);
+
+    void iterateOverNodes(std::function<void(Node*)> const & visitor);
+
+    void iterateOverNodeData(std::function<void(NodeDataModel*)> const & visitor);
+
+    void iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const & visitor);
+
+    QPointF getNodePosition(Node const& node) const;
+
+    void setNodePosition(Node& node, QPointF const& pos) const;
+
+    QSizeF getNodeSize(Node const& node) const;
+
+public:
+    std::unordered_map<QUuid, std::unique_ptr<Node> > const & nodes() const;
+
+    std::unordered_map<QUuid, std::shared_ptr<Connection> > const & connections() const;
+
+    std::vector<Node*> allNodes() const;
+
+    std::vector<Node*> selectedNodes() const;
+
+public:
+    void clearScene();
+
+    void save() const;
+
+    void load();
+
+    QByteArray saveToMemory() const;
+
+    void loadFromMemory(const QByteArray& data);
+
+Q_SIGNALS:
+    /**
+   * @brief Node has been created but not on the scene yet.
+   * @see nodePlaced()
+   */
+    void nodeCreated(Cascade::NodeGraph::Node &n);
+
+    /**
+   * @brief Node has been added to the scene.
+   * @details Connect to this signal if need a correct position of node.
+   * @see nodeCreated()
+   */
+    void nodePlaced(Cascade::NodeGraph::Node &n);
+
+    void nodeDeleted(Cascade::NodeGraph::Node &n);
+
+    void connectionCreated(Cascade::NodeGraph::Connection const &c);
+    void connectionDeleted(Cascade::NodeGraph::Connection const &c);
+
+    void nodeMoved(Cascade::NodeGraph::Node& n, const QPointF& newLocation);
+
+    void nodeDoubleClicked(Cascade::NodeGraph::Node& n);
+
+    void nodeClicked(Cascade::NodeGraph::Node& n);
+
+    void connectionHovered(Cascade::NodeGraph::Connection& c, QPoint screenPos);
+
+    void nodeHovered(Cascade::NodeGraph::Node& n, QPoint screenPos);
+
+    void connectionHoverLeft(Cascade::NodeGraph::Connection& c);
+
+    void nodeHoverLeft(Cascade::NodeGraph::Node& n);
+
+    void nodeContextMenu(Cascade::NodeGraph::Node& n, const QPointF& pos);
+
+private:
+    using SharedConnection = std::shared_ptr<Connection>;
+    using UniqueNode       = std::unique_ptr<Node>;
+
+    // DO NOT reorder this member to go after the others.
+    // This should outlive all the connections and nodes of
+    // the graph, so that nodes can potentially have pointers into it,
+    // which is why it comes first in the class.
+    std::shared_ptr<DataModelRegistry> mRegistry;
+
+    std::unordered_map<QUuid, SharedConnection> mConnections;
+    std::unordered_map<QUuid, UniqueNode>       mNodes;
+
+private Q_SLOTS:
+    void setupConnectionSignals(Cascade::NodeGraph::Connection const& c);
+
+    void sendConnectionCreatedToNodes(Cascade::NodeGraph::Connection const& c);
+    void sendConnectionDeletedToNodes(Cascade::NodeGraph::Connection const& c);
+
+};
+
+Node* locateNodeAt(
+    QPointF scenePoint, NodeGraphScene &scene,
+    QTransform const & viewTransform);
+}
