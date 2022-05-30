@@ -25,13 +25,13 @@ jobs:
         vulkan-use-cache: true   
     
     - uses: actions/cache@v3
-      id: cache-qt5
+      id: cache-qt515
       with:
         path: /home/runner/work/Cascade/Cascade/qt5
-        key: ${{ runner.os }}-qt5
+        key: ${{ runner.os }}-qt515
     
     - name: Build Qt
-      if: steps.cache-qt5.outputs.cache-hit != 'true'
+      if: steps.cache-qt515.outputs.cache-hit != 'true'
       run: |
         rm -rf qt5
         git clone https://code.qt.io/qt/qt5.git
