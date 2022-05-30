@@ -15,30 +15,35 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- *  NodeEditor code adapted from:
- *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
 */
 
-#pragma once
+#ifndef PROPERTYDATA_H
+#define PROPERTYDATA_H
 
-#include <QPainter>
+#include <QString>
 
-#include "nodegeometry.h"
-#include "nodedatamodel.h"
-
-namespace Cascade::NodeGraph {
-
-/// Class to allow for custom painting
-class NodePainterDelegate
+namespace Cascade::NodeGraph
 {
 
-public:
-    virtual ~NodePainterDelegate() = default;
+class PropertyData
+{
 
-    virtual void paint(
-        QPainter* painter,
-        NodeGeometry const& geom,
-        NodeDataModel const * model) = 0;
 };
-}
+
+class IntPropertyData : public PropertyData
+{
+public:
+    IntPropertyData(
+        QString name,
+        const int min,
+        const int max,
+        const int step,
+        const int value)
+    {
+
+    }
+};
+
+} // namespace Cascade::NodeGraph
+
+#endif // PROPERTYDATA_H

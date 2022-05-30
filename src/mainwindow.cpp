@@ -31,6 +31,7 @@
 #include "popupmessages.h"
 #include "preferencesdialog.h"
 #include "aboutdialog.h"
+#include "propertiesview.h"
 
 using ads::CDockManager;
 using ads::CDockWidget;
@@ -71,14 +72,18 @@ MainWindow::MainWindow(QWidget *parent)
                 mNodeGraphDockWidget,
                 centralDockArea);
 
-    mPropertiesView = new PropertiesView();
-    mPropertiesViewDockWidget = new CDockWidget("Properties");
-    mPropertiesViewDockWidget->setWidget(mPropertiesView);
-    mPropertiesViewDockWidget->resize(700, 700);
+    mPropertiesWindow = new PropertiesWindow();
+    mPropertiesWindowDockWidget = new CDockWidget("Properties");
+    mPropertiesWindowDockWidget->setWidget(mPropertiesWindow);
+    mPropertiesWindowDockWidget->resize(700, 700);
     mDockManager->addDockWidget(
                 DockWidgetArea::RightDockWidgetArea,
-                mPropertiesViewDockWidget,
+                mPropertiesWindowDockWidget,
                 centralDockArea);
+
+    // TODO: Move into dispatch
+    connect(mNodeGraph, &NodeGraphView::activeNodeChanged,
+            mPropertiesWindow, &PropertiesWindow::handleActiveNodeChanged);
 
     mMainMenu = new MainMenu(this);
     this->setMenuBar(mMainMenu);

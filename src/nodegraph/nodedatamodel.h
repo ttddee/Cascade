@@ -1,5 +1,26 @@
-#pragma once
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  NodeEditor code adapted from:
+ *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
+*/
 
+#pragma once
 
 #include <QtWidgets/QWidget>
 
@@ -10,6 +31,9 @@
 #include "nodestyle.h"
 #include "nodepainterdelegate.h"
 #include "memory.h"
+#include "../properties/propertyview.h"
+
+using Cascade::Properties::PropertyView;
 
 namespace Cascade::NodeGraph
 {
@@ -55,6 +79,16 @@ public:
         else if (portType == PortType::Out)
             return mData.mOutPorts.at(portIndex);
         else return QString();
+    }
+
+    std::vector<PropertyView*> getPropertyViews()
+    {
+        std::vector<PropertyView*> views;
+        for (auto& prop : mData.mProperties)
+        {
+            views.push_back(prop->getView());
+        }
+        return views;
     }
 
 public:
@@ -104,7 +138,7 @@ public:
 
     virtual std::shared_ptr<NodeData> outData(PortIndex port) = 0;
 
-    virtual QWidget* embeddedWidget() = 0;
+    //virtual QWidget* embeddedWidget() = 0;
 
     virtual bool resizable() const
     {
@@ -152,7 +186,7 @@ Q_SIGNALS:
 
     void computingFinished();
 
-    void embeddedWidgetSizeUpdated();
+    //void embeddedWidgetSizeUpdated();
 
 protected:
     NodeData mData;

@@ -15,30 +15,38 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- *  NodeEditor code adapted from:
- *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
 */
 
-#pragma once
+#ifndef PROPERTIESWINDOW_H
+#define PROPERTIESWINDOW_H
 
-#include <QPainter>
+#include <QWidget>
 
-#include "nodegeometry.h"
-#include "nodedatamodel.h"
+#include "../nodegraph/node.h"
 
-namespace Cascade::NodeGraph {
+using Cascade::NodeGraph::Node;
 
-/// Class to allow for custom painting
-class NodePainterDelegate
+namespace Cascade::Properties
 {
 
-public:
-    virtual ~NodePainterDelegate() = default;
+class PropertiesWindow : public QWidget
+{
+    Q_OBJECT
 
-    virtual void paint(
-        QPainter* painter,
-        NodeGeometry const& geom,
-        NodeDataModel const * model) = 0;
+public:
+    explicit PropertiesWindow(QWidget *parent = nullptr);
+
+private:
+    void setPropertyWidget(QWidget* widget);
+    void clear();
+
+    QVBoxLayout* mLayout;
+    QWidget* mPropertyWidget = nullptr;
+
+public slots:
+    void handleActiveNodeChanged(Cascade::NodeGraph::Node* node);
 };
-}
+
+} // namespace Cascade::Properties
+
+#endif // PROPERTIESWINDOW_H

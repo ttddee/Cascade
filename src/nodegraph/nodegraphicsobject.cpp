@@ -1,3 +1,25 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  NodeEditor code adapted from:
+ *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
+*/
+
 #include "nodegraphicsobject.h"
 
 #include <iostream>
@@ -9,7 +31,7 @@
 #include "connectiongraphicsobject.h"
 #include "connectionstate.h"
 
-#include "NodeGraphScene.h"
+#include "nodegraphscene.h"
 #include "nodepainter.h"
 
 #include "node.h"
@@ -90,29 +112,29 @@ void NodeGraphicsObject::embedQWidget()
 {
     NodeGeometry & geom = mNode.nodeGeometry();
 
-    if (auto w = mNode.nodeDataModel()->embeddedWidget())
-    {
-        mProxyWidget = new QGraphicsProxyWidget(this);
+//    if (auto w = mNode.nodeDataModel()->embeddedWidget())
+//    {
+//        mProxyWidget = new QGraphicsProxyWidget(this);
 
-        mProxyWidget->setWidget(w);
+//        mProxyWidget->setWidget(w);
 
-        mProxyWidget->setPreferredWidth(5);
+//        mProxyWidget->setPreferredWidth(5);
 
-        geom.recalculateSize();
+//        geom.recalculateSize();
 
-        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
-        {
-            // If the widget wants to use as much vertical space as possible, set it to have the geom's equivalentWidgetHeight.
-            mProxyWidget->setMinimumHeight(geom.equivalentWidgetHeight());
-        }
+//        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
+//        {
+//            // If the widget wants to use as much vertical space as possible, set it to have the geom's equivalentWidgetHeight.
+//            mProxyWidget->setMinimumHeight(geom.equivalentWidgetHeight());
+//        }
 
-        mProxyWidget->setPos(geom.widgetPosition());
+//        mProxyWidget->setPos(geom.widgetPosition());
 
-        update();
+//        update();
 
-        mProxyWidget->setOpacity(1.0);
-        mProxyWidget->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
-    }
+//        mProxyWidget->setOpacity(1.0);
+//        mProxyWidget->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
+//    }
 }
 
 
@@ -265,27 +287,27 @@ void NodeGraphicsObject::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
     {
         auto diff = event->pos() - event->lastPos();
 
-        if (auto w = mNode.nodeDataModel()->embeddedWidget())
-        {
-            prepareGeometryChange();
+//        if (auto w = mNode.nodeDataModel()->embeddedWidget())
+//        {
+//            prepareGeometryChange();
 
-            auto oldSize = w->size();
+//            auto oldSize = w->size();
 
-            oldSize += QSize(diff.x(), diff.y());
+//            oldSize += QSize(diff.x(), diff.y());
 
-            w->setFixedSize(oldSize);
+//            w->setFixedSize(oldSize);
 
-            mProxyWidget->setMinimumSize(oldSize);
-            mProxyWidget->setMaximumSize(oldSize);
-            mProxyWidget->setPos(geom.widgetPosition());
+//            mProxyWidget->setMinimumSize(oldSize);
+//            mProxyWidget->setMaximumSize(oldSize);
+//            mProxyWidget->setPos(geom.widgetPosition());
 
-            geom.recalculateSize();
-            update();
+//            geom.recalculateSize();
+//            update();
 
-            moveConnections();
+//            moveConnections();
 
-            event->accept();
-        }
+//            event->accept();
+//        }
     }
     else
     {
@@ -375,7 +397,7 @@ void NodeGraphicsObject::mouseDoubleClickEvent(QGraphicsSceneMouseEvent* event)
 {
     QGraphicsItem::mouseDoubleClickEvent(event);
 
-    emit mScene.nodeDoubleClicked(node());
+    emit mScene.nodeDoubleClicked(&node());
 }
 
 

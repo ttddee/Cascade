@@ -31,8 +31,9 @@ QWidget {
 QWidget#NodeBase {
     background-color: rgba(0, 0, 0, 0);
 }
-Cascade--PropertiesView {
+Cascade--Properties--PropertiesWindow {
     background-color: #282d31;
+    margin: 0px;
 }
 Cascade--VulkanView {
     background-color: #181b1e;
@@ -301,14 +302,14 @@ QPushButton#Alpha:hover {
     background-color: #287bff;
 }
 
-Cascade--CsSliderBoxEntity QSlider::groove:horizontal {
+QSlider::groove:horizontal {
     border: 1px solid #626971;
     background: #1d2024;
     height: 20px;
     border-radius: 3px;
     margin: 0 0 0 0;
 }
-Cascade--CsSliderBoxEntity QSlider::sub-page:horizontal {
+QSlider::sub-page:horizontal {
     border: 0px solid #626971;
     background: #254a73;
     height:20px;
@@ -318,25 +319,25 @@ Cascade--CsSliderBoxEntity QSlider::sub-page:horizontal {
     border-top-right-radius: 0px;
     border-bottom-right-radius: 0px;
 }
-Cascade--CsSliderBoxEntity QSlider::handle:horizontal {
+QSlider::handle:horizontal {
     border: 0px;
     height: 0px;
     width: 0px;
 }
-Cascade--CsSliderBoxEntity QLabel {
+QLabel {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #b9b9b9;
     margin: 2px;
 }
-Cascade--CsSliderBoxEntity QDoubleSpinBox {
+QDoubleSpinBox {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #b9b9b9;
     border: none;
     selection-background-color: #626971;
 }
-Cascade--CsSliderBoxEntity QSpinBox {
+QSpinBox {
     background-color: rgba(0,0,0,0);
     font: 12px "Open Sans";
     color: #b9b9b9;
@@ -501,7 +502,7 @@ QTabWidget {
     border: none;
 }
 QTabWidget::pane {
-    border: none;    
+    border: none;
 }
 QTabWidget::tab-bar {
 }

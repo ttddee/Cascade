@@ -90,6 +90,8 @@ SOURCES += \
     src/preferencesdialog.cpp \
     src/preferencesmanager.cpp \
     src/projectmanager.cpp \
+    src/properties/propertieswindow.cpp \
+    src/properties/propertyview.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
     src/renderer/cscommandbuffer.cpp \
@@ -193,6 +195,8 @@ HEADERS += \
     src/nodegraph/nodestyle.h \
     src/nodegraph/porttype.h \
     src/nodegraph/properties.h \
+    src/nodegraph/property.h \
+    src/nodegraph/propertydata.h \
     src/nodegraph/qstringstdhash.h \
     src/nodegraph/quuidstdhash.h \
     src/nodegraph/serializable.h \
@@ -202,6 +206,8 @@ HEADERS += \
     src/preferencesdialog.h \
     src/preferencesmanager.h \
     src/projectmanager.h \
+    src/properties/propertieswindow.h \
+    src/properties/propertyview.h \
     src/propertiesheading.h \
     src/propertiesview.h \
     src/renderer/cscommandbuffer.h \

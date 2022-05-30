@@ -160,7 +160,7 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     this->addMenu(mViewMenu);
 
     mViewMenu->addAction(mainWindow->mNodeGraphDockWidget->toggleViewAction());
-    mViewMenu->addAction(mainWindow->mPropertiesViewDockWidget->toggleViewAction());
+    mViewMenu->addAction(mainWindow->mPropertiesWindowDockWidget->toggleViewAction());
 
     mViewMenu->addSeparator();
 

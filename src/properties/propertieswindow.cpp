@@ -15,43 +15,45 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- *  NodeEditor code adapted from:
- *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
 */
 
-#include "nodedatamodel.h"
+#include "propertieswindow.h"
 
-#include "stylecollection.h"
+#include "../log.h"
 
-using Cascade::NodeGraph::NodeDataModel;
-using Cascade::NodeGraph::NodeStyle;
-using Cascade::NodeGraph::NodeData;
-
-NodeDataModel::NodeDataModel() :
-    mNodeStyle(StyleCollection::nodeStyle())
+namespace Cascade::Properties
 {
-    // Derived classes can initialize specific style here
+
+PropertiesWindow::PropertiesWindow(QWidget *parent)
+    : QWidget(parent)
+{
+    mLayout = new QVBoxLayout();
+    this->setLayout(mLayout);
+    this->setAttribute(Qt::WA_StyledBackground);
 }
 
-
-QJsonObject NodeDataModel::save() const
+void PropertiesWindow::setPropertyWidget(QWidget *widget)
 {
-    QJsonObject modelJson;
+    clear();
 
-    //modelJson["name"] = name();
-
-    return modelJson;
+    mLayout->addWidget(widget);
+    mPropertyWidget = widget;
+    mPropertyWidget->show();
 }
 
-
-NodeStyle const& NodeDataModel::nodeStyle() const
+void PropertiesWindow::clear()
 {
-    return mNodeStyle;
+    if (mPropertyWidget)
+    {
+        mPropertyWidget->hide();
+        mLayout->removeWidget(mPropertyWidget);
+        mPropertyWidget = nullptr;
+    }
 }
 
-
-void NodeDataModel::setNodeStyle(NodeStyle const& style)
+void PropertiesWindow::handleActiveNodeChanged(Node* node)
 {
-    mNodeStyle = style;
+    setPropertyWidget(node->propertyView());
 }
+
+} // namespace Cascade::Properties

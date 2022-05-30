@@ -1,3 +1,25 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  NodeEditor code adapted from:
+ *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
+*/
+
 #include "node.h"
 
 #include <QtCore/QObject>
@@ -5,7 +27,7 @@
 #include <utility>
 #include <iostream>
 
-#include "NodeGraphScene.h"
+#include "nodegraphscene.h"
 
 #include "nodegraphicsobject.h"
 #include "nodedatamodel.h"
@@ -37,8 +59,8 @@ Node::
     connect(mNodeDataModel.get(), &NodeDataModel::dataUpdated,
             this, &Node::onDataUpdated);
 
-    connect(mNodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
-            this, &Node::onNodeSizeUpdated );
+//    connect(mNodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
+//            this, &Node::onNodeSizeUpdated );
 }
 
 
@@ -155,6 +177,23 @@ NodeDataModel* Node::nodeDataModel() const
 }
 
 
+QWidget* Node::propertyView()
+{
+    if (!mPropertyView)
+    {
+        mPropertyView = new QWidget();
+        QVBoxLayout* layout = new QVBoxLayout();
+        mPropertyView->setLayout(layout);
+        for (auto& widget : mNodeDataModel->getPropertyViews())
+        {
+            layout->addWidget(widget);
+        }
+        layout->addStretch(1);
+    }
+    return mPropertyView;
+}
+
+
 void Node::propagateData(
     std::shared_ptr<NodeData> nodeData,
     PortIndex inPortIndex,
@@ -183,10 +222,10 @@ void Node::onDataUpdated(PortIndex index)
 
 void Node::onNodeSizeUpdated()
 {
-    if( nodeDataModel()->embeddedWidget() )
-    {
-        nodeDataModel()->embeddedWidget()->adjustSize();
-    }
+//    if( nodeDataModel()->embeddedWidget() )
+//    {
+//        nodeDataModel()->embeddedWidget()->adjustSize();
+//    }
     nodeGeometry().recalculateSize();
     for(PortType type: {PortType::In, PortType::Out})
     {

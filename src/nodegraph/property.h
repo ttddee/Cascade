@@ -15,30 +15,56 @@
  *
  *  You should have received a copy of the GNU General Public License
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
- *
- *  NodeEditor code adapted from:
- *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
 */
 
-#pragma once
+#ifndef PROPERTY_H
+#define PROPERTY_H
 
-#include <QPainter>
+#include <QObject>
 
-#include "nodegeometry.h"
-#include "nodedatamodel.h"
+#include "propertydata.h"
+#include "../properties/propertyview.h"
 
-namespace Cascade::NodeGraph {
+using Cascade::Properties::PropertyView;
+using Cascade::Properties::IntPropertyView;
 
-/// Class to allow for custom painting
-class NodePainterDelegate
+namespace Cascade::NodeGraph
 {
 
-public:
-    virtual ~NodePainterDelegate() = default;
+class Property : public QObject
+{
+    Q_OBJECT
 
-    virtual void paint(
-        QPainter* painter,
-        NodeGeometry const& geom,
-        NodeDataModel const * model) = 0;
+public:
+    virtual PropertyView* getView() const = 0;
+
+private:
+    PropertyView* mView = nullptr;
+
 };
-}
+
+class IntProperty : public Property
+{
+    Q_OBJECT
+
+public:
+    IntProperty(IntPropertyData data)
+        : mData(data)
+    {
+        mView = new IntPropertyView();
+    }
+
+    PropertyView* getView() const override
+    {
+        return mView;
+    };
+
+private:
+    IntPropertyData mData;
+    IntPropertyView* mView;
+
+};
+
+} // namespace Cascade::NodeGraph
+
+#endif // PROPERTY_H

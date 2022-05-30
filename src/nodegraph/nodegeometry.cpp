@@ -1,3 +1,25 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  NodeEditor code adapted from:
+ *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
+*/
+
 #include "nodegeometry.h"
 
 #include "porttype.h"
@@ -76,15 +98,15 @@ void NodeGeometry::recalculateSize() const
     mEntryHeight = mFontMetrics.height();
 
     {
-        unsigned int maxNumOfEntries = std::max(mNSinks, mNSources);
+        unsigned int maxNumOfEntries = std::max(nSinks(), nSources());
         unsigned int step = mEntryHeight + mSpacing;
         mHeight = step * maxNumOfEntries;
     }
 
-    if (auto w = mDataModel->embeddedWidget())
-    {
-        mHeight = std::max(mHeight, static_cast<unsigned>(w->height()));
-    }
+//    if (auto w = mDataModel->embeddedWidget())
+//    {
+//        //mHeight = std::max(mHeight, static_cast<unsigned>(w->height()));
+//    }
 
     mHeight += captionHeight();
 
@@ -95,10 +117,10 @@ void NodeGeometry::recalculateSize() const
              mOutputPortWidth +
              2 * mSpacing;
 
-    if (auto w = mDataModel->embeddedWidget())
-    {
-        mWidth += w->width();
-    }
+//    if (auto w = mDataModel->embeddedWidget())
+//    {
+//        mWidth += w->width();
+//    }
 
     mWidth = std::max(mWidth, captionWidth());
 
@@ -222,25 +244,25 @@ QRect NodeGeometry::resizeRect() const
 
 QPointF NodeGeometry::widgetPosition() const
 {
-    if (auto w = mDataModel->embeddedWidget())
-    {
-        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
-        {
-            // If the widget wants to use as much vertical space as possible, place it immediately after the caption.
-            return QPointF(mSpacing + portWidth(PortType::In), captionHeight());
-        }
-        else
-        {
-            if (mDataModel->validationState() != NodeValidationState::Valid)
-            {
-                return QPointF(mSpacing + portWidth(PortType::In),
-                               (captionHeight() + mHeight - validationHeight() - mSpacing - w->height()) / 2.0);
-            }
+//    if (auto w = mDataModel->embeddedWidget())
+//    {
+//        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
+//        {
+//            // If the widget wants to use as much vertical space as possible, place it immediately after the caption.
+//            return QPointF(mSpacing + portWidth(PortType::In), captionHeight());
+//        }
+//        else
+//        {
+//            if (mDataModel->validationState() != NodeValidationState::Valid)
+//            {
+//                return QPointF(mSpacing + portWidth(PortType::In),
+//                               (captionHeight() + mHeight - validationHeight() - mSpacing - w->height()) / 2.0);
+//            }
 
-            return QPointF(mSpacing + portWidth(PortType::In),
-                           (captionHeight() + mHeight - w->height()) / 2.0);
-        }
-    }
+//            return QPointF(mSpacing + portWidth(PortType::In),
+//                           (captionHeight() + mHeight - w->height()) / 2.0);
+//        }
+//    }
     return QPointF();
 }
 

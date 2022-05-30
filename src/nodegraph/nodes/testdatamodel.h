@@ -1,3 +1,25 @@
+/*
+ *  Cascade Image Editor
+ *
+ *  Copyright (C) 2022 Till Dechent and contributors
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
+ *
+ *  NodeEditor code adapted from:
+ *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
+*/
+
 #pragma once
 
 #include <QtCore/QObject>
@@ -6,12 +28,18 @@
 
 #include "../nodedatamodel.h"
 #include "../nodedata.h"
+#include "../property.h"
+#include "../propertydata.h"
 
 using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::NodeData;
 using Cascade::NodeGraph::NodeDataType;
 using Cascade::NodeGraph::PortType;
 using Cascade::NodeGraph::PortIndex;
+using Cascade::NodeGraph::Property;
+using Cascade::NodeGraph::IntProperty;
+using Cascade::NodeGraph::PropertyData;
+using Cascade::NodeGraph::IntPropertyData;
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph
@@ -21,10 +49,17 @@ class TestNodeData : public NodeData
 public:
     TestNodeData()
     {
-        mCaption = "Test Node";
-        mName = "TestNode";
-        mInPorts = { "RGBA Back", "RGBA Front" };
-        mOutPorts = { "Result" };
+        mCaption =      "Test Node";
+        mName =         "TestNode";
+        mInPorts =      { "RGBA Back", "RGBA Front" };
+        mOutPorts =     { "Result" };
+        mProperties.push_back(
+            std::unique_ptr<Property>(new IntProperty(
+                IntPropertyData(QString("Test int"), 0, 100, 1, 40))));
+        mProperties.push_back(
+            std::unique_ptr<Property>(new IntProperty(
+                IntPropertyData(QString("Test int"), 0, 100, 1, 40))));
+
     }
 
 //    NodeDataType type() const override
@@ -32,33 +67,6 @@ public:
 //        return NodeDataType {"TestNodeData", "Test Data"};
 //    }
 };
-
-//class RgbaBackNodeData : public NodeData
-//{
-//public:
-//    NodeDataType type() const override
-//    {
-//        return NodeDataType {"RgbaBackNodeData", "RGBA Back"};
-//    }
-//};
-
-//class RgbaFrontNodeData : public NodeData
-//{
-//public:
-//    NodeDataType type() const override
-//    {
-//        return NodeDataType {"RgbaFrontNodeData", "RGBA Front"};
-//    }
-//};
-
-//class ResultNodeData : public NodeData
-//{
-//public:
-//    NodeDataType type() const override
-//    {
-//        return NodeDataType {"ResultNodeData", "Result"};
-//    }
-//};
 
 //------------------------------------------------------------------------------
 
@@ -79,16 +87,16 @@ public:
 public:
     unsigned int nPorts(PortType portType) const override
     {
-        unsigned int result = 1;
+        int result = 1;
 
         switch (portType)
         {
         case PortType::In:
-            result = 2;
+            result = static_cast<unsigned int>(mData.mInPorts.size());
             break;
 
         case PortType::Out:
-            result = 1;
+            result = static_cast<unsigned int>(mData.mOutPorts.size());
             break;
         case PortType::None:
             break;
@@ -138,5 +146,5 @@ public:
         //
     }
 
-    QWidget* embeddedWidget() override { return nullptr; }
+    //QWidget* embeddedWidget() override { return nullptr; }
 };
