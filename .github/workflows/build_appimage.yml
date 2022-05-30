@@ -119,8 +119,12 @@ jobs:
     
     - name: Build Cascade
       run: | 
-        ls /usr/local
-        export PATH="/home/runner/work/Cascade/Cascade/qt5/bin/:$PATH"
+        ls /usr/local/lib
+        echo "---"
+        ls /usr/local/bin
+        echo "---"
+        ls /usr/local/plugins
+        # export PATH="/home/runner/work/Cascade/Cascade/qt5/bin/:$PATH"
         
         cd /home/runner/work/Cascade/Cascade/external
         mkdir OpenColorIO
