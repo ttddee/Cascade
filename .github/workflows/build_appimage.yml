@@ -44,6 +44,13 @@ jobs:
         sudo make install
         cd
         
+    - name: Install Qt from cache
+      if: steps.cache-qt5.outputs.cache-hit == 'true'
+      run: |
+        cd qt5
+        sudo make install
+        cd
+        
     - name: Build OCIO
       run: |
         git clone https://github.com/AcademySoftwareFoundation/OpenColorIO
