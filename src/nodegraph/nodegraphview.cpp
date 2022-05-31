@@ -45,6 +45,8 @@
 #include "stylecollection.h"
 #include "contextmenu.h"
 
+#include "../log.h"
+
 using Cascade::NodeGraph::NodeGraphView;
 using Cascade::NodeGraph::NodeGraphScene;
 
@@ -198,6 +200,30 @@ void NodeGraphView::setActiveNode(Node* node)
     mActiveNode = node;
 
     emit activeNodeChanged(node);
+}
+
+
+void NodeGraphView::handleFrontViewRequested()
+{
+    CS_LOG_INFO("BEEP");
+}
+
+
+void NodeGraphView::handleBackViewRequested()
+{
+
+}
+
+
+void NodeGraphView::handleAlphaViewRequested()
+{
+
+}
+
+
+void NodeGraphView::handleResultViewRequested()
+{
+
 }
 
 

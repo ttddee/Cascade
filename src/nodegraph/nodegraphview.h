@@ -51,9 +51,9 @@ public:
     void setScene(NodeGraphScene *scene);
 
 signals:
-    void activeNodeChanged(Node* node);
+    void activeNodeChanged(Cascade::NodeGraph::Node* node);
 
-public Q_SLOTS:
+public slots:
     void scaleUp();
 
     void scaleDown();
@@ -61,6 +61,14 @@ public Q_SLOTS:
     void deleteSelectedNodes();
 
     void setActiveNode(Cascade::NodeGraph::Node* node);
+
+    void handleFrontViewRequested();
+
+    void handleBackViewRequested();
+
+    void handleAlphaViewRequested();
+
+    void handleResultViewRequested();
 
 protected:
     void contextMenuEvent(QContextMenuEvent *event) override;

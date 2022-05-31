@@ -61,6 +61,7 @@ SOURCES += \
     src/docking/IconProvider.cpp \
     src/docking/ads_globals.cpp \
     src/docking/linux/FloatingWidgetTitleBar.cpp \
+    src/inputhandler.cpp \
     src/isfmanager.cpp \
     src/log.cpp \
     src/main.cpp \
@@ -94,6 +95,7 @@ SOURCES += \
     src/properties/propertieswindow.cpp \
     src/properties/propertyview.cpp \
     src/properties/propertywidget.cpp \
+    src/properties/slider.cpp \
     src/properties/titlepropertyview.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
@@ -148,6 +150,7 @@ HEADERS += \
     src/codeeditor/QSyntaxStyle.hpp \
     src/codeeditor/QXMLHighlighter.hpp \
     src/colorbutton.h \
+    src/dispatch.h \
     src/docking/DockAreaTabBar.h \
     src/docking/DockAreaTitleBar.h \
     src/docking/DockAreaTitleBar_p.h \
@@ -168,6 +171,7 @@ HEADERS += \
     src/docking/ads_globals.h \
     src/docking/linux/FloatingWidgetTitleBar.h \
     src/global.h \
+    src/inputhandler.h \
     src/isfmanager.h \
     src/log.h \
     src/mainmenu.h \
@@ -213,6 +217,7 @@ HEADERS += \
     src/properties/propertieswindow.h \
     src/properties/propertyview.h \
     src/properties/propertywidget.h \
+    src/properties/slider.h \
     src/properties/titlepropertyview.h \
     src/propertiesheading.h \
     src/propertiesview.h \

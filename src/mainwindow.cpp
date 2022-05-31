@@ -103,6 +103,20 @@ MainWindow::MainWindow(QWidget *parent)
     mPreferencesManager = &PreferencesManager::getInstance();
     mPreferencesManager->setUp();
 
+    // Event filters to grab all the global input events,
+    // independent of which widget has focus
+    mInputHandler = std::make_unique<InputHandler>();
+    mVulkanView->getVulkanWindow()->installEventFilter(mInputHandler.get());
+    mNodeGraphDockWidget->installEventFilter(mInputHandler.get());
+    mPropertiesWindowDockWidget->installEventFilter(mInputHandler.get());
+    mViewerStatusBar->installEventFilter(mInputHandler.get());
+    centralDockArea->installEventFilter(mInputHandler.get());
+
+    // Sets up signals/slots between windows
+    mDispatch = std::make_unique<Dispatch>(
+        mInputHandler.get(),
+        mNodeGraph);
+
     // Incoming
     connect(mVulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
             this, &MainWindow::handleRendererHasBeenCreated);

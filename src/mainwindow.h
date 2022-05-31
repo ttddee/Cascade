@@ -37,6 +37,8 @@
 #include "projectmanager.h"
 #include "preferencesmanager.h"
 #include "isfmanager.h"
+#include "inputhandler.h"
+#include "dispatch.h"
 #include "properties/propertieswindow.h"
 
 #include "nodegraph/nodegraphview.h"
@@ -81,6 +83,8 @@ private:
     ProjectManager* mProjectManager;
     PreferencesManager* mPreferencesManager;
     ISFManager* mIsfManager;
+    std::unique_ptr<InputHandler> mInputHandler;
+    std::unique_ptr<Dispatch> mDispatch;
 
     ads::CDockManager* mDockManager;
 

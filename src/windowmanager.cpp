@@ -89,6 +89,7 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
 
         if (keyEvent->key() == Qt::Key_F1)
         {
+            CS_LOG_INFO("FFF");
             setViewerMode(ViewerMode::eFrontRgb);
         }
         else if (keyEvent->key() == Qt::Key_F2)
@@ -143,10 +144,10 @@ void WindowManager::handleClearPropertiesRequest()
     mPropertiesView->clear();
 }
 
-void WindowManager::handleNodeDoubleClicked(NodeBase* node)
-{
-    //mPropertiesView->loadProperties(node->getProperties());
-}
+//void WindowManager::handleNodeDoubleClicked(NodeBase* node)
+//{
+//    //mPropertiesView->loadProperties(node->getProperties());
+//}
 
 void WindowManager::handleZoomTextUpdateRequest(float f)
 {

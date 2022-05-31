@@ -70,7 +70,7 @@ signals:
     void switchToViewerMode(const Cascade::ViewerMode mode);
 
 public slots:
-    void handleNodeDoubleClicked(Cascade::NodeBase* node);
+    //void handleNodeDoubleClicked(Cascade::NodeBase* node);
     void handleZoomTextUpdateRequest(float f);
     void handleRenderTargetCreated(int w, int h);
     void handleViewerStatusBarValueChanged();

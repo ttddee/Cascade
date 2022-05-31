@@ -61,7 +61,8 @@ public:
         mMin(min),
         mMax(max),
         mStep(step),
-        mValue(value)
+        mValue(value),
+        mBaseValue(value)
     {}
 
     QString getName() const
@@ -84,6 +85,10 @@ public:
     {
         return mValue;
     }
+    int getBaseValue() const
+    {
+        return mBaseValue;
+    }
     void setValue(const int value)
     {
         mValue = value;
@@ -95,6 +100,7 @@ private:
     int mMax;
     int mStep;
     int mValue;
+    int mBaseValue;
 };
 
 } // namespace Cascade::NodeGraph

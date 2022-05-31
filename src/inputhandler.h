@@ -17,40 +17,31 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef INTPROPERTYVIEW_H
-#define INTPROPERTYVIEW_H
+#ifndef INPUTHANDLER_H
+#define INPUTHANDLER_H
 
 #include <QObject>
 
-#include "propertyview.h"
-#include "slider.h"
+namespace Cascade {
 
-namespace Cascade::NodeGraph
-{
-    class IntPropertyModel;
-}
-
-using Cascade::NodeGraph::IntPropertyModel;
-
-namespace Cascade::Properties {
-
-class IntPropertyView : public PropertyView
+class InputHandler : public QObject
 {
     Q_OBJECT
 
 public:
-    IntPropertyView(QWidget *parent = nullptr);
-
-    void setModel(IntPropertyModel* model);
+    explicit InputHandler(QObject *parent = nullptr);
 
 private:
-    IntPropertyModel* mModel;
+    bool eventFilter(QObject* watched, QEvent* event);
 
-    QGridLayout* mLayout;
-    Slider* mSlider;
+signals:
+    void notifyFrontViewRequested();
+    void notifyBackViewRequested();
+    void notifyAlphaViewRequested();
+    void notifyResultViewRequested();
 
 };
 
-} // namespace Cascade::Properties
+} // namespace Cascade
 
-#endif // INTPROPERTYVIEW_H
+#endif // INPUTHANDLER_H
