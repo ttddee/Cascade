@@ -28,7 +28,7 @@
 
 #include "../nodedatamodel.h"
 #include "../nodedata.h"
-#include "../property.h"
+#include "../propertymodel.h"
 #include "../propertydata.h"
 
 using Cascade::NodeGraph::NodeDataModel;
@@ -36,10 +36,11 @@ using Cascade::NodeGraph::NodeData;
 using Cascade::NodeGraph::NodeDataType;
 using Cascade::NodeGraph::PortType;
 using Cascade::NodeGraph::PortIndex;
-using Cascade::NodeGraph::Property;
-using Cascade::NodeGraph::IntProperty;
+using Cascade::NodeGraph::PropertyModel;
+using Cascade::NodeGraph::IntPropertyModel;
 using Cascade::NodeGraph::PropertyData;
 using Cascade::NodeGraph::IntPropertyData;
+using Cascade::NodeGraph::TitlePropertyData;
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph
@@ -54,11 +55,14 @@ public:
         mInPorts =      { "RGBA Back", "RGBA Front" };
         mOutPorts =     { "Result" };
         mProperties.push_back(
-            std::unique_ptr<Property>(new IntProperty(
-                IntPropertyData(QString("Test int"), 0, 100, 1, 40))));
+            std::unique_ptr<PropertyModel>(new TitlePropertyModel(
+                TitlePropertyData(mCaption.toUpper()))));
         mProperties.push_back(
-            std::unique_ptr<Property>(new IntProperty(
-                IntPropertyData(QString("Test int"), 0, 100, 1, 40))));
+            std::unique_ptr<PropertyModel>(new IntPropertyModel(
+                IntPropertyData("Test int", 0, 100, 1, 40))));
+        mProperties.push_back(
+            std::unique_ptr<PropertyModel>(new IntPropertyModel(
+                IntPropertyData("Test int", 0, 100, 1, 40))));
 
     }
 

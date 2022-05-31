@@ -22,6 +22,7 @@
 
 #include <QWidget>
 
+#include "propertywidget.h"
 #include "../nodegraph/node.h"
 
 using Cascade::NodeGraph::Node;
@@ -37,11 +38,11 @@ public:
     explicit PropertiesWindow(QWidget *parent = nullptr);
 
 private:
-    void setPropertyWidget(QWidget* widget);
+    void setPropertyWidget(PropertyWidget* widget);
     void clear();
 
     QVBoxLayout* mLayout;
-    QWidget* mPropertyWidget = nullptr;
+    PropertyWidget* mPropertyWidget = nullptr;
 
 public slots:
     void handleActiveNodeChanged(Cascade::NodeGraph::Node* node);

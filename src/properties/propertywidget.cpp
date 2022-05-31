@@ -17,14 +17,28 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "propertyview.h"
+#include "propertywidget.h"
 
 namespace Cascade::Properties {
 
-PropertyView::PropertyView(QWidget *parent)
+PropertyWidget::PropertyWidget(QWidget *parent)
     : QWidget(parent)
 {
+    setObjectName("PropertyWidget");
 
+    mLayout = new QVBoxLayout();
+    mLayout->setSpacing(5);
+    mLayout->setContentsMargins(5, 5, 5, 5);
+    mLayout->setAlignment(Qt::AlignTop);
+    setLayout(mLayout);
 }
 
-} // namespace Cascade::Properties
+void PropertyWidget::addPropertyViews(std::vector<PropertyView *> views)
+{
+    for (auto& view : views)
+    {
+        mLayout->addWidget(view);
+    }
+}
+
+} //namespace Cascade::Properties

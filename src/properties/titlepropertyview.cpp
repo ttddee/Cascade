@@ -17,14 +17,35 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include "propertyview.h"
+#include "titlepropertyview.h"
+
+#include "../nodegraph/propertymodel.h"
 
 namespace Cascade::Properties {
 
-PropertyView::PropertyView(QWidget *parent)
-    : QWidget(parent)
+TitlePropertyView::TitlePropertyView(QWidget *parent)
+    : PropertyView(parent)
 {
+    mLayout = new QVBoxLayout(this);
+    mLayout->setSpacing(5);
+    mLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(mLayout);
 
+    mTitleLabel = new QLabel(this);
+    mTitleLabel->setObjectName("PropertiesTitleLabel");
+    mLayout->addWidget(mTitleLabel);
+
+    QFrame *line;
+    line = new QFrame(this);
+    line->setFrameShape(QFrame::HLine);
+    line->setFrameShadow(QFrame::Sunken);
+    mLayout->addWidget(line);
+}
+
+void TitlePropertyView::setModel(TitlePropertyModel *model)
+{
+    mModel = model;
+    mTitleLabel->setText(mModel->getData()->getTitle());
 }
 
 } // namespace Cascade::Properties

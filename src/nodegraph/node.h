@@ -36,6 +36,9 @@
 #include "connectiongraphicsobject.h"
 #include "serializable.h"
 #include "memory.h"
+#include "../properties/propertywidget.h"
+
+using Cascade::Properties::PropertyWidget;
 
 namespace Cascade::NodeGraph
 {
@@ -89,7 +92,7 @@ public:
 
     NodeDataModel* nodeDataModel() const;
 
-    QWidget* propertyView();
+    PropertyWidget* propertyWidget();
 
 public Q_SLOTS: // data propagation
     /// Propagates incoming data to the underlying model.
@@ -119,6 +122,6 @@ private:
 
     std::unique_ptr<NodeGraphicsObject> mNodeGraphicsObject;
 
-    QWidget* mPropertyView = nullptr;
+    PropertyWidget* mPropertyWidget = nullptr;
 };
 }

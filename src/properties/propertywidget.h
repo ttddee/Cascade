@@ -17,54 +17,30 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef PROPERTY_H
-#define PROPERTY_H
+#ifndef PROPERTYWIDGET_H
+#define PROPERTYWIDGET_H
 
-#include <QObject>
+#include <QWidget>
+#include <QVBoxLayout>
 
-#include "propertydata.h"
-#include "../properties/propertyview.h"
+#include "propertyview.h"
 
-using Cascade::Properties::PropertyView;
-using Cascade::Properties::IntPropertyView;
+namespace Cascade::Properties {
 
-namespace Cascade::NodeGraph
-{
-
-class Property : public QObject
+class PropertyWidget : public QWidget
 {
     Q_OBJECT
 
 public:
-    virtual PropertyView* getView() const = 0;
+    explicit PropertyWidget(QWidget *parent = nullptr);
+
+    void addPropertyViews(std::vector<PropertyView*> views);
 
 private:
-    PropertyView* mView = nullptr;
+    QVBoxLayout* mLayout;
 
 };
 
-class IntProperty : public Property
-{
-    Q_OBJECT
+} //namespace Cascade::Properties
 
-public:
-    IntProperty(IntPropertyData data)
-        : mData(data)
-    {
-        mView = new IntPropertyView();
-    }
-
-    PropertyView* getView() const override
-    {
-        return mView;
-    };
-
-private:
-    IntPropertyData mData;
-    IntPropertyView* mView;
-
-};
-
-} // namespace Cascade::NodeGraph
-
-#endif // PROPERTY_H
+#endif // PROPERTYWIDGET_H

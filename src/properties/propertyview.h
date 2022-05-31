@@ -29,57 +29,14 @@
 
 namespace Cascade::Properties {
 
+class PropertyModel;
+
 class PropertyView : public QWidget
 {
     Q_OBJECT
 
 public:
-    PropertyView(QWidget *parent = nullptr)
-        : QWidget(parent)
-        {}
-
-signals:
-    void valueChanged();
-
-};
-
-
-class IntPropertyView : public PropertyView
-{
-    Q_OBJECT
-
-public:
-    IntPropertyView(QWidget *parent = nullptr)
-        : PropertyView(parent)
-    {
-        setMaximumHeight(22);
-
-        mLayout = new QGridLayout();
-        mLayout->setVerticalSpacing(0);
-        mLayout->setContentsMargins(0, 0, 0, 0);
-        setLayout(mLayout);
-
-        mSlider = new QSlider(Qt::Horizontal, this);
-        mLayout->addWidget(mSlider);
-
-        mNameLabel = new QLabel(this);
-        mNameLabel->setText("None");
-        mNameLabel->setObjectName("nameLabel");
-
-        mLayout->addWidget(mNameLabel, 0, 0, Qt::AlignLeft | Qt::AlignVCenter);
-        mValueBox = new QSpinBox(this);
-        mValueBox->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        mLayout->addWidget(mValueBox, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
-
-    }
-
-private:
-    //bool eventFilter(QObject* watched, QEvent* event) override;
-
-    QGridLayout* mLayout;
-    QSlider* mSlider;
-    QLabel* mNameLabel;
-    QSpinBox* mValueBox;
+    PropertyView(QWidget *parent = nullptr);
 
 };
 

@@ -359,7 +359,7 @@ QLabel {
     color: #b9b9b9;
     font: 12px "Open Sans";
 }
-QLabel#propHeading {
+QLabel#PropertiesTitleLabel {
     color: #b9b9b9;
     font: 12px "Open Sans";
     font-weight: bold;
@@ -557,6 +557,7 @@ ads--CDockWidgetTab {
 ads--CDockWidgetTab[activeTab="true"] {
     background-color: #282d31;
     padding: 3 0 3 0;
+    margin: 0px;
 }
 
 ads--CDockWidgetTab QLabel {

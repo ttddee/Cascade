@@ -26,7 +26,7 @@
 
 #include <QtCore/QString>
 
-#include "property.h"
+#include "propertymodel.h"
 
 namespace Cascade::NodeGraph
 {
@@ -70,7 +70,7 @@ struct NodeData
     QString mName;
     std::vector<QString> mInPorts;
     std::vector<QString> mOutPorts;
-    std::vector<std::unique_ptr<Property>> mProperties;
+    std::vector<std::unique_ptr<PropertyModel>> mProperties;
 
 };
 }

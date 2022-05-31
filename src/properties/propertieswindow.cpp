@@ -28,11 +28,13 @@ PropertiesWindow::PropertiesWindow(QWidget *parent)
     : QWidget(parent)
 {
     mLayout = new QVBoxLayout();
+    mLayout->setAlignment(Qt::AlignTop);
+    mLayout->setContentsMargins(0, 0, 0, 0);
     this->setLayout(mLayout);
     this->setAttribute(Qt::WA_StyledBackground);
 }
 
-void PropertiesWindow::setPropertyWidget(QWidget *widget)
+void PropertiesWindow::setPropertyWidget(PropertyWidget *widget)
 {
     clear();
 
@@ -53,7 +55,7 @@ void PropertiesWindow::clear()
 
 void PropertiesWindow::handleActiveNodeChanged(Node* node)
 {
-    setPropertyWidget(node->propertyView());
+    setPropertyWidget(node->propertyWidget());
 }
 
 } // namespace Cascade::Properties

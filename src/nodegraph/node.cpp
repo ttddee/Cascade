@@ -177,20 +177,14 @@ NodeDataModel* Node::nodeDataModel() const
 }
 
 
-QWidget* Node::propertyView()
+PropertyWidget* Node::propertyWidget()
 {
-    if (!mPropertyView)
+    if (!mPropertyWidget)
     {
-        mPropertyView = new QWidget();
-        QVBoxLayout* layout = new QVBoxLayout();
-        mPropertyView->setLayout(layout);
-        for (auto& widget : mNodeDataModel->getPropertyViews())
-        {
-            layout->addWidget(widget);
-        }
-        layout->addStretch(1);
+        mPropertyWidget = new PropertyWidget();
+        mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
     }
-    return mPropertyView;
+    return mPropertyWidget;
 }
 
 
