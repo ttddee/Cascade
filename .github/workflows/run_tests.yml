@@ -33,15 +33,14 @@ jobs:
     - name: Install packages
       if: steps.cache-deps.outputs.cache-hit == 'true'
       run: | 
-        sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev python3-distutils
+        sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
     - name: Set up Googletest
       run: |
         cd /usr/src/gtest
-        #sudo cmake CMakeLists.txt
-        #sudo make -j4
-        sudo cmake .
-        sudo cmake --build . --target install
+        sudo cmake CMakeLists.txt
+        sudo make -j4
+        sudo make install
         ls
         #sudo cp lib/*.a /usr/lib
         #sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
