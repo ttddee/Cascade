@@ -49,6 +49,7 @@ jobs:
     - name: Run Tests
       run: | 
         export GTEST_SRCDIR=/usr/src/gtest/src
+        export GMOCK_SRCDIR=/usr/src/gmock/src
         cd test/CascadeTests
         qmake
         make -j4
