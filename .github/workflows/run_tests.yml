@@ -33,7 +33,7 @@ jobs:
     - name: Install packages
       #if: steps.cache-deps.outputs.cache-hit == 'true'
       run: | 
-        sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
+        sudo apt install -y libopenimageio-dev libgtest-dev google-mock qtcreator libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
     - name: Run Tests
       run: | 
