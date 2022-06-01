@@ -1,8 +1,8 @@
-name: Linux Build
+name: Unit Tests
 
 on:
   push:
-    branches: master
+    branches: '*'
     
   pull_request:
     branches: '*'
@@ -10,7 +10,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  build-ubuntu:
+  run-tests:
   
     runs-on: ubuntu-latest
 
@@ -35,7 +35,9 @@ jobs:
       run: | 
         sudo apt install -y libopenimageio-dev libgtest-dev libtbb-dev qtcreator build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev python3-distutils
 
-    - name: Build Cascade
+    - name: Run Tests
       run: | 
+        cd test/CascadeTests
         qmake
         make -j4
+        ./CascadeTests
