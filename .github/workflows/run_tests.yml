@@ -40,7 +40,6 @@ jobs:
         cd /usr/src/gtest
         sudo cmake CMakeLists.txt
         sudo make -j4
-        sudo make install
         ls
         #sudo cp lib/*.a /usr/lib
         #sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
