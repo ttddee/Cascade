@@ -54,7 +54,7 @@ jobs:
         #export GTEST_SRCDIR=/usr/src/gtest/src
         #export GMOCK_SRCDIR=/usr/src/gmock/src
         cd test/CascadeTests
-        qmake
-        make -j4
+        qmake CascadeTests.pro -spec linux-g++ CONFIG+=debug CONFIG-=qml_debug
+        make qmake_all
         ls
         ./CascadeTests
