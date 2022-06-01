@@ -35,9 +35,12 @@ jobs:
       run: | 
         sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
-    - name: Run Tests
+    - name: Build test project
       run: | 
         cd test/CascadeTests
         qmake
         make -j4
+        
+    - name: Run Tests
+      run: |
         ./CascadeTests -platform offscreen

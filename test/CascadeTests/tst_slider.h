@@ -45,7 +45,7 @@ TEST_F(SliderTest, createSliderAndCheckReturnValue)
     auto resultInt = sliderInt->getValue<int>();
 
     EXPECT_EQ(resultDouble, 0.5);
-    EXPECT_EQ(resultInt, 4);
+    EXPECT_EQ(resultInt, 5);
 }
 
 #endif // TST_SLIDER_H
