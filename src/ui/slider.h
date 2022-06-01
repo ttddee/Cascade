@@ -71,10 +71,14 @@ public:
         }
     }
 
-    auto getValue()
+    template<typename T>
+    T getValue() const
     {
-        return mSlider->value();
-    }
+        if (mSliderType == SliderType::Double)
+            return mValueBoxDouble->value();
+
+        return mValueBoxInt->value();
+    };
 
     void setName(const QString& name);
 

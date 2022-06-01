@@ -7,7 +7,9 @@ namespace Cascade::UiElements {
 Slider::Slider(
     SliderType sliderType,
     QWidget *parent) :
+    QWidget(parent),
     mSliderType(sliderType)
+
 {
     mLayout = new QGridLayout();
     mLayout->setVerticalSpacing(0);

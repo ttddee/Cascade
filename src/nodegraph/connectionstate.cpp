@@ -26,7 +26,7 @@
 
 #include <QtCore/QPointF>
 
-#include "NodeGraphScene.h"
+#include "nodegraphscene.h"
 #include "node.h"
 
 using Cascade::NodeGraph::ConnectionState;

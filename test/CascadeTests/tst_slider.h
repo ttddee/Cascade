@@ -27,10 +27,25 @@ protected:
 TEST_F(SliderTest, createSliderAndCheckReturnType)
 {
     sliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
+    sliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
-    double result = sliderDouble->getValue();
+    auto resultDouble = sliderDouble->getValue<double>();
+    auto resultInt = sliderInt->getValue<int>();
 
-    EXPECT_EQ(typeid(double), typeid(result));
+    EXPECT_EQ(typeid(double), typeid(resultDouble));
+    EXPECT_EQ(typeid(int), typeid(resultInt));
+}
+
+TEST_F(SliderTest, createSliderAndCheckReturnValue)
+{
+    sliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
+    sliderInt->setMinMaxStepValue(0, 100, 1, 5);
+
+    auto resultDouble = sliderDouble->getValue<double>();
+    auto resultInt = sliderInt->getValue<int>();
+
+    EXPECT_EQ(resultDouble, 0.5);
+    EXPECT_EQ(resultInt, 5);
 }
 
 #endif // TST_SLIDER_H

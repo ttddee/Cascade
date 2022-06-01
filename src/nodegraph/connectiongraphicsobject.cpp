@@ -28,7 +28,7 @@
 #include <QtWidgets/QStyleOptionGraphicsItem>
 #include <QtWidgets/QGraphicsView>
 
-#include "NodeGraphScene.h"
+#include "nodegraphscene.h"
 
 #include "connection.h"
 #include "connectiongeometry.h"

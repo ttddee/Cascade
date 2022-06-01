@@ -29,7 +29,7 @@
 #include <QtGlobal>
 
 #include "node.h"
-#include "NodeGraphScene.h"
+#include "nodegraphscene.h"
 #include "nodegraphview.h"
 
 #include "nodegeometry.h"
