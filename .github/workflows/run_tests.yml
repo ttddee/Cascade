@@ -37,9 +37,12 @@ jobs:
 
     - name: Run Tests
       run: | 
-        export QT_DEBUG_PLUGINS=1
+        #export QT_DEBUG_PLUGINS=1
+        #export DISPLAY=:0.0
         cd test/CascadeTests
+        mkdir platforms
+        cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/*.so platforms
         qmake
         make -j4
         ls
-        ./CascadeTests
+        ./CascadeTests -platform offscreen
