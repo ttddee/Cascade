@@ -40,4 +40,5 @@ jobs:
         cd test/CascadeTests
         qmake
         make -j4
+        ls
         ./CascadeTests
