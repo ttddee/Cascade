@@ -1,6 +1,6 @@
 include(gtest_dependency.pri)
 
-QT += gui widgets core testlib
+QT += widgets core testlib
 
 TEMPLATE = app
 CONFIG += console c++11

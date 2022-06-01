@@ -33,7 +33,7 @@ jobs:
     - name: Install packages
       #if: steps.cache-deps.outputs.cache-hit == 'true'
       run: | 
-        sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
+        sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
     - name: Set up Googletest
       run: |
