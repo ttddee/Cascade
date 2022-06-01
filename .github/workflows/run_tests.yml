@@ -42,7 +42,7 @@ jobs:
         #sudo make -j4
         sudo cmake .
         sudo cmake --build . --target install
-	ls
+        ls
         #sudo cp lib/*.a /usr/lib
         #sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
         #sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
