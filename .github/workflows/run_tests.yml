@@ -35,26 +35,13 @@ jobs:
       run: | 
         sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev
 
-    - name: Set up Googletest
-      run: |
-        cd /usr/src/gtest
-        sudo cmake CMakeLists.txt
-        sudo make -j4
-        cd
-        
-    - name: Set up Googlemock
-      run: |
-        cd /usr/src/gmock
-        sudo cmake CMakeLists.txt
-        sudo make -j4
-        cd
-
     - name: Run Tests
       run: | 
         #export GTEST_SRCDIR=/usr/src/gtest/src
         #export GMOCK_SRCDIR=/usr/src/gmock/src
         cd test/CascadeTests
-        qmake CascadeTests.pro -spec linux-g++ CONFIG+=debug CONFIG-=qml_debug
+        qmake
         make qmake_all
+        make -j4
         ls
         ./CascadeTests
