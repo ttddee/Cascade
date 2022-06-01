@@ -33,17 +33,13 @@ jobs:
     - name: Install packages
       #if: steps.cache-deps.outputs.cache-hit == 'true'
       run: | 
-        sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev libxcb-xinerama0
+        sudo apt install -y libopenimageio-dev libgtest-dev google-mock libtbb-dev build-essential qtbase5-dev qt5-qmake qtbase5-dev-tools libopenexr-dev cmake libglew-dev freeglut3-dev '^libxcb.*-dev' libx11-xcb-dev libglu1-mesa-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxcb-xinerama0-dev libx11-xcb-dev
 
     - name: Set up Googletest
       run: |
         cd /usr/src/gtest
         sudo cmake CMakeLists.txt
         sudo make -j4
-        ls
-        #sudo cp lib/*.a /usr/lib
-        #sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
-        #sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
         cd
         
     - name: Set up Googlemock
@@ -51,16 +47,12 @@ jobs:
         cd /usr/src/gmock
         sudo cmake CMakeLists.txt
         sudo make -j4
-        ls
-        #sudo cp lib/*.a /usr/lib
-        #sudo ln -s /usr/lib/libgtest.a /usr/local/lib/libgtest.a
-        #sudo ln -s /usr/lib/libgtest_main.a /usr/local/lib/libgtest_main.a
         cd
 
     - name: Run Tests
       run: | 
-        export GTEST_SRCDIR=/usr/src/gtest/src
-        export GMOCK_SRCDIR=/usr/src/gmock/src
+        #export GTEST_SRCDIR=/usr/src/gtest/src
+        #export GMOCK_SRCDIR=/usr/src/gmock/src
         cd test/CascadeTests
         qmake
         make -j4
