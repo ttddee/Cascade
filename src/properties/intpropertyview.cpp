@@ -26,6 +26,8 @@
 
 #include "../log.h"
 
+using Cascade::UiElements::SliderType;
+
 namespace Cascade::Properties {
 
 IntPropertyView::IntPropertyView(QWidget *parent)

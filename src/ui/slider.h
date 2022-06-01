@@ -9,7 +9,7 @@
 #include <QSlider>
 #include <QGridLayout>
 
-namespace Cascade::Properties {
+namespace Cascade::UiElements {
 
 constexpr float doubleMult = 100.0;
 
@@ -71,6 +71,11 @@ public:
         }
     }
 
+    auto getValue()
+    {
+        return mSlider->value();
+    }
+
     void setName(const QString& name);
 
 private:
@@ -113,17 +118,17 @@ private:
 
     void mouseMoveEvent(QMouseEvent*) override;
 
-    QLabel* mNameLabel;
-    QDoubleSpinBox* mValueBoxDouble;
-    QSpinBox* mValueBoxInt;
-    QSlider* mSlider;
-    QGridLayout* mLayout;
+    QLabel*             mNameLabel;
+    QDoubleSpinBox*     mValueBoxDouble;
+    QSpinBox*           mValueBoxInt;
+    QSlider*            mSlider;
+    QGridLayout*        mLayout;
 
-    bool mIsDragging = false;
-    float mBaseValue;
-    QPointF mLastPos;
+    bool                mIsDragging = false;
+    float               mBaseValue;
+    QPointF             mLastPos;
 
-    const SliderType mSliderType;
+    const SliderType    mSliderType;
 
 signals:
     void valueChanged();
@@ -133,6 +138,6 @@ private slots:
     void handleSpinBoxValueChanged();
 };
 
-} // namespace Cascade::Properties
+} // namespace Cascade::UiElements
 
 #endif // SLIDER_H

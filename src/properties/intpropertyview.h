@@ -23,7 +23,7 @@
 #include <QObject>
 
 #include "propertyview.h"
-#include "slider.h"
+#include "../ui/slider.h"
 
 namespace Cascade::NodeGraph
 {
@@ -31,6 +31,7 @@ namespace Cascade::NodeGraph
 }
 
 using Cascade::NodeGraph::IntPropertyModel;
+using Cascade::UiElements::Slider;
 
 namespace Cascade::Properties {
 

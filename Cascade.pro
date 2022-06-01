@@ -95,7 +95,6 @@ SOURCES += \
     src/properties/propertieswindow.cpp \
     src/properties/propertyview.cpp \
     src/properties/propertywidget.cpp \
-    src/properties/slider.cpp \
     src/properties/titlepropertyview.cpp \
     src/propertiesheading.cpp \
     src/propertiesview.cpp \
@@ -106,6 +105,7 @@ SOURCES += \
     src/rendermanager.cpp \
     src/shadercompiler/SpvShaderCompiler.cpp \
     src/slidernoclick.cpp \
+    src/ui/slider.cpp \
     src/uientities/channelselectentity.cpp \
     src/uientities/checkboxentity.cpp \
     src/uientities/codeeditorentity.cpp \
@@ -217,7 +217,6 @@ HEADERS += \
     src/properties/propertieswindow.h \
     src/properties/propertyview.h \
     src/properties/propertywidget.h \
-    src/properties/slider.h \
     src/properties/titlepropertyview.h \
     src/propertiesheading.h \
     src/propertiesview.h \
@@ -232,6 +231,7 @@ HEADERS += \
     src/shadercompiler/DirStackFileIncluder.h \
     src/shadercompiler/SpvShaderCompiler.h \
     src/slidernoclick.h \
+    src/ui/slider.h \
     src/uientities/channelselectentity.h \
     src/uientities/checkboxentity.h \
     src/uientities/codeeditorentity.h \

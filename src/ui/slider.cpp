@@ -2,7 +2,7 @@
 
 #include <QApplication>
 
-namespace Cascade::Properties {
+namespace Cascade::UiElements {
 
 Slider::Slider(
     SliderType sliderType,
@@ -136,4 +136,4 @@ void Slider::mouseMoveEvent(QMouseEvent* event)
     Q_UNUSED(event);
 }
 
-} // namespace Cascade::Properties
+} // namespace Cascade::UiElements

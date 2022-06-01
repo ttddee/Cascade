@@ -2,3 +2,4 @@ Cascade.pro.user
 external/
 vcpkg/
 vcpkg_installed/
+tests/CascadeTests/CascadeTests.pro.user
