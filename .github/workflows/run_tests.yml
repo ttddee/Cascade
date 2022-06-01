@@ -48,6 +48,7 @@ jobs:
 
     - name: Run Tests
       run: | 
+        export PATH="/usr/src/gtest:$PATH"
         cd test/CascadeTests
         qmake
         make -j4
