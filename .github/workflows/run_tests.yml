@@ -21,7 +21,7 @@ jobs:
       id: cache-deps
       with:
         path: external
-        key: ${{ runner.os }}-deps-${{ hashFiles('scripts/install_deps.sh') }}
+        key: ${{ runner.os }}-deps-${{ hashFiles('/home/runner/work/Cascade/Cascade/scripts/install_deps.sh') }}
 
     - name: Build dependencies
       if: steps.cache-deps.outputs.cache-hit != 'true'
@@ -37,12 +37,7 @@ jobs:
 
     - name: Run Tests
       run: | 
-        #export QT_DEBUG_PLUGINS=1
-        #export DISPLAY=:0.0
         cd test/CascadeTests
-        mkdir platforms
-        cp /usr/lib/x86_64-linux-gnu/qt5/plugins/platforms/*.so platforms
         qmake
         make -j4
-        ls
         ./CascadeTests -platform offscreen
