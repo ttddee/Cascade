@@ -43,4 +43,4 @@ jobs:
         
     - name: Run Tests
       run: |
-        ./CascadeTests -platform offscreen
+        ./test/CascadeTests -platform offscreen
