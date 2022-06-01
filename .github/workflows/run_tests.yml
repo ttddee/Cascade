@@ -37,6 +37,7 @@ jobs:
 
     - name: Run Tests
       run: | 
+        sudo apt install -y googletest
         cd test/CascadeTests
         qmake
         make -j4
