@@ -79,6 +79,8 @@ SOURCES += \
     src/nodegraph/nodeconnectioninteraction.cpp \
     src/nodegraph/nodedatamodel.cpp \
     src/nodegraph/nodegeometry.cpp \
+    src/nodegraph/nodegraphdata.cpp \
+    src/nodegraph/nodegraphdatamodel.cpp \
     src/nodegraph/nodegraphicsobject.cpp \
     src/nodegraph/nodegraphscene.cpp \
     src/nodegraph/nodegraphview.cpp \
@@ -191,6 +193,8 @@ HEADERS += \
     src/nodegraph/nodedata.h \
     src/nodegraph/nodedatamodel.h \
     src/nodegraph/nodegeometry.h \
+    src/nodegraph/nodegraphdata.h \
+    src/nodegraph/nodegraphdatamodel.h \
     src/nodegraph/nodegraphicsobject.h \
     src/nodegraph/nodegraphscene.h \
     src/nodegraph/nodegraphview.h \

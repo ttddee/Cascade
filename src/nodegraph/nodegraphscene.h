@@ -32,6 +32,7 @@
 #include "quuidstdhash.h"
 #include "datamodelregistry.h"
 #include "memory.h"
+#include "nodegraphdatamodel.h"
 
 namespace Cascade::NodeGraph
 {
@@ -57,6 +58,8 @@ public:
     ~NodeGraphScene();
 
 public:
+    void setModel(std::unique_ptr<NodeGraphDataModel> model);
+
     std::shared_ptr<Connection> createConnection(
         PortType connectedPort,
         Node& node,
@@ -150,6 +153,8 @@ Q_SIGNALS:
     void nodeContextMenu(Cascade::NodeGraph::Node& n, const QPointF& pos);
 
 private:
+    std::unique_ptr<NodeGraphDataModel> mModel;
+
     using SharedConnection = std::shared_ptr<Connection>;
     using UniqueNode       = std::unique_ptr<Node>;
 

@@ -57,6 +57,7 @@ using Cascade::NodeGraph::DataModelRegistry;
 using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::PortType;
 using Cascade::NodeGraph::PortIndex;
+using Cascade::NodeGraph::NodeGraphDataModel;
 
 NodeGraphScene::NodeGraphScene(
     std::shared_ptr<DataModelRegistry> registry,
@@ -64,6 +65,8 @@ NodeGraphScene::NodeGraphScene(
     QGraphicsScene(parent),
     mRegistry(std::move(registry))
 {
+    setModel(std::make_unique<NodeGraphDataModel>());
+
     setItemIndexMethod(QGraphicsScene::NoIndex);
 
     // This connection should come first
@@ -84,6 +87,11 @@ NodeGraphScene::~NodeGraphScene()
 
 
 //------------------------------------------------------------------------------
+
+void NodeGraphScene::setModel(std::unique_ptr<NodeGraphDataModel> model)
+{
+    mModel = std::move(model);
+}
 
 std::shared_ptr<Connection> NodeGraphScene::createConnection(
     PortType connectedPort,
@@ -411,7 +419,7 @@ std::vector<Node*> NodeGraphScene::selectedNodes() const
 
 void NodeGraphScene::clearScene()
 {
-    //Manual node cleanup. Simply clearing the holding datastructures doesn't work, the code crashes when
+    // Manual node cleanup. Simply clearing the holding datastructures doesn't work, the code crashes when
     // there are both nodes and connections in the scene. (The data propagation internal logic tries to propagate
     // data through already freed connections.)
     while (mConnections.size() > 0)
