@@ -23,9 +23,14 @@ namespace Cascade::NodeGraph
 {
 
 NodeGraphDataModel::NodeGraphDataModel(QObject *parent)
-    : QObject{parent}
+    : QObject(parent)
 {
 
+}
+
+NodeGraphData* NodeGraphDataModel::data() const
+{
+    return mData.get();
 }
 
 } //namespace Cascade::NodeGraph

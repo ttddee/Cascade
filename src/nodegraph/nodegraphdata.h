@@ -33,8 +33,13 @@ namespace Cascade::NodeGraph
 class NodeGraphData : public QObject
 {
     Q_OBJECT
+
 public:
     explicit NodeGraphData(QObject *parent = nullptr);
+
+    std::unordered_map<QUuid, std::unique_ptr<Node>> const& nodes() const;
+
+    std::unordered_map<QUuid, std::shared_ptr<Connection>> const& connections() const;
 
 private:
     using SharedConnection = std::shared_ptr<Connection>;

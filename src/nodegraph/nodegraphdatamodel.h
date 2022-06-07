@@ -22,6 +22,8 @@
 
 #include <QObject>
 
+#include "nodegraphdata.h"
+
 namespace Cascade::NodeGraph
 {
 
@@ -32,7 +34,10 @@ class NodeGraphDataModel : public QObject
 public:
     explicit NodeGraphDataModel(QObject *parent = nullptr);
 
-signals:
+    NodeGraphData* data() const;
+
+private:
+    std::unique_ptr<NodeGraphData> mData;
 
 };
 

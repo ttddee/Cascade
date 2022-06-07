@@ -23,9 +23,20 @@ namespace Cascade::NodeGraph
 {
 
 NodeGraphData::NodeGraphData(QObject *parent)
-    : QObject{parent}
+    : QObject(parent)
 {
 
+}
+
+std::unordered_map<QUuid, std::unique_ptr<Node>> const& NodeGraphData::nodes() const
+{
+    return mNodes;
+}
+
+
+std::unordered_map<QUuid, std::shared_ptr<Connection>> const& NodeGraphData::connections() const
+{
+    return mConnections;
 }
 
 } // namespace Cascade::NodeGraph

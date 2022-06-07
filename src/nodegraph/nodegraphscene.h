@@ -58,8 +58,6 @@ public:
     ~NodeGraphScene();
 
 public:
-    void setModel(std::unique_ptr<NodeGraphDataModel> model);
-
     std::shared_ptr<Connection> createConnection(
         PortType connectedPort,
         Node& node,
@@ -98,9 +96,9 @@ public:
     QSizeF getNodeSize(Node const& node) const;
 
 public:
-    std::unordered_map<QUuid, std::unique_ptr<Node> > const & nodes() const;
+    std::unordered_map<QUuid, std::unique_ptr<Node> > const& nodes() const;
 
-    std::unordered_map<QUuid, std::shared_ptr<Connection> > const & connections() const;
+    std::unordered_map<QUuid, std::shared_ptr<Connection> > const& connections() const;
 
     std::vector<Node*> allNodes() const;
 
@@ -153,8 +151,6 @@ Q_SIGNALS:
     void nodeContextMenu(Cascade::NodeGraph::Node& n, const QPointF& pos);
 
 private:
-    std::unique_ptr<NodeGraphDataModel> mModel;
-
     using SharedConnection = std::shared_ptr<Connection>;
     using UniqueNode       = std::unique_ptr<Node>;
 

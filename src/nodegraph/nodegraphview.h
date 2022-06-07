@@ -25,6 +25,7 @@
 #include <QGraphicsView>
 
 #include "datamodelregistry.h"
+#include "nodegraphdatamodel.h"
 
 #include "nodes/testdatamodel.h"
 
@@ -49,6 +50,7 @@ public:
     QAction* deleteSelectionAction() const;
 
     void setScene(NodeGraphScene *scene);
+    void setModel(std::unique_ptr<NodeGraphDataModel> model);
 
 signals:
     void activeNodeChanged(Cascade::NodeGraph::Node* node);
@@ -93,6 +95,8 @@ protected:
     NodeGraphScene* scene();
 
 private:
+    std::unique_ptr<NodeGraphDataModel> mModel;
+
     std::shared_ptr<DataModelRegistry> registerDataModels()
     {
         auto ret = std::make_shared<DataModelRegistry>();

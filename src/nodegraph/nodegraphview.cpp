@@ -74,6 +74,7 @@ NodeGraphView::NodeGraphView(QWidget *parent) :
     auto scene = new NodeGraphScene(registerDataModels(), this);
 
     setScene(scene);
+    setModel(std::make_unique<NodeGraphDataModel>());
 
     mContextMenu = new ContextMenu(scene, this);
 
@@ -113,6 +114,12 @@ void NodeGraphView::setScene(NodeGraphScene *scene)
     mDeleteSelectionAction->setShortcut(Qt::Key_Delete);
     connect(mDeleteSelectionAction, &QAction::triggered, this, &NodeGraphView::deleteSelectedNodes);
     addAction(mDeleteSelectionAction);
+}
+
+
+void NodeGraphView::setModel(std::unique_ptr<NodeGraphDataModel> model)
+{
+    mModel = std::move(model);
 }
 
 

@@ -65,8 +65,6 @@ NodeGraphScene::NodeGraphScene(
     QGraphicsScene(parent),
     mRegistry(std::move(registry))
 {
-    setModel(std::make_unique<NodeGraphDataModel>());
-
     setItemIndexMethod(QGraphicsScene::NoIndex);
 
     // This connection should come first
@@ -87,11 +85,6 @@ NodeGraphScene::~NodeGraphScene()
 
 
 //------------------------------------------------------------------------------
-
-void NodeGraphScene::setModel(std::unique_ptr<NodeGraphDataModel> model)
-{
-    mModel = std::move(model);
-}
 
 std::shared_ptr<Connection> NodeGraphScene::createConnection(
     PortType connectedPort,
