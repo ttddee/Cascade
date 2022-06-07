@@ -80,7 +80,7 @@ public:
 
     NodeGraphicsObject& nodeGraphicsObject();
 
-    void setGraphicsObject(std::unique_ptr<NodeGraphicsObject>&& graphics);
+    void setGraphicsObject(std::unique_ptr<NodeGraphicsObject> graphics);
 
     NodeGeometry& nodeGeometry();
 

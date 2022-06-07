@@ -139,7 +139,7 @@ NodeGraphicsObject& Node::nodeGraphicsObject()
 }
 
 
-void Node::setGraphicsObject(std::unique_ptr<NodeGraphicsObject>&& graphics)
+void Node::setGraphicsObject(std::unique_ptr<NodeGraphicsObject> graphics)
 {
     mNodeGraphicsObject = std::move(graphics);
 

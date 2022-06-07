@@ -30,6 +30,7 @@
 #include <QAction>
 
 #include "nodegraphscene.h"
+#include "nodegraphdatamodel.h"
 
 namespace Cascade::NodeGraph {
 
@@ -39,12 +40,14 @@ class ContextMenu : public QMenu
 
 public:
     ContextMenu(
+        NodeGraphDataModel* model,
         NodeGraphScene* scene,
         QWidget *parent = nullptr);
 
     void exec(const QPoint& position);
 
 private:
+    NodeGraphDataModel* mModel;
     NodeGraphScene* mScene;
     QLineEdit* mTextBox;
     QTreeWidget* mTreeView;

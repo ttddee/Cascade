@@ -93,7 +93,7 @@ std::shared_ptr<Connection> NodeGraphScene::createConnection(
 {
     auto connection = std::make_shared<Connection>(connectedPort, node, portIndex);
 
-    auto cgo = detail::make_unique<ConnectionGraphicsObject>(*this, *connection);
+    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
 
     // after this function connection points are set to node port
     connection->setGraphicsObject(std::move(cgo));
@@ -126,7 +126,7 @@ std::shared_ptr<Connection> NodeGraphScene::createConnection(
         nodeOut,
         portIndexOut);
 
-    auto cgo = detail::make_unique<ConnectionGraphicsObject>(*this, *connection);
+    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
 
     nodeIn.nodeState().setConnection(PortType::In, portIndexIn, *connection);
     nodeOut.nodeState().setConnection(PortType::Out, portIndexOut, *connection);
@@ -179,19 +179,19 @@ void NodeGraphScene::deleteConnection(Connection const& connection)
 }
 
 
-Node& NodeGraphScene::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
-{
-    auto node = detail::make_unique<Node>(std::move(dataModel));
-    auto ngo  = detail::make_unique<NodeGraphicsObject>(*this, *node);
+//Node& NodeGraphScene::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
+//{
+//    auto node = detail::make_unique<Node>(std::move(dataModel));
+//    auto ngo  = detail::make_unique<NodeGraphicsObject>(*this, *node);
 
-    node->setGraphicsObject(std::move(ngo));
+//    node->setGraphicsObject(std::move(ngo));
 
-    auto nodePtr = node.get();
-    mNodes[node->id()] = std::move(node);
+//    auto nodePtr = node.get();
+//    mNodes[node->id()] = std::move(node);
 
-    emit nodeCreated(*nodePtr);
-    return *nodePtr;
-}
+//    //emit nodeCreated(*nodePtr);
+//    return *nodePtr;
+//}
 
 
 Node& NodeGraphScene::restoreNode(QJsonObject const& nodeJson)
@@ -204,8 +204,8 @@ Node& NodeGraphScene::restoreNode(QJsonObject const& nodeJson)
         throw std::logic_error(std::string("No registered model with name ") +
                                modelName.toLocal8Bit().data());
 
-    auto node = detail::make_unique<Node>(std::move(dataModel));
-    auto ngo  = detail::make_unique<NodeGraphicsObject>(*this, *node);
+    auto node = std::make_unique<Node>(std::move(dataModel));
+    auto ngo  = std::make_unique<NodeGraphicsObject>(*this, *node);
     node->setGraphicsObject(std::move(ngo));
 
     node->restore(nodeJson);
@@ -213,8 +213,8 @@ Node& NodeGraphScene::restoreNode(QJsonObject const& nodeJson)
     auto nodePtr = node.get();
     mNodes[node->id()] = std::move(node);
 
-    nodePlaced(*nodePtr);
-    nodeCreated(*nodePtr);
+    emit nodePlaced(*nodePtr);
+    //nodeCreated(*nodePtr);
     return *nodePtr;
 }
 

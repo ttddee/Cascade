@@ -22,15 +22,31 @@
 namespace Cascade::NodeGraph
 {
 
-NodeGraphDataModel::NodeGraphDataModel(QObject *parent)
+NodeGraphDataModel::NodeGraphDataModel(
+    NodeGraphScene* scene,
+    QObject *parent)
     : QObject(parent)
 {
-
+    mScene = scene;
 }
 
 NodeGraphData* NodeGraphDataModel::data() const
 {
     return mData.get();
+}
+
+Node& NodeGraphDataModel::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
+{
+    auto node = std::make_unique<Node>(std::move(dataModel));
+    auto ngo  = std::make_unique<NodeGraphicsObject>(*mScene, *node);
+
+    node->setGraphicsObject(std::move(ngo));
+
+    auto nodePtr = node.get();
+    mData->mNodes[node->id()] = std::move(node);
+
+    //emit nodeCreated(*nodePtr);
+    return *nodePtr;
 }
 
 } //namespace Cascade::NodeGraph

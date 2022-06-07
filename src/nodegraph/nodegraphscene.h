@@ -49,6 +49,7 @@ class NodeStyle;
 class NodeGraphScene : public QGraphicsScene
 {
     Q_OBJECT
+
 public:
     NodeGraphScene(std::shared_ptr<DataModelRegistry> registry,
               QObject * parent = Q_NULLPTR);
@@ -73,13 +74,13 @@ public:
 
     void deleteConnection(Connection const& connection);
 
-    Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
+    //Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
 
     Node& restoreNode(QJsonObject const& nodeJson);
 
     void removeNode(Node& node);
 
-    DataModelRegistry&registry() const;
+    DataModelRegistry& registry() const;
 
     void setRegistry(std::shared_ptr<DataModelRegistry> registry);
 
@@ -120,7 +121,7 @@ Q_SIGNALS:
    * @brief Node has been created but not on the scene yet.
    * @see nodePlaced()
    */
-    void nodeCreated(Cascade::NodeGraph::Node &n);
+    //void nodeCreated(Cascade::NodeGraph::Node &n);
 
     /**
    * @brief Node has been added to the scene.

@@ -48,6 +48,8 @@ private:
     std::unordered_map<QUuid, SharedConnection> mConnections;
     std::unordered_map<QUuid, UniqueNode>       mNodes;
 
+    friend class NodeGraphDataModel;
+
 };
 
 } // namespace Cascade::NodeGraph

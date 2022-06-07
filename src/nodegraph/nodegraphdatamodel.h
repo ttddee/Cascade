@@ -32,12 +32,17 @@ class NodeGraphDataModel : public QObject
     Q_OBJECT
 
 public:
-    explicit NodeGraphDataModel(QObject *parent = nullptr);
+    explicit NodeGraphDataModel(
+        NodeGraphScene* scene,
+        QObject *parent = nullptr);
 
     NodeGraphData* data() const;
 
+    Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
+
 private:
     std::unique_ptr<NodeGraphData> mData;
+    NodeGraphScene* mScene;
 
 };
 

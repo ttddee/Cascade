@@ -30,11 +30,13 @@
 namespace Cascade::NodeGraph {
 
 ContextMenu::ContextMenu(
+    NodeGraphDataModel* model,
     NodeGraphScene* scene,
     QWidget* parent) :
     QMenu(parent)
 {
     mScene = scene;
+    mModel = model;
 
     //Add filterbox to the context menu
     mTextBox = new QLineEdit(this);
@@ -81,7 +83,7 @@ ContextMenu::ContextMenu(
 
         if (type)
         {
-            auto& node = mScene->createNode(std::move(type));
+            auto& node = mModel->createNode(std::move(type));
 
             QPoint posView = mScenePosition;
 
