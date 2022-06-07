@@ -31,6 +31,7 @@
 #include "connectiongraphicsobject.h"
 #include "connectionstate.h"
 
+#include "nodegraphdatamodel.h"
 #include "nodegraphscene.h"
 #include "nodepainter.h"
 
@@ -45,8 +46,10 @@ using Cascade::NodeGraph::Node;
 using Cascade::NodeGraph::NodeGraphScene;
 
 NodeGraphicsObject::NodeGraphicsObject(
+    NodeGraphDataModel &model,
     NodeGraphScene &scene,
     Node& node) :
+    mModel(model),
     mScene(scene),
     mNode(node),
     mLocked(false),
@@ -247,12 +250,12 @@ void NodeGraphicsObject::mousePressEvent(QGraphicsSceneMouseEvent * event)
                     if (!connections.empty() &&
                         outPolicy == NodeDataModel::ConnectionPolicy::One)
                     {
-                        mScene.deleteConnection( *connections.begin()->second );
+                        mModel.deleteConnection( *connections.begin()->second );
                     }
                 }
 
                 // todo add to FlowScene
-                auto connection = mScene.createConnection(portToCheck,
+                auto connection = mModel.createConnection(portToCheck,
                                                           mNode,
                                                           portIndex);
 

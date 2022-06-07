@@ -51,59 +51,59 @@ class NodeGraphScene : public QGraphicsScene
     Q_OBJECT
 
 public:
-    NodeGraphScene(std::shared_ptr<DataModelRegistry> registry,
-              QObject * parent = Q_NULLPTR);
-
     NodeGraphScene(QObject * parent = Q_NULLPTR);
 
     ~NodeGraphScene();
 
 public:
-    std::shared_ptr<Connection> createConnection(
-        PortType connectedPort,
-        Node& node,
-        PortIndex portIndex);
+    std::vector<Node*> selectedNodes() const;
 
-    std::shared_ptr<Connection> createConnection(
-        Node& nodeIn,
-        PortIndex portIndexIn,
-        Node& nodeOut,
-        PortIndex portIndexOut);
+    QSizeF getNodeSize(Node const& node) const;
+//    std::shared_ptr<Connection> createConnection(
+//        PortType connectedPort,
+//        Node& node,
+//        PortIndex portIndex);
 
-    std::shared_ptr<Connection> restoreConnection(QJsonObject const &connectionJson);
+//    std::shared_ptr<Connection> createConnection(
+//        Node& nodeIn,
+//        PortIndex portIndexIn,
+//        Node& nodeOut,
+//        PortIndex portIndexOut);
 
-    void deleteConnection(Connection const& connection);
+//    std::shared_ptr<Connection> restoreConnection(QJsonObject const &connectionJson);
+
+//    void deleteConnection(Connection const& connection);
 
     //Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
 
-    Node& restoreNode(QJsonObject const& nodeJson);
+//    Node& restoreNode(QJsonObject const& nodeJson);
 
-    void removeNode(Node& node);
+//    void removeNode(Node& node);
 
-    DataModelRegistry& registry() const;
+//    DataModelRegistry& registry() const;
 
-    void setRegistry(std::shared_ptr<DataModelRegistry> registry);
+//    void setRegistry(std::shared_ptr<DataModelRegistry> registry);
 
-    void iterateOverNodes(std::function<void(Node*)> const & visitor);
+//    void iterateOverNodes(std::function<void(Node*)> const & visitor);
 
-    void iterateOverNodeData(std::function<void(NodeDataModel*)> const & visitor);
+//    void iterateOverNodeData(std::function<void(NodeDataModel*)> const & visitor);
 
-    void iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const & visitor);
+//    void iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const & visitor);
 
-    QPointF getNodePosition(Node const& node) const;
+//    QPointF getNodePosition(Node const& node) const;
 
-    void setNodePosition(Node& node, QPointF const& pos) const;
+//    void setNodePosition(Node& node, QPointF const& pos) const;
 
-    QSizeF getNodeSize(Node const& node) const;
+//    QSizeF getNodeSize(Node const& node) const;
 
 public:
-    std::unordered_map<QUuid, std::unique_ptr<Node> > const& nodes() const;
+    //std::unordered_map<QUuid, std::unique_ptr<Node> > const& nodes() const;
 
-    std::unordered_map<QUuid, std::shared_ptr<Connection> > const& connections() const;
+    //std::unordered_map<QUuid, std::shared_ptr<Connection> > const& connections() const;
 
-    std::vector<Node*> allNodes() const;
+    //std::vector<Node*> allNodes() const;
 
-    std::vector<Node*> selectedNodes() const;
+    //std::vector<Node*> selectedNodes() const;
 
 public:
     void clearScene();
@@ -128,12 +128,12 @@ Q_SIGNALS:
    * @details Connect to this signal if need a correct position of node.
    * @see nodeCreated()
    */
-    void nodePlaced(Cascade::NodeGraph::Node &n);
+    //void nodePlaced(Cascade::NodeGraph::Node &n);
 
     void nodeDeleted(Cascade::NodeGraph::Node &n);
 
-    void connectionCreated(Cascade::NodeGraph::Connection const &c);
-    void connectionDeleted(Cascade::NodeGraph::Connection const &c);
+    //void connectionCreated(Cascade::NodeGraph::Connection const &c);
+//    void connectionDeleted(Cascade::NodeGraph::Connection const &c);
 
     void nodeMoved(Cascade::NodeGraph::Node& n, const QPointF& newLocation);
 
@@ -159,16 +159,16 @@ private:
     // This should outlive all the connections and nodes of
     // the graph, so that nodes can potentially have pointers into it,
     // which is why it comes first in the class.
-    std::shared_ptr<DataModelRegistry> mRegistry;
+    //std::shared_ptr<DataModelRegistry> mRegistry;
 
     std::unordered_map<QUuid, SharedConnection> mConnections;
     std::unordered_map<QUuid, UniqueNode>       mNodes;
 
 private Q_SLOTS:
-    void setupConnectionSignals(Cascade::NodeGraph::Connection const& c);
+    //void setupConnectionSignals(Cascade::NodeGraph::Connection const& c);
 
-    void sendConnectionCreatedToNodes(Cascade::NodeGraph::Connection const& c);
-    void sendConnectionDeletedToNodes(Cascade::NodeGraph::Connection const& c);
+//    void sendConnectionCreatedToNodes(Cascade::NodeGraph::Connection const& c);
+//    void sendConnectionDeletedToNodes(Cascade::NodeGraph::Connection const& c);
 
 };
 

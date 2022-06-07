@@ -59,23 +59,13 @@ using Cascade::NodeGraph::PortType;
 using Cascade::NodeGraph::PortIndex;
 using Cascade::NodeGraph::NodeGraphDataModel;
 
-NodeGraphScene::NodeGraphScene(
-    std::shared_ptr<DataModelRegistry> registry,
-    QObject * parent) :
-    QGraphicsScene(parent),
-    mRegistry(std::move(registry))
+NodeGraphScene::NodeGraphScene(QObject* parent) :
+    QGraphicsScene(parent)
 {
     setItemIndexMethod(QGraphicsScene::NoIndex);
 
-    // This connection should come first
-    connect(this, &NodeGraphScene::connectionCreated, this, &NodeGraphScene::setupConnectionSignals);
-    connect(this, &NodeGraphScene::connectionCreated, this, &NodeGraphScene::sendConnectionCreatedToNodes);
-    connect(this, &NodeGraphScene::connectionDeleted, this, &NodeGraphScene::sendConnectionDeletedToNodes);
-}
 
-NodeGraphScene::NodeGraphScene(QObject * parent)
-    : NodeGraphScene(std::make_shared<DataModelRegistry>(), parent)
-{}
+}
 
 
 NodeGraphScene::~NodeGraphScene()
@@ -86,97 +76,97 @@ NodeGraphScene::~NodeGraphScene()
 
 //------------------------------------------------------------------------------
 
-std::shared_ptr<Connection> NodeGraphScene::createConnection(
-    PortType connectedPort,
-    Node& node,
-    PortIndex portIndex)
-{
-    auto connection = std::make_shared<Connection>(connectedPort, node, portIndex);
+//std::shared_ptr<Connection> NodeGraphScene::createConnection(
+//    PortType connectedPort,
+//    Node& node,
+//    PortIndex portIndex)
+//{
+//    auto connection = std::make_shared<Connection>(connectedPort, node, portIndex);
 
-    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
+//    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
 
-    // after this function connection points are set to node port
-    connection->setGraphicsObject(std::move(cgo));
+//    // after this function connection points are set to node port
+//    connection->setGraphicsObject(std::move(cgo));
 
-    mConnections[connection->id()] = connection;
+//    mConnections[connection->id()] = connection;
 
-    // Note: this connection isn't truly created yet. It's only partially created.
-    // Thus, don't send the connectionCreated(...) signal.
+//    // Note: this connection isn't truly created yet. It's only partially created.
+//    // Thus, don't send the connectionCreated(...) signal.
 
-    connect(connection.get(),
-            &Connection::connectionCompleted,
-            this,
-            [this](Connection const& c) {
-                connectionCreated(c);
-            });
+//    connect(connection.get(),
+//            &Connection::connectionCompleted,
+//            this,
+//            [this](Connection const& c) {
+//                connectionCreated(c);
+//            });
 
-    return connection;
-}
-
-
-std::shared_ptr<Connection> NodeGraphScene::createConnection(
-    Node& nodeIn,
-    PortIndex portIndexIn,
-    Node& nodeOut,
-    PortIndex portIndexOut)
-{
-    auto connection = std::make_shared<Connection>(
-        nodeIn,
-        portIndexIn,
-        nodeOut,
-        portIndexOut);
-
-    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
-
-    nodeIn.nodeState().setConnection(PortType::In, portIndexIn, *connection);
-    nodeOut.nodeState().setConnection(PortType::Out, portIndexOut, *connection);
-
-    // after this function connection points are set to node port
-    connection->setGraphicsObject(std::move(cgo));
-
-    // trigger data propagation
-    nodeOut.onDataUpdated(portIndexOut);
-
-    mConnections[connection->id()] = connection;
-
-    connectionCreated(*connection);
-
-    return connection;
-}
+//    return connection;
+//}
 
 
-std::shared_ptr<Connection> NodeGraphScene::restoreConnection(
-    QJsonObject const &connectionJson)
-{
-    QUuid nodeInId  = QUuid(connectionJson["in_id"].toString());
-    QUuid nodeOutId = QUuid(connectionJson["out_id"].toString());
+//std::shared_ptr<Connection> NodeGraphScene::createConnection(
+//    Node& nodeIn,
+//    PortIndex portIndexIn,
+//    Node& nodeOut,
+//    PortIndex portIndexOut)
+//{
+//    auto connection = std::make_shared<Connection>(
+//        nodeIn,
+//        portIndexIn,
+//        nodeOut,
+//        portIndexOut);
 
-    PortIndex portIndexIn  = connectionJson["in_index"].toInt();
-    PortIndex portIndexOut = connectionJson["out_index"].toInt();
+//    auto cgo = std::make_unique<ConnectionGraphicsObject>(*this, *connection);
 
-    auto nodeIn  = mNodes[nodeInId].get();
-    auto nodeOut = mNodes[nodeOutId].get();
+//    nodeIn.nodeState().setConnection(PortType::In, portIndexIn, *connection);
+//    nodeOut.nodeState().setConnection(PortType::Out, portIndexOut, *connection);
 
-    std::shared_ptr<Connection> connection =
-        createConnection(*nodeIn, portIndexIn,
-                         *nodeOut, portIndexOut);
+//    // after this function connection points are set to node port
+//    connection->setGraphicsObject(std::move(cgo));
 
-    // Note: the connectionCreated(...) signal has already been sent
-    // by createConnection(...)
+//    // trigger data propagation
+//    nodeOut.onDataUpdated(portIndexOut);
 
-    return connection;
-}
+//    mConnections[connection->id()] = connection;
+
+//    connectionCreated(*connection);
+
+//    return connection;
+//}
 
 
-void NodeGraphScene::deleteConnection(Connection const& connection)
-{
-    auto it = mConnections.find(connection.id());
-    if (it != mConnections.end())
-    {
-        connection.removeFromNodes();
-        mConnections.erase(it);
-    }
-}
+//std::shared_ptr<Connection> NodeGraphScene::restoreConnection(
+//    QJsonObject const &connectionJson)
+//{
+//    QUuid nodeInId  = QUuid(connectionJson["in_id"].toString());
+//    QUuid nodeOutId = QUuid(connectionJson["out_id"].toString());
+
+//    PortIndex portIndexIn  = connectionJson["in_index"].toInt();
+//    PortIndex portIndexOut = connectionJson["out_index"].toInt();
+
+//    auto nodeIn  = mNodes[nodeInId].get();
+//    auto nodeOut = mNodes[nodeOutId].get();
+
+//    std::shared_ptr<Connection> connection =
+//        createConnection(*nodeIn, portIndexIn,
+//                         *nodeOut, portIndexOut);
+
+//    // Note: the connectionCreated(...) signal has already been sent
+//    // by createConnection(...)
+
+//    return connection;
+//}
+
+
+//void NodeGraphScene::deleteConnection(Connection const& connection)
+//{
+//    auto it = mConnections.find(connection.id());
+//    if (it != mConnections.end())
+//    {
+//        connection.removeFromNodes();
+//        mConnections.erase(it);
+//    }
+//}
 
 
 //Node& NodeGraphScene::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
@@ -194,166 +184,166 @@ void NodeGraphScene::deleteConnection(Connection const& connection)
 //}
 
 
-Node& NodeGraphScene::restoreNode(QJsonObject const& nodeJson)
-{
-    QString modelName = nodeJson["model"].toObject()["name"].toString();
+//Node& NodeGraphScene::restoreNode(QJsonObject const& nodeJson)
+//{
+//    QString modelName = nodeJson["model"].toObject()["name"].toString();
 
-    auto dataModel = registry().create(modelName);
+//    auto dataModel = registry().create(modelName);
 
-    if (!dataModel)
-        throw std::logic_error(std::string("No registered model with name ") +
-                               modelName.toLocal8Bit().data());
+//    if (!dataModel)
+//        throw std::logic_error(std::string("No registered model with name ") +
+//                               modelName.toLocal8Bit().data());
 
-    auto node = std::make_unique<Node>(std::move(dataModel));
-    auto ngo  = std::make_unique<NodeGraphicsObject>(*this, *node);
-    node->setGraphicsObject(std::move(ngo));
+//    auto node = std::make_unique<Node>(std::move(dataModel));
+//    auto ngo  = std::make_unique<NodeGraphicsObject>(*this, *node);
+//    node->setGraphicsObject(std::move(ngo));
 
-    node->restore(nodeJson);
+//    node->restore(nodeJson);
 
-    auto nodePtr = node.get();
-    mNodes[node->id()] = std::move(node);
+//    auto nodePtr = node.get();
+//    mNodes[node->id()] = std::move(node);
 
-    emit nodePlaced(*nodePtr);
-    //nodeCreated(*nodePtr);
-    return *nodePtr;
-}
-
-
-void NodeGraphScene::removeNode(Node& node)
-{
-    // call signal
-    nodeDeleted(node);
-
-    for(auto portType: {PortType::In,PortType::Out})
-    {
-        auto nodeState = node.nodeState();
-        auto const & nodeEntries = nodeState.getEntries(portType);
-
-        for (auto &connections : nodeEntries)
-        {
-            for (auto const &pair : connections)
-                deleteConnection(*pair.second);
-        }
-    }
-
-    mNodes.erase(node.id());
-}
+//    emit nodePlaced(*nodePtr);
+//    //nodeCreated(*nodePtr);
+//    return *nodePtr;
+//}
 
 
-DataModelRegistry& NodeGraphScene::registry() const
-{
-    return *mRegistry;
-}
+//void NodeGraphScene::removeNode(Node& node)
+//{
+//    // call signal
+//    nodeDeleted(node);
+
+//    for(auto portType: {PortType::In,PortType::Out})
+//    {
+//        auto nodeState = node.nodeState();
+//        auto const & nodeEntries = nodeState.getEntries(portType);
+
+//        for (auto &connections : nodeEntries)
+//        {
+//            for (auto const &pair : connections)
+//                deleteConnection(*pair.second);
+//        }
+//    }
+
+//    mNodes.erase(node.id());
+//}
 
 
-void NodeGraphScene::setRegistry(std::shared_ptr<DataModelRegistry> registry)
-{
-    mRegistry = std::move(registry);
-}
+//DataModelRegistry& NodeGraphScene::registry() const
+//{
+//    return *mRegistry;
+//}
 
 
-void NodeGraphScene::iterateOverNodes(std::function<void(Node*)> const& visitor)
-{
-    for (const auto& _node : mNodes)
-    {
-        visitor(_node.second.get());
-    }
-}
+//void NodeGraphScene::setRegistry(std::shared_ptr<DataModelRegistry> registry)
+//{
+//    mRegistry = std::move(registry);
+//}
 
 
-void NodeGraphScene::iterateOverNodeData(std::function<void(NodeDataModel*)> const& visitor)
-{
-    for (const auto& _node : mNodes)
-    {
-        visitor(_node.second->nodeDataModel());
-    }
-}
+//void NodeGraphScene::iterateOverNodes(std::function<void(Node*)> const& visitor)
+//{
+//    for (const auto& _node : mNodes)
+//    {
+//        visitor(_node.second.get());
+//    }
+//}
 
 
-void NodeGraphScene::iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const& visitor)
-{
-    std::set<QUuid> visitedNodesSet;
-
-    //A leaf node is a node with no input ports, or all possible input ports empty
-    auto isNodeLeaf =
-        [](Node const &node, NodeDataModel const &model)
-    {
-        for (unsigned int i = 0; i < model.nPorts(PortType::In); ++i)
-        {
-            auto connections = node.nodeState().connections(PortType::In, i);
-            if (!connections.empty())
-            {
-                return false;
-            }
-        }
-
-        return true;
-    };
-
-    //Iterate over "leaf" nodes
-    for (auto const &_node : mNodes)
-    {
-        auto const &node = _node.second;
-        auto model       = node->nodeDataModel();
-
-        if (isNodeLeaf(*node, *model))
-        {
-            visitor(model);
-            visitedNodesSet.insert(node->id());
-        }
-    }
-
-    auto areNodeInputsVisitedBefore =
-        [&](Node const &node, NodeDataModel const &model)
-    {
-        for (size_t i = 0; i < model.nPorts(PortType::In); ++i)
-        {
-            auto connections = node.nodeState().connections(PortType::In, static_cast<PortIndex>(i));
-
-            for (auto& conn : connections)
-            {
-                if (visitedNodesSet.find(conn.second->getNode(PortType::Out)->id()) == visitedNodesSet.end())
-                {
-                    return false;
-                }
-            }
-        }
-
-        return true;
-    };
-
-    //Iterate over dependent nodes
-    while (mNodes.size() != visitedNodesSet.size())
-    {
-        for (auto const &_node : mNodes)
-        {
-            auto const &node = _node.second;
-            if (visitedNodesSet.find(node->id()) != visitedNodesSet.end())
-                continue;
-
-            auto model = node->nodeDataModel();
-
-            if (areNodeInputsVisitedBefore(*node, *model))
-            {
-                visitor(model);
-                visitedNodesSet.insert(node->id());
-            }
-        }
-    }
-}
+//void NodeGraphScene::iterateOverNodeData(std::function<void(NodeDataModel*)> const& visitor)
+//{
+//    for (const auto& _node : mNodes)
+//    {
+//        visitor(_node.second->nodeDataModel());
+//    }
+//}
 
 
-QPointF NodeGraphScene::getNodePosition(const Node& node) const
-{
-    return node.nodeGraphicsObject().pos();
-}
+//void NodeGraphScene::iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const& visitor)
+//{
+//    std::set<QUuid> visitedNodesSet;
+
+//    //A leaf node is a node with no input ports, or all possible input ports empty
+//    auto isNodeLeaf =
+//        [](Node const &node, NodeDataModel const &model)
+//    {
+//        for (unsigned int i = 0; i < model.nPorts(PortType::In); ++i)
+//        {
+//            auto connections = node.nodeState().connections(PortType::In, i);
+//            if (!connections.empty())
+//            {
+//                return false;
+//            }
+//        }
+
+//        return true;
+//    };
+
+//    //Iterate over "leaf" nodes
+//    for (auto const &_node : mNodes)
+//    {
+//        auto const &node = _node.second;
+//        auto model       = node->nodeDataModel();
+
+//        if (isNodeLeaf(*node, *model))
+//        {
+//            visitor(model);
+//            visitedNodesSet.insert(node->id());
+//        }
+//    }
+
+//    auto areNodeInputsVisitedBefore =
+//        [&](Node const &node, NodeDataModel const &model)
+//    {
+//        for (size_t i = 0; i < model.nPorts(PortType::In); ++i)
+//        {
+//            auto connections = node.nodeState().connections(PortType::In, static_cast<PortIndex>(i));
+
+//            for (auto& conn : connections)
+//            {
+//                if (visitedNodesSet.find(conn.second->getNode(PortType::Out)->id()) == visitedNodesSet.end())
+//                {
+//                    return false;
+//                }
+//            }
+//        }
+
+//        return true;
+//    };
+
+//    //Iterate over dependent nodes
+//    while (mNodes.size() != visitedNodesSet.size())
+//    {
+//        for (auto const &_node : mNodes)
+//        {
+//            auto const &node = _node.second;
+//            if (visitedNodesSet.find(node->id()) != visitedNodesSet.end())
+//                continue;
+
+//            auto model = node->nodeDataModel();
+
+//            if (areNodeInputsVisitedBefore(*node, *model))
+//            {
+//                visitor(model);
+//                visitedNodesSet.insert(node->id());
+//            }
+//        }
+//    }
+//}
 
 
-void NodeGraphScene::setNodePosition(Node& node, const QPointF& pos) const
-{
-    node.nodeGraphicsObject().setPos(pos);
-    node.nodeGraphicsObject().moveConnections();
-}
+//QPointF NodeGraphScene::getNodePosition(const Node& node) const
+//{
+//    return node.nodeGraphicsObject().pos();
+//}
+
+
+//void NodeGraphScene::setNodePosition(Node& node, const QPointF& pos) const
+//{
+//    node.nodeGraphicsObject().setPos(pos);
+//    node.nodeGraphicsObject().moveConnections();
+//}
 
 
 QSizeF NodeGraphScene::getNodeSize(const Node& node) const
@@ -362,29 +352,19 @@ QSizeF NodeGraphScene::getNodeSize(const Node& node) const
 }
 
 
-std::unordered_map<QUuid, std::unique_ptr<Node> > const& NodeGraphScene::nodes() const
-{
-    return mNodes;
-}
+//std::unordered_map<QUuid, std::unique_ptr<Node> > const& NodeGraphScene::nodes() const
+//{
+//    return mNodes;
+//}
 
 
-std::unordered_map<QUuid, std::shared_ptr<Connection> > const& NodeGraphScene::connections() const
-{
-    return mConnections;
-}
+//std::unordered_map<QUuid, std::shared_ptr<Connection> > const& NodeGraphScene::connections() const
+//{
+//    return mConnections;
+//}
 
 
-std::vector<Node*> NodeGraphScene::allNodes() const
-{
-    std::vector<Node*> nodes;
 
-    std::transform(mNodes.begin(),
-                   mNodes.end(),
-                   std::back_inserter(nodes),
-                   [](std::pair<QUuid const, std::unique_ptr<Node>> const & p) { return p.second.get(); });
-
-    return nodes;
-}
 
 
 std::vector<Node*> NodeGraphScene::selectedNodes() const
@@ -415,15 +395,15 @@ void NodeGraphScene::clearScene()
     // Manual node cleanup. Simply clearing the holding datastructures doesn't work, the code crashes when
     // there are both nodes and connections in the scene. (The data propagation internal logic tries to propagate
     // data through already freed connections.)
-    while (mConnections.size() > 0)
-    {
-        deleteConnection( *mConnections.begin()->second );
-    }
+//    while (mConnections.size() > 0)
+//    {
+//        deleteConnection( *mConnections.begin()->second );
+//    }
 
-    while (mNodes.size() > 0)
-    {
-        removeNode( *mNodes.begin()->second );
-    }
+//    while (mNodes.size() > 0)
+//    {
+//        removeNode( *mNodes.begin()->second );
+//    }
 }
 
 
@@ -509,58 +489,55 @@ QByteArray NodeGraphScene::saveToMemory() const
 
 void NodeGraphScene::loadFromMemory(const QByteArray& data)
 {
-    QJsonObject const jsonDocument = QJsonDocument::fromJson(data).object();
+//    QJsonObject const jsonDocument = QJsonDocument::fromJson(data).object();
 
-    QJsonArray nodesJsonArray = jsonDocument["nodes"].toArray();
+//    QJsonArray nodesJsonArray = jsonDocument["nodes"].toArray();
 
-    for (QJsonValueRef node : nodesJsonArray)
-    {
-        restoreNode(node.toObject());
-    }
+//    for (QJsonValueRef node : nodesJsonArray)
+//    {
+//        restoreNode(node.toObject());
+//    }
 
-    QJsonArray connectionJsonArray = jsonDocument["connections"].toArray();
+//    QJsonArray connectionJsonArray = jsonDocument["connections"].toArray();
 
-    for (QJsonValueRef connection : connectionJsonArray)
-    {
-        restoreConnection(connection.toObject());
-    }
+//    for (QJsonValueRef connection : connectionJsonArray)
+//    {
+//        restoreConnection(connection.toObject());
+//    }
 }
 
 
-void NodeGraphScene::setupConnectionSignals(Connection const& c)
-{
-    connect(&c,
-            &Connection::connectionMadeIncomplete,
-            this,
-            &NodeGraphScene::connectionDeleted,
-            Qt::UniqueConnection);
-}
+//void NodeGraphScene::setupConnectionSignals(Connection const& c)
+//{
+//    connect(&c, &Connection::connectionMadeIncomplete,
+//            this, &NodeGraphScene::connectionDeleted, Qt::UniqueConnection);
+//}
 
 
-void NodeGraphScene::sendConnectionCreatedToNodes(Connection const& c)
-{
-    Node* from = c.getNode(PortType::Out);
-    Node* to   = c.getNode(PortType::In);
+//void NodeGraphScene::sendConnectionCreatedToNodes(Connection const& c)
+//{
+//    Node* from = c.getNode(PortType::Out);
+//    Node* to   = c.getNode(PortType::In);
 
-    Q_ASSERT(from != nullptr);
-    Q_ASSERT(to != nullptr);
+//    Q_ASSERT(from != nullptr);
+//    Q_ASSERT(to != nullptr);
 
-    from->nodeDataModel()->outputConnectionCreated(c);
-    to->nodeDataModel()->inputConnectionCreated(c);
-}
+//    from->nodeDataModel()->outputConnectionCreated(c);
+//    to->nodeDataModel()->inputConnectionCreated(c);
+//}
 
 
-void NodeGraphScene::sendConnectionDeletedToNodes(Connection const& c)
-{
-    Node* from = c.getNode(PortType::Out);
-    Node* to   = c.getNode(PortType::In);
+//void NodeGraphScene::sendConnectionDeletedToNodes(Connection const& c)
+//{
+//    Node* from = c.getNode(PortType::Out);
+//    Node* to   = c.getNode(PortType::In);
 
-    Q_ASSERT(from != nullptr);
-    Q_ASSERT(to != nullptr);
+//    Q_ASSERT(from != nullptr);
+//    Q_ASSERT(to != nullptr);
 
-    from->nodeDataModel()->outputConnectionDeleted(c);
-    to->nodeDataModel()->inputConnectionDeleted(c);
-}
+//    from->nodeDataModel()->outputConnectionDeleted(c);
+//    to->nodeDataModel()->inputConnectionDeleted(c);
+//}
 
 
 //------------------------------------------------------------------------------

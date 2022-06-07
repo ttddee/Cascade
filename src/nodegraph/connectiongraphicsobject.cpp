@@ -29,6 +29,7 @@
 #include <QtWidgets/QGraphicsView>
 
 #include "nodegraphscene.h"
+#include "nodegraphdatamodel.h"
 
 #include "connection.h"
 #include "connectiongeometry.h"
@@ -46,8 +47,10 @@ using Cascade::NodeGraph::Connection;
 using Cascade::NodeGraph::NodeGraphScene;
 
 ConnectionGraphicsObject::ConnectionGraphicsObject(
-    NodeGraphScene &scene,
+    NodeGraphDataModel& model,
+    NodeGraphScene& scene,
     Connection &connection) :
+    mModel(model),
     mScene(scene),
     mConnection(connection)
 {
@@ -219,7 +222,7 @@ void ConnectionGraphicsObject::mouseReleaseEvent(QGraphicsSceneMouseEvent* event
 
     if (mConnection.connectionState().requiresPort())
     {
-        mScene.deleteConnection(mConnection);
+        mModel.deleteConnection(mConnection);
     }
 }
 
@@ -229,7 +232,7 @@ void ConnectionGraphicsObject::hoverEnterEvent(QGraphicsSceneHoverEvent* event)
     mConnection.connectionGeometry().setHovered(true);
 
     update();
-    mScene.connectionHovered(connection(), event->screenPos());
+    emit mScene.connectionHovered(connection(), event->screenPos());
     event->accept();
 }
 
@@ -239,7 +242,7 @@ void ConnectionGraphicsObject::hoverLeaveEvent(QGraphicsSceneHoverEvent* event)
     mConnection.connectionGeometry().setHovered(false);
 
     update();
-    mScene.connectionHoverLeft(connection());
+    emit mScene.connectionHoverLeft(connection());
     event->accept();
 }
 

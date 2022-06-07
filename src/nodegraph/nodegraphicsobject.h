@@ -35,6 +35,7 @@ class QGraphicsProxyWidget;
 namespace Cascade::NodeGraph
 {
 
+class NodeGraphDataModel;
 class NodeGraphScene;
 class FlowItemEntry;
 
@@ -46,6 +47,7 @@ class NodeGraphicsObject : public QGraphicsObject
 
 public:
     NodeGraphicsObject(
+        NodeGraphDataModel &model,
         NodeGraphScene &scene,
         Node& node);
 
@@ -98,6 +100,7 @@ private:
 
 private:
 
+    NodeGraphDataModel& mModel;
     NodeGraphScene& mScene;
 
     Node& mNode;

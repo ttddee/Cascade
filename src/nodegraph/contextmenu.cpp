@@ -58,14 +58,14 @@ ContextMenu::ContextMenu(
 
     addAction(treeViewAction);
 
-    for (auto const &cat : mScene->registry().categories())
+    for (auto const &cat : mModel->registry().categories())
     {
         auto item = new QTreeWidgetItem(mTreeView);
         item->setText(0, cat);
         mTopLevelItems[cat] = item;
     }
 
-    for (auto const &assoc : mScene->registry().registeredModelsCategoryAssociation())
+    for (auto const &assoc : mModel->registry().registeredModelsCategoryAssociation())
     {
         auto parent = mTopLevelItems[assoc.second];
         auto item   = new QTreeWidgetItem(parent);
@@ -79,7 +79,7 @@ ContextMenu::ContextMenu(
     {
         QString modelName = item->data(0, Qt::UserRole).toString();
 
-        auto type = mScene->registry().create(modelName);
+        auto type = mModel->registry().create(modelName);
 
         if (type)
         {
@@ -89,7 +89,7 @@ ContextMenu::ContextMenu(
 
             node.nodeGraphicsObject().setPos(posView);
 
-            emit mScene->nodePlaced(node);
+            emit mModel->nodePlaced(node);
         }
         else
         {

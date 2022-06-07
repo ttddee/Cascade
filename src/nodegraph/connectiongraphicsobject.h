@@ -31,6 +31,7 @@ class QGraphicsSceneMouseEvent;
 namespace Cascade::NodeGraph
 {
 
+class NodeGraphDataModel;
 class NodeGraphScene;
 class Connection;
 class ConnectionGeometry;
@@ -43,9 +44,9 @@ class ConnectionGraphicsObject
     Q_OBJECT
 
 public:
-
     ConnectionGraphicsObject(
-        NodeGraphScene &scene,
+        NodeGraphDataModel& model,
+        NodeGraphScene& scene,
         Connection &connection);
 
     virtual ~ConnectionGraphicsObject();
@@ -54,7 +55,6 @@ public:
     int type() const override { return Type; }
 
 public:
-
     Connection& connection();
 
     QRectF boundingRect() const override;
@@ -91,7 +91,8 @@ private:
 
 private:
 
-    NodeGraphScene & mScene;
+    NodeGraphDataModel& mModel;
+    NodeGraphScene& mScene;
 
     Connection& mConnection;
 };

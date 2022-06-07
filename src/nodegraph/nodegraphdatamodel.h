@@ -23,6 +23,7 @@
 #include <QObject>
 
 #include "nodegraphdata.h"
+#include "datamodelregistry.h"
 
 namespace Cascade::NodeGraph
 {
@@ -33,16 +34,72 @@ class NodeGraphDataModel : public QObject
 
 public:
     explicit NodeGraphDataModel(
+        std::shared_ptr<DataModelRegistry> registry,
         NodeGraphScene* scene,
         QObject *parent = nullptr);
 
-    NodeGraphData* data() const;
+    NodeGraphData* getData() const;
+
+    std::shared_ptr<Connection> createConnection(
+        PortType connectedPort,
+        Node& node,
+        PortIndex portIndex);
+
+    std::shared_ptr<Connection> createConnection(
+        Node& nodeIn,
+        PortIndex portIndexIn,
+        Node& nodeOut,
+        PortIndex portIndexOut);
+
+    std::shared_ptr<Connection> restoreConnection(QJsonObject const &connectionJson);
+
+    void deleteConnection(Connection const& connection);
 
     Node& createNode(std::unique_ptr<NodeDataModel> && dataModel);
 
+    Node& restoreNode(QJsonObject const& nodeJson);
+
+    void removeNode(Node& node);
+
+    DataModelRegistry& registry() const;
+
+    void setRegistry(std::shared_ptr<DataModelRegistry> registry);
+
+    void iterateOverNodes(std::function<void(Node*)> const & visitor);
+
+    void iterateOverNodeData(std::function<void(NodeDataModel*)> const & visitor);
+
+    void iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const & visitor);
+
+    QPointF getNodePosition(Node const& node) const;
+
+    void setNodePosition(Node& node, QPointF const& pos) const;
+
+    std::vector<Node*> allNodes() const;
+
 private:
+    std::shared_ptr<DataModelRegistry> mRegistry;
+
     std::unique_ptr<NodeGraphData> mData;
     NodeGraphScene* mScene;
+
+signals:
+    void connectionCreated(Cascade::NodeGraph::Connection const &c);
+
+    void connectionDeleted(Cascade::NodeGraph::Connection const &c);
+
+    void nodeCreated(Cascade::NodeGraph::Node &n);
+
+    void nodePlaced(Cascade::NodeGraph::Node &n);
+
+    void nodeDeleted(Cascade::NodeGraph::Node &n);
+
+private slots:
+    void setupConnectionSignals(Cascade::NodeGraph::Connection const& c);
+
+    void sendConnectionCreatedToNodes(Cascade::NodeGraph::Connection const& c);
+
+    void sendConnectionDeletedToNodes(Cascade::NodeGraph::Connection const& c);
 
 };
 

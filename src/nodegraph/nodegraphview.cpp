@@ -71,10 +71,11 @@ NodeGraphView::NodeGraphView(QWidget *parent) :
     setCacheMode(QGraphicsView::CacheBackground);
     setViewportUpdateMode(QGraphicsView::BoundingRectViewportUpdate);
 
-    auto scene = new NodeGraphScene(registerDataModels(), this);
+    auto scene = new NodeGraphScene(this);
 
     setScene(scene);
-    setModel(std::make_unique<NodeGraphDataModel>(scene));
+    auto registry = std::make_shared<DataModelRegistry>();
+    setModel(std::make_unique<NodeGraphDataModel>(registry, mScene));
 
     mContextMenu = new ContextMenu(mModel.get(), scene, this);
 
@@ -187,7 +188,7 @@ void NodeGraphView::deleteSelectedNodes()
     for (QGraphicsItem * item : mScene->selectedItems())
     {
         if (auto c = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
-            mScene->deleteConnection(c->connection());
+            mModel->deleteConnection(c->connection());
     }
 
     // Delete the nodes; this will delete many of the connections.
@@ -197,7 +198,7 @@ void NodeGraphView::deleteSelectedNodes()
     for (QGraphicsItem * item : mScene->selectedItems())
     {
         if (auto n = qgraphicsitem_cast<NodeGraphicsObject*>(item))
-            mScene->removeNode(n->node());
+            mModel->removeNode(n->node());
     }
 }
 

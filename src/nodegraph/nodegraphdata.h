@@ -37,14 +37,21 @@ class NodeGraphData : public QObject
 public:
     explicit NodeGraphData(QObject *parent = nullptr);
 
-    std::unordered_map<QUuid, std::unique_ptr<Node>> const& nodes() const;
+    Node* getNode(const QUuid& id) const;
 
-    std::unordered_map<QUuid, std::shared_ptr<Connection>> const& connections() const;
+    Connection* getConnection(const QUuid& id) const;
 
-private:
+    std::unordered_map<QUuid, std::unique_ptr<Node>> const& getNodes() const;
+
+    std::unordered_map<QUuid, std::shared_ptr<Connection>> const& getConnections() const;
+
     using SharedConnection = std::shared_ptr<Connection>;
     using UniqueNode       = std::unique_ptr<Node>;
 
+    void addConnection(SharedConnection connection);
+    void addNode(UniqueNode node);
+
+private:
     std::unordered_map<QUuid, SharedConnection> mConnections;
     std::unordered_map<QUuid, UniqueNode>       mNodes;
 

@@ -28,15 +28,34 @@ NodeGraphData::NodeGraphData(QObject *parent)
 
 }
 
-std::unordered_map<QUuid, std::unique_ptr<Node>> const& NodeGraphData::nodes() const
+Node* NodeGraphData::getNode(const QUuid& id) const
+{
+    return mNodes.at(id).get();
+}
+
+Connection* NodeGraphData::getConnection(const QUuid& id) const
+{
+    return mConnections.at(id).get();
+}
+
+std::unordered_map<QUuid, std::unique_ptr<Node>> const& NodeGraphData::getNodes() const
 {
     return mNodes;
 }
 
-
-std::unordered_map<QUuid, std::shared_ptr<Connection>> const& NodeGraphData::connections() const
+std::unordered_map<QUuid, std::shared_ptr<Connection>> const& NodeGraphData::getConnections() const
 {
     return mConnections;
+}
+
+void NodeGraphData::addConnection(SharedConnection connection)
+{
+    mConnections[connection->id()] = connection;
+}
+
+void NodeGraphData::addNode(UniqueNode node)
+{
+    mNodes[node->id()] = std::move(node);
 }
 
 } // namespace Cascade::NodeGraph
