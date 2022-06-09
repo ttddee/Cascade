@@ -44,10 +44,10 @@ class DataModelRegistry
 {
 
 public:
-    using RegistryItemPtr     = std::unique_ptr<NodeDataModel>;
-    using RegistryItemCreator = std::function<RegistryItemPtr()>;
-    using RegisteredModelCreatorsMap = std::unordered_map<QString, RegistryItemCreator>;
-    using RegisteredModelsCategoryMap = std::unordered_map<QString, QString>;
+    using RegistryItemPtr               = std::unique_ptr<NodeDataModel>;
+    using RegistryItemCreator           = std::function<RegistryItemPtr()>;
+    using RegisteredModelCreatorsMap    = std::unordered_map<QString, RegistryItemCreator>;
+    using RegisteredModelsCategoryMap   = std::unordered_map<QString, QString>;
     using CategoriesSet = std::set<QString>;
 
     DataModelRegistry()  = default;

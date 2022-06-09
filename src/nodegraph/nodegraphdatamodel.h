@@ -25,6 +25,10 @@
 #include "nodegraphdata.h"
 #include "datamodelregistry.h"
 
+#include "nodes/testdatamodel.h"
+
+#include "../log.h"
+
 namespace Cascade::NodeGraph
 {
 
@@ -34,7 +38,6 @@ class NodeGraphDataModel : public QObject
 
 public:
     explicit NodeGraphDataModel(
-        std::shared_ptr<DataModelRegistry> registry,
         NodeGraphScene* scene,
         QObject *parent = nullptr);
 
@@ -78,6 +81,14 @@ public:
     std::vector<Node*> allNodes() const;
 
 private:
+    std::unique_ptr<DataModelRegistry> registerDataModels()
+    {
+        auto ret = std::make_unique<DataModelRegistry>();
+        ret->registerModel<TestDataModel>("Test");
+
+        return ret;
+    }
+
     std::shared_ptr<DataModelRegistry> mRegistry;
 
     std::unique_ptr<NodeGraphData> mData;

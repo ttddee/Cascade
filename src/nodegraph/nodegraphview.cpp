@@ -74,8 +74,7 @@ NodeGraphView::NodeGraphView(QWidget *parent) :
     auto scene = new NodeGraphScene(this);
 
     setScene(scene);
-    auto registry = std::make_shared<DataModelRegistry>();
-    setModel(std::make_unique<NodeGraphDataModel>(registry, mScene));
+    setModel(std::make_unique<NodeGraphDataModel>(mScene));
 
     mContextMenu = new ContextMenu(mModel.get(), scene, this);
 

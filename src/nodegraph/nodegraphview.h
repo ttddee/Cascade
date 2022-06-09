@@ -27,8 +27,6 @@
 #include "datamodelregistry.h"
 #include "nodegraphdatamodel.h"
 
-#include "nodes/testdatamodel.h"
-
 namespace Cascade::NodeGraph
 {
 
@@ -96,14 +94,6 @@ protected:
 
 private:
     std::unique_ptr<NodeGraphDataModel> mModel;
-
-    std::shared_ptr<DataModelRegistry> registerDataModels()
-    {
-        auto ret = std::make_shared<DataModelRegistry>();
-        ret->registerModel<TestDataModel>("Test");
-
-        return ret;
-    }
 
     QAction* mClearSelectionAction;
     QAction* mDeleteSelectionAction;

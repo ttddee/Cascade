@@ -23,12 +23,12 @@ namespace Cascade::NodeGraph
 {
 
 NodeGraphDataModel::NodeGraphDataModel(
-    std::shared_ptr<DataModelRegistry> registry,
     NodeGraphScene* scene,
     QObject *parent) :
-    QObject(parent),
-    mRegistry(std::move(registry))
+    QObject(parent)
 {
+    mRegistry = registerDataModels();
+
     mScene = scene;
 
     // This connection should come first
