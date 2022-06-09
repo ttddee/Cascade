@@ -27,6 +27,8 @@
 
 #include "node.h"
 
+#include "../log.h"
+
 namespace Cascade::NodeGraph {
 
 ContextMenu::ContextMenu(
@@ -79,6 +81,8 @@ ContextMenu::ContextMenu(
     {
         QString modelName = item->data(0, Qt::UserRole).toString();
 
+        CS_LOG_INFO(modelName);
+
         auto type = mModel->registry().create(modelName);
 
         if (type)
@@ -93,7 +97,7 @@ ContextMenu::ContextMenu(
         }
         else
         {
-            // qDebug() << "Model not found";
+            CS_LOG_WARNING("Model not found.");
         }
 
         close();

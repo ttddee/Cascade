@@ -27,6 +27,8 @@ NodeGraphDataModel::NodeGraphDataModel(
     QObject *parent) :
     QObject(parent)
 {
+    mData = std::make_unique<NodeGraphData>();
+
     mRegistry = registerDataModels();
 
     mScene = scene;
@@ -146,7 +148,7 @@ Node& NodeGraphDataModel::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
     node->setGraphicsObject(std::move(ngo));
 
     auto nodePtr = node.get();
-    mData->mNodes[node->id()] = std::move(node);
+    mData->mNodes.insert({ node->id(), std::move(node) });
 
     emit nodeCreated(*nodePtr);
 

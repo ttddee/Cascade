@@ -35,6 +35,8 @@
 #include "connectiongraphicsobject.h"
 #include "connectionstate.h"
 
+#include "../log.h"
+
 using Cascade::NodeGraph::Node;
 using Cascade::NodeGraph::NodeGeometry;
 using Cascade::NodeGraph::NodeState;

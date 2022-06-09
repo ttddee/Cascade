@@ -74,6 +74,7 @@ NodeGraphView::NodeGraphView(QWidget *parent) :
     auto scene = new NodeGraphScene(this);
 
     setScene(scene);
+
     setModel(std::make_unique<NodeGraphDataModel>(mScene));
 
     mContextMenu = new ContextMenu(mModel.get(), scene, this);

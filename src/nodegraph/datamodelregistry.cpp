@@ -25,6 +25,8 @@
 #include <QtCore/QFile>
 #include <QtWidgets/QMessageBox>
 
+#include "../log.h"
+
 using Cascade::NodeGraph::DataModelRegistry;
 using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::NodeDataType;
