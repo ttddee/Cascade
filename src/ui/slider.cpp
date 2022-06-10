@@ -9,7 +9,6 @@ Slider::Slider(
     QWidget *parent) :
     QWidget(parent),
     mSliderType(sliderType)
-
 {
     mLayout = new QGridLayout();
     mLayout->setVerticalSpacing(0);

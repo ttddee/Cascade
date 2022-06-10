@@ -81,8 +81,6 @@ ContextMenu::ContextMenu(
     {
         QString modelName = item->data(0, Qt::UserRole).toString();
 
-        CS_LOG_INFO(modelName);
-
         auto type = mModel->registry().create(modelName);
 
         if (type)

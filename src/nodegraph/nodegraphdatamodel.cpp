@@ -60,7 +60,6 @@ std::shared_ptr<Connection> NodeGraphDataModel::createConnection(
     connection->setGraphicsObject(std::move(cgo));
 
     mData->addConnection(connection);
-    //mConnections[connection->id()] = connection;
 
     // Note: this connection isn't truly created yet. It's only partially created.
     // Thus, don't send the connectionCreated(...) signal.
@@ -132,12 +131,8 @@ std::shared_ptr<Connection> NodeGraphDataModel::restoreConnection(
 
 void NodeGraphDataModel::deleteConnection(Connection const& connection)
 {
-//    auto it = mData->getConnection(connection.id());
-//    if (it != mConnections.end())
-//    {
-//        connection.removeFromNodes();
-//        mConnections.erase(it);
-//    }
+    connection.removeFromNodes();
+    mData->deleteConnection(connection);
 }
 
 Node& NodeGraphDataModel::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
@@ -148,7 +143,7 @@ Node& NodeGraphDataModel::createNode(std::unique_ptr<NodeDataModel>&& dataModel)
     node->setGraphicsObject(std::move(ngo));
 
     auto nodePtr = node.get();
-    mData->mNodes.insert({ node->id(), std::move(node) });
+    mData->addNode(std::move(node));
 
     emit nodeCreated(*nodePtr);
 

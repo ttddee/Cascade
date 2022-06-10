@@ -58,5 +58,10 @@ void NodeGraphData::addNode(UniqueNode node)
     mNodes[node->id()] = std::move(node);
 }
 
+void NodeGraphData::deleteConnection(Connection const& connection)
+{
+    mConnections.erase(connection.id());
+}
+
 } // namespace Cascade::NodeGraph
 

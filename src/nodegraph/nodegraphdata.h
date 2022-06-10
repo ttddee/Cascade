@@ -51,6 +51,8 @@ public:
     void addConnection(SharedConnection connection);
     void addNode(UniqueNode node);
 
+    void deleteConnection(Connection const& connection);
+
 private:
     std::unordered_map<QUuid, SharedConnection> mConnections;
     std::unordered_map<QUuid, UniqueNode>       mNodes;
