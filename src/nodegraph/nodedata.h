@@ -54,7 +54,7 @@ struct NodeDataType
 /// Class represents data transferred between nodes.
 /// @param type is used for comparing the types
 /// The actual data is stored in subtypes
-struct NodeData
+class NodeData
 {
 //    virtual ~NodeData() = default;
 
@@ -65,7 +65,7 @@ struct NodeData
 
 //    /// Type for inner use
 //    virtual NodeDataType type() const { return NodeDataType{"te", "st"}; };
-
+public:
     QString mCaption;
     QString mName;
     std::vector<QString> mInPorts;

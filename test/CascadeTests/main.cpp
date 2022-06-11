@@ -1,5 +1,6 @@
 #include "tst_node.h"
 #include "tst_slider.h"
+#include "tst_nodegraphdatamodel.h"
 
 #include <QApplication>
 

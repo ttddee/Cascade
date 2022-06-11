@@ -185,7 +185,7 @@ void NodeGraphDataModel::removeNode(Node& node)
 //    for(auto portType: {PortType::In,PortType::Out})
 //    {
 //        auto nodeState = node.nodeState();
-//        auto const & nodeEntries = nodeState.getEntries(portType);
+//        auto const& nodeEntries = nodeState.getEntries(portType);
 
 //        for (auto &connections : nodeEntries)
 //        {

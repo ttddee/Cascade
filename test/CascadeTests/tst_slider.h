@@ -13,41 +13,41 @@ class SliderTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        //sliderDouble =  new Slider(SliderType::Double, &parent);//std::make_unique<Slider>(SliderType::Double);
-        //sliderInt =     new Slider(SliderType::Int, &parent);//std::make_unique<Slider>(SliderType::Int);
+        mSliderDouble =  new Slider(SliderType::Double, &mParent);
+        mSliderInt =     new Slider(SliderType::Int, &mParent);
     }
     void TearDown() override
     {
 
     }
 
-    //QWidget parent;
-    //Slider* sliderDouble;
-    //Slider* sliderInt;
+    QWidget mParent;
+    Slider* mSliderDouble;
+    Slider* mSliderInt;
 };
 
 TEST_F(SliderTest, createSliderAndCheckReturnType)
 {
-//    sliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
-//    sliderInt->setMinMaxStepValue(0, 100, 1, 5);
+    mSliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
+    mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
-//    auto resultDouble = sliderDouble->getValue<double>();
-//    auto resultInt = sliderInt->getValue<int>();
+    auto resultDouble = mSliderDouble->getValue<double>();
+    auto resultInt = mSliderInt->getValue<int>();
 
-//    EXPECT_EQ(typeid(double), typeid(resultDouble));
-//    EXPECT_EQ(typeid(int), typeid(resultInt));
+    EXPECT_EQ(typeid(double), typeid(resultDouble));
+    EXPECT_EQ(typeid(int), typeid(resultInt));
 }
 
 TEST_F(SliderTest, createSliderAndCheckReturnValue)
 {
-//    sliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
-//    sliderInt->setMinMaxStepValue(0, 100, 1, 5);
+    mSliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
+    mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
-//    auto resultDouble = sliderDouble->getValue<double>();
-//    auto resultInt = sliderInt->getValue<int>();
+    auto resultDouble = mSliderDouble->getValue<double>();
+    auto resultInt = mSliderInt->getValue<int>();
 
-//    EXPECT_EQ(resultDouble, 0.5);
-//    EXPECT_EQ(resultInt, 5);
+    EXPECT_EQ(resultDouble, 0.5);
+    EXPECT_EQ(resultInt, 5);
 }
 
 #endif // TST_SLIDER_H

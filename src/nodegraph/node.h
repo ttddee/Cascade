@@ -94,6 +94,8 @@ public:
 
     PropertyWidget* propertyWidget();
 
+    bool isRoot() const;
+
 public Q_SLOTS: // data propagation
     /// Propagates incoming data to the underlying model.
     void propagateData(

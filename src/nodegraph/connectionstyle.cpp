@@ -1,11 +1,3 @@
-#include "connectionstyle.h"
-
-#include "stylecollection.h"
-
-#include <QtCore/QFile>
-#include <QtCore/QJsonDocument>
-#include <QtCore/QJsonObject>
-#include <QtCore/QJsonValueRef>
 /*
  *  Cascade Image Editor
  *
@@ -28,6 +20,15 @@
  *  Dmitry Pinaev et al, Qt Node Editor, (2017), GitHub repository, https://github.com/paceholder/nodeeditor
 */
 
+#include "connectionstyle.h"
+
+#include "stylecollection.h"
+
+#include <QtCore/QFile>
+#include <QtCore/QJsonDocument>
+#include <QtCore/QJsonObject>
+#include <QtCore/QJsonValueRef>
+
 #include <QtCore/QJsonArray>
 
 #include <QDebug>
@@ -36,7 +37,10 @@
 
 using Cascade::NodeGraph::ConnectionStyle;
 
-inline void initResources() { Q_INIT_RESOURCE(resources); }
+inline void initResources()
+{
+    //Q_INIT_RESOURCE(resources);
+}
 
 ConnectionStyle::ConnectionStyle()
 {

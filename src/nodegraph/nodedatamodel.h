@@ -91,6 +91,8 @@ public:
         return views;
     }
 
+
+
 public:
     QJsonObject save() const override;
 

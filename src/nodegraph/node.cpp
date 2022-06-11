@@ -47,8 +47,7 @@ using Cascade::NodeGraph::NodeGraphicsObject;
 using Cascade::NodeGraph::PortIndex;
 using Cascade::NodeGraph::PortType;
 
-Node::
-    Node(std::unique_ptr<NodeDataModel> && dataModel) :
+Node::Node(std::unique_ptr<NodeDataModel> && dataModel) :
     mUid(QUuid::createUuid()),
     mNodeDataModel(std::move(dataModel)),
     mNodeState(mNodeDataModel),
@@ -58,8 +57,8 @@ Node::
     mNodeGeometry.recalculateSize();
 
     // propagate data: model => node
-    connect(mNodeDataModel.get(), &NodeDataModel::dataUpdated,
-            this, &Node::onDataUpdated);
+//    connect(mNodeDataModel.get(), &NodeDataModel::dataUpdated,
+//            this, &Node::onDataUpdated);
 
 //    connect(mNodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
 //            this, &Node::onNodeSizeUpdated );
@@ -187,6 +186,26 @@ PropertyWidget* Node::propertyWidget()
         mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
     }
     return mPropertyWidget;
+}
+
+
+bool Node::isRoot() const
+{
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    {
+        auto connections = nodeState().connections(PortType::In, i);
+        if (!connections.empty())
+        {
+            return false;
+        }
+    }
+
+    return true;
+//    auto connections = mNodeState.connections(PortType::Out);
+
+//    CS_LOG_INFO("Number of connections: " + QString::number(connections.size()));
+
+//    return connections.size() == 0;
 }
 
 
