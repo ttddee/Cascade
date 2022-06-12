@@ -20,6 +20,8 @@
 #ifndef PROPERTYMODEL_H
 #define PROPERTYMODEL_H
 
+#include <memory>
+
 #include <QObject>
 
 #include "propertydata.h"
