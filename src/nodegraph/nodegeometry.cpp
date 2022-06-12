@@ -339,13 +339,13 @@ unsigned int NodeGeometry::portWidth(PortType portType) const
 
         name = mDataModel->portCaption(portType, i);
 
-#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
+//#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
         width = std::max(unsigned(mFontMetrics.horizontalAdvance(name)),
                          width);
-#else
-        width = std::max(unsigned(mFontMetrics.width(name)),
-                         width);
-#endif
+//#else
+//        width = std::max(unsigned(mFontMetrics.width(name)),
+//                         width);
+//#endif
     }
 
     return width;
