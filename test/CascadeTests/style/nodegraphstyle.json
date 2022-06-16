@@ -1,0 +1,45 @@
+{
+  "NodeGraphViewStyle": {
+    "BackgroundColor": [40, 45, 49],
+    "FineGridColor": [40, 45, 49],
+    "CoarseGridColor": [40, 45, 49]
+  },
+  "NodeStyle": {
+    "NormalBoundaryColor": [24, 27, 30],
+    "SelectedBoundaryColor": [235, 235, 235],
+    "GradientColor0": [24, 27, 30],
+    "GradientColor1": [24, 27, 30],
+    "GradientColor2": [24, 27, 30],
+    "GradientColor3": [24, 27, 30],
+    "ShadowColor": [29, 32, 36],
+    "FontColor" : [185, 185, 185],
+    "FontColorFaded" : [185, 185, 185],
+    "ConnectionPointColor": [169, 169, 169],
+    "FilledConnectionPointColor": "cyan",
+    "ErrorColor": "red",
+    "WarningColor": [128, 128, 0],
+
+    "PenWidth": 1.0,
+    "HoveredPenWidth": 1.0,
+
+    "ConnectionPointDiameter": 8.0,
+
+    "Opacity": 1.0
+  },
+  "ConnectionStyle": {
+    "ConstructionColor": "gray",
+    "NormalColor": [100, 100, 100],
+    "FrontColor": [53, 226, 87],
+    "BackColor": [229, 70, 61],
+    "ResultColor": [53, 226, 87],
+    "SelectedColor": [100, 100, 100],
+    "SelectedHaloColor": "orange",
+    "HoveredColor": "lightcyan",
+
+    "LineWidth": 2.0,
+    "ConstructionLineWidth": 2.0,
+    "PointDiameter": 10.0,
+
+    "UseDataDefinedColors": false
+  }
+}
