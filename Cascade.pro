@@ -206,8 +206,6 @@ HEADERS += \
     src/nodegraph/nodestyle.h \
     src/nodegraph/porttype.h \
     src/nodegraph/properties.h \
-    src/nodegraph/propertydata.h \
-    src/nodegraph/propertymodel.h \
     src/nodegraph/qstringstdhash.h \
     src/nodegraph/quuidstdhash.h \
     src/nodegraph/serializable.h \
@@ -219,6 +217,8 @@ HEADERS += \
     src/projectmanager.h \
     src/properties/intpropertyview.h \
     src/properties/propertieswindow.h \
+    src/properties/propertydata.h \
+    src/properties/propertymodel.h \
     src/properties/propertyview.h \
     src/properties/propertywidget.h \
     src/properties/titlepropertyview.h \

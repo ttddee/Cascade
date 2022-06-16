@@ -25,12 +25,12 @@
 #include "propertyview.h"
 #include "../ui/slider.h"
 
-namespace Cascade::NodeGraph
+namespace Cascade::Properties
 {
     class IntPropertyModel;
 }
 
-using Cascade::NodeGraph::IntPropertyModel;
+using Cascade::Properties::IntPropertyModel;
 using Cascade::UiElements::Slider;
 
 namespace Cascade::Properties {

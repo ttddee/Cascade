@@ -22,7 +22,7 @@
 
 #include <QString>
 
-namespace Cascade::NodeGraph
+namespace Cascade::Properties
 {
 
 class PropertyData
@@ -103,6 +103,6 @@ private:
     int mBaseValue;
 };
 
-} // namespace Cascade::NodeGraph
+} // namespace Cascade::Properties
 
 #endif // PROPERTYDATA_H

@@ -33,7 +33,7 @@ using Cascade::Properties::PropertyView;
 using Cascade::Properties::IntPropertyView;
 using Cascade::Properties::TitlePropertyView;
 
-namespace Cascade::NodeGraph
+namespace Cascade::Properties
 {
 
 class PropertyModel : public QObject
@@ -107,6 +107,6 @@ private:
 
 };
 
-} // namespace Cascade::NodeGraph
+} // namespace Cascade::Properties
 
 #endif // PROPERTYMODEL_H

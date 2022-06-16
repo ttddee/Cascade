@@ -19,7 +19,7 @@
 
 #include "titlepropertyview.h"
 
-#include "../nodegraph/propertymodel.h"
+#include "propertymodel.h"
 
 namespace Cascade::Properties {
 

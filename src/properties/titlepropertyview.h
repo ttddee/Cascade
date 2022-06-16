@@ -22,12 +22,12 @@
 
 #include "propertyview.h"
 
-namespace Cascade::NodeGraph
+namespace Cascade::Properties
 {
     class TitlePropertyModel;
 }
 
-using Cascade::NodeGraph::TitlePropertyModel;
+using Cascade::Properties::TitlePropertyModel;
 
 namespace Cascade::Properties {
 

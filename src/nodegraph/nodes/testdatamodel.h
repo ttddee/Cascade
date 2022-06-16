@@ -28,19 +28,19 @@
 
 #include "../nodedatamodel.h"
 #include "../nodedata.h"
-#include "../propertymodel.h"
-#include "../propertydata.h"
+#include "../../properties/propertymodel.h"
+#include "../../properties/propertydata.h"
 
 using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::NodeData;
 using Cascade::NodeGraph::NodeDataType;
 using Cascade::NodeGraph::PortType;
 using Cascade::NodeGraph::PortIndex;
-using Cascade::NodeGraph::PropertyModel;
-using Cascade::NodeGraph::IntPropertyModel;
-using Cascade::NodeGraph::PropertyData;
-using Cascade::NodeGraph::IntPropertyData;
-using Cascade::NodeGraph::TitlePropertyData;
+using Cascade::Properties::IntPropertyModel;
+using Cascade::Properties::PropertyModel;
+using Cascade::Properties::PropertyData;
+using Cascade::Properties::IntPropertyData;
+using Cascade::Properties::TitlePropertyData;
 
 /// The class can potentially incapsulate any user data which
 /// need to be transferred within the Node Editor graph

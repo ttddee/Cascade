@@ -27,7 +27,9 @@
 
 #include <QtCore/QString>
 
-#include "propertymodel.h"
+#include "../properties/propertymodel.h"
+
+using Cascade::Properties::PropertyModel;
 
 namespace Cascade::NodeGraph
 {

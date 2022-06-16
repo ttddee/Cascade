@@ -22,7 +22,7 @@
 #include <QMouseEvent>
 
 #include "intpropertyview.h"
-#include "../nodegraph/propertymodel.h"
+#include "../properties/propertymodel.h"
 
 #include "../log.h"
 
