@@ -97,9 +97,32 @@ public:
     QJsonObject save() const override;
 
 public:
-    virtual unsigned int nPorts(PortType portType) const = 0;
+    unsigned int nPorts(PortType portType) const
+    {
+        int result = 1;
 
-    virtual NodeDataType dataType(PortType portType, PortIndex portIndex) const = 0;
+        switch (portType)
+        {
+        case PortType::In:
+            result = static_cast<unsigned int>(mData.mInPorts.size());
+            break;
+
+        case PortType::Out:
+            result = static_cast<unsigned int>(mData.mOutPorts.size());
+            break;
+        case PortType::None:
+            break;
+        }
+
+        return result;
+    }
+
+    NodeDataType dataType(
+        PortType portType,
+        PortIndex portIndex) const
+    {
+        return NodeDataType();
+    }
 
 public:
     enum class ConnectionPolicy
@@ -126,7 +149,7 @@ public:
     /// Triggers the algorithm
     virtual void setInData(
         std::shared_ptr<NodeData> nodeData,
-        PortIndex port) = 0;
+        PortIndex port){};
 
     // Use this if portInConnectionPolicy returns ConnectionPolicy::Many
     virtual void setInData(
@@ -138,7 +161,10 @@ public:
         setInData(nodeData, port);
     }
 
-    virtual std::shared_ptr<NodeData> outData(PortIndex port) = 0;
+    std::shared_ptr<NodeData> outData(PortIndex port)
+    {
+        return std::make_shared<NodeData>();
+    }
 
     //virtual QWidget* embeddedWidget() = 0;
 
@@ -187,8 +213,6 @@ Q_SIGNALS:
     void computingStarted();
 
     void computingFinished();
-
-    //void embeddedWidgetSizeUpdated();
 
 protected:
     NodeData mData;

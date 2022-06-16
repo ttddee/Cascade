@@ -21,6 +21,7 @@
 #define PROPERTYDATA_H
 
 #include <QString>
+#include <QStringListModel>
 
 namespace Cascade::Properties
 {
@@ -101,6 +102,25 @@ private:
     int mStep;
     int mValue;
     int mBaseValue;
+};
+
+class FilesPropertyData : public PropertyData
+{
+public:
+    FilesPropertyData() :
+        mFiles(new QStringListModel())
+    {
+
+    }
+
+    QStringListModel* getFiles() const
+    {
+        return mFiles;
+    }
+
+private:
+    QStringListModel* mFiles;
+
 };
 
 } // namespace Cascade::Properties

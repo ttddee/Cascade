@@ -25,7 +25,8 @@
 #include "nodegraphdata.h"
 #include "datamodelregistry.h"
 
-#include "nodes/testdatamodel.h"
+#include "nodes/testnodedatamodel.h"
+#include "nodes/readnodedatamodel.h"
 
 #include "../log.h"
 
@@ -86,7 +87,8 @@ private:
     std::unique_ptr<DataModelRegistry> registerDataModels()
     {
         auto ret = std::make_unique<DataModelRegistry>();
-        ret->registerModel<TestDataModel>("Test");
+        ret->registerModel<TestNodeDataModel>("Test");
+        ret->registerModel<ReadNodeDataModel>("Read");
 
         return ret;
     }

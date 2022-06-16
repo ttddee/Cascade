@@ -28,6 +28,7 @@
 #include "../properties/propertyview.h"
 #include "../properties/intpropertyview.h"
 #include "../properties/titlepropertyview.h"
+#include "../properties/filespropertyview.h"
 
 using Cascade::Properties::PropertyView;
 using Cascade::Properties::IntPropertyView;
@@ -104,6 +105,34 @@ public:
 private:
     std::unique_ptr<IntPropertyData> mData;
     IntPropertyView* mView;
+
+};
+
+class FilesPropertyModel : public PropertyModel
+{
+    Q_OBJECT
+
+public:
+    FilesPropertyModel(FilesPropertyData data)
+        : mData(std::make_unique<FilesPropertyData>(data))
+    {
+        mView = new FilesPropertyView();
+        mView->setModel(this);
+    }
+
+    FilesPropertyData* getData() override
+    {
+        return mData.get();
+    };
+
+    FilesPropertyView* getView() override
+    {
+        return mView;
+    };
+
+private:
+    std::unique_ptr<FilesPropertyData> mData;
+    FilesPropertyView* mView;
 
 };
 

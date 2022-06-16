@@ -93,6 +93,7 @@ SOURCES += \
     src/preferencesdialog.cpp \
     src/preferencesmanager.cpp \
     src/projectmanager.cpp \
+    src/properties/filespropertyview.cpp \
     src/properties/intpropertyview.cpp \
     src/properties/propertieswindow.cpp \
     src/properties/propertyview.cpp \
@@ -201,7 +202,8 @@ HEADERS += \
     src/nodegraph/nodegraphviewstyle.h \
     src/nodegraph/nodepainter.h \
     src/nodegraph/nodepainterdelegate.h \
-    src/nodegraph/nodes/testdatamodel.h \
+    src/nodegraph/nodes/readnodedatamodel.h \
+    src/nodegraph/nodes/testnodedatamodel.h \
     src/nodegraph/nodestate.h \
     src/nodegraph/nodestyle.h \
     src/nodegraph/porttype.h \
@@ -215,6 +217,7 @@ HEADERS += \
     src/preferencesdialog.h \
     src/preferencesmanager.h \
     src/projectmanager.h \
+    src/properties/filespropertyview.h \
     src/properties/intpropertyview.h \
     src/properties/propertieswindow.h \
     src/properties/propertydata.h \

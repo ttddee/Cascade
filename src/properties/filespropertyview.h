@@ -17,41 +17,41 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef INTPROPERTYVIEW_H
-#define INTPROPERTYVIEW_H
+#ifndef FILESPROPERTYVIEW_H
+#define FILESPROPERTYVIEW_H
 
-#include <QObject>
+#include <QPushButton>
+#include <QListView>
 
 #include "propertyview.h"
-#include "../ui/slider.h"
 
 namespace Cascade::Properties
 {
-    class IntPropertyModel;
+    class FilesPropertyModel;
 }
-
-using Cascade::Properties::IntPropertyModel;
-using Cascade::UiElements::Slider;
 
 namespace Cascade::Properties {
 
-class IntPropertyView : public PropertyView
+using Cascade::Properties::FilesPropertyModel;
+
+class FilesPropertyView : public PropertyView
 {
     Q_OBJECT
 
 public:
-    IntPropertyView(QWidget *parent = nullptr);
+    FilesPropertyView(QWidget *parent = nullptr);
 
-    void setModel(IntPropertyModel* model);
+    void setModel(FilesPropertyModel* model);
 
 private:
-    IntPropertyModel*   mModel;
+    FilesPropertyModel* mModel;
 
-    QGridLayout*        mLayout;
-    Slider*             mSlider;
-
+    QVBoxLayout*        mLayout;
+    QPushButton*        mLoadButton;
+    QListView*          mFileListView;
+    QPushButton*        mDeleteButton;
 };
 
 } // namespace Cascade::Properties
 
-#endif // INTPROPERTYVIEW_H
+#endif // FILESPROPERTYVIEW_H

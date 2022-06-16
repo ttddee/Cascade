@@ -17,41 +17,32 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#ifndef INTPROPERTYVIEW_H
-#define INTPROPERTYVIEW_H
-
-#include <QObject>
-
-#include "propertyview.h"
-#include "../ui/slider.h"
-
-namespace Cascade::Properties
-{
-    class IntPropertyModel;
-}
-
-using Cascade::Properties::IntPropertyModel;
-using Cascade::UiElements::Slider;
+#include "filespropertyview.h"
+#include "propertymodel.h"
 
 namespace Cascade::Properties {
 
-class IntPropertyView : public PropertyView
+FilesPropertyView::FilesPropertyView(QWidget *parent)
+    : PropertyView(parent)
 {
-    Q_OBJECT
+    mLayout = new QVBoxLayout();
+    mLayout->setContentsMargins(0, 0, 0, 0);
+    setLayout(mLayout);
 
-public:
-    IntPropertyView(QWidget *parent = nullptr);
+    mLoadButton = new QPushButton("Load Image(s)...");
+    mLayout->addWidget(mLoadButton);
 
-    void setModel(IntPropertyModel* model);
+    mFileListView = new QListView();
+    mLayout->addWidget(mFileListView);
 
-private:
-    IntPropertyModel*   mModel;
+    mDeleteButton = new QPushButton("Delete Image(s)...");
+    mLayout->addWidget(mDeleteButton);
+}
 
-    QGridLayout*        mLayout;
-    Slider*             mSlider;
+void FilesPropertyView::setModel(FilesPropertyModel* model)
+{
+    mModel = model;
+    mFileListView->setModel(mModel->getData()->getFiles());
+}
 
-};
-
-} // namespace Cascade::Properties
-
-#endif // INTPROPERTYVIEW_H
+} //namespace Cascade::Properties

@@ -6,7 +6,7 @@
 #include "testheader.h"
 
 #include "../../src/nodegraph/node.h"
-#include "../../src/nodegraph/nodes/testdatamodel.h"
+#include "../../src/nodegraph/nodes/testnodedatamodel.h"
 #include "../../src/nodegraph/nodegraphscene.h"
 #include "../../src/nodegraph/nodegraphdatamodel.h"
 
@@ -20,9 +20,9 @@ protected:
         mScene = new NodeGraphScene(&mParent);
         mModel = new NodeGraphDataModel(mScene, &mParent);
 
-        mNode1 = &mModel->createNode(std::make_unique<TestDataModel>());
-        mNode2 = &mModel->createNode(std::make_unique<TestDataModel>());
-        mNode3 = &mModel->createNode(std::make_unique<TestDataModel>());
+        mNode1 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
+        mNode2 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
+        mNode3 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
 
 
     }
