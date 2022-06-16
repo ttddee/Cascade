@@ -31,14 +31,14 @@
 
 #include "porttype.h"
 
-#include "nodestate.h"
-#include "nodegeometry.h"
-#include "nodedata.h"
-#include "nodegraphicsobject.h"
-#include "connectiongraphicsobject.h"
-#include "serializable.h"
-#include "memory.h"
 #include "../properties/propertywidget.h"
+#include "connectiongraphicsobject.h"
+#include "memory.h"
+#include "nodedata.h"
+#include "nodegeometry.h"
+#include "nodegraphicsobject.h"
+#include "nodestate.h"
+#include "serializable.h"
 
 using Cascade::Properties::PropertyWidget;
 
@@ -50,9 +50,7 @@ class ConnectionState;
 class NodeGraphicsObject;
 class NodeDataModel;
 
-class Node
-    : public QObject,
-      public Serializable
+class Node : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -65,15 +63,12 @@ public:
 public:
     QJsonObject save() const override;
 
-    void restore(QJsonObject const &json) override;
+    void restore(QJsonObject const& json) override;
 
 public:
     QUuid id() const;
 
-    void reactToPossibleConnection(
-        PortType,
-        NodeDataType const &,
-        QPointF const & scenePoint);
+    void reactToPossibleConnection(PortType, NodeDataType const&, QPointF const& scenePoint);
 
     void resetReactionToConnection();
 
@@ -136,4 +131,5 @@ private:
 
     PropertyWidget* mPropertyWidget = nullptr;
 };
-}
+
+} // namespace Cascade::NodeGraph

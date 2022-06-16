@@ -42,7 +42,9 @@ using Cascade::NodeGraph::PortType;
 
 NodeGeometry::NodeGeometry(std::unique_ptr<NodeDataModel> const& dataModel)
     : mWidth(100)
-    , mHeight(150)
+    , mHeight(100)
+    , mMinWidth(160)
+    , mMinHeight(100)
     , mInputPortWidth(70)
     , mOutputPortWidth(70)
     , mEntryHeight(20)
@@ -106,11 +108,14 @@ void NodeGeometry::recalculateSize() const
 
     mWidth = std::max(mWidth, captionWidth());
 
-    if(mDataModel->validationState() != NodeValidationState::Valid)
+    if (mDataModel->validationState() != NodeValidationState::Valid)
     {
         mWidth = std::max(mWidth, validationWidth());
         mHeight += validationHeight() + mSpacing;
     }
+
+    mWidth  = std::max(mWidth, mMinWidth);
+    mHeight = std::max(mHeight, mMinHeight);
 }
 
 void NodeGeometry::recalculateSize(QFont const& font) const
@@ -122,7 +127,7 @@ void NodeGeometry::recalculateSize(QFont const& font) const
 
     QFontMetrics boldFontMetrics(boldFont);
 
-    if(mBoldFontMetrics != boldFontMetrics)
+    if (mBoldFontMetrics != boldFontMetrics)
     {
         mFontMetrics     = fontMetrics;
         mBoldFontMetrics = boldFontMetrics;
@@ -131,8 +136,8 @@ void NodeGeometry::recalculateSize(QFont const& font) const
     }
 }
 
-QPointF NodeGeometry::portScenePosition(
-    PortIndex index, PortType portType, QTransform const& t) const
+QPointF
+NodeGeometry::portScenePosition(PortIndex index, PortType portType, QTransform const& t) const
 {
     auto const& nodeStyle = StyleCollection::nodeStyle();
 
@@ -149,51 +154,53 @@ QPointF NodeGeometry::portScenePosition(
     // TODO: why?
     totalHeight += step / 2.0;
 
-    switch(portType)
+    switch (portType)
     {
-    case PortType::Out: {
-        double x = mWidth + nodeStyle.ConnectionPointDiameter;
+        case PortType::Out: {
+            double x = mWidth + nodeStyle.ConnectionPointDiameter;
 
-        result = QPointF(x, totalHeight);
-        break;
-    }
+            result = QPointF(x, totalHeight);
+            break;
+        }
 
-    case PortType::In: {
-        double x = 0.0 - nodeStyle.ConnectionPointDiameter;
+        case PortType::In: {
+            double x = 0.0 - nodeStyle.ConnectionPointDiameter;
 
-        result = QPointF(x, totalHeight);
-        break;
-    }
+            result = QPointF(x, totalHeight);
+            break;
+        }
 
-    default:
-        break;
+        default:
+            break;
     }
 
     return t.map(result);
 }
 
 PortIndex NodeGeometry::checkHitScenePoint(
-    PortType portType, QPointF const scenePoint, QTransform const& sceneTransform) const
+    PortType portType,
+    QPointF const scenePoint,
+    QTransform const& sceneTransform) const
 {
     auto const& nodeStyle = StyleCollection::nodeStyle();
 
     PortIndex result = INVALID;
 
-    if(portType == PortType::None)
+    if (portType == PortType::None)
         return result;
 
     double const tolerance = 2.0 * nodeStyle.ConnectionPointDiameter;
 
     unsigned int const nItems = mDataModel->nPorts(portType);
 
-    for(unsigned int i = 0; i < nItems; ++i)
+    for (unsigned int i = 0; i < nItems; ++i)
     {
         auto pp = portScenePosition(i, portType, sceneTransform);
 
         QPointF p     = pp - scenePoint;
         auto distance = std::sqrt(QPointF::dotProduct(p, p));
 
-        if(distance < tolerance)
+        if (distance < tolerance)
         {
             result = PortIndex(i);
             break;
@@ -210,33 +217,9 @@ QRect NodeGeometry::resizeRect() const
     return QRect(mWidth - rectSize, mHeight - rectSize, rectSize, rectSize);
 }
 
-QPointF NodeGeometry::widgetPosition() const
-{
-    //    if (auto w = mDataModel->embeddedWidget())
-    //    {
-    //        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
-    //        {
-    //            // If the widget wants to use as much vertical space as possible, place it immediately after the caption.
-    //            return QPointF(mSpacing + portWidth(PortType::In), captionHeight());
-    //        }
-    //        else
-    //        {
-    //            if (mDataModel->validationState() != NodeValidationState::Valid)
-    //            {
-    //                return QPointF(mSpacing + portWidth(PortType::In),
-    //                               (captionHeight() + mHeight - validationHeight() - mSpacing - w->height()) / 2.0);
-    //            }
-
-    //            return QPointF(mSpacing + portWidth(PortType::In),
-    //                           (captionHeight() + mHeight - w->height()) / 2.0);
-    //        }
-    //    }
-    return QPointF();
-}
-
 int NodeGeometry::equivalentWidgetHeight() const
 {
-    if(mDataModel->validationState() != NodeValidationState::Valid)
+    if (mDataModel->validationState() != NodeValidationState::Valid)
     {
         return height() - captionHeight() + validationHeight();
     }
@@ -272,7 +255,8 @@ unsigned int NodeGeometry::validationWidth() const
     return mBoldFontMetrics.boundingRect(msg).width();
 }
 
-QPointF NodeGeometry::calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex,
+QPointF NodeGeometry::calculateNodePositionBetweenNodePorts(
+    PortIndex targetPortIndex,
     PortType targetPort,
     Node* targetNode,
     PortIndex sourcePortIndex,
@@ -286,9 +270,9 @@ QPointF NodeGeometry::calculateNodePositionBetweenNodePorts(PortIndex targetPort
     //calculated coordinate, instead of it's upper left corner.
     auto converterNodePos =
         (sourceNode->nodeGraphicsObject().pos() +
-            sourceNode->nodeGeometry().portScenePosition(sourcePortIndex, sourcePort) +
-            targetNode->nodeGraphicsObject().pos() +
-            targetNode->nodeGeometry().portScenePosition(targetPortIndex, targetPort)) /
+         sourceNode->nodeGeometry().portScenePosition(sourcePortIndex, sourcePort) +
+         targetNode->nodeGraphicsObject().pos() +
+         targetNode->nodeGeometry().portScenePosition(targetPortIndex, targetPort)) /
         2.0f;
     converterNodePos.setX(converterNodePos.x() - newNode.nodeGeometry().width() / 2.0f);
     converterNodePos.setY(converterNodePos.y() - newNode.nodeGeometry().height() / 2.0f);
@@ -299,18 +283,13 @@ unsigned int NodeGeometry::portWidth(PortType portType) const
 {
     unsigned width = 0;
 
-    for(auto i = 0ul; i < mDataModel->nPorts(portType); ++i)
+    for (auto i = 0ul; i < mDataModel->nPorts(portType); ++i)
     {
         QString name;
 
         name = mDataModel->portCaption(portType, i);
 
-        //#if QT_VERSION >= QT_VERSION_CHECK(5, 15, 0)
         width = std::max(unsigned(mFontMetrics.horizontalAdvance(name)), width);
-        //#else
-        //        width = std::max(unsigned(mFontMetrics.width(name)),
-        //                         width);
-        //#endif
     }
 
     return width;

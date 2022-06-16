@@ -130,15 +130,16 @@ public:
 
     // TODO removed default QTransform()
     QPointF portScenePosition(
-        PortIndex index, PortType portType, QTransform const& t = QTransform()) const;
+        PortIndex index,
+        PortType portType,
+        QTransform const& t = QTransform()) const;
 
     PortIndex checkHitScenePoint(
-        PortType portType, QPointF point, QTransform const& t = QTransform()) const;
+        PortType portType,
+        QPointF point,
+        QTransform const& t = QTransform()) const;
 
     QRect resizeRect() const;
-
-    /// Returns the position of a widget on the Node surface
-    QPointF widgetPosition() const;
 
     /// Returns the maximum height a widget can be without causing the node to grow.
     int equivalentWidgetHeight() const;
@@ -147,7 +148,8 @@ public:
 
     unsigned int validationWidth() const;
 
-    static QPointF calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex,
+    static QPointF calculateNodePositionBetweenNodePorts(
+        PortIndex targetPortIndex,
         PortType targetPort,
         Node* targetNode,
         PortIndex sourcePortIndex,
@@ -170,6 +172,8 @@ private:
 
     mutable unsigned int mWidth;
     mutable unsigned int mHeight;
+    unsigned int mMinWidth;
+    unsigned int mMinHeight;
     unsigned int mEntryWidth;
     mutable unsigned int mInputPortWidth;
     mutable unsigned int mOutputPortWidth;
