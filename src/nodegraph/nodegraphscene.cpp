@@ -70,7 +70,7 @@ NodeGraphScene::NodeGraphScene(QObject* parent) :
 
 NodeGraphScene::~NodeGraphScene()
 {
-    clearScene();
+    //clearScene();
 }
 
 

@@ -41,6 +41,8 @@ public:
         NodeGraphScene* scene,
         QObject *parent = nullptr);
 
+    ~NodeGraphDataModel();
+
     NodeGraphData* getData() const;
 
     std::shared_ptr<Connection> createConnection(

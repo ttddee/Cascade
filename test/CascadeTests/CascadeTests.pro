@@ -28,7 +28,7 @@ VERSION = $${VERSION_MAJOR}.$${VERSION_MINOR}.$${VERSION_BUILD}
 HEADERS += \
         testheader.h \
         tst_node.h \
-    tst_nodegraphdatamodel.h \
+        tst_nodegraphdatamodel.h \
         tst_slider.h \
         ../../src/log.h \
         ../../src/ui/slider.h \
@@ -42,4 +42,7 @@ SOURCES += \
         ../../src/ui/slider.cpp \
         $$files(../../src/nodegraph/*.cpp,        true) \
         $$files(../../src/properties/*.cpp,       true) \
+
+RESOURCES += \
+    resources.qrc
 

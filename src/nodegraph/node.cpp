@@ -1,4 +1,4 @@
-/*
+﻿/*
  *  Cascade Image Editor
  *
  *  Copyright (C) 2022 Till Dechent and contributors
@@ -201,11 +201,21 @@ bool Node::isRoot() const
     }
 
     return true;
-//    auto connections = mNodeState.connections(PortType::Out);
+}
 
-//    CS_LOG_INFO("Number of connections: " + QString::number(connections.size()));
 
-//    return connections.size() == 0;
+bool Node::isLeaf() const
+{
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    {
+        auto connections = nodeState().connections(PortType::Out, i);
+        if (!connections.empty())
+        {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 

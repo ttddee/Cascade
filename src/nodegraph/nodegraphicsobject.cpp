@@ -63,7 +63,7 @@ NodeGraphicsObject::NodeGraphicsObject(
     setFlag(QGraphicsItem::ItemIsSelectable, true);
     setFlag(QGraphicsItem::ItemSendsScenePositionChanges, true);
 
-    setCacheMode( QGraphicsItem::DeviceCoordinateCache );
+    setCacheMode(QGraphicsItem::DeviceCoordinateCache);
 
     auto const &nodeStyle = node.nodeDataModel()->nodeStyle();
 
@@ -86,7 +86,7 @@ NodeGraphicsObject::NodeGraphicsObject(
 
     // connect to the move signals to emit the move signals in FlowScene
     auto onMoveSlot = [this] {
-        mScene.nodeMoved(mNode, pos());
+        emit mScene.nodeMoved(mNode, pos());
     };
     connect(this, &QGraphicsObject::xChanged, this, onMoveSlot);
     connect(this, &QGraphicsObject::yChanged, this, onMoveSlot);

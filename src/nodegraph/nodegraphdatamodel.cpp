@@ -42,6 +42,21 @@ NodeGraphDataModel::NodeGraphDataModel(
             this, &NodeGraphDataModel::sendConnectionDeletedToNodes);
 }
 
+NodeGraphDataModel::~NodeGraphDataModel()
+{
+    // Manual node cleanup. Simply clearing the holding datastructures doesn't work, the code crashes when
+    // there are both nodes and connections in the scene. (The data propagation internal logic tries to propagate
+    // data through already freed connections.)
+    while (mData->mConnections.size() > 0)
+    {
+        deleteConnection( *mData->mConnections.begin()->second );
+    }
+    while (mData->mNodes.size() > 0)
+    {
+        removeNode( *mData->mNodes.begin()->second );
+    }
+}
+
 NodeGraphData* NodeGraphDataModel::getData() const
 {
     return mData.get();
@@ -180,21 +195,21 @@ Node& NodeGraphDataModel::restoreNode(QJsonObject const& nodeJson)
 void NodeGraphDataModel::removeNode(Node& node)
 {
     // call signal
-//    emit nodeDeleted(node);
+    emit nodeDeleted(node);
 
-//    for(auto portType: {PortType::In,PortType::Out})
-//    {
-//        auto nodeState = node.nodeState();
-//        auto const& nodeEntries = nodeState.getEntries(portType);
+    for(auto portType: {PortType::In,PortType::Out})
+    {
+        auto nodeState = node.nodeState();
+        auto const& nodeEntries = nodeState.getEntries(portType);
 
-//        for (auto &connections : nodeEntries)
-//        {
-//            for (auto const &pair : connections)
-//                deleteConnection(*pair.second);
-//        }
-//    }
+        for (auto &connections : nodeEntries)
+        {
+            for (auto const &pair : connections)
+                deleteConnection(*pair.second);
+        }
+    }
 
-//    mNodes.erase(node.id());
+    mData->mNodes.erase(node.id());
 }
 
 
