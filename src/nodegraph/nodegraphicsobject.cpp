@@ -82,8 +82,6 @@ NodeGraphicsObject::NodeGraphicsObject(
 
     setZValue(0);
 
-    embedQWidget();
-
     // connect to the move signals to emit the move signals in FlowScene
     auto onMoveSlot = [this] {
         emit mScene.nodeMoved(mNode, pos());
@@ -108,36 +106,6 @@ Node& NodeGraphicsObject::node()
 Node const& NodeGraphicsObject::node() const
 {
     return mNode;
-}
-
-
-void NodeGraphicsObject::embedQWidget()
-{
-    NodeGeometry & geom = mNode.nodeGeometry();
-
-//    if (auto w = mNode.nodeDataModel()->embeddedWidget())
-//    {
-//        mProxyWidget = new QGraphicsProxyWidget(this);
-
-//        mProxyWidget->setWidget(w);
-
-//        mProxyWidget->setPreferredWidth(5);
-
-//        geom.recalculateSize();
-
-//        if (w->sizePolicy().verticalPolicy() & QSizePolicy::ExpandFlag)
-//        {
-//            // If the widget wants to use as much vertical space as possible, set it to have the geom's equivalentWidgetHeight.
-//            mProxyWidget->setMinimumHeight(geom.equivalentWidgetHeight());
-//        }
-
-//        mProxyWidget->setPos(geom.widgetPosition());
-
-//        update();
-
-//        mProxyWidget->setOpacity(1.0);
-//        mProxyWidget->setFlag(QGraphicsItem::ItemIgnoresParentOpacity);
-//    }
 }
 
 

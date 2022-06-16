@@ -22,13 +22,13 @@
 
 #pragma once
 
-#include <QtCore/QRectF>
 #include <QtCore/QPointF>
-#include <QtGui/QTransform>
+#include <QtCore/QRectF>
 #include <QtGui/QFontMetrics>
+#include <QtGui/QTransform>
 
-#include "porttype.h"
 #include "memory.h"
+#include "porttype.h"
 
 namespace Cascade::NodeGraph
 {
@@ -40,31 +40,68 @@ class Node;
 class NodeGeometry
 {
 public:
-    NodeGeometry(std::unique_ptr<NodeDataModel> const &dataModel);
+    NodeGeometry(std::unique_ptr<NodeDataModel> const& dataModel);
 
 public:
-    unsigned int height() const { return mHeight; }
+    unsigned int height() const
+    {
+        return mHeight;
+    }
 
-    void setHeight(unsigned int h) { mHeight = h; }
+    void setHeight(unsigned int h)
+    {
+        mHeight = h;
+    }
 
-    unsigned int width() const { return mWidth; }
+    unsigned int width() const
+    {
+        return mWidth;
+    }
 
-    void setWidth(unsigned int w) { mWidth = w; }
+    void setWidth(unsigned int w)
+    {
+        mWidth = w;
+    }
 
-    unsigned int entryHeight() const { return mEntryHeight; }
-    void setEntryHeight(unsigned int h) { mEntryHeight = h; }
+    unsigned int entryHeight() const
+    {
+        return mEntryHeight;
+    }
 
-    unsigned int entryWidth() const { return mEntryWidth; }
+    void setEntryHeight(unsigned int h)
+    {
+        mEntryHeight = h;
+    }
 
-    void setEntryWidth(unsigned int w) { mEntryWidth = w; }
+    unsigned int entryWidth() const
+    {
+        return mEntryWidth;
+    }
 
-    unsigned int spacing() const { return mSpacing; }
+    void setEntryWidth(unsigned int w)
+    {
+        mEntryWidth = w;
+    }
 
-    void setSpacing(unsigned int s) { mSpacing = s; }
+    unsigned int spacing() const
+    {
+        return mSpacing;
+    }
 
-    bool hovered() const { return mHovered; }
+    void setSpacing(unsigned int s)
+    {
+        mSpacing = s;
+    }
 
-    void setHovered(unsigned int h) { mHovered = h; }
+    bool hovered() const
+    {
+        return mHovered;
+    }
+
+    void setHovered(unsigned int h)
+    {
+        mHovered = h;
+    }
 
     unsigned int nSources() const;
 
@@ -89,18 +126,14 @@ public:
     void recalculateSize() const;
 
     /// Updates size if the QFontMetrics is changed
-    void recalculateSize(QFont const &font) const;
+    void recalculateSize(QFont const& font) const;
 
     // TODO removed default QTransform()
     QPointF portScenePosition(
-        PortIndex index,
-        PortType portType,
-        QTransform const & t = QTransform()) const;
+        PortIndex index, PortType portType, QTransform const& t = QTransform()) const;
 
     PortIndex checkHitScenePoint(
-        PortType portType,
-        QPointF point,
-        QTransform const & t = QTransform()) const;
+        PortType portType, QPointF point, QTransform const& t = QTransform()) const;
 
     QRect resizeRect() const;
 
@@ -114,8 +147,7 @@ public:
 
     unsigned int validationWidth() const;
 
-    static QPointF calculateNodePositionBetweenNodePorts(
-        PortIndex targetPortIndex,
+    static QPointF calculateNodePositionBetweenNodePorts(PortIndex targetPortIndex,
         PortType targetPort,
         Node* targetNode,
         PortIndex sourcePortIndex,
@@ -156,4 +188,4 @@ private:
     mutable QFontMetrics mFontMetrics;
     mutable QFontMetrics mBoldFontMetrics;
 };
-}
+} // namespace Cascade::NodeGraph

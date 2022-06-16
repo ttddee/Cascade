@@ -96,9 +96,6 @@ protected:
     void contextMenuEvent(QGraphicsSceneContextMenuEvent* event) override;
 
 private:
-    void embedQWidget();
-
-private:
 
     NodeGraphDataModel& mModel;
     NodeGraphScene& mScene;

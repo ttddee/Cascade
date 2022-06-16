@@ -166,8 +166,6 @@ public:
         return std::make_shared<NodeData>();
     }
 
-    //virtual QWidget* embeddedWidget() = 0;
-
     virtual bool resizable() const
     {
         return false;

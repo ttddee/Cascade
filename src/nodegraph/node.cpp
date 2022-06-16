@@ -24,13 +24,13 @@
 
 #include <QtCore/QObject>
 
-#include <utility>
 #include <iostream>
+#include <utility>
 
 #include "nodegraphscene.h"
 
-#include "nodegraphicsobject.h"
 #include "nodedatamodel.h"
+#include "nodegraphicsobject.h"
 
 #include "connectiongraphicsobject.h"
 #include "connectionstate.h"
@@ -38,32 +38,31 @@
 #include "../log.h"
 
 using Cascade::NodeGraph::Node;
-using Cascade::NodeGraph::NodeGeometry;
-using Cascade::NodeGraph::NodeState;
 using Cascade::NodeGraph::NodeData;
-using Cascade::NodeGraph::NodeDataType;
 using Cascade::NodeGraph::NodeDataModel;
+using Cascade::NodeGraph::NodeDataType;
+using Cascade::NodeGraph::NodeGeometry;
 using Cascade::NodeGraph::NodeGraphicsObject;
+using Cascade::NodeGraph::NodeState;
 using Cascade::NodeGraph::PortIndex;
 using Cascade::NodeGraph::PortType;
 
-Node::Node(std::unique_ptr<NodeDataModel> && dataModel) :
-    mUid(QUuid::createUuid()),
-    mNodeDataModel(std::move(dataModel)),
-    mNodeState(mNodeDataModel),
-    mNodeGeometry(mNodeDataModel),
-    mNodeGraphicsObject(nullptr)
+Node::Node(std::unique_ptr<NodeDataModel>&& dataModel)
+    : mUid(QUuid::createUuid())
+    , mNodeDataModel(std::move(dataModel))
+    , mNodeState(mNodeDataModel)
+    , mNodeGeometry(mNodeDataModel)
+    , mNodeGraphicsObject(nullptr)
 {
     mNodeGeometry.recalculateSize();
 
     // propagate data: model => node
-//    connect(mNodeDataModel.get(), &NodeDataModel::dataUpdated,
-//            this, &Node::onDataUpdated);
+    //    connect(mNodeDataModel.get(), &NodeDataModel::dataUpdated,
+    //            this, &Node::onDataUpdated);
 
-//    connect(mNodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
-//            this, &Node::onNodeSizeUpdated );
+    //    connect(mNodeDataModel.get(), &NodeDataModel::embeddedWidgetSizeUpdated,
+    //            this, &Node::onNodeSizeUpdated );
 }
-
 
 Node::~Node() = default;
 
@@ -76,36 +75,33 @@ QJsonObject Node::save() const
     nodeJson["model"] = mNodeDataModel->save();
 
     QJsonObject obj;
-    obj["x"] = mNodeGraphicsObject->pos().x();
-    obj["y"] = mNodeGraphicsObject->pos().y();
+    obj["x"]             = mNodeGraphicsObject->pos().x();
+    obj["y"]             = mNodeGraphicsObject->pos().y();
     nodeJson["position"] = obj;
 
     return nodeJson;
 }
-
 
 void Node::restore(QJsonObject const& json)
 {
     mUid = QUuid(json["id"].toString());
 
     QJsonObject positionJson = json["position"].toObject();
-    QPointF     point(positionJson["x"].toDouble(),
-                  positionJson["y"].toDouble());
+    QPointF point(positionJson["x"].toDouble(), positionJson["y"].toDouble());
     mNodeGraphicsObject->setPos(point);
 
     mNodeDataModel->restore(json["model"].toObject());
 }
-
 
 QUuid Node::id() const
 {
     return mUid;
 }
 
-
-void Node::reactToPossibleConnection(PortType reactingPortType,
-                                     NodeDataType const &reactingDataType,
-                                     QPointF const &scenePoint)
+void Node::reactToPossibleConnection(
+    PortType reactingPortType,
+    NodeDataType const& reactingDataType,
+    QPointF const& scenePoint)
 {
     QTransform const t = mNodeGraphicsObject->sceneTransform();
 
@@ -115,11 +111,8 @@ void Node::reactToPossibleConnection(PortType reactingPortType,
 
     mNodeGraphicsObject->update();
 
-    mNodeState.setReaction(NodeState::REACTING,
-                           reactingPortType,
-                           reactingDataType);
+    mNodeState.setReaction(NodeState::REACTING, reactingPortType, reactingDataType);
 }
-
 
 void Node::resetReactionToConnection()
 {
@@ -127,18 +120,15 @@ void Node::resetReactionToConnection()
     mNodeGraphicsObject->update();
 }
 
-
 NodeGraphicsObject const& Node::nodeGraphicsObject() const
 {
     return *mNodeGraphicsObject.get();
 }
 
-
 NodeGraphicsObject& Node::nodeGraphicsObject()
 {
     return *mNodeGraphicsObject.get();
 }
-
 
 void Node::setGraphicsObject(std::unique_ptr<NodeGraphicsObject> graphics)
 {
@@ -147,60 +137,53 @@ void Node::setGraphicsObject(std::unique_ptr<NodeGraphicsObject> graphics)
     mNodeGeometry.recalculateSize();
 }
 
-
 NodeGeometry& Node::nodeGeometry()
 {
     return mNodeGeometry;
 }
-
 
 NodeGeometry const& Node::nodeGeometry() const
 {
     return mNodeGeometry;
 }
 
-
 NodeState const& Node::nodeState() const
 {
     return mNodeState;
 }
-
 
 NodeState& Node::nodeState()
 {
     return mNodeState;
 }
 
-
 NodeDataModel* Node::nodeDataModel() const
 {
     return mNodeDataModel.get();
 }
 
-
 PropertyWidget* Node::propertyWidget()
 {
-    if (!mPropertyWidget)
-    {
-        mPropertyWidget = new PropertyWidget();
-        mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
-    }
+    if(!mPropertyWidget)
+        {
+            mPropertyWidget = new PropertyWidget();
+            mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
+        }
     return mPropertyWidget;
 }
-
 
 std::set<Node*> Node::getNodesAbove()
 {
     std::set<Node*> nodes;
 
-    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
-    {
-        auto connections = nodeState().connections(PortType::In, i);
-        for (auto& connection : connections)
+    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
         {
-            nodes.insert(connection.second->getNode(PortType::Out));
+            auto connections = nodeState().connections(PortType::In, i);
+            for(auto& connection : connections)
+                {
+                    nodes.insert(connection.second->getNode(PortType::Out));
+                }
         }
-    }
     return nodes;
 }
 
@@ -208,45 +191,42 @@ std::set<Node*> Node::getNodesBelow()
 {
     std::set<Node*> nodes;
 
-    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
-    {
-        auto connections = nodeState().connections(PortType::Out, i);
-        for (auto& connection : connections)
+    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
         {
-            nodes.insert(connection.second->getNode(PortType::In));
+            auto connections = nodeState().connections(PortType::Out, i);
+            for(auto& connection : connections)
+                {
+                    nodes.insert(connection.second->getNode(PortType::In));
+                }
         }
-    }
     return nodes;
 }
 
-
 bool Node::isRoot() const
 {
-    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
-    {
-        auto connections = nodeState().connections(PortType::In, i);
-        if (!connections.empty())
+    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
         {
-            return false;
+            auto connections = nodeState().connections(PortType::In, i);
+            if(!connections.empty())
+                {
+                    return false;
+                }
         }
-    }
     return true;
 }
-
 
 bool Node::isLeaf() const
 {
-    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
-    {
-        auto connections = nodeState().connections(PortType::Out, i);
-        if (!connections.empty())
+    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
         {
-            return false;
+            auto connections = nodeState().connections(PortType::Out, i);
+            if(!connections.empty())
+                {
+                    return false;
+                }
         }
-    }
     return true;
 }
-
 
 void Node::propagateData(
     std::shared_ptr<NodeData> nodeData,
@@ -262,30 +242,28 @@ void Node::propagateData(
     mNodeGraphicsObject->moveConnections();
 }
 
-
 void Node::onDataUpdated(PortIndex index)
 {
     auto nodeData = mNodeDataModel->outData(index);
 
-    auto connections =
-        mNodeState.connections(PortType::Out, index);
+    auto connections = mNodeState.connections(PortType::Out, index);
 
-    for (auto const & c : connections)
+    for(auto const& c : connections)
         c.second->propagateData(nodeData);
 }
 
 void Node::onNodeSizeUpdated()
 {
     nodeGeometry().recalculateSize();
-    for(PortType type: {PortType::In, PortType::Out})
-    {
-        for(auto& conn_set : nodeState().getEntries(type))
+    for(PortType type : {PortType::In, PortType::Out})
         {
-            for(auto& pair: conn_set)
-            {
-                Connection* conn = pair.second;
-                conn->getConnectionGraphicsObject().move();
-            }
+            for(auto& conn_set : nodeState().getEntries(type))
+                {
+                    for(auto& pair : conn_set)
+                        {
+                            Connection* conn = pair.second;
+                            conn->getConnectionGraphicsObject().move();
+                        }
+                }
         }
-    }
 }
