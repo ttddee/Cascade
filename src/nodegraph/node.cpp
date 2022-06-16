@@ -189,6 +189,37 @@ PropertyWidget* Node::propertyWidget()
 }
 
 
+std::set<Node*> Node::getNodesAbove()
+{
+    std::set<Node*> nodes;
+
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    {
+        auto connections = nodeState().connections(PortType::In, i);
+        for (auto& connection : connections)
+        {
+            nodes.insert(connection.second->getNode(PortType::Out));
+        }
+    }
+    return nodes;
+}
+
+std::set<Node*> Node::getNodesBelow()
+{
+    std::set<Node*> nodes;
+
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    {
+        auto connections = nodeState().connections(PortType::Out, i);
+        for (auto& connection : connections)
+        {
+            nodes.insert(connection.second->getNode(PortType::In));
+        }
+    }
+    return nodes;
+}
+
+
 bool Node::isRoot() const
 {
     for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
@@ -199,7 +230,6 @@ bool Node::isRoot() const
             return false;
         }
     }
-
     return true;
 }
 
@@ -214,7 +244,6 @@ bool Node::isLeaf() const
             return false;
         }
     }
-
     return true;
 }
 
@@ -247,10 +276,6 @@ void Node::onDataUpdated(PortIndex index)
 
 void Node::onNodeSizeUpdated()
 {
-//    if( nodeDataModel()->embeddedWidget() )
-//    {
-//        nodeDataModel()->embeddedWidget()->adjustSize();
-//    }
     nodeGeometry().recalculateSize();
     for(PortType type: {PortType::In, PortType::Out})
     {

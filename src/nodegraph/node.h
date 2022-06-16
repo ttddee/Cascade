@@ -22,6 +22,8 @@
 
 #pragma once
 
+#include <set>
+
 #include <QtCore/QObject>
 #include <QtCore/QUuid>
 
@@ -93,6 +95,12 @@ public:
     NodeDataModel* nodeDataModel() const;
 
     PropertyWidget* propertyWidget();
+
+    // Get the nodes connected directly above this one
+    std::set<Node*> getNodesAbove();
+
+    // Get the nodes connected directly below this one
+    std::set<Node*> getNodesBelow();
 
     bool isRoot() const;
 

@@ -57,15 +57,6 @@ struct NodeDataType
 /// The actual data is stored in subtypes
 class NodeData
 {
-//    virtual ~NodeData() = default;
-
-//    virtual bool sameType(NodeData const &nodeData) const
-//    {
-//        return (this->type().id == nodeData.type().id);
-//    }
-
-//    /// Type for inner use
-//    virtual NodeDataType type() const { return NodeDataType{"te", "st"}; };
 public:
     QString mCaption;
     QString mName;

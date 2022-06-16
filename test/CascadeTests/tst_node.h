@@ -76,4 +76,41 @@ TEST_F(NodeTest, checkIsleaf)
     ASSERT_EQ(mNode3->isLeaf(), true);
 }
 
+TEST_F(NodeTest, getNodesAboveReturnsCorrectNumber)
+{
+    // node1 --> node2 --> node3
+    //       \-----------> node3
+
+    mModel->createConnection(*mNode2, 0, *mNode1, 0);
+    mModel->createConnection(*mNode3, 0, *mNode2, 0);
+    mModel->createConnection(*mNode3, 1, *mNode1, 0);
+
+    auto nodesAboveNode3 = mNode3->getNodesAbove();
+    auto nodesAboveNode2 = mNode2->getNodesAbove();
+    auto nodesAboveNode1 = mNode1->getNodesAbove();
+
+    ASSERT_EQ(nodesAboveNode3.size(), 2);
+    ASSERT_EQ(nodesAboveNode2.size(), 1);
+    ASSERT_EQ(nodesAboveNode1.size(), 0);
+}
+
+TEST_F(NodeTest, getNodesBelowReturnsCorrectNumber)
+{
+    // node1 --> node2 --> node3
+    //       \-----------> node3
+
+    mModel->createConnection(*mNode2, 0, *mNode1, 0);
+    mModel->createConnection(*mNode3, 0, *mNode2, 0);
+    mModel->createConnection(*mNode3, 1, *mNode1, 0);
+
+    auto nodesBelowNode3 = mNode3->getNodesBelow();
+    auto nodesBelowNode2 = mNode2->getNodesBelow();
+    auto nodesBelowNode1 = mNode1->getNodesBelow();
+
+    ASSERT_EQ(nodesBelowNode3.size(), 0);
+    ASSERT_EQ(nodesBelowNode2.size(), 1);
+    ASSERT_EQ(nodesBelowNode1.size(), 2);
+}
+
+
 #endif // TST_NODE_H
