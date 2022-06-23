@@ -22,17 +22,16 @@
 
 #include "nodegeometry.h"
 
+#include <cmath>
+#include <iostream>
+#include <memory>
+
 #include "node.h"
 #include "nodedatamodel.h"
 #include "nodegraphicsobject.h"
 #include "nodestate.h"
 #include "porttype.h"
 #include "stylecollection.h"
-
-#include <QtGlobal>
-
-#include <cmath>
-#include <iostream>
 
 using Cascade::NodeGraph::Node;
 using Cascade::NodeGraph::NodeDataModel;
@@ -136,8 +135,8 @@ void NodeGeometry::recalculateSize(QFont const& font) const
     }
 }
 
-QPointF
-NodeGeometry::portScenePosition(PortIndex index, PortType portType, QTransform const& t) const
+QPointF NodeGeometry::portScenePosition(PortIndex index, PortType portType, QTransform const& t)
+    const
 {
     auto const& nodeStyle = StyleCollection::nodeStyle();
 

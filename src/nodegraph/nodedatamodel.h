@@ -221,4 +221,5 @@ protected:
 private:
     NodeStyle mNodeStyle;
 };
+
 } // namespace Cascade::NodeGraph

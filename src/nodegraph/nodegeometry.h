@@ -192,4 +192,5 @@ private:
     mutable QFontMetrics mFontMetrics;
     mutable QFontMetrics mBoldFontMetrics;
 };
+
 } // namespace Cascade::NodeGraph
