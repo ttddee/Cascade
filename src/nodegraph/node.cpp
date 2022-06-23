@@ -231,9 +231,17 @@ bool Node::isLeaf() const
 void Node::view(const ViewerMode viewerMode)
 {
     CS_LOG_INFO("Viewing");
+
+    if (viewerMode == ViewerMode::Result)
+    {
+        render();
+    }
 }
 
-void Node::render() { }
+void Node::render()
+{
+    mNodeDataModel->getRenderTask()->execute();
+}
 
 void Node::propagateData(
     std::shared_ptr<NodeData> nodeData,

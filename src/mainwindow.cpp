@@ -20,28 +20,29 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
+#include <QCloseEvent>
 #include <QComboBox>
 #include <QDir>
 #include <QFileDialog>
 #include <QTimer>
-#include <QCloseEvent>
 
-#include "renderer/vulkanrenderer.h"
+#include "aboutdialog.h"
 #include "log.h"
 #include "popupmessages.h"
 #include "preferencesdialog.h"
-#include "aboutdialog.h"
 #include "propertiesview.h"
+#include "renderer/vulkanrenderer.h"
 
 using ads::CDockManager;
 using ads::CDockWidget;
 using ads::DockWidgetArea;
 
-namespace Cascade {
+namespace Cascade
+{
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent),
-      mUi(new Ui::MainWindow)
+MainWindow::MainWindow(QWidget* parent)
+    : QMainWindow(parent)
+    , mUi(new Ui::MainWindow)
 {
     // OCIO needs the locale to be set here
     std::setlocale(LC_NUMERIC, "C");
@@ -55,7 +56,7 @@ MainWindow::MainWindow(QWidget *parent)
 
     mViewerStatusBar = new ViewerStatusBar();
 
-    mVulkanView = new VulkanView(mViewerStatusBar);
+    mVulkanView                       = new VulkanView(mViewerStatusBar);
     CDockWidget* vulkanViewDockWidget = new CDockWidget("Viewer");
     vulkanViewDockWidget->setWidget(mVulkanView);
     auto* centralDockArea = mDockManager->setCentralWidget(vulkanViewDockWidget);
@@ -64,41 +65,43 @@ MainWindow::MainWindow(QWidget *parent)
     mIsfManager = &ISFManager::getInstance();
     mIsfManager->setUp();
 
-    mNodeGraph = new NodeGraphView();
+    mNodeGraph           = new NodeGraphView();
     mNodeGraphDockWidget = new CDockWidget("Node Graph");
     mNodeGraphDockWidget->setWidget(mNodeGraph);
     mDockManager->addDockWidget(
-                DockWidgetArea::BottomDockWidgetArea,
-                mNodeGraphDockWidget,
-                centralDockArea);
+        DockWidgetArea::BottomDockWidgetArea, mNodeGraphDockWidget, centralDockArea);
 
-    mPropertiesWindow = new PropertiesWindow();
+    mPropertiesWindow           = new PropertiesWindow();
     mPropertiesWindowDockWidget = new CDockWidget("Properties");
     mPropertiesWindowDockWidget->setWidget(mPropertiesWindow);
     mPropertiesWindowDockWidget->resize(700, 700);
     mDockManager->addDockWidget(
-                DockWidgetArea::RightDockWidgetArea,
-                mPropertiesWindowDockWidget,
-                centralDockArea);
+        DockWidgetArea::RightDockWidgetArea, mPropertiesWindowDockWidget, centralDockArea);
 
     // TODO: Move into dispatch
-    connect(mNodeGraph, &NodeGraphView::activeNodeChanged,
-            mPropertiesWindow, &PropertiesWindow::handleActiveNodeChanged);
+    connect(
+        mNodeGraph,
+        &NodeGraphView::activeNodeChanged,
+        mPropertiesWindow,
+        &PropertiesWindow::handleActiveNodeChanged);
 
     mMainMenu = new MainMenu(this);
     this->setMenuBar(mMainMenu);
 
     mWindowManager = &WindowManager::getInstance();
-//    mWindowManager->setUp(
-//                mVulkanView->getVulkanWindow(),
-//                mNodeGraph,
-//                mPropertiesView,
-//                mViewerStatusBar);
+    //    mWindowManager->setUp(
+    //                mVulkanView->getVulkanWindow(),
+    //                mNodeGraph,
+    //                mPropertiesView,
+    //                mViewerStatusBar);
 
     mProjectManager = &ProjectManager::getInstance();
     //mProjectManager->setUp(mNodeGraph);
-    connect(mProjectManager, &ProjectManager::projectTitleChanged,
-            this, &MainWindow::handleProjectTitleChanged);
+    connect(
+        mProjectManager,
+        &ProjectManager::projectTitleChanged,
+        this,
+        &MainWindow::handleProjectTitleChanged);
 
     mPreferencesManager = &PreferencesManager::getInstance();
     mPreferencesManager->setUp();
@@ -113,26 +116,30 @@ MainWindow::MainWindow(QWidget *parent)
     centralDockArea->installEventFilter(mInputHandler.get());
 
     // Sets up signals/slots between windows
-    mDispatch = std::make_unique<Dispatch>(
-        mInputHandler.get(),
-        mNodeGraph);
+    mDispatch = std::make_unique<Dispatch>(mInputHandler.get(), mNodeGraph);
 
     // Incoming
-    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::rendererHasBeenCreated,
-            this, &MainWindow::handleRendererHasBeenCreated);
-    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::noGPUFound,
-            this, &MainWindow::handleNoGPUFound);
-    connect(mVulkanView->getVulkanWindow(), &VulkanWindow::deviceLost,
-            this, &MainWindow::handleDeviceLost);
+    connect(
+        mVulkanView->getVulkanWindow(),
+        &VulkanWindow::rendererHasBeenCreated,
+        this,
+        &MainWindow::handleRendererHasBeenCreated);
+    connect(
+        mVulkanView->getVulkanWindow(),
+        &VulkanWindow::noGPUFound,
+        this,
+        &MainWindow::handleNoGPUFound);
+    connect(
+        mVulkanView->getVulkanWindow(),
+        &VulkanWindow::deviceLost,
+        this,
+        &MainWindow::handleDeviceLost);
 
     // Outgoing
-//    connect(this, &MainWindow::requestShutdown,
-//            mNodeGraph, &NodeGraph::handleShutdownRequest);
+    //    connect(this, &MainWindow::requestShutdown,
+    //            mNodeGraph, &NodeGraph::handleShutdownRequest);
 
-    QSettings::setPath(
-                QSettings::IniFormat,
-                QSettings::SystemScope,
-                QDir::currentPath());
+    QSettings::setPath(QSettings::IniFormat, QSettings::SystemScope, QDir::currentPath());
 
     mProjectManager->createStartupProject();
 
@@ -152,7 +159,8 @@ void MainWindow::handleRendererHasBeenCreated()
     mRenderManager = &RenderManager::getInstance();
     //mRenderManager->setUp(mVulkanView->getVulkanWindow()->getRenderer(), mNodeGraph);
 
-    this->statusBar()->showMessage("GPU: " + mVulkanView->getVulkanWindow()->getRenderer()->getGpuName());
+    this->statusBar()->showMessage(
+        "GPU: " + mVulkanView->getVulkanWindow()->getRenderer()->getGpuName());
 }
 
 void MainWindow::handleNoGPUFound()
@@ -216,7 +224,7 @@ void MainWindow::handleAboutAction()
     about->show();
 }
 
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent* event)
 {
     emit requestShutdown();
 
@@ -231,4 +239,3 @@ MainWindow::~MainWindow()
 }
 
 } // namespace Cascade
-

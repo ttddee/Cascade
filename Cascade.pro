@@ -104,6 +104,8 @@ SOURCES += \
     src/renderer/cscommandbuffer.cpp \
     src/renderer/csimage.cpp \
     src/renderer/cssettingsbuffer.cpp \
+    src/renderer/rendertask.cpp \
+    src/renderer/rendertaskread.cpp \
     src/renderer/vulkanrenderer.cpp \
     src/rendermanager.cpp \
     src/shadercompiler/SpvShaderCompiler.cpp \
@@ -188,7 +190,6 @@ HEADERS += \
     src/nodegraph/connectionstyle.h \
     src/nodegraph/contextmenu.h \
     src/nodegraph/datamodelregistry.h \
-    src/nodegraph/memory.h \
     src/nodegraph/node.h \
     src/nodegraph/nodeconnectioninteraction.h \
     src/nodegraph/nodedata.h \
@@ -231,6 +232,8 @@ HEADERS += \
     src/renderer/csimage.h \
     src/renderer/cssettingsbuffer.h \
     src/renderer/renderconfig.h \
+    src/renderer/rendertask.h \
+    src/renderer/rendertaskread.h \
     src/renderer/renderutility.h \
     src/renderer/vulkanhppinclude.h \
     src/renderer/vulkanrenderer.h \

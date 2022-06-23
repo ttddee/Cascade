@@ -22,14 +22,17 @@
 
 #pragma once
 
-#include <vector>
 #include <memory>
+#include <vector>
 
 #include <QtCore/QString>
 
 #include "../properties/propertymodel.h"
+#include "../renderer/rendertask.h"
 
 using Cascade::Properties::PropertyModel;
+
+using Cascade::Renderer::RenderTask;
 
 namespace Cascade::NodeGraph
 {
@@ -64,7 +67,7 @@ public:
     QString mName;
     std::vector<QString> mInPorts;
     std::vector<QString> mOutPorts;
-    std::vector<std::unique_ptr<PropertyModel>> mProperties;
 
+    std::vector<std::unique_ptr<PropertyModel>> mProperties;
 };
-}
+} // namespace Cascade::NodeGraph

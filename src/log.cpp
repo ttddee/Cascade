@@ -21,10 +21,11 @@
 
 #include <iostream>
 
-#include <QLoggingCategory>
 #include <QFile>
+#include <QLoggingCategory>
 
-namespace Cascade {
+namespace Cascade
+{
 
 Q_LOGGING_CATEGORY(lcVk, "qt.vulkan")
 
@@ -32,14 +33,14 @@ std::shared_ptr<Log> Log::sLogger;
 QFile Log::sOutFile;
 QTextStream Log::sStream;
 
-void Log::messageHandler(
-        QtMsgType type,
-        const QMessageLogContext& context,
-        const QString & msg)
+void Log::messageHandler(QtMsgType type, const QMessageLogContext& context, const QString& msg)
 {
     QString txt = QString("[VULKAN] %1").arg(msg);
     writeToFile(txt);
     console(txt);
+
+    Q_UNUSED(type);
+    Q_UNUSED(context);
 }
 
 void Log::Init()
@@ -55,49 +56,49 @@ void Log::Init()
     qInstallMessageHandler(messageHandler);
 }
 
-void Log::debug(const QString &s)
+void Log::debug(const QString& s)
 {
     QString txt = QString("[DEBUG] %1").arg(s);
     writeToFile(txt);
     console(txt);
 }
 
-void Log::info(const QString &s)
+void Log::info(const QString& s)
 {
     QString txt = QString("[INFO] %1").arg(s);
     writeToFile(txt);
     console(txt);
 }
 
-void Log::warning(const QString &s)
+void Log::warning(const QString& s)
 {
     QString txt = QString("[WARNING] %1").arg(s);
     writeToFile(txt);
     console(txt);
 }
 
-void Log::critical(const QString &s)
+void Log::critical(const QString& s)
 {
     QString txt = QString("[CRITICAL] %1").arg(s);
     writeToFile(txt);
     console(txt);
 }
 
-void Log::fatal(const QString &s)
+void Log::fatal(const QString& s)
 {
     QString txt = QString("[FATAL] %1").arg(s);
     writeToFile(txt);
     console(txt);
 }
 
-void Log::console(const QString &s)
+void Log::console(const QString& s)
 {
     std::cout << s.toStdString() << std::endl;
 }
 
-void Log::writeToFile(const QString &s)
+void Log::writeToFile(const QString& s)
 {
     sStream << s << "\n";
     sStream.flush();
 }
-}
+} // namespace Cascade

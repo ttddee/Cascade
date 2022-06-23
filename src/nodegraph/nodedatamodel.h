@@ -24,15 +24,16 @@
 
 #include <QtWidgets/QWidget>
 
-#include "porttype.h"
-#include "nodedata.h"
-#include "serializable.h"
-#include "nodegeometry.h"
-#include "nodestyle.h"
-#include "nodepainterdelegate.h"
-#include "memory.h"
 #include "../properties/propertyview.h"
+#include "memory.h"
+#include "nodedata.h"
+#include "nodegeometry.h"
+#include "nodepainterdelegate.h"
+#include "nodestyle.h"
+#include "porttype.h"
+#include "serializable.h"
 
+using Cascade::Properties::PropertyData;
 using Cascade::Properties::PropertyView;
 
 namespace Cascade::NodeGraph
@@ -49,9 +50,7 @@ class Connection;
 
 class StyleCollection;
 
-class NodeDataModel :
-    public QObject,
-    public Serializable
+class NodeDataModel : public QObject, public Serializable
 {
     Q_OBJECT
 
@@ -78,8 +77,19 @@ public:
             return mData.mInPorts.at(portIndex);
         else if (portType == PortType::Out)
             return mData.mOutPorts.at(portIndex);
-        else return QString();
+        else
+            return QString();
     }
+
+    std::vector<PropertyData*> getPropertyData()
+    {
+        std::vector<PropertyData*> data;
+        for (auto& prop : mData.mProperties)
+        {
+            data.push_back(prop->getData());
+        }
+        return data;
+    };
 
     std::vector<PropertyView*> getPropertyViews()
     {
@@ -91,7 +101,10 @@ public:
         return views;
     }
 
-
+    RenderTask* getRenderTask()
+    {
+        return mRenderTask.get();
+    };
 
 public:
     QJsonObject save() const override;
@@ -103,23 +116,21 @@ public:
 
         switch (portType)
         {
-        case PortType::In:
-            result = static_cast<unsigned int>(mData.mInPorts.size());
-            break;
+            case PortType::In:
+                result = static_cast<unsigned int>(mData.mInPorts.size());
+                break;
 
-        case PortType::Out:
-            result = static_cast<unsigned int>(mData.mOutPorts.size());
-            break;
-        case PortType::None:
-            break;
+            case PortType::Out:
+                result = static_cast<unsigned int>(mData.mOutPorts.size());
+                break;
+            case PortType::None:
+                break;
         }
 
         return result;
     }
 
-    NodeDataType dataType(
-        PortType portType,
-        PortIndex portIndex) const
+    NodeDataType dataType(PortType portType, PortIndex portIndex) const
     {
         return NodeDataType();
     }
@@ -147,9 +158,7 @@ public:
 
 public:
     /// Triggers the algorithm
-    virtual void setInData(
-        std::shared_ptr<NodeData> nodeData,
-        PortIndex port){};
+    virtual void setInData(std::shared_ptr<NodeData> nodeData, PortIndex port){};
 
     // Use this if portInConnectionPolicy returns ConnectionPolicy::Many
     virtual void setInData(
@@ -187,21 +196,13 @@ public:
     }
 
 public Q_SLOTS:
-    virtual void inputConnectionCreated(Connection const&)
-    {
-    }
+    virtual void inputConnectionCreated(Connection const&) {}
 
-    virtual void inputConnectionDeleted(Connection const&)
-    {
-    }
+    virtual void inputConnectionDeleted(Connection const&) {}
 
-    virtual void outputConnectionCreated(Connection const&)
-    {
-    }
+    virtual void outputConnectionCreated(Connection const&) {}
 
-    virtual void outputConnectionDeleted(Connection const&)
-    {
-    }
+    virtual void outputConnectionDeleted(Connection const&) {}
 
 Q_SIGNALS:
     void dataUpdated(PortIndex index);
@@ -215,8 +216,9 @@ Q_SIGNALS:
 protected:
     NodeData mData;
 
+    std::unique_ptr<RenderTask> mRenderTask;
+
 private:
     NodeStyle mNodeStyle;
-
 };
-}
+} // namespace Cascade::NodeGraph

@@ -24,16 +24,19 @@
 
 #include <QLabel>
 
-#include "../nodedatamodel.h"
-#include "../nodedata.h"
-#include "../../properties/propertymodel.h"
 #include "../../properties/propertydata.h"
+#include "../../properties/propertymodel.h"
+#include "../../renderer/rendertaskread.h"
+#include "../nodedata.h"
+#include "../nodedatamodel.h"
 
-using Cascade::Properties::FilesPropertyModel;
-using Cascade::Properties::PropertyModel;
-using Cascade::Properties::PropertyData;
 using Cascade::Properties::FilesPropertyData;
+using Cascade::Properties::FilesPropertyModel;
+using Cascade::Properties::PropertyData;
+using Cascade::Properties::PropertyModel;
 using Cascade::Properties::TitlePropertyData;
+
+using Cascade::Renderer::RenderTaskRead;
 
 namespace Cascade::NodeGraph
 {
@@ -43,20 +46,18 @@ class ReadNodeData : public NodeData
 public:
     ReadNodeData()
     {
-        mCaption =      "Read Node";
+        mCaption = "Read Node";
 
-        mName =         "Read";
+        mName = "Read";
 
-        mInPorts =      { };
+        mInPorts = {};
 
-        mOutPorts =     { "Result" };
+        mOutPorts = {"Result"};
 
+        mProperties.push_back(std::unique_ptr<PropertyModel>(
+            new TitlePropertyModel(TitlePropertyData(mCaption.toUpper()))));
         mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new TitlePropertyModel(
-                TitlePropertyData(mCaption.toUpper()))));
-        mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new FilesPropertyModel(
-                FilesPropertyData())));
+            std::unique_ptr<PropertyModel>(new FilesPropertyModel(FilesPropertyData())));
     }
 };
 
@@ -70,10 +71,11 @@ public:
     ReadNodeDataModel()
     {
         mData = ReadNodeData();
+
+        mRenderTask = std::make_unique<RenderTaskRead>();
     }
 
     virtual ~ReadNodeDataModel() {}
-
 };
 
 } // namespace Cascade::NodeGraph

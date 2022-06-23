@@ -216,7 +216,7 @@ void NodeGraphView::handleResultViewRequested()
 
     if (selected.size() == 1)
     {
-        selected.front()->view();
+        selected.front()->view(mViewerMode);
     }
 }
 
