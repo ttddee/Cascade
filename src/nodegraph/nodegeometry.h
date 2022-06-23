@@ -22,12 +22,13 @@
 
 #pragma once
 
+#include <memory>
+
 #include <QtCore/QPointF>
 #include <QtCore/QRectF>
 #include <QtGui/QFontMetrics>
 #include <QtGui/QTransform>
 
-#include "memory.h"
 #include "porttype.h"
 
 namespace Cascade::NodeGraph

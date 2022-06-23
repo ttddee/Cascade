@@ -24,7 +24,6 @@
 
 #include <cmath>
 #include <iostream>
-#include <memory>
 
 #include "node.h"
 #include "nodedatamodel.h"
