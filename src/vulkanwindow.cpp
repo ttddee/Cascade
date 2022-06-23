@@ -21,14 +21,15 @@
 
 #include <QMouseEvent>
 
-#include "renderer/vulkanrenderer.h"
 #include "log.h"
+#include "renderer/vulkanrenderer.h"
 
 using Cascade::Renderer::VulkanRenderer;
 
-namespace Cascade {
+namespace Cascade
+{
 
-QVulkanWindowRenderer *VulkanWindow::createRenderer()
+QVulkanWindowRenderer* VulkanWindow::createRenderer()
 {
     CS_LOG_INFO("Creating renderer");
 
@@ -45,20 +46,20 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
 
         for (int i = 0; i < props.size(); ++i)
         {
-             if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
-             {
-                 CS_LOG_INFO("Found discrete GPU.");
-                 this->setPhysicalDeviceIndex(i);
-                 discreteAvailable = true;
+            if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU)
+            {
+                CS_LOG_INFO("Found discrete GPU.");
+                this->setPhysicalDeviceIndex(i);
+                discreteAvailable = true;
 
-                 break;
-             }
-             else if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
-             {
-                 CS_LOG_INFO("Found integrated GPU.");
-             }
+                break;
+            }
+            else if (props[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_INTEGRATED_GPU)
+            {
+                CS_LOG_INFO("Found integrated GPU.");
+            }
         }
-        if(!discreteAvailable)
+        if (!discreteAvailable)
         {
             CS_LOG_WARNING("No discrete GPU found.");
         }
@@ -68,7 +69,8 @@ QVulkanWindowRenderer *VulkanWindow::createRenderer()
         emit noGPUFound();
     }
 
-    mRenderer = new VulkanRenderer(this);
+    mRenderer = &VulkanRenderer::getInstance();
+    mRenderer->setUp(this);
 
     return mRenderer;
 }
@@ -84,18 +86,18 @@ void VulkanWindow::handleZoomResetRequest()
     mRenderer->scale(1.0);
 }
 
-void VulkanWindow::mousePressEvent(QMouseEvent *e)
+void VulkanWindow::mousePressEvent(QMouseEvent* e)
 {
     mIsDragging = true;
-    mLastPos = e->pos();
+    mLastPos    = e->pos();
 }
 
-void VulkanWindow::mouseReleaseEvent(QMouseEvent *)
+void VulkanWindow::mouseReleaseEvent(QMouseEvent*)
 {
     mIsDragging = false;
 }
 
-void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
+void VulkanWindow::mouseMoveEvent(QMouseEvent* e)
 {
     if (mIsDragging)
     {
@@ -107,9 +109,9 @@ void VulkanWindow::mouseMoveEvent(QMouseEvent *e)
     mLastPos = e->pos();
 }
 
-void VulkanWindow::wheelEvent(QWheelEvent *e)
+void VulkanWindow::wheelEvent(QWheelEvent* e)
 {
-    if(e->angleDelta().y() > 0)
+    if (e->angleDelta().y() > 0)
     {
         mZoomFactor += mZoomFactor * 0.1f;
     }
@@ -130,4 +132,3 @@ VulkanWindow::~VulkanWindow()
 }
 
 } // namespace Cascade
-
