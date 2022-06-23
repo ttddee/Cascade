@@ -31,6 +31,7 @@
 
 #include "porttype.h"
 
+#include "../global.h"
 #include "../properties/propertywidget.h"
 #include "connectiongraphicsobject.h"
 #include "memory.h"
@@ -100,6 +101,10 @@ public:
     bool isRoot() const;
 
     bool isLeaf() const;
+
+    void view(const ViewerMode viewerMode);
+
+    void render();
 
 public Q_SLOTS: // data propagation
     /// Propagates incoming data to the underlying model.

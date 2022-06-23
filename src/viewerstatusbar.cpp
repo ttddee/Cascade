@@ -144,9 +144,9 @@ QString ViewerStatusBar::getViewerSettings()
 {
     // Only use set split viewer on RGB Out or Alpha Out view
     bool viewerSplit = mSplit;
-    if (currentViewerMode == ViewerMode::eBackRgb ||
-        currentViewerMode == ViewerMode::eFrontRgb ||
-        currentViewerMode == ViewerMode::eInputAlpha)
+    if (currentViewerMode == ViewerMode::Back ||
+        currentViewerMode == ViewerMode::Front ||
+        currentViewerMode == ViewerMode::Alpha)
     {
         viewerSplit = false;
     }

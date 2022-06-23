@@ -6,9 +6,12 @@
 #include "inputhandler.h"
 #include "nodegraph/nodegraphview.h"
 
+// Establishes signal/slot connections between windows
+
 using Cascade::NodeGraph::NodeGraphView;
 
-namespace Cascade {
+namespace Cascade
+{
 
 class Dispatch : public QObject
 {
@@ -18,29 +21,40 @@ public:
     explicit Dispatch(
         InputHandler* inputHandler,
         NodeGraphView* nodeGraph,
-        QObject *parent = nullptr) :
-        QObject(parent),
-        mInputHandler(inputHandler),
-        mNodeGraph(nodeGraph)
+        QObject* parent = nullptr)
+        : QObject(parent)
+        , mInputHandler(inputHandler)
+        , mNodeGraph(nodeGraph)
     {
         // InputHandler to NodeGraph
-        connect(mInputHandler, &InputHandler::notifyFrontViewRequested,
-                mNodeGraph, &NodeGraphView::handleFrontViewRequested);
+        connect(
+            mInputHandler,
+            &InputHandler::notifyFrontViewRequested,
+            mNodeGraph,
+            &NodeGraphView::handleFrontViewRequested);
 
-        connect(mInputHandler, &InputHandler::notifyBackViewRequested,
-                mNodeGraph, &NodeGraphView::handleBackViewRequested);
+        connect(
+            mInputHandler,
+            &InputHandler::notifyBackViewRequested,
+            mNodeGraph,
+            &NodeGraphView::handleBackViewRequested);
 
-        connect(mInputHandler, &InputHandler::notifyAlphaViewRequested,
-                mNodeGraph, &NodeGraphView::handleAlphaViewRequested);
+        connect(
+            mInputHandler,
+            &InputHandler::notifyAlphaViewRequested,
+            mNodeGraph,
+            &NodeGraphView::handleAlphaViewRequested);
 
-        connect(mInputHandler, &InputHandler::notifyResultViewRequested,
-                mNodeGraph, &NodeGraphView::handleResultViewRequested);
+        connect(
+            mInputHandler,
+            &InputHandler::notifyResultViewRequested,
+            mNodeGraph,
+            &NodeGraphView::handleResultViewRequested);
     }
 
 private:
     InputHandler* mInputHandler;
     NodeGraphView* mNodeGraph;
-
 };
 
 } // namespace Cascade

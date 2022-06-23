@@ -24,6 +24,7 @@
 
 #include <QGraphicsView>
 
+#include "../global.h"
 #include "datamodelregistry.h"
 #include "nodegraphdatamodel.h"
 
@@ -38,7 +39,7 @@ class NodeGraphView : public QGraphicsView
     Q_OBJECT
 
 public:
-    NodeGraphView(QWidget *parent = Q_NULLPTR);
+    NodeGraphView(QWidget* parent = Q_NULLPTR);
 
     NodeGraphView(const NodeGraphView&) = delete;
     NodeGraphView operator=(const NodeGraphView&) = delete;
@@ -47,7 +48,7 @@ public:
 
     QAction* deleteSelectionAction() const;
 
-    void setScene(NodeGraphScene *scene);
+    void setScene(NodeGraphScene* scene);
     void setModel(std::unique_ptr<NodeGraphDataModel> model);
 
 signals:
@@ -71,7 +72,7 @@ public slots:
     void handleResultViewRequested();
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event) override;
+    void contextMenuEvent(QContextMenuEvent* event) override;
 
     void wheelEvent(QWheelEvent* event) override;
 
@@ -103,7 +104,10 @@ private:
     NodeGraphScene* mScene;
     ContextMenu* mContextMenu;
 
+    ViewerMode mViewerMode = ViewerMode::Result;
+
     Node* mActiveNode = nullptr;
+    Node* mViewedNode = nullptr;
 };
 
 } // namespace Cascade::NodeGraph

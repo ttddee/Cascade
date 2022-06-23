@@ -164,11 +164,11 @@ NodeDataModel* Node::nodeDataModel() const
 
 PropertyWidget* Node::propertyWidget()
 {
-    if(!mPropertyWidget)
-        {
-            mPropertyWidget = new PropertyWidget();
-            mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
-        }
+    if (!mPropertyWidget)
+    {
+        mPropertyWidget = new PropertyWidget();
+        mPropertyWidget->addPropertyViews(mNodeDataModel->getPropertyViews());
+    }
     return mPropertyWidget;
 }
 
@@ -176,14 +176,14 @@ std::set<Node*> Node::getNodesAbove()
 {
     std::set<Node*> nodes;
 
-    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    {
+        auto connections = nodeState().connections(PortType::In, i);
+        for (auto& connection : connections)
         {
-            auto connections = nodeState().connections(PortType::In, i);
-            for(auto& connection : connections)
-                {
-                    nodes.insert(connection.second->getNode(PortType::Out));
-                }
+            nodes.insert(connection.second->getNode(PortType::Out));
         }
+    }
     return nodes;
 }
 
@@ -191,42 +191,49 @@ std::set<Node*> Node::getNodesBelow()
 {
     std::set<Node*> nodes;
 
-    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    {
+        auto connections = nodeState().connections(PortType::Out, i);
+        for (auto& connection : connections)
         {
-            auto connections = nodeState().connections(PortType::Out, i);
-            for(auto& connection : connections)
-                {
-                    nodes.insert(connection.second->getNode(PortType::In));
-                }
+            nodes.insert(connection.second->getNode(PortType::In));
         }
+    }
     return nodes;
 }
 
 bool Node::isRoot() const
 {
-    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::In); ++i)
+    {
+        auto connections = nodeState().connections(PortType::In, i);
+        if (!connections.empty())
         {
-            auto connections = nodeState().connections(PortType::In, i);
-            if(!connections.empty())
-                {
-                    return false;
-                }
+            return false;
         }
+    }
     return true;
 }
 
 bool Node::isLeaf() const
 {
-    for(unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    for (unsigned int i = 0; i < mNodeDataModel->nPorts(PortType::Out); ++i)
+    {
+        auto connections = nodeState().connections(PortType::Out, i);
+        if (!connections.empty())
         {
-            auto connections = nodeState().connections(PortType::Out, i);
-            if(!connections.empty())
-                {
-                    return false;
-                }
+            return false;
         }
+    }
     return true;
 }
+
+void Node::view(const ViewerMode viewerMode)
+{
+    CS_LOG_INFO("Viewing");
+}
+
+void Node::render() { }
 
 void Node::propagateData(
     std::shared_ptr<NodeData> nodeData,
@@ -248,22 +255,22 @@ void Node::onDataUpdated(PortIndex index)
 
     auto connections = mNodeState.connections(PortType::Out, index);
 
-    for(auto const& c : connections)
+    for (auto const& c : connections)
         c.second->propagateData(nodeData);
 }
 
 void Node::onNodeSizeUpdated()
 {
     nodeGeometry().recalculateSize();
-    for(PortType type : {PortType::In, PortType::Out})
+    for (PortType type : {PortType::In, PortType::Out})
+    {
+        for (auto& conn_set : nodeState().getEntries(type))
         {
-            for(auto& conn_set : nodeState().getEntries(type))
-                {
-                    for(auto& pair : conn_set)
-                        {
-                            Connection* conn = pair.second;
-                            conn->getConnectionGraphicsObject().move();
-                        }
-                }
+            for (auto& pair : conn_set)
+            {
+                Connection* conn = pair.second;
+                conn->getConnectionGraphicsObject().move();
+            }
         }
+    }
 }

@@ -24,42 +24,42 @@
 
 #include <QtWidgets/QGraphicsScene>
 
-#include <QtGui/QPen>
 #include <QtGui/QBrush>
+#include <QtGui/QPen>
 #include <QtWidgets/QMenu>
 
-#include <QtCore/QRectF>
 #include <QtCore/QPointF>
+#include <QtCore/QRectF>
 
 #include <QtWidgets>
 
 #include <QDebug>
-#include <iostream>
 #include <cmath>
+#include <iostream>
 
-#include "nodegraphscene.h"
+#include "connectiongraphicsobject.h"
+#include "contextmenu.h"
 #include "datamodelregistry.h"
 #include "node.h"
 #include "nodegraphicsobject.h"
-#include "connectiongraphicsobject.h"
+#include "nodegraphscene.h"
 #include "stylecollection.h"
-#include "contextmenu.h"
 
 #include "../log.h"
 
-using Cascade::NodeGraph::NodeGraphView;
 using Cascade::NodeGraph::NodeGraphScene;
+using Cascade::NodeGraph::NodeGraphView;
 
-NodeGraphView::NodeGraphView(QWidget *parent) :
-    QGraphicsView(parent),
-    mClearSelectionAction(Q_NULLPTR),
-    mDeleteSelectionAction(Q_NULLPTR),
-    mScene(Q_NULLPTR)
+NodeGraphView::NodeGraphView(QWidget* parent)
+    : QGraphicsView(parent)
+    , mClearSelectionAction(Q_NULLPTR)
+    , mDeleteSelectionAction(Q_NULLPTR)
+    , mScene(Q_NULLPTR)
 {
     setDragMode(QGraphicsView::RubberBandDrag);
     setRenderHint(QPainter::Antialiasing);
 
-    auto const &nodeGraphViewStyle = StyleCollection::nodeGraphViewStyle();
+    auto const& nodeGraphViewStyle = StyleCollection::nodeGraphViewStyle();
 
     setBackgroundBrush(nodeGraphViewStyle.BackgroundColor);
 
@@ -81,24 +81,20 @@ NodeGraphView::NodeGraphView(QWidget *parent) :
 
     scale(0.7, 0.7);
 
-    connect(mScene, &NodeGraphScene::nodeDoubleClicked,
-            this, &NodeGraphView::setActiveNode);
+    connect(mScene, &NodeGraphScene::nodeDoubleClicked, this, &NodeGraphView::setActiveNode);
 }
-
 
 QAction* NodeGraphView::clearSelectionAction() const
 {
     return mClearSelectionAction;
 }
 
-
 QAction* NodeGraphView::deleteSelectionAction() const
 {
     return mDeleteSelectionAction;
 }
 
-
-void NodeGraphView::setScene(NodeGraphScene *scene)
+void NodeGraphView::setScene(NodeGraphScene* scene)
 {
     mScene = scene;
     QGraphicsView::setScene(mScene);
@@ -117,14 +113,12 @@ void NodeGraphView::setScene(NodeGraphScene *scene)
     addAction(mDeleteSelectionAction);
 }
 
-
 void NodeGraphView::setModel(std::unique_ptr<NodeGraphDataModel> model)
 {
     mModel = std::move(model);
 }
 
-
-void NodeGraphView::contextMenuEvent(QContextMenuEvent *event)
+void NodeGraphView::contextMenuEvent(QContextMenuEvent* event)
 {
     if (itemAt(event->pos()))
     {
@@ -137,8 +131,7 @@ void NodeGraphView::contextMenuEvent(QContextMenuEvent *event)
     mContextMenu->exec(this->mapToScene(pos).toPoint());
 }
 
-
-void NodeGraphView::wheelEvent(QWheelEvent *event)
+void NodeGraphView::wheelEvent(QWheelEvent* event)
 {
     QPoint delta = event->angleDelta();
 
@@ -156,7 +149,6 @@ void NodeGraphView::wheelEvent(QWheelEvent *event)
         scaleDown();
 }
 
-
 void NodeGraphView::scaleUp()
 {
     double const step   = 1.2;
@@ -170,7 +162,6 @@ void NodeGraphView::scaleUp()
     scale(factor, factor);
 }
 
-
 void NodeGraphView::scaleDown()
 {
     double const step   = 1.2;
@@ -179,13 +170,12 @@ void NodeGraphView::scaleDown()
     scale(factor, factor);
 }
 
-
 void NodeGraphView::deleteSelectedNodes()
 {
     // Delete the selected connections first, ensuring that they won't be
     // automatically deleted when selected nodes are deleted (deleting a node
     // deletes some connections as well)
-    for (QGraphicsItem * item : mScene->selectedItems())
+    for (QGraphicsItem* item : mScene->selectedItems())
     {
         if (auto c = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
             mModel->deleteConnection(c->connection());
@@ -195,13 +185,12 @@ void NodeGraphView::deleteSelectedNodes()
     // Selected connections were already deleted prior to this loop, otherwise
     // qgraphicsitem_cast<NodeGraphicsObject*>(item) could be a use-after-free
     // when a selected connection is deleted by deleting the node.
-    for (QGraphicsItem * item : mScene->selectedItems())
+    for (QGraphicsItem* item : mScene->selectedItems())
     {
         if (auto n = qgraphicsitem_cast<NodeGraphicsObject*>(item))
             mModel->removeNode(n->node());
     }
 }
-
 
 void NodeGraphView::setActiveNode(Node* node)
 {
@@ -210,44 +199,38 @@ void NodeGraphView::setActiveNode(Node* node)
     emit activeNodeChanged(node);
 }
 
-
 void NodeGraphView::handleFrontViewRequested()
 {
     CS_LOG_INFO("BEEP");
 }
 
+void NodeGraphView::handleBackViewRequested() { }
 
-void NodeGraphView::handleBackViewRequested()
-{
-
-}
-
-
-void NodeGraphView::handleAlphaViewRequested()
-{
-
-}
-
+void NodeGraphView::handleAlphaViewRequested() { }
 
 void NodeGraphView::handleResultViewRequested()
 {
+    mViewerMode = ViewerMode::Result;
 
+    auto selected = mScene->selectedNodes();
+
+    if (selected.size() == 1)
+    {
+        selected.front()->view();
+    }
 }
 
-
-void NodeGraphView::keyPressEvent(QKeyEvent *event)
+void NodeGraphView::keyPressEvent(QKeyEvent* event)
 {
     QGraphicsView::keyPressEvent(event);
 }
 
-
-void NodeGraphView::keyReleaseEvent(QKeyEvent *event)
+void NodeGraphView::keyReleaseEvent(QKeyEvent* event)
 {
     QGraphicsView::keyReleaseEvent(event);
 }
 
-
-void NodeGraphView::mousePressEvent(QMouseEvent *event)
+void NodeGraphView::mousePressEvent(QMouseEvent* event)
 {
     QGraphicsView::mousePressEvent(event);
     if (event->button() == Qt::MiddleButton)
@@ -257,8 +240,7 @@ void NodeGraphView::mousePressEvent(QMouseEvent *event)
     }
 }
 
-
-void NodeGraphView::mouseMoveEvent(QMouseEvent *event)
+void NodeGraphView::mouseMoveEvent(QMouseEvent* event)
 {
     QGraphicsView::mouseMoveEvent(event);
     if (scene()->mouseGrabberItem() == nullptr && event->buttons() == Qt::MiddleButton)
@@ -268,71 +250,67 @@ void NodeGraphView::mouseMoveEvent(QMouseEvent *event)
     }
 }
 
-
-void NodeGraphView::mouseReleaseEvent(QMouseEvent *event)
+void NodeGraphView::mouseReleaseEvent(QMouseEvent* event)
 {
     QGraphicsView::mouseReleaseEvent(event);
 
     setDragMode(QGraphicsView::RubberBandDrag);
 }
 
-
 void NodeGraphView::drawBackground(QPainter* painter, const QRectF& r)
 {
     QGraphicsView::drawBackground(painter, r);
 
-//    auto drawGrid =
-//        [&](double gridStep)
-//    {
-//        QRect   windowRect = rect();
-//        QPointF tl = mapToScene(windowRect.topLeft());
-//        QPointF br = mapToScene(windowRect.bottomRight());
+    //    auto drawGrid =
+    //        [&](double gridStep)
+    //    {
+    //        QRect   windowRect = rect();
+    //        QPointF tl = mapToScene(windowRect.topLeft());
+    //        QPointF br = mapToScene(windowRect.bottomRight());
 
-//        double left   = std::floor(tl.x() / gridStep - 0.5);
-//        double right  = std::floor(br.x() / gridStep + 1.0);
-//        double bottom = std::floor(tl.y() / gridStep - 0.5);
-//        double top    = std::floor (br.y() / gridStep + 1.0);
+    //        double left   = std::floor(tl.x() / gridStep - 0.5);
+    //        double right  = std::floor(br.x() / gridStep + 1.0);
+    //        double bottom = std::floor(tl.y() / gridStep - 0.5);
+    //        double top    = std::floor (br.y() / gridStep + 1.0);
 
-//        // vertical lines
-//        for (int xi = int(left); xi <= int(right); ++xi)
-//        {
-//            QLineF line(xi * gridStep, bottom * gridStep,
-//                        xi * gridStep, top * gridStep );
+    //        // vertical lines
+    //        for (int xi = int(left); xi <= int(right); ++xi)
+    //        {
+    //            QLineF line(xi * gridStep, bottom * gridStep,
+    //                        xi * gridStep, top * gridStep );
 
-//            painter->drawLine(line);
-//        }
+    //            painter->drawLine(line);
+    //        }
 
-//        // horizontal lines
-//        for (int yi = int(bottom); yi <= int(top); ++yi)
-//        {
-//            QLineF line(left * gridStep, yi * gridStep,
-//                        right * gridStep, yi * gridStep );
-//            painter->drawLine(line);
-//        }
-//    };
+    //        // horizontal lines
+    //        for (int yi = int(bottom); yi <= int(top); ++yi)
+    //        {
+    //            QLineF line(left * gridStep, yi * gridStep,
+    //                        right * gridStep, yi * gridStep );
+    //            painter->drawLine(line);
+    //        }
+    //    };
 
-//    auto const &nodeGraphViewStyle = StyleCollection::nodeGraphViewStyle();
+    //    auto const &nodeGraphViewStyle = StyleCollection::nodeGraphViewStyle();
 
-//    QBrush bBrush = backgroundBrush();
+    //    QBrush bBrush = backgroundBrush();
 
-//    QPen pfine(nodeGraphViewStyle.FineGridColor, 1.0);
+    //    QPen pfine(nodeGraphViewStyle.FineGridColor, 1.0);
 
-//    painter->setPen(pfine);
-//    drawGrid(15);
+    //    painter->setPen(pfine);
+    //    drawGrid(15);
 
-//    QPen p(nodeGraphViewStyle.CoarseGridColor, 1.0);
+    //    QPen p(nodeGraphViewStyle.CoarseGridColor, 1.0);
 
-//    painter->setPen(p);
-//    drawGrid(150);
+    //    painter->setPen(p);
+    //    drawGrid(150);
 }
 
-
-void NodeGraphView::showEvent(QShowEvent *event)
+void NodeGraphView::showEvent(QShowEvent* event)
 {
     mScene->setSceneRect(this->rect());
     QGraphicsView::showEvent(event);
 }
-
 
 NodeGraphScene* NodeGraphView::scene()
 {

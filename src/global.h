@@ -15,25 +15,25 @@ enum class DisplayMode
 
 enum class ViewerMode
 {
-    eFrontRgb,
-    eBackRgb,
-    eInputAlpha,
-    eOutputRgb,
-    eOutputAlpha
+    Front,
+    Back,
+    Alpha,
+    Result,
+    ResultAlpha
 };
 
 static const QMap<ViewerMode, QString> sViewerModeText =
 {
-    { ViewerMode::eFrontRgb,        "RGB Front" },
-    { ViewerMode::eBackRgb,         "RGB Back" },
-    { ViewerMode::eInputAlpha,      "Alpha Input" },
-    { ViewerMode::eOutputRgb,       "RGB Out" },
-    { ViewerMode::eOutputAlpha,     "Alpha Out" }
+    { ViewerMode::Front,        "RGB Front" },
+    { ViewerMode::Back,         "RGB Back" },
+    { ViewerMode::Alpha,      "Alpha Input" },
+    { ViewerMode::Result,       "RGB Out" },
+    { ViewerMode::ResultAlpha,     "Alpha Out" }
 };
 
     namespace Config
     {
-        [[maybe_unused]] static constexpr ViewerMode sDefaultViewerMode = ViewerMode::eOutputRgb;
+        [[maybe_unused]] static constexpr ViewerMode sDefaultViewerMode = ViewerMode::Result;
 
         [[maybe_unused]] static QColor sRed(229, 70, 61);
         [[maybe_unused]] static QColor sGreen(53, 226, 87);

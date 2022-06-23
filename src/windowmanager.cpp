@@ -90,15 +90,15 @@ bool WindowManager::eventFilter(QObject *watched, QEvent *event)
         if (keyEvent->key() == Qt::Key_F1)
         {
             CS_LOG_INFO("FFF");
-            setViewerMode(ViewerMode::eFrontRgb);
+            setViewerMode(ViewerMode::Front);
         }
         else if (keyEvent->key() == Qt::Key_F2)
         {
-            setViewerMode(ViewerMode::eBackRgb);
+            setViewerMode(ViewerMode::Back);
         }
         else if (keyEvent->key() == Qt::Key_F3)
         {
-            setViewerMode(ViewerMode::eInputAlpha);
+            setViewerMode(ViewerMode::Alpha);
         }
         else if (keyEvent->key() == Qt::Key_F4)
         {
