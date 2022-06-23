@@ -32,6 +32,8 @@ HEADERS += \
         tst_slider.h \
         ../../src/log.h \
         ../../src/ui/slider.h \
+        ../../src/renderer/rendertask.h \
+        ../../src/renderer/rendertaskread.h \
         $$files(../../src/nodegraph/*.h,          true) \
         $$files(../../src/nodegraph/nodes/*.h,    true) \
         $$files(../../src/properties/*.h,         true) \
@@ -40,9 +42,12 @@ SOURCES += \
         main.cpp \
         ../../src/log.cpp \
         ../../src/ui/slider.cpp \
+        ../../src/renderer/rendertask.cpp \
+        ../../src/renderer/rendertaskread.cpp \
         $$files(../../src/nodegraph/*.cpp,        true) \
         $$files(../../src/properties/*.cpp,       true) \
 
 RESOURCES += \
     resources.qrc
+
 

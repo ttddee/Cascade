@@ -1,12 +1,12 @@
 #include "tst_node.h"
-#include "tst_slider.h"
 #include "tst_nodegraphdatamodel.h"
+#include "tst_slider.h"
 
 #include <QApplication>
 
 #include <gtest/gtest.h>
 
-int main(int argc, char *argv[])
+int main(int argc, char* argv[])
 {
     QApplication a(argc, argv);
     ::testing::InitGoogleTest(&argc, argv);
