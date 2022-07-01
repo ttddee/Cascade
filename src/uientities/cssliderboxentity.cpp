@@ -40,19 +40,18 @@ CsSliderBoxEntity::CsSliderBoxEntity(
 
     if (mElementType == UIElementType::eSliderBoxDouble)
     {
-        mValueBoxDouble = new QDoubleSpinBox(this);
-        mValueBoxDouble->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        mUi->gridLayout->addWidget(mValueBoxDouble, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
-        mValueBoxDouble->installEventFilter(this);
+        mValueBox = new QDoubleSpinBox(this);
         mIsDouble = true;
     }
     else
     {
-        mValueBoxInt = new QSpinBox(this);
-        mValueBoxInt->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        mUi->gridLayout->addWidget(mValueBoxInt, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
-        mValueBoxInt->installEventFilter(this);
+        mValueBox = new QSpinBox(this);
     }
+
+    mValueBox->setButtonSymbols(QAbstractSpinBox::NoButtons);
+    mValueBox->setMinimumWidth(50); // value taken with respect to CsSliderBox initial size;
+    mUi->gridLayout->addWidget(mValueBox, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
+    mValueBox->installEventFilter(this);
 
     mUi->slider->installEventFilter(this);
     mNameLabel->installEventFilter(this);
@@ -61,10 +60,10 @@ CsSliderBoxEntity::CsSliderBoxEntity(
             this, &CsSliderBoxEntity::handleSliderValueChanged);
 
     if (mElementType == UIElementType::eSliderBoxDouble)
-        connect(mValueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+        connect(static_cast<QDoubleSpinBox*>(mValueBox), QOverload<double>::of(&QDoubleSpinBox::valueChanged),
                 this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
     else
-        connect(mValueBoxInt, QOverload<int>::of(&QSpinBox::valueChanged),
+        connect(static_cast<QSpinBox*>(mValueBox), QOverload<int>::of(&QSpinBox::valueChanged),
                 this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
 }
 
@@ -95,9 +94,9 @@ QString CsSliderBoxEntity::getValuesAsString()
 void CsSliderBoxEntity::loadPropertyValues(const QString &values)
 {
     if (mIsDouble)
-        mValueBoxDouble->setValue(values.toFloat());
+        static_cast<QDoubleSpinBox*>(mValueBox)->setValue(values.toFloat());
     else
-        mValueBoxInt->setValue(values.toInt());
+        static_cast<QSpinBox*>(mValueBox)->setValue(values.toInt());
 }
 
 void CsSliderBoxEntity::handleSliderValueChanged()
@@ -108,17 +107,17 @@ void CsSliderBoxEntity::handleSliderValueChanged()
 void CsSliderBoxEntity::handleSpinBoxValueChanged()
 {
     if (mElementType == UIElementType::eSliderBoxDouble)
-        setSliderNoSignal(mValueBoxDouble->value());
+        setSliderNoSignal(static_cast<QDoubleSpinBox*>(mValueBox)->value());
     else
-        setSliderNoSignal(mValueBoxInt->value());
+        setSliderNoSignal(static_cast<QSpinBox*>(mValueBox)->value());
 }
 
 void CsSliderBoxEntity::reset()
 {
     if (mElementType == UIElementType::eSliderBoxDouble)
-        mValueBoxDouble->setValue(mBaseValue);
+        static_cast<QDoubleSpinBox*>(mValueBox)->setValue(mBaseValue);
     else
-        mValueBoxInt->setValue(mBaseValue);
+        static_cast<QSpinBox*>(mValueBox)->setValue(mBaseValue);
 }
 
 bool CsSliderBoxEntity::eventFilter(QObject *watched, QEvent *event)
@@ -172,8 +171,10 @@ void CsSliderBoxEntity::mouseMoveEvent(QMouseEvent* event)
         if (QApplication::queryKeyboardModifiers() == Qt::ShiftModifier)
             newPos = sliderValue + sign(offsetFromPrev) * mUi->slider->singleStep();
 
+
         mUi->slider->setValue(newPos);
         mLastPos = cursorPos;
+
      }
     Q_UNUSED(event);
 }

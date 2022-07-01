@@ -57,38 +57,26 @@ public:
     {
         mBaseValue = value;
 
+        double factor{1.0};
         if (std::is_same<T , double>::value)
         {
-            mValueBoxDouble->blockSignals(true);
-            mValueBoxDouble->setMinimum(min);
-            mValueBoxDouble->setMaximum(max);
-            mValueBoxDouble->setSingleStep(step);
-            mValueBoxDouble->setValue(value);
-            mValueBoxDouble->blockSignals(false);
-
-            mUi->slider->blockSignals(true);
-            mUi->slider->setMinimum(min *= DOUBLE_MULT);
-            mUi->slider->setMaximum(max *= DOUBLE_MULT);
-            mUi->slider->setSingleStep(step *= DOUBLE_MULT);
-            mUi->slider->setValue(value *= DOUBLE_MULT);
-            mUi->slider->blockSignals(false);
+            factor = DOUBLE_MULT;
         }
-        else
-        {
-            mValueBoxInt->blockSignals(true);
-            mValueBoxInt->setMinimum(min);
-            mValueBoxInt->setMaximum(max);
-            mValueBoxInt->setSingleStep(step);
-            mValueBoxInt->setValue(value);
-            mValueBoxInt->blockSignals(false);
 
-            mUi->slider->blockSignals(true);
-            mUi->slider->setMinimum(min);
-            mUi->slider->setMaximum(max);
-            mUi->slider->setSingleStep(step);
-            mUi->slider->setValue(value);
-            mUi->slider->blockSignals(false);
-        }
+        mValueBox->blockSignals(true);
+        static_cast<QDoubleSpinBox*>(mValueBox)->setMinimum(min);
+        static_cast<QDoubleSpinBox*>(mValueBox)->setMaximum(max);
+        static_cast<QDoubleSpinBox*>(mValueBox)->setSingleStep(step);
+        static_cast<QDoubleSpinBox*>(mValueBox)->setValue(value);
+        mValueBox->blockSignals(false);
+        mUi->slider->blockSignals(true);
+        mUi->slider->setMinimum(min *= factor);
+        mUi->slider->setMaximum(max *= factor);
+        mUi->slider->setSingleStep(step *= factor);
+        mUi->slider->setValue(value *= factor);
+        mUi->slider->blockSignals(false);
+
+
     }
 
     const QString name() override;
@@ -133,15 +121,15 @@ private:
     {
         if (mElementType == UIElementType::eSliderBoxDouble)
         {
-            mValueBoxDouble->blockSignals(true);
-            mValueBoxDouble->setValue(val / DOUBLE_MULT);
-            mValueBoxDouble->blockSignals(false);
+            mValueBox->blockSignals(true);
+            static_cast<QDoubleSpinBox*>(mValueBox)->setValue(val / DOUBLE_MULT);
+            mValueBox->blockSignals(false);
         }
         else
         {
-            mValueBoxInt->blockSignals(true);
-            mValueBoxInt->setValue(val);
-            mValueBoxInt->blockSignals(false);
+            mValueBox->blockSignals(true);
+            static_cast<QSpinBox*>(mValueBox)->setValue(val);
+            mValueBox->blockSignals(false);
         }
 
         emit valueChanged();
@@ -156,9 +144,7 @@ private:
     Ui::CsSliderBox *mUi;
 
     QLabel* mNameLabel;
-    QDoubleSpinBox* mValueBoxDouble;
-    QSpinBox* mValueBoxInt;
-
+    QAbstractSpinBox* mValueBox; // can be QDoubleSpinBox or QSpinBox (for int values)
     bool mIsDragging = false;
     bool mIsDouble = false;
     float mBaseValue;
