@@ -29,6 +29,7 @@ HEADERS += \
         testheader.h \
         tst_node.h \
         tst_nodegraphdatamodel.h \
+    tst_nodegraphview.h \
         tst_slider.h \
         ../../src/log.h \
         ../../src/ui/slider.h \

@@ -104,6 +104,10 @@ public:
 
     void view(const ViewerMode viewerMode);
 
+    bool getIsViewed() const;
+
+    void setIsViewed(const bool viewed);
+
     void render();
 
 public Q_SLOTS: // data propagation
@@ -128,6 +132,8 @@ private:
     std::unique_ptr<NodeDataModel> mNodeDataModel;
 
     NodeState mNodeState;
+
+    bool mIsViewed = false;
 
     // painting
     NodeGeometry mNodeGeometry;

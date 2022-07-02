@@ -28,6 +28,8 @@
 #include "datamodelregistry.h"
 #include "nodegraphdatamodel.h"
 
+using Cascade::NodeGraph::NodeGraphDataModel;
+
 namespace Cascade::NodeGraph
 {
 
@@ -49,6 +51,8 @@ public:
     QAction* deleteSelectionAction() const;
 
     void setScene(NodeGraphScene* scene);
+
+    NodeGraphDataModel* getModel() const;
     void setModel(std::unique_ptr<NodeGraphDataModel> model);
 
 signals:
@@ -62,6 +66,8 @@ public slots:
     void deleteSelectedNodes();
 
     void setActiveNode(Cascade::NodeGraph::Node* node);
+
+    void setViewedNode(Cascade::NodeGraph::Node* node);
 
     void handleFrontViewRequested();
 

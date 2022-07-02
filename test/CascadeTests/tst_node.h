@@ -6,9 +6,9 @@
 #include "testheader.h"
 
 #include "../../src/nodegraph/node.h"
-#include "../../src/nodegraph/nodes/testnodedatamodel.h"
-#include "../../src/nodegraph/nodegraphscene.h"
 #include "../../src/nodegraph/nodegraphdatamodel.h"
+#include "../../src/nodegraph/nodegraphscene.h"
+#include "../../src/nodegraph/nodes/testnodedatamodel.h"
 
 using namespace Cascade::NodeGraph;
 
@@ -23,8 +23,6 @@ protected:
         mNode1 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
         mNode2 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
         mNode3 = &mModel->createNode(std::make_unique<TestNodeDataModel>());
-
-
     }
     void TearDown() override
     {
@@ -39,7 +37,6 @@ protected:
     Node* mNode1;
     Node* mNode2;
     Node* mNode3;
-
 };
 
 TEST_F(NodeTest, checkThatDataModelWasCreated)
@@ -111,6 +108,5 @@ TEST_F(NodeTest, getNodesBelowReturnsCorrectNumber)
     ASSERT_EQ(nodesBelowNode2.size(), 1);
     ASSERT_EQ(nodesBelowNode1.size(), 2);
 }
-
 
 #endif // TST_NODE_H

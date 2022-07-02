@@ -41,51 +41,49 @@ public:
     NodePainter();
 
 public:
-    static void paint(
-        QPainter* painter,
-        Node& node,
-        NodeGraphScene const& scene);
+    static void paint(QPainter* painter, Node& node, NodeGraphScene const& scene);
 
     static void drawNodeRect(
         QPainter* painter,
+        Node& node,
         NodeGeometry const& geom,
         NodeDataModel const* model,
-        NodeGraphicsObject const & graphicsObject);
+        NodeGraphicsObject const& graphicsObject);
 
     static void drawModelName(
         QPainter* painter,
         NodeGeometry const& geom,
         NodeState const& state,
-        NodeDataModel const * model);
+        NodeDataModel const* model);
 
     static void drawEntryLabels(
         QPainter* painter,
         NodeGeometry const& geom,
         NodeState const& state,
-        NodeDataModel const * model);
+        NodeDataModel const* model);
 
     static void drawConnectionPoints(
         QPainter* painter,
         NodeGeometry const& geom,
         NodeState const& state,
-        NodeDataModel const * model,
-        NodeGraphScene const & scene);
+        NodeDataModel const* model,
+        NodeGraphScene const& scene);
 
     static void drawFilledConnectionPoints(
         QPainter* painter,
         NodeGeometry const& geom,
         NodeState const& state,
-        NodeDataModel const * model);
+        NodeDataModel const* model);
 
     static void drawResizeRect(
         QPainter* painter,
         NodeGeometry const& geom,
-        NodeDataModel const * model);
+        NodeDataModel const* model);
 
     static void drawValidationRect(
-        QPainter * painter,
-        NodeGeometry const & geom,
-        NodeDataModel const * model,
-        NodeGraphicsObject const & graphicsObject);
+        QPainter* painter,
+        NodeGeometry const& geom,
+        NodeDataModel const* model,
+        NodeGraphicsObject const& graphicsObject);
 };
-}
+} // namespace Cascade::NodeGraph

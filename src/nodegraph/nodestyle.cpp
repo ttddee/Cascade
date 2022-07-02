@@ -25,13 +25,14 @@
 #include <iostream>
 
 #include <QtCore/QFile>
+#include <QtCore/QJsonArray>
 #include <QtCore/QJsonDocument>
 #include <QtCore/QJsonObject>
 #include <QtCore/QJsonValueRef>
-#include <QtCore/QJsonArray>
 
 #include <QDebug>
 
+#include "../log.h"
 #include "stylecollection.h"
 
 using Cascade::NodeGraph::NodeStyle;
@@ -48,52 +49,55 @@ NodeStyle::NodeStyle()
     loadJsonFile(":/style/nodegraphstyle.json");
 }
 
-
 NodeStyle::NodeStyle(QString jsonText)
 {
     loadJsonText(jsonText);
 }
 
-
 void NodeStyle::setNodeStyle(QString jsonText)
 {
     NodeStyle style(jsonText);
 
-
     StyleCollection::setNodeStyle(style);
 }
 
-
 #ifdef STYLE_DEBUG
-#define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable) { \
-if (v.type() == QJsonValue::Undefined || \
-                                             v.type() == QJsonValue::Null) \
-        qWarning() << "Undefined value for parameter:" << #variable; \
-}
+#    define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)                                          \
+        {                                                                                          \
+            if (v.type() == QJsonValue::Undefined || v.type() == QJsonValue::Null)                 \
+                qWarning() << "Undefined value for parameter:" << #variable;                       \
+        }
 #else
-#define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)
+#    define NODE_STYLE_CHECK_UNDEFINED_VALUE(v, variable)
 #endif
 
-#define NODE_STYLE_READ_COLOR(values, variable)  { \
-auto valueRef = values[#variable]; \
-    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable) \
-    if (valueRef.isArray()) { \
-        auto colorArray = valueRef.toArray(); \
-        std::vector<int> rgb; rgb.reserve(3); \
-        for (auto it = colorArray.begin(); it != colorArray.end(); ++it) { \
-            rgb.push_back((*it).toInt()); \
-    } \
-        variable = QColor(rgb[0], rgb[1], rgb[2]); \
-} else { \
-        variable = QColor(valueRef.toString()); \
-} \
-}
+#define NODE_STYLE_READ_COLOR(values, variable)                                                    \
+    {                                                                                              \
+        auto valueRef = values[#variable];                                                         \
+        NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable)                                       \
+        if (valueRef.isArray())                                                                    \
+        {                                                                                          \
+            auto colorArray = valueRef.toArray();                                                  \
+            std::vector<int> rgb;                                                                  \
+            rgb.reserve(3);                                                                        \
+            for (auto it = colorArray.begin(); it != colorArray.end(); ++it)                       \
+            {                                                                                      \
+                rgb.push_back((*it).toInt());                                                      \
+            }                                                                                      \
+            variable = QColor(rgb[0], rgb[1], rgb[2]);                                             \
+        }                                                                                          \
+        else                                                                                       \
+        {                                                                                          \
+            variable = QColor(valueRef.toString());                                                \
+        }                                                                                          \
+    }
 
-#define NODE_STYLE_READ_FLOAT(values, variable)  { \
-auto valueRef = values[#variable]; \
-    NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable) \
-    variable = valueRef.toDouble(); \
-}
+#define NODE_STYLE_READ_FLOAT(values, variable)                                                    \
+    {                                                                                              \
+        auto valueRef = values[#variable];                                                         \
+        NODE_STYLE_CHECK_UNDEFINED_VALUE(valueRef, variable)                                       \
+        variable = valueRef.toDouble();                                                            \
+    }
 
 void NodeStyle::loadJsonFile(QString styleFile)
 {
@@ -101,7 +105,7 @@ void NodeStyle::loadJsonFile(QString styleFile)
 
     if (!file.open(QIODevice::ReadOnly))
     {
-        qWarning() << "Couldn't open file " << styleFile;
+        CS_LOG_WARNING("Couldn't open file " + styleFile);
 
         return;
     }
@@ -109,14 +113,12 @@ void NodeStyle::loadJsonFile(QString styleFile)
     loadJsonFromByteArray(file.readAll());
 }
 
-
 void NodeStyle::loadJsonText(QString jsonText)
 {
     loadJsonFromByteArray(jsonText.toUtf8());
 }
 
-
-void NodeStyle::loadJsonFromByteArray(QByteArray const &byteArray)
+void NodeStyle::loadJsonFromByteArray(QByteArray const& byteArray)
 {
     QJsonDocument json(QJsonDocument::fromJson(byteArray));
 
@@ -128,6 +130,7 @@ void NodeStyle::loadJsonFromByteArray(QByteArray const &byteArray)
 
     NODE_STYLE_READ_COLOR(obj, NormalBoundaryColor);
     NODE_STYLE_READ_COLOR(obj, SelectedBoundaryColor);
+    NODE_STYLE_READ_COLOR(obj, ViewedBoundaryColor);
     NODE_STYLE_READ_COLOR(obj, GradientColor0);
     NODE_STYLE_READ_COLOR(obj, GradientColor1);
     NODE_STYLE_READ_COLOR(obj, GradientColor2);

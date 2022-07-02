@@ -232,10 +232,24 @@ void Node::view(const ViewerMode viewerMode)
 {
     CS_LOG_INFO("Viewing");
 
+    setIsViewed(true);
+
     if (viewerMode == ViewerMode::Result)
     {
-        render();
+        //render();
     }
+}
+
+bool Node::getIsViewed() const
+{
+    return mIsViewed;
+}
+
+void Node::setIsViewed(const bool viewed)
+{
+    mIsViewed = viewed;
+
+    mNodeGraphicsObject->update();
 }
 
 void Node::render()

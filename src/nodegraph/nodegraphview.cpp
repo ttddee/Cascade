@@ -79,7 +79,7 @@ NodeGraphView::NodeGraphView(QWidget* parent)
 
     mContextMenu = new ContextMenu(mModel.get(), scene, this);
 
-    scale(0.7, 0.7);
+    scale(0.75, 0.75);
 
     connect(mScene, &NodeGraphScene::nodeDoubleClicked, this, &NodeGraphView::setActiveNode);
 }
@@ -111,6 +111,11 @@ void NodeGraphView::setScene(NodeGraphScene* scene)
     mDeleteSelectionAction->setShortcut(Qt::Key_Delete);
     connect(mDeleteSelectionAction, &QAction::triggered, this, &NodeGraphView::deleteSelectedNodes);
     addAction(mDeleteSelectionAction);
+}
+
+NodeGraphDataModel* NodeGraphView::getModel() const
+{
+    return mModel.get();
 }
 
 void NodeGraphView::setModel(std::unique_ptr<NodeGraphDataModel> model)
@@ -199,14 +204,26 @@ void NodeGraphView::setActiveNode(Node* node)
     emit activeNodeChanged(node);
 }
 
+void NodeGraphView::setViewedNode(Node* node)
+{
+    if (mViewedNode)
+    {
+        mViewedNode->setIsViewed(false);
+    }
+
+    mViewedNode = node;
+
+    node->view(mViewerMode);
+}
+
 void NodeGraphView::handleFrontViewRequested()
 {
     CS_LOG_INFO("BEEP");
 }
 
-void NodeGraphView::handleBackViewRequested() { }
+void NodeGraphView::handleBackViewRequested() {}
 
-void NodeGraphView::handleAlphaViewRequested() { }
+void NodeGraphView::handleAlphaViewRequested() {}
 
 void NodeGraphView::handleResultViewRequested()
 {
@@ -216,7 +233,7 @@ void NodeGraphView::handleResultViewRequested()
 
     if (selected.size() == 1)
     {
-        selected.front()->view(mViewerMode);
+        setViewedNode(selected.front());
     }
 }
 
