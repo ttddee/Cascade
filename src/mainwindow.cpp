@@ -46,7 +46,8 @@ MainWindow::MainWindow(QWidget* parent)
 {
     // OCIO needs the locale to be set here
     std::setlocale(LC_NUMERIC, "C");
-    QLocale::setDefault(QLocale(QLocale::English, QLocale::UnitedStates));
+    auto locale = QLocale(QLocale::English, QLocale::UnitedStates);
+    setLocale(locale);
 
     setWindowIcon(QIcon(":/cascade.ico"));
 
