@@ -436,8 +436,6 @@ bool VulkanRenderer::createImageFromFile(const QString& path, const int colorSpa
 
     updateVertexData(mCpuImage->xend(), mCpuImage->yend());
 
-    auto imageSize = QSize(mCpuImage->xend(), mCpuImage->yend());
-
     vk::FormatProperties props = mPhysicalDevice.getFormatProperties(globalImageFormat);
     const bool canSampleLinear =
         (bool)(props.linearTilingFeatures & vk::FormatFeatureFlagBits::eSampledImage);

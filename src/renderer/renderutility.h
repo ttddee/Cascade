@@ -20,15 +20,16 @@
 #ifndef RENDERUTILITY_H
 #define RENDERUTILITY_H
 
+#include <QFileInfo>
 #include <QString>
 #include <QStringList>
-#include <QFileInfo>
 
 #include <vulkan/vulkan.hpp>
 
-namespace Cascade::Renderer {
+namespace Cascade::Renderer
+{
 
-inline const VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
+inline VkDeviceSize aligned(VkDeviceSize v, VkDeviceSize byteAlign)
 {
     return (v + byteAlign - 1) & ~(byteAlign - 1);
 }
@@ -37,7 +38,7 @@ inline const std::vector<float> unpackPushConstants(const QString& s)
 {
     std::vector<float> values;
     auto parts = s.split(",");
-    foreach(const QString& part, parts)
+    foreach (const QString& part, parts)
     {
         values.push_back(part.toFloat());
     }
