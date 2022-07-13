@@ -79,7 +79,7 @@ NodeGraphView::NodeGraphView(QWidget* parent)
 
     mContextMenu = new ContextMenu(mModel.get(), scene, this);
 
-    scale(0.7, 0.7);
+    scale(0.75, 0.75);
 
     connect(mScene, &NodeGraphScene::nodeDoubleClicked, this, &NodeGraphView::setActiveNode);
 }
@@ -111,6 +111,11 @@ void NodeGraphView::setScene(NodeGraphScene* scene)
     mDeleteSelectionAction->setShortcut(Qt::Key_Delete);
     connect(mDeleteSelectionAction, &QAction::triggered, this, &NodeGraphView::deleteSelectedNodes);
     addAction(mDeleteSelectionAction);
+}
+
+NodeGraphDataModel* NodeGraphView::getModel() const
+{
+    return mModel.get();
 }
 
 void NodeGraphView::setModel(std::unique_ptr<NodeGraphDataModel> model)
@@ -175,7 +180,7 @@ void NodeGraphView::deleteSelectedNodes()
     // Delete the selected connections first, ensuring that they won't be
     // automatically deleted when selected nodes are deleted (deleting a node
     // deletes some connections as well)
-    for (QGraphicsItem* item : mScene->selectedItems())
+    for (auto& item : mScene->selectedItems())
     {
         if (auto c = qgraphicsitem_cast<ConnectionGraphicsObject*>(item))
             mModel->deleteConnection(c->connection());
@@ -185,7 +190,7 @@ void NodeGraphView::deleteSelectedNodes()
     // Selected connections were already deleted prior to this loop, otherwise
     // qgraphicsitem_cast<NodeGraphicsObject*>(item) could be a use-after-free
     // when a selected connection is deleted by deleting the node.
-    for (QGraphicsItem* item : mScene->selectedItems())
+    for (auto& item : mScene->selectedItems())
     {
         if (auto n = qgraphicsitem_cast<NodeGraphicsObject*>(item))
             mModel->removeNode(n->node());
@@ -199,14 +204,26 @@ void NodeGraphView::setActiveNode(Node* node)
     emit activeNodeChanged(node);
 }
 
+void NodeGraphView::setViewedNode(Node* node)
+{
+    if (mViewedNode)
+    {
+        mViewedNode->setIsViewed(false);
+    }
+
+    mViewedNode = node;
+
+    node->view(mViewerMode);
+}
+
 void NodeGraphView::handleFrontViewRequested()
 {
     CS_LOG_INFO("BEEP");
 }
 
-void NodeGraphView::handleBackViewRequested() { }
+void NodeGraphView::handleBackViewRequested() {}
 
-void NodeGraphView::handleAlphaViewRequested() { }
+void NodeGraphView::handleAlphaViewRequested() {}
 
 void NodeGraphView::handleResultViewRequested()
 {
@@ -216,7 +233,7 @@ void NodeGraphView::handleResultViewRequested()
 
     if (selected.size() == 1)
     {
-        selected.front()->view(mViewerMode);
+        setViewedNode(selected.front());
     }
 }
 

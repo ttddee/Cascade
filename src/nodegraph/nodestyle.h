@@ -44,11 +44,12 @@ private:
 
     void loadJsonFile(QString fileName) override;
 
-    void loadJsonFromByteArray(QByteArray const &byteArray) override;
+    void loadJsonFromByteArray(QByteArray const& byteArray) override;
 
 public:
     QColor NormalBoundaryColor;
     QColor SelectedBoundaryColor;
+    QColor ViewedBoundaryColor;
     QColor GradientColor0;
     QColor GradientColor1;
     QColor GradientColor2;
@@ -70,4 +71,4 @@ public:
 
     float Opacity;
 };
-}
+} // namespace Cascade::NodeGraph

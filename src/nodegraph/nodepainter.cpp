@@ -26,41 +26,37 @@
 
 #include <QtCore/QMargins>
 
-#include "stylecollection.h"
-#include "porttype.h"
-#include "nodegraphicsobject.h"
-#include "nodegeometry.h"
-#include "nodestate.h"
-#include "nodedatamodel.h"
 #include "node.h"
+#include "nodedatamodel.h"
+#include "nodegeometry.h"
+#include "nodegraphicsobject.h"
 #include "nodegraphscene.h"
+#include "nodestate.h"
+#include "porttype.h"
+#include "stylecollection.h"
 
-using Cascade::NodeGraph::NodePainter;
+using Cascade::NodeGraph::Node;
+using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::NodeGeometry;
 using Cascade::NodeGraph::NodeGraphicsObject;
-using Cascade::NodeGraph::Node;
-using Cascade::NodeGraph::NodeState;
-using Cascade::NodeGraph::NodeDataModel;
 using Cascade::NodeGraph::NodeGraphScene;
+using Cascade::NodeGraph::NodePainter;
+using Cascade::NodeGraph::NodeState;
 
-void
-NodePainter::paint(
-    QPainter* painter,
-    Node & node,
-    NodeGraphScene const& scene)
+void NodePainter::paint(QPainter* painter, Node& node, NodeGraphScene const& scene)
 {
     NodeGeometry const& geom = node.nodeGeometry();
 
     NodeState const& state = node.nodeState();
 
-    NodeGraphicsObject const & graphicsObject = node.nodeGraphicsObject();
+    NodeGraphicsObject const& graphicsObject = node.nodeGraphicsObject();
 
     geom.recalculateSize(painter->font());
 
     //--------------------------------------------
-    NodeDataModel const * model = node.nodeDataModel();
+    NodeDataModel const* model = node.nodeDataModel();
 
-    drawNodeRect(painter, geom, model, graphicsObject);
+    drawNodeRect(painter, node, geom, model, graphicsObject);
 
     drawConnectionPoints(painter, geom, state, model, scene);
 
@@ -81,18 +77,19 @@ NodePainter::paint(
     }
 }
 
-
 void NodePainter::drawNodeRect(
     QPainter* painter,
+    Node& node,
     NodeGeometry const& geom,
     NodeDataModel const* model,
-    NodeGraphicsObject const & graphicsObject)
+    NodeGraphicsObject const& graphicsObject)
 {
     NodeStyle const& nodeStyle = model->nodeStyle();
 
-    auto color = graphicsObject.isSelected()
-                     ? nodeStyle.SelectedBoundaryColor
-                     : nodeStyle.NormalBoundaryColor;
+    auto color = graphicsObject.isSelected() ? nodeStyle.SelectedBoundaryColor
+                                             : nodeStyle.NormalBoundaryColor;
+
+    color = node.getIsViewed() ? nodeStyle.ViewedBoundaryColor : color;
 
     if (geom.hovered())
     {
@@ -105,8 +102,7 @@ void NodePainter::drawNodeRect(
         painter->setPen(p);
     }
 
-    QLinearGradient gradient(QPointF(0.0, 0.0),
-                             QPointF(2.0, geom.height()));
+    QLinearGradient gradient(QPointF(0.0, 0.0), QPointF(2.0, geom.height()));
 
     gradient.setColorAt(0.0, nodeStyle.GradientColor0);
     gradient.setColorAt(0.03, nodeStyle.GradientColor1);
@@ -117,28 +113,27 @@ void NodePainter::drawNodeRect(
 
     float diam = nodeStyle.ConnectionPointDiameter;
 
-    QRectF boundary( -diam, -diam, 2.0 * diam + geom.width(), 2.0 * diam + geom.height());
+    QRectF boundary(-diam, -diam, 2.0 * diam + geom.width(), 2.0 * diam + geom.height());
 
     double const radius = 3.0;
 
     painter->drawRoundedRect(boundary, radius, radius);
 }
 
-
 void NodePainter::drawConnectionPoints(
     QPainter* painter,
     NodeGeometry const& geom,
     NodeState const& state,
-    NodeDataModel const * model,
-    NodeGraphScene const & scene)
+    NodeDataModel const* model,
+    NodeGraphScene const& scene)
 {
-    NodeStyle const& nodeStyle      = model->nodeStyle();
-    auto const     &connectionStyle = StyleCollection::connectionStyle();
+    NodeStyle const& nodeStyle  = model->nodeStyle();
+    auto const& connectionStyle = StyleCollection::connectionStyle();
 
-    float diameter = nodeStyle.ConnectionPointDiameter;
-    auto  reducedDiameter = diameter * 0.6;
+    float diameter       = nodeStyle.ConnectionPointDiameter;
+    auto reducedDiameter = diameter * 0.6;
 
-    for(PortType portType: {PortType::Out, PortType::In})
+    for (PortType portType : {PortType::Out, PortType::In})
     {
         size_t n = state.getEntries(portType).size();
 
@@ -146,80 +141,70 @@ void NodePainter::drawConnectionPoints(
         {
             QPointF p = geom.portScenePosition(i, portType);
 
-            bool canConnect = (state.getEntries(portType)[i].empty() ||
-                               (portType == PortType::Out &&
-                                model->portOutConnectionPolicy(i) == NodeDataModel::ConnectionPolicy::Many) );
+            bool canConnect =
+                (state.getEntries(portType)[i].empty() ||
+                 (portType == PortType::Out &&
+                  model->portOutConnectionPolicy(i) == NodeDataModel::ConnectionPolicy::Many));
 
             double r = 1.0;
-            if (state.isReacting() &&
-                canConnect &&
-                portType == state.reactingPortType())
+            if (state.isReacting() && canConnect && portType == state.reactingPortType())
             {
 
-                auto   diff = geom.draggingPos() - p;
+                auto diff   = geom.draggingPos() - p;
                 double dist = std::sqrt(QPointF::dotProduct(diff, diff));
 
                 double const thres = 40.0;
-                r = (dist < thres) ?
-                        (2.0 - dist / thres ) :
-                        1.0;
+                r                  = (dist < thres) ? (2.0 - dist / thres) : 1.0;
             }
 
             painter->setBrush(connectionStyle.normalColor(model->portCaption(portType, i)));
 
-            painter->drawEllipse(p,
-                                 reducedDiameter * r,
-                                 reducedDiameter * r);
+            painter->drawEllipse(p, reducedDiameter * r, reducedDiameter * r);
         }
     };
 }
 
-
 void NodePainter::drawFilledConnectionPoints(
-    QPainter * painter,
+    QPainter* painter,
     NodeGeometry const& geom,
     NodeState const& state,
-    NodeDataModel const * model)
+    NodeDataModel const* model)
 {
-    NodeStyle const& nodeStyle       = model->nodeStyle();
-    auto const     & connectionStyle = StyleCollection::connectionStyle();
+    NodeStyle const& nodeStyle  = model->nodeStyle();
+    auto const& connectionStyle = StyleCollection::connectionStyle();
 
     auto diameter = nodeStyle.ConnectionPointDiameter;
 
-    for(PortType portType: {PortType::Out, PortType::In})
+    for (PortType portType : {PortType::Out, PortType::In})
     {
         size_t n = state.getEntries(portType).size();
 
         for (size_t i = 0; i < n; ++i)
         {
-            QPointF p = geom.portScenePosition(
-                static_cast<PortIndex>(i),
-                static_cast<PortType>(portType));
+            QPointF p =
+                geom.portScenePosition(static_cast<PortIndex>(i), static_cast<PortType>(portType));
 
             if (!state.getEntries(portType)[i].empty())
             {
                 painter->setBrush(connectionStyle.normalColor(model->portCaption(portType, i)));
 
-                painter->drawEllipse(p,
-                                     diameter * 0.4,
-                                     diameter * 0.4);
+                painter->drawEllipse(p, diameter * 0.4, diameter * 0.4);
             }
         }
     }
 }
 
-
 void NodePainter::drawModelName(
-    QPainter * painter,
-    NodeGeometry const & geom,
-    NodeState const & state,
-    NodeDataModel const * model)
+    QPainter* painter,
+    NodeGeometry const& geom,
+    NodeState const& state,
+    NodeDataModel const* model)
 {
     NodeStyle const& nodeStyle = model->nodeStyle();
 
     Q_UNUSED(state);
 
-    QString const &name = model->caption();
+    QString const& name = model->caption();
 
     QFont f = painter->font();
 
@@ -229,8 +214,8 @@ void NodePainter::drawModelName(
 
     auto rect = metrics.boundingRect(name);
 
-    QPointF position((geom.width() - rect.width()) / 2.0,
-                     (geom.spacing() + geom.entryHeight()) / 3.0);
+    QPointF position(
+        (geom.width() - rect.width()) / 2.0, (geom.spacing() + geom.entryHeight()) / 3.0);
 
     painter->setFont(f);
     painter->setPen(nodeStyle.FontColor);
@@ -240,19 +225,17 @@ void NodePainter::drawModelName(
     painter->setFont(f);
 }
 
-
 void NodePainter::drawEntryLabels(
-    QPainter * painter,
-    NodeGeometry const & geom,
-    NodeState const & state,
-    NodeDataModel const * model)
+    QPainter* painter,
+    NodeGeometry const& geom,
+    NodeState const& state,
+    NodeDataModel const* model)
 {
-    QFontMetrics const & metrics =
-        painter->fontMetrics();
+    QFontMetrics const& metrics = painter->fontMetrics();
 
-    for(PortType portType: {PortType::Out, PortType::In})
+    for (PortType portType : {PortType::Out, PortType::In})
     {
-        auto const &nodeStyle = model->nodeStyle();
+        auto const& nodeStyle = model->nodeStyle();
 
         auto& entries = state.getEntries(portType);
 
@@ -267,7 +250,8 @@ void NodePainter::drawEntryLabels(
             else
                 painter->setPen(nodeStyle.FontColor);
 
-            QString s = model->portCaption(portType, static_cast<PortIndex>(i));;
+            QString s = model->portCaption(portType, static_cast<PortIndex>(i));
+            ;
 
             auto rect = metrics.boundingRect(s);
 
@@ -275,16 +259,16 @@ void NodePainter::drawEntryLabels(
 
             switch (portType)
             {
-            case PortType::In:
-                p.setX(5.0);
-                break;
+                case PortType::In:
+                    p.setX(5.0);
+                    break;
 
-            case PortType::Out:
-                p.setX(geom.width() - 5.0 - rect.width());
-                break;
+                case PortType::Out:
+                    p.setX(geom.width() - 5.0 - rect.width());
+                    break;
 
-            default:
-                break;
+                default:
+                    break;
             }
 
             painter->drawText(p, s);
@@ -292,11 +276,10 @@ void NodePainter::drawEntryLabels(
     }
 }
 
-
 void NodePainter::drawResizeRect(
-    QPainter * painter,
-    NodeGeometry const & geom,
-    NodeDataModel const * model)
+    QPainter* painter,
+    NodeGeometry const& geom,
+    NodeDataModel const* model)
 {
     if (model->resizable())
     {
@@ -306,12 +289,11 @@ void NodePainter::drawResizeRect(
     }
 }
 
-
 void NodePainter::drawValidationRect(
-    QPainter * painter,
-    NodeGeometry const & geom,
-    NodeDataModel const * model,
-    NodeGraphicsObject const & graphicsObject)
+    QPainter* painter,
+    NodeGeometry const& geom,
+    NodeDataModel const* model,
+    NodeGraphicsObject const& graphicsObject)
 {
     auto modelValidationState = model->validationState();
 
@@ -319,9 +301,8 @@ void NodePainter::drawValidationRect(
     {
         NodeStyle const& nodeStyle = model->nodeStyle();
 
-        auto color = graphicsObject.isSelected()
-                         ? nodeStyle.SelectedBoundaryColor
-                         : nodeStyle.NormalBoundaryColor;
+        auto color = graphicsObject.isSelected() ? nodeStyle.SelectedBoundaryColor
+                                                 : nodeStyle.NormalBoundaryColor;
 
         if (geom.hovered())
         {
@@ -348,17 +329,18 @@ void NodePainter::drawValidationRect(
 
         float diam = nodeStyle.ConnectionPointDiameter;
 
-        QRectF boundary(-diam,
-                        -diam + geom.height() - geom.validationHeight(),
-                        2.0 * diam + geom.width(),
-                        2.0 * diam + geom.validationHeight());
+        QRectF boundary(
+            -diam,
+            -diam + geom.height() - geom.validationHeight(),
+            2.0 * diam + geom.width(),
+            2.0 * diam + geom.validationHeight());
 
         painter->drawRoundedRect(boundary, radius, radius);
 
         painter->setBrush(Qt::gray);
 
         //Drawing the validation message itself
-        QString const &errorMsg = model->validationMessage();
+        QString const& errorMsg = model->validationMessage();
 
         QFont f = painter->font();
 
@@ -366,8 +348,9 @@ void NodePainter::drawValidationRect(
 
         auto rect = metrics.boundingRect(errorMsg);
 
-        QPointF position((geom.width() - rect.width()) / 2.0,
-                         geom.height() - (geom.validationHeight() - diam) / 2.0);
+        QPointF position(
+            (geom.width() - rect.width()) / 2.0,
+            geom.height() - (geom.validationHeight() - diam) / 2.0);
 
         painter->setFont(f);
         painter->setPen(nodeStyle.FontColor);
