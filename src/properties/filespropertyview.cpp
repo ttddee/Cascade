@@ -20,9 +20,10 @@
 #include "filespropertyview.h"
 #include "propertymodel.h"
 
-namespace Cascade::Properties {
+namespace Cascade::Properties
+{
 
-FilesPropertyView::FilesPropertyView(QWidget *parent)
+FilesPropertyView::FilesPropertyView(QWidget* parent)
     : PropertyView(parent)
 {
     mLayout = new QVBoxLayout();
@@ -30,12 +31,14 @@ FilesPropertyView::FilesPropertyView(QWidget *parent)
     setLayout(mLayout);
 
     mLoadButton = new QPushButton("Load Image(s)...");
+    mLoadButton->setMinimumHeight(22);
     mLayout->addWidget(mLoadButton);
 
     mFileListView = new QListView();
     mLayout->addWidget(mFileListView);
 
     mDeleteButton = new QPushButton("Delete Image(s)...");
+    mDeleteButton->setMinimumHeight(22);
     mLayout->addWidget(mDeleteButton);
 }
 
