@@ -18,6 +18,10 @@
 */
 
 #include "filespropertyview.h"
+
+#include <QCoreApplication>
+#include <QFileDialog>
+
 #include "propertymodel.h"
 
 namespace Cascade::Properties
@@ -40,12 +44,28 @@ FilesPropertyView::FilesPropertyView(QWidget* parent)
     mDeleteButton = new QPushButton("Delete Image(s)...");
     mDeleteButton->setMinimumHeight(22);
     mLayout->addWidget(mDeleteButton);
+
+    connect(mLoadButton, &QPushButton::clicked, this, &FilesPropertyView::handleLoadButtonClicked);
 }
 
 void FilesPropertyView::setModel(FilesPropertyModel* model)
 {
     mModel = model;
     mFileListView->setModel(mModel->getData()->getFiles());
+}
+
+void FilesPropertyView::handleLoadButtonClicked()
+{
+    QFileDialog dialog(nullptr);
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.setNameFilter(
+        tr("Images (*.bmp *.gif *.jpg *.jpeg *.jp2 *.j2k *.j2c *.png *.tga *.tif *exr)"));
+    dialog.setViewMode(QFileDialog::Detail);
+    dialog.setDirectory(QCoreApplication::applicationDirPath());
+    if (dialog.exec())
+    {
+        mModel->addEntries(dialog.selectedFiles());
+    }
 }
 
 } //namespace Cascade::Properties

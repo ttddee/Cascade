@@ -27,18 +27,14 @@ namespace Cascade::Properties
 {
 
 class PropertyData
-{
-
-};
+{};
 
 class TitlePropertyData : public PropertyData
 {
 public:
-    TitlePropertyData(
-        const QString& title) :
-        mTitle(title)
+    TitlePropertyData(const QString& title)
+        : mTitle(title)
     {}
-
 
     const QString& getTitle() const
     {
@@ -57,13 +53,13 @@ public:
         const int min,
         const int max,
         const int step,
-        const int value) :
-        mName(name),
-        mMin(min),
-        mMax(max),
-        mStep(step),
-        mValue(value),
-        mBaseValue(value)
+        const int value)
+        : mName(name)
+        , mMin(min)
+        , mMax(max)
+        , mStep(step)
+        , mValue(value)
+        , mBaseValue(value)
     {}
 
     QString getName() const
@@ -107,20 +103,27 @@ private:
 class FilesPropertyData : public PropertyData
 {
 public:
-    FilesPropertyData() :
-        mFiles(new QStringListModel())
-    {
-
-    }
+    FilesPropertyData()
+        : mFiles(new QStringListModel())
+    {}
 
     QStringListModel* getFiles() const
     {
         return mFiles;
     }
 
+    void append(const QStringList& files)
+    {
+        for (auto& file : files)
+        {
+            mFiles->insertRow(mFiles->rowCount());
+            QModelIndex index = mFiles->index(mFiles->rowCount() - 1, 0);
+            mFiles->setData(index, file);
+        }
+    }
+
 private:
     QStringListModel* mFiles;
-
 };
 
 } // namespace Cascade::Properties

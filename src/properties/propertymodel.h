@@ -24,14 +24,14 @@
 
 #include <QObject>
 
-#include "propertydata.h"
-#include "../properties/propertyview.h"
-#include "../properties/intpropertyview.h"
-#include "../properties/titlepropertyview.h"
 #include "../properties/filespropertyview.h"
+#include "../properties/intpropertyview.h"
+#include "../properties/propertyview.h"
+#include "../properties/titlepropertyview.h"
+#include "propertydata.h"
 
-using Cascade::Properties::PropertyView;
 using Cascade::Properties::IntPropertyView;
+using Cascade::Properties::PropertyView;
 using Cascade::Properties::TitlePropertyView;
 
 namespace Cascade::Properties
@@ -44,7 +44,6 @@ class PropertyModel : public QObject
 public:
     virtual PropertyData* getData() = 0;
     virtual PropertyView* getView() = 0;
-
 };
 
 class TitlePropertyModel : public PropertyModel
@@ -73,7 +72,6 @@ private:
     std::unique_ptr<TitlePropertyData> mData;
     TitlePropertyView* mView;
 };
-
 
 class IntPropertyModel : public PropertyModel
 {
@@ -105,7 +103,6 @@ public:
 private:
     std::unique_ptr<IntPropertyData> mData;
     IntPropertyView* mView;
-
 };
 
 class FilesPropertyModel : public PropertyModel
@@ -130,10 +127,14 @@ public:
         return mView;
     };
 
+    void addEntries(const QStringList& entries)
+    {
+        mData->append(entries);
+    }
+
 private:
     std::unique_ptr<FilesPropertyData> mData;
     FilesPropertyView* mView;
-
 };
 
 } // namespace Cascade::Properties

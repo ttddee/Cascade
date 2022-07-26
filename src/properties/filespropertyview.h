@@ -20,17 +20,18 @@
 #ifndef FILESPROPERTYVIEW_H
 #define FILESPROPERTYVIEW_H
 
-#include <QPushButton>
 #include <QListView>
+#include <QPushButton>
 
 #include "propertyview.h"
 
 namespace Cascade::Properties
 {
-    class FilesPropertyModel;
+class FilesPropertyModel;
 }
 
-namespace Cascade::Properties {
+namespace Cascade::Properties
+{
 
 using Cascade::Properties::FilesPropertyModel;
 
@@ -39,17 +40,20 @@ class FilesPropertyView : public PropertyView
     Q_OBJECT
 
 public:
-    FilesPropertyView(QWidget *parent = nullptr);
+    FilesPropertyView(QWidget* parent = nullptr);
 
     void setModel(FilesPropertyModel* model);
 
 private:
     FilesPropertyModel* mModel;
 
-    QVBoxLayout*        mLayout;
-    QPushButton*        mLoadButton;
-    QListView*          mFileListView;
-    QPushButton*        mDeleteButton;
+    QVBoxLayout* mLayout;
+    QPushButton* mLoadButton;
+    QListView* mFileListView;
+    QPushButton* mDeleteButton;
+
+private slots:
+    void handleLoadButtonClicked();
 };
 
 } // namespace Cascade::Properties
