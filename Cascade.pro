@@ -286,16 +286,23 @@ FORMS += \
     src/uientities/writepropertiesentity.ui \
     src/viewerstatusbar.ui
 
-linux-g++ {
+linux-g++ | linux-clang++ {
     # Check if we are on Ubuntu 18.04 LTS
-    OS = $$system(uname -a | grep -o "18.04.1-Ubuntu")
-    contains(OS, "18.04.1-Ubuntu"):
-    {
+    OS = $$system(uname -a)
+    isManjaro = $$find(OS,Manjaro)
+    isUbuntu1804LTS = $$find(OS, 18.04.1-Ubuntu)
+    message(OS: $$OS)
+    !isEmpty( isUbuntu1804LTS ){
+        message("Bulding for ubuntu 18.04 LTS")
         INCLUDEPATH += $$(VULKAN_SDK)/include
     }
+    !isEmpty(isManjaro){
 
-    INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
-    INCLUDEPATH += $$PWD/external/glslang/include	
+        message("Bulding for arch linux")
+        INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
+        INCLUDEPATH += $$PWD/external/glslang/include
+    }
+
 
     LIBS += -L/usr/local/lib -lOpenImageIO
     LIBS += -L/usr/local/lib -lOpenImageIO_Util
@@ -303,15 +310,15 @@ linux-g++ {
     LIBS += -L/usr/lib/x86_64-linux-gnu -ldl
     LIBS += -L/usr/lib/x86_64-linux-gnu -ltbb
     # The link order of the following libs is important
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools-opt
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools
-    LIBS += -L$$PWD/external/glslang/lib -lMachineIndependent
-    LIBS += -L$$PWD/external/glslang/lib -lglslang
-    LIBS += -L$$PWD/external/glslang/lib -lglslang-default-resource-limits
-    LIBS += -L$$PWD/external/glslang/lib -lOSDependent
-    LIBS += -L$$PWD/external/glslang/lib -lOGLCompiler
-    LIBS += -L$$PWD/external/glslang/lib -lGenericCodeGen
+    LIBS += -L$$PWD/external/glslang/lib -lSPIRV \
+    -lSPIRV-Tools-opt \
+    -lSPIRV-Tools \
+    -lMachineIndependent \
+    -lglslang \
+    -lglslang-default-resource-limits \
+    -lOSDependent \
+    -lOGLCompiler \
+    -lGenericCodeGen
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
