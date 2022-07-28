@@ -287,31 +287,47 @@ FORMS += \
     src/viewerstatusbar.ui
 
 linux-g++ {
+
+    OS = $$system(uname -a)
+    isManjaro = $$find(OS,Manjaro)
+    isUbuntu1804LTS = $$find(OS, 18.04.1-Ubuntu)
+    message(OS: $$OS)
+
     # Check if we are on Ubuntu 18.04 LTS
-    OS = $$system(uname -a | grep -o "18.04.1-Ubuntu")
-    contains(OS, "18.04.1-Ubuntu"):
-    {
+    !isEmpty( isUbuntu1804LTS ){
+        message("Bulding for Ubuntu 18.04 LTS")
         INCLUDEPATH += $$(VULKAN_SDK)/include
     }
+    # Check if we are on Manjaro (Arch) to use glslang and OpenColorIO provided by pacman
+    !isEmpty(isManjaro){
+        message("Bulding for Arch linux")
+    }else{
+        message("Custom path to 'external' folder was added")
+        INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
+        INCLUDEPATH += $$PWD/external/glslang/include
+    }
 
-    INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
-    INCLUDEPATH += $$PWD/external/glslang/include	
+    LIBS += -L/usr/local/lib -lOpenImageIO -lOpenImageIO_Util
+    !isEmpty(isManjaro){
+     LIBS +=  -lOpenColorIO
+    }else{
+     LIBS += -L$$PWD/external/OpenColorIO/install/lib -lOpenColorIO
+     LIBS += -L$$PWD/external/glslang/lib
+    }
 
-    LIBS += -L/usr/local/lib -lOpenImageIO
-    LIBS += -L/usr/local/lib -lOpenImageIO_Util
-    LIBS += -L$$PWD/external/OpenColorIO/install/lib -lOpenColorIO
-    LIBS += -L/usr/lib/x86_64-linux-gnu -ldl
-    LIBS += -L/usr/lib/x86_64-linux-gnu -ltbb
+    LIBS += -lSPIRV \
+    -lSPIRV-Tools-opt \
+    -lSPIRV-Tools \
+    -lMachineIndependent \
+    -lglslang \
+    -lglslang-default-resource-limits \
+    -lOSDependent \
+    -lOGLCompiler \
+    -lGenericCodeGen
+
+    LIBS += -L/usr/lib/x86_64-linux-gnu -ldl -ltbb
     # The link order of the following libs is important
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools-opt
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV-Tools
-    LIBS += -L$$PWD/external/glslang/lib -lMachineIndependent
-    LIBS += -L$$PWD/external/glslang/lib -lglslang
-    LIBS += -L$$PWD/external/glslang/lib -lglslang-default-resource-limits
-    LIBS += -L$$PWD/external/glslang/lib -lOSDependent
-    LIBS += -L$$PWD/external/glslang/lib -lOGLCompiler
-    LIBS += -L$$PWD/external/glslang/lib -lGenericCodeGen
+
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
