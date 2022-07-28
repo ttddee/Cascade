@@ -67,6 +67,8 @@ deps_arch()
     openxr
     glew
     freeglut        
+    opencolorio
+    glslang
     "
     sudo pacman -S $packages
 }
@@ -104,8 +106,7 @@ fi
 
 case "$OS" in
     arch)
-        deps_arch 
-        external_and_glslang
+        deps_arch
         ;;
     fedora)
         deps_fedora
