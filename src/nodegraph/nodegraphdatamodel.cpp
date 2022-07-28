@@ -240,7 +240,7 @@ std::vector<Node*> NodeGraphDataModel::allNodes() const
 }
 
 
-void NodeGraphDataModel::iterateOverNodes(std::function<void(Node*)> const& visitor)
+void NodeGraphDataModel::iterateOverNodes( [[maybe_unused]] std::function<void(Node*)> const& visitor)
 {
 //    for (const auto& _node : mNodes)
 //    {
@@ -249,7 +249,7 @@ void NodeGraphDataModel::iterateOverNodes(std::function<void(Node*)> const& visi
 }
 
 
-void NodeGraphDataModel::iterateOverNodeData(std::function<void(NodeDataModel*)> const& visitor)
+void NodeGraphDataModel::iterateOverNodeData( [[maybe_unused]] std::function<void(NodeDataModel*)> const& visitor)
 {
 //    for (const auto& _node : mNodes)
 //    {
@@ -258,7 +258,7 @@ void NodeGraphDataModel::iterateOverNodeData(std::function<void(NodeDataModel*)>
 }
 
 
-void NodeGraphDataModel::iterateOverNodeDataDependentOrder(std::function<void(NodeDataModel*)> const& visitor)
+void NodeGraphDataModel::iterateOverNodeDataDependentOrder( [[maybe_unused]] std::function<void(NodeDataModel*)> const& visitor)
 {
 //    std::set<QUuid> visitedNodesSet;
 

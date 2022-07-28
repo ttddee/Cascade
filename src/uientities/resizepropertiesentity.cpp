@@ -40,7 +40,7 @@ ResizePropertiesEntity::ResizePropertiesEntity(UIElementType et, QWidget *parent
             this, &ResizePropertiesEntity::heightPixelsChanged);
 }
 
-void ResizePropertiesEntity::selfConnectToValueChanged(NodeProperties *p)
+void ResizePropertiesEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &ResizePropertiesEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

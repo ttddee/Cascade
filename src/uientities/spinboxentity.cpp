@@ -53,7 +53,7 @@ void SpinBoxEntity::setMinMaxStepValue(int min, int max, int step, int value)
     mBaseValue = value;
 }
 
-void SpinBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void SpinBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &SpinBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

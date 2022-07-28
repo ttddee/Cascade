@@ -130,7 +130,7 @@ public:
         return result;
     }
 
-    NodeDataType dataType(PortType portType, PortIndex portIndex) const
+    NodeDataType dataType( [[maybe_unused]] PortType portType,[[maybe_unused]] PortIndex portIndex) const
     {
         return NodeDataType();
     }
@@ -158,7 +158,7 @@ public:
 
 public:
     /// Triggers the algorithm
-    virtual void setInData(std::shared_ptr<NodeData> nodeData, PortIndex port){};
+    virtual void setInData( [[maybe_unused]] std::shared_ptr<NodeData> nodeData, [[maybe_unused]] PortIndex port){};
 
     // Use this if portInConnectionPolicy returns ConnectionPolicy::Many
     virtual void setInData(
@@ -170,7 +170,7 @@ public:
         setInData(nodeData, port);
     }
 
-    std::shared_ptr<NodeData> outData(PortIndex port)
+    std::shared_ptr<NodeData> outData([[maybe_unused]] PortIndex port)
     {
         return std::make_shared<NodeData>();
     }

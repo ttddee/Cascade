@@ -144,7 +144,7 @@ void ISFManager::setUp()
 //}
 
 int ISFManager::getRenderpassesFromJson(
-        const QJsonObject &json) const
+        [[maybe_unused]] const QJsonObject &json) const
 {
     int passes = 1;
 //    QJsonArray passesArray = json.value("PASSES").toArray();

@@ -41,7 +41,7 @@ QString TextBoxEntity::getValuesAsString()
     return "";
 }
 
-void TextBoxEntity::loadPropertyValues(const QString &values)
+void TextBoxEntity::loadPropertyValues( [[maybe_unused]] const QString &values)
 {
 
 }

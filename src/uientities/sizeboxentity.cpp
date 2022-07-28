@@ -69,7 +69,7 @@ void SizeBoxEntity::unHideCustomSizeElements()
     mUi->bottomLine->setHidden(false);
 }
 
-void SizeBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void SizeBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &SizeBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

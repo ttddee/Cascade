@@ -77,7 +77,7 @@ ContextMenu::ContextMenu(
 
     mTreeView->expandAll();
 
-    connect(mTreeView, &QTreeWidget::itemClicked, [&](QTreeWidgetItem *item, int column)
+    connect(mTreeView, &QTreeWidget::itemClicked, [&](QTreeWidgetItem *item, [[maybe_unused]] int column)
     {
         QString modelName = item->data(0, Qt::UserRole).toString();
 

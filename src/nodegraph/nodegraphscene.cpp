@@ -186,7 +186,7 @@ QByteArray NodeGraphScene::saveToMemory() const
     return document.toJson();
 }
 
-void NodeGraphScene::loadFromMemory(const QByteArray& data)
+void NodeGraphScene::loadFromMemory( [[maybe_unused]] const QByteArray& data)
 {
     //    QJsonObject const jsonDocument = QJsonDocument::fromJson(data).object();
 

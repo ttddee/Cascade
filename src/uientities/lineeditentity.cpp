@@ -47,7 +47,7 @@ void LineEditEntity::setText(const QString &text)
     mUi->lineEdit->setText(text);
 }
 
-void LineEditEntity::selfConnectToValueChanged(NodeProperties *p)
+void LineEditEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &LineEditEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});
@@ -58,7 +58,7 @@ QString LineEditEntity::getValuesAsString()
     return "\"" + mUi->lineEdit->text() + "\"";
 }
 
-void LineEditEntity::loadPropertyValues(const QString &values)
+void LineEditEntity::loadPropertyValues( [[maybe_unused]] const QString &values)
 {
 
 }

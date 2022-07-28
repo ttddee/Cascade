@@ -52,7 +52,7 @@ bool CheckBoxEntity::isChecked()
     return mUi->checkBox->isChecked();
 }
 
-void CheckBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void CheckBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &CheckBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

@@ -7,7 +7,7 @@ namespace Cascade::Renderer
 
 RenderTaskRead::RenderTaskRead() {}
 
-void RenderTaskRead::initialize(std::vector<PropertyData*> data) {}
+void RenderTaskRead::initialize( [[maybe_unused]] std::vector<PropertyData*> data) {}
 
 void RenderTaskRead::execute()
 {

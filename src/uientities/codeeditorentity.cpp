@@ -89,7 +89,7 @@ CodeEditorEntity::CodeEditorEntity(UIElementType et, QWidget *parent) :
             this, &CodeEditorEntity::handleTextChanged);
 }
 
-void CodeEditorEntity::selfConnectToValueChanged(NodeProperties *p)
+void CodeEditorEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &CodeEditorEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

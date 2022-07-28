@@ -254,7 +254,7 @@ void VulkanRenderer::createGraphicsPipelineLayout()
     mGraphicsPipelineLayout = mDevice.createPipelineLayoutUnique(pipelineLayoutInfo).value;
 }
 
-void VulkanRenderer::fillSettingsBuffer(const NodeBase* node)
+void VulkanRenderer::fillSettingsBuffer( [[maybe_unused]] const NodeBase* node)
 {
     //    auto props = node->getAllPropertyValues();
 
@@ -891,7 +891,7 @@ void VulkanRenderer::setViewerPushConstants(const QString& s)
     mViewerPushConstants = unpackPushConstants(s);
 }
 
-void VulkanRenderer::processReadNode(NodeBase* node)
+void VulkanRenderer::processReadNode( [[maybe_unused]] NodeBase* node)
 {
     //    auto parts = node->getAllPropertyValues().split(",");
     //    int index = parts[parts.size() - 2].toInt();
@@ -948,10 +948,10 @@ void VulkanRenderer::processReadNode(NodeBase* node)
 }
 
 void VulkanRenderer::processNode(
-    NodeBase* node,
-    CsImage* inputImageBack,
-    CsImage* inputImageFront,
-    const QSize targetSize)
+     [[maybe_unused]] NodeBase* node,
+     [[maybe_unused]] CsImage* inputImageBack,
+     [[maybe_unused]] CsImage* inputImageFront,
+     [[maybe_unused]] const QSize targetSize)
 {
     //    auto result = mDevice.waitIdle();
 
@@ -1078,7 +1078,7 @@ void VulkanRenderer::processNode(
     //    }
 }
 
-void VulkanRenderer::displayNode(const NodeBase* node)
+void VulkanRenderer::displayNode( [[maybe_unused]] const NodeBase* node)
 {
     //    if(CsImage* image = node->getCachedImage())
     //    {
@@ -1194,7 +1194,7 @@ void VulkanRenderer::releaseResources()
 
 void VulkanRenderer::shutdown()
 {
-    auto result = mDevice.waitIdle();
+     [[maybe_unused]] auto result = mDevice.waitIdle();
 
     mLoadImageStaging    = nullptr;
     mTmpCacheImage       = nullptr;

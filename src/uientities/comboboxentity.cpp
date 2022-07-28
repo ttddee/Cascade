@@ -51,7 +51,7 @@ void ComboBoxEntity::setOptions(const std::vector<QString> options, int index)
     mUi->comboBox->setCurrentIndex(index);
 }
 
-void ComboBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void ComboBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &ComboBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

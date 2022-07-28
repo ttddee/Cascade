@@ -71,7 +71,7 @@ CsImage::CsImage(
                     vk::ObjectType::eImage,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkImage, *mImage),
                     debugName);
-        auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+         [[maybe_unused]] auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
@@ -104,12 +104,12 @@ CsImage::CsImage(
                     vk::ObjectType::eDeviceMemory,
                     NON_DISPATCHABLE_HANDLE_TO_UINT64_CAST(VkDeviceMemory, *mMemory),
                     debugName);
-        auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
+         [[maybe_unused]] auto result = mDevice->setDebugUtilsObjectNameEXT(debugUtilsObjectNameInfo);
     }
 #endif
 
     //Associate the image with this chunk of memory
-    auto result = mDevice->bindImageMemory(*mImage, *mMemory, 0);
+     [[maybe_unused]] auto result = mDevice->bindImageMemory(*mImage, *mMemory, 0);
 
     vk::ImageViewCreateInfo viewInfo(
                 { },
