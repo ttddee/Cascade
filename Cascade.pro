@@ -287,30 +287,31 @@ FORMS += \
     src/viewerstatusbar.ui
 
 linux-g++ | linux-clang++ {
-    # Check if we are on Ubuntu 18.04 LTS
+
     OS = $$system(uname -a)
     isManjaro = $$find(OS,Manjaro)
     isUbuntu1804LTS = $$find(OS, 18.04.1-Ubuntu)
     message(OS: $$OS)
+
+    # Check if we are on Ubuntu 18.04 LTS
     !isEmpty( isUbuntu1804LTS ){
-        message("Bulding for ubuntu 18.04 LTS")
+        message("Bulding for Ubuntu 18.04 LTS")
         INCLUDEPATH += $$(VULKAN_SDK)/include
     }
+    # Check if we are on Manjaro (Arch) to use glslang and OpenColorIO provided by pacman
     !isEmpty(isManjaro){
-
-        message("Bulding for arch linux")
+        message("Bulding for Arch linux")
         INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
         INCLUDEPATH += $$PWD/external/glslang/include
     }
 
+    LIBS += -L/usr/local/lib -lOpenImageIO -lOpenImageIO_Util
+    !isEmpty(isManjaro){
+     LIBS += -L$$PWD/external/OpenColorIO/install/lib -lOpenColorIO
+     LIBS += -L$$PWD/external/glslang/lib
+    }
 
-    LIBS += -L/usr/local/lib -lOpenImageIO
-    LIBS += -L/usr/local/lib -lOpenImageIO_Util
-    LIBS += -L$$PWD/external/OpenColorIO/install/lib -lOpenColorIO
-    LIBS += -L/usr/lib/x86_64-linux-gnu -ldl
-    LIBS += -L/usr/lib/x86_64-linux-gnu -ltbb
-    # The link order of the following libs is important
-    LIBS += -L$$PWD/external/glslang/lib -lSPIRV \
+    LIBS += -lSPIRV \
     -lSPIRV-Tools-opt \
     -lSPIRV-Tools \
     -lMachineIndependent \
@@ -319,6 +320,10 @@ linux-g++ | linux-clang++ {
     -lOSDependent \
     -lOGLCompiler \
     -lGenericCodeGen
+
+    LIBS += -L/usr/lib/x86_64-linux-gnu -ldl -ltbb
+    # The link order of the following libs is important
+
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
     CONFIG(release, debug|release): DESTDIR = $$OUT_PWD/release
@@ -400,18 +405,18 @@ win32-msvc* {
         DESTDIR = $$OUT_PWD/release
 
         # Release Libs
-        LIBS += -L$$LIB_ROOT/lib -lOpenImageIO
-        LIBS += -L$$LIB_ROOT/lib -lOpenImageIO_Util
-        LIBS += -L$$LIB_ROOT/lib -lOpenColorIO
-        LIBS += -L$$LIB_ROOT/lib -ltbb
-        LIBS += -L$$LIB_ROOT/lib -lglslang
-        LIBS += -L$$LIB_ROOT/lib -lglslang-default-resource-limits
-        LIBS += -L$$LIB_ROOT/lib -lGenericCodeGen
-        LIBS += -L$$LIB_ROOT/lib -lMachineIndependent
-        LIBS += -L$$LIB_ROOT/lib -lOGLCompiler
-        LIBS += -L$$LIB_ROOT/lib -lOSDependent
-        LIBS += -L$$LIB_ROOT/lib -lSPIRV
-        LIBS += -L$$LIB_ROOT/lib -lSPVRemapper
+        LIBS += -L$$LIB_ROOT/lib -lOpenImageIO \
+        -lOpenImageIO_Util \
+        -lOpenColorIO \
+        -ltbb \
+        -lglslang \
+        -lglslang-default-resource-limits \
+        -lGenericCodeGen \
+        -lMachineIndependent \
+        -lOGLCompiler \
+        -lOSDependent \
+        -lSPIRV \
+        -lSPVRemapper
 
         # Release DLLs
         dlls.files += $$files($$QT_ROOT/bin/Qt5Svg.dll)
