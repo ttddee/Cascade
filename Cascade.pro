@@ -301,6 +301,8 @@ linux-g++ | linux-clang++ {
     # Check if we are on Manjaro (Arch) to use glslang and OpenColorIO provided by pacman
     !isEmpty(isManjaro){
         message("Bulding for Arch linux")
+    }else{
+        message("Custom path to 'external' folder was added")
         INCLUDEPATH += $$PWD/external/OpenColorIO/install/include
         INCLUDEPATH += $$PWD/external/glslang/include
     }
