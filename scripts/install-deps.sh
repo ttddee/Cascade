@@ -69,6 +69,7 @@ deps_arch()
     freeglut        
     opencolorio
     glslang
+    spirv-tools
     "
     sudo pacman -S $packages
 }
