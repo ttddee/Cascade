@@ -1,7 +1,7 @@
 {
   "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg/master/scripts/vcpkg.schema.json",
   "name": "cascade",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "dependencies": [
     {
 	  "name": "openimageio",
@@ -12,8 +12,8 @@
 	"glslang",
 	"gtest"
   ],
-  "builtin-baseline": "7f8d1606176ddbbacdee868eefa11c95dcdb4a82",
+  "builtin-baseline": "25cb1a671e7cd5154e363eef178ab091fd7d55868746a4394340567a794f6c6f0295e58721a5b4ee8bf66b4cc0e6a01c3e82f9cc9de9953ae349d45738a04700",
   "overrides": [
-	{ "name": "openimageio", "version": "2.3.10.1" }
+        { "name": "openimageio", "version": "v2.3.17.0" }
   ]
 }

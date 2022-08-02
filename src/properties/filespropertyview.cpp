@@ -59,7 +59,7 @@ void FilesPropertyView::handleLoadButtonClicked()
     QFileDialog dialog(nullptr);
     dialog.setFileMode(QFileDialog::ExistingFiles);
     dialog.setNameFilter(
-        tr("Images (*.bmp *.gif *.jpg *.jpeg *.jp2 *.j2k *.j2c *.png *.tga *.tif *exr)"));
+        tr("Images (*.bmp *.gif *.jpg *.jpeg *.jp2 *.j2k *.j2c *.png *.tga *.tif *.exr)"));
     dialog.setViewMode(QFileDialog::Detail);
     dialog.setDirectory(QCoreApplication::applicationDirPath());
     if (dialog.exec())
@@ -68,4 +68,4 @@ void FilesPropertyView::handleLoadButtonClicked()
     }
 }
 
-} //namespace Cascade::Properties
+} // namespace Cascade::Properties
