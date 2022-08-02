@@ -164,7 +164,7 @@ void CsCommandBuffer::recordImageLoad(
         CsImage* const renderTarget,
         vk::Pipeline* const readNodePipeline)
 {
-    auto result = mComputeQueue.waitIdle();
+     [[maybe_unused]] auto result = mComputeQueue.waitIdle();
 
     vk::CommandBufferBeginInfo cmdBufferBeginInfo;
 

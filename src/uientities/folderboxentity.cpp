@@ -46,7 +46,7 @@ void FolderBoxEntity::setName(const QString &name)
     mUi->label->setText(name);
 }
 
-void FolderBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void FolderBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &FolderBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

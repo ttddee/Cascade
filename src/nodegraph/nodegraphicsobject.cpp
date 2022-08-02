@@ -251,12 +251,12 @@ void NodeGraphicsObject::mousePressEvent(QGraphicsSceneMouseEvent * event)
 
 void NodeGraphicsObject::mouseMoveEvent(QGraphicsSceneMouseEvent * event)
 {
-    auto & geom  = mNode.nodeGeometry();
+     [[maybe_unused]] auto & geom  = mNode.nodeGeometry();
     auto & state = mNode.nodeState();
 
     if (state.resizing())
     {
-        auto diff = event->pos() - event->lastPos();
+         [[maybe_unused]] auto diff = event->pos() - event->lastPos();
 
 //        if (auto w = mNode.nodeDataModel()->embeddedWidget())
 //        {

@@ -47,7 +47,7 @@ QString TextBrowserEntity::getValuesAsString()
     return "";
 }
 
-void TextBrowserEntity::loadPropertyValues(const QString &values)
+void TextBrowserEntity::loadPropertyValues( [[maybe_unused]] const QString &values)
 {
 
 }

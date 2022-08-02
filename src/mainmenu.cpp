@@ -73,7 +73,7 @@ MainMenu::MainMenu(MainWindow* mainWindow)
     mEditMenu = new QMenu("Edit");
     this->addMenu(mEditMenu);
 
-    auto createNodeMenu = mEditMenu->addMenu("Create Node");
+    [[maybe_unused]] auto createNodeMenu = mEditMenu->addMenu("Create Node");
 
     // TODO: This is doubled in nodegraphcontextmenu
 

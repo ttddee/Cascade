@@ -105,7 +105,7 @@ void FileBoxEntity::deleteCurrentEntry()
     emit valueChanged();
 }
 
-void FileBoxEntity::selfConnectToValueChanged(NodeProperties *p)
+void FileBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &FileBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

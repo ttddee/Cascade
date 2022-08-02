@@ -214,7 +214,7 @@ ColorPropertiesEntity::ColorPropertiesEntity(UIElementType et, QWidget *parent) 
             this, &ColorPropertiesEntity::handleValueChanged);
 }
 
-void ColorPropertiesEntity::selfConnectToValueChanged(NodeProperties* p)
+void ColorPropertiesEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties* p)
 {
 //    connect(this, &ColorPropertiesEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

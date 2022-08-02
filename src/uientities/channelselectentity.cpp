@@ -43,7 +43,7 @@ void ChannelSelectEntity::hideAlphaChannel()
     mUi->alphaBox->setHidden(true);
 }
 
-void ChannelSelectEntity::selfConnectToValueChanged(NodeProperties *p)
+void ChannelSelectEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &ChannelSelectEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

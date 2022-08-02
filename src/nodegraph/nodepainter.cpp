@@ -125,7 +125,7 @@ void NodePainter::drawConnectionPoints(
     NodeGeometry const& geom,
     NodeState const& state,
     NodeDataModel const* model,
-    NodeGraphScene const& scene)
+     [[maybe_unused]] NodeGraphScene const& scene)
 {
     NodeStyle const& nodeStyle  = model->nodeStyle();
     auto const& connectionStyle = StyleCollection::connectionStyle();

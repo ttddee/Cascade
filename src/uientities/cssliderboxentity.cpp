@@ -68,7 +68,7 @@ CsSliderBoxEntity::CsSliderBoxEntity(
                 this, &CsSliderBoxEntity::handleSpinBoxValueChanged);
 }
 
-void CsSliderBoxEntity::selfConnectToValueChanged(NodeProperties* p)
+void CsSliderBoxEntity::selfConnectToValueChanged( [[maybe_unused]] NodeProperties* p)
 {
 //    connect(this, &CsSliderBoxEntity::valueChanged,
 //            p, [p]{p->handleSomeValueChanged();});

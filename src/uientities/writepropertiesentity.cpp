@@ -67,7 +67,7 @@ WritePropertiesEntity::WritePropertiesEntity(UIElementType et, QWidget *parent) 
 #endif
 }
 
-void WritePropertiesEntity::selfConnectToRequestFileSave(NodeProperties *p)
+void WritePropertiesEntity::selfConnectToRequestFileSave( [[maybe_unused]] NodeProperties *p)
 {
 //    connect(this, &WritePropertiesEntity::requestFileSave,
 //            p, &NodeProperties::handleFileSaveRequest);
