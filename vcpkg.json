@@ -14,6 +14,6 @@
   ],
   "builtin-baseline": "48369f2a2aa00f7311ca8417cfd0fbda4bcc41e9",
   "overrides": [
-        { "name": "openimageio", "version": "2.3.17.0" }
+        { "name": "openimageio", "version": "2.3.17.0#4" }
   ]
 }
