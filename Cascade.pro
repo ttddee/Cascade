@@ -314,7 +314,7 @@ linux-g++ {
      LIBS += -L$$PWD/external/OpenColorIO/install/lib -lOpenColorIO
      LIBS += -L$$PWD/external/glslang/lib
     }
-
+    # The link order of the following libs is important
     LIBS += -lSPIRV \
     -lSPIRV-Tools-opt \
     -lSPIRV-Tools \
@@ -326,7 +326,7 @@ linux-g++ {
     -lGenericCodeGen
 
     LIBS += -L/usr/lib/x86_64-linux-gnu -ldl -ltbb
-    # The link order of the following libs is important
+    
 
 
     CONFIG(debug, debug|release): DESTDIR = $$OUT_PWD/debug
