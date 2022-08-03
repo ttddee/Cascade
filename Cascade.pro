@@ -218,13 +218,16 @@ HEADERS += \
     src/preferencesdialog.h \
     src/preferencesmanager.h \
     src/projectmanager.h \
+    src/properties/filespropertymodel.h \
     src/properties/filespropertyview.h \
+    src/properties/intpropertymodel.h \
     src/properties/intpropertyview.h \
     src/properties/propertieswindow.h \
     src/properties/propertydata.h \
     src/properties/propertymodel.h \
     src/properties/propertyview.h \
     src/properties/propertywidget.h \
+    src/properties/titlepropertymodel.h \
     src/properties/titlepropertyview.h \
     src/propertiesheading.h \
     src/propertiesview.h \

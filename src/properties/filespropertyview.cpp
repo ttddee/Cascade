@@ -22,7 +22,7 @@
 #include <QCoreApplication>
 #include <QFileDialog>
 
-#include "propertymodel.h"
+#include "filespropertymodel.h"
 
 namespace Cascade::Properties
 {
@@ -45,7 +45,10 @@ FilesPropertyView::FilesPropertyView(QWidget* parent)
     mDeleteButton->setMinimumHeight(22);
     mLayout->addWidget(mDeleteButton);
 
-    connect(mLoadButton, &QPushButton::clicked, this, &FilesPropertyView::handleLoadButtonClicked);
+    connect(mLoadButton, &QPushButton::clicked,
+            this, &FilesPropertyView::handleLoadButtonClicked);
+    connect(mDeleteButton, &QPushButton::clicked,
+            this, &FilesPropertyView::handleDeleteButtonClicked);
 }
 
 void FilesPropertyView::setModel(FilesPropertyModel* model)
@@ -66,6 +69,11 @@ void FilesPropertyView::handleLoadButtonClicked()
     {
         mModel->addEntries(dialog.selectedFiles());
     }
+}
+
+void FilesPropertyView::handleDeleteButtonClicked()
+{
+    mModel->removeEntry(mFileListView->currentIndex().row());
 }
 
 } // namespace Cascade::Properties

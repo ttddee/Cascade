@@ -13,13 +13,11 @@ class SliderTest : public ::testing::Test
 protected:
     void SetUp() override
     {
-        mSliderDouble =  new Slider(SliderType::Double, &mParent);
-        mSliderInt =     new Slider(SliderType::Int, &mParent);
+        mSliderDouble = new Slider(SliderType::Double, &mParent);
+        mSliderInt    = new Slider(SliderType::Int, &mParent);
     }
-    void TearDown() override
-    {
 
-    }
+    void TearDown() override {}
 
     QWidget mParent;
     Slider* mSliderDouble;
@@ -32,7 +30,7 @@ TEST_F(SliderTest, createSliderAndCheckReturnType)
     mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
     auto resultDouble = mSliderDouble->getValue<double>();
-    auto resultInt = mSliderInt->getValue<int>();
+    auto resultInt    = mSliderInt->getValue<int>();
 
     EXPECT_EQ(typeid(double), typeid(resultDouble));
     EXPECT_EQ(typeid(int), typeid(resultInt));
@@ -44,7 +42,7 @@ TEST_F(SliderTest, createSliderAndCheckReturnValue)
     mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
     auto resultDouble = mSliderDouble->getValue<double>();
-    auto resultInt = mSliderInt->getValue<int>();
+    auto resultInt    = mSliderInt->getValue<int>();
 
     EXPECT_EQ(resultDouble, 0.5);
     EXPECT_EQ(resultInt, 5);

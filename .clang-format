@@ -1,8 +1,8 @@
 # Common settings
-BasedOnStyle:  WebKit
-TabWidth:        4
-IndentWidth:     4
-UseTab:          Never
+BasedOnStyle: WebKit
+TabWidth: 4
+IndentWidth: 4
+UseTab: Never
 ColumnLimit: 100
 
 # Other languages JavaScript, Proto
@@ -21,12 +21,13 @@ DisableFormat:   false
 Standard: Cpp11
 
 AccessModifierOffset: -4
+AlignArrayOfStructures: Left
 AlignAfterOpenBracket: AlwaysBreak
 AlignConsecutiveAssignments: true
-AlignConsecutiveDeclarations: false
+AlignConsecutiveDeclarations: true
 AlignEscapedNewlinesLeft: false
 AlignOperands: true
-AlignTrailingComments: false
+AlignTrailingComments: true
 AllowAllParametersOfDeclarationOnNextLine: false
 AllowShortBlocksOnASingleLine: Empty
 AllowShortCaseLabelsOnASingleLine: false
@@ -44,20 +45,20 @@ BinPackParameters: false
 BreakBeforeBraces: Custom
 # Control of individual brace wrapping cases
 BraceWrapping: {
-    AfterClass: 'true'
-    AfterControlStatement: 'true'
-    AfterEnum : 'true'
-    AfterFunction : 'true'
-    AfterNamespace : 'true'
-    AfterStruct : 'true'
-    AfterUnion : 'true'
-    BeforeCatch : 'true'
-    BeforeElse : 'true'
-    IndentBraces : 'false'
-    AfterExternBlock : 'true'
-    SplitEmptyFunction : 'false'
-    SplitEmptyRecord : 'false'
-    SplitEmptyNamespace : 'true'
+    AfterClass: true
+    AfterControlStatement: true
+    AfterEnum : true
+    AfterFunction : true
+    AfterNamespace : true
+    AfterStruct : true
+    AfterUnion : true
+    BeforeCatch : true
+    BeforeElse : true
+    IndentBraces : false
+    AfterExternBlock : true
+    SplitEmptyFunction : false
+    SplitEmptyRecord : false
+    SplitEmptyNamespace : true
 }
 
 BreakAfterJavaFieldAnnotations: true
@@ -103,7 +104,7 @@ SpaceBeforeParens: true
 SpaceInEmptyBlock: false
 SpaceInEmptyParentheses: false
 SpacesBeforeTrailingComments: 1
-SpacesInAngles:  false
+SpacesInAngles: false
 SpacesInContainerLiterals: true
 SpacesInCStyleCastParentheses: false
 SpacesInParentheses: false

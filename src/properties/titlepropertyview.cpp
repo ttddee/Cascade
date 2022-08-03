@@ -19,11 +19,12 @@
 
 #include "titlepropertyview.h"
 
-#include "propertymodel.h"
+#include "titlepropertymodel.h"
 
-namespace Cascade::Properties {
+namespace Cascade::Properties
+{
 
-TitlePropertyView::TitlePropertyView(QWidget *parent)
+TitlePropertyView::TitlePropertyView(QWidget* parent)
     : PropertyView(parent)
 {
     mLayout = new QVBoxLayout(this);
@@ -35,14 +36,14 @@ TitlePropertyView::TitlePropertyView(QWidget *parent)
     mTitleLabel->setObjectName("PropertiesTitleLabel");
     mLayout->addWidget(mTitleLabel);
 
-    QFrame *line;
+    QFrame* line;
     line = new QFrame(this);
     line->setFrameShape(QFrame::HLine);
     line->setFrameShadow(QFrame::Sunken);
     mLayout->addWidget(line);
 }
 
-void TitlePropertyView::setModel(TitlePropertyModel *model)
+void TitlePropertyView::setModel(TitlePropertyModel* model)
 {
     mModel = model;
     mTitleLabel->setText(mModel->getData()->getTitle());

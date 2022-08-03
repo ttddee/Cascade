@@ -17,39 +17,44 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <QApplication>
-#include <QEvent>
-#include <QMouseEvent>
+#ifndef TITLEPROPERTYMODEL_H
+#define TITLEPROPERTYMODEL_H
 
-#include "intpropertymodel.h"
-#include "intpropertyview.h"
+#include "propertymodel.h"
+#include "titlepropertyview.h"
 
-using Cascade::UiElements::SliderType;
+using Cascade::Properties::TitlePropertyView;
 
 namespace Cascade::Properties
 {
 
-IntPropertyView::IntPropertyView(QWidget* parent)
-    : PropertyView(parent)
+class TitlePropertyModel : public PropertyModel
 {
-    mLayout = new QGridLayout();
-    mLayout->setVerticalSpacing(0);
-    mLayout->setContentsMargins(0, 0, 0, 0);
-    setLayout(mLayout);
+    Q_OBJECT
 
-    mSlider = new Slider(SliderType::Int, this);
-    mLayout->addWidget(mSlider);
-}
+public:
+    TitlePropertyModel(TitlePropertyData data)
+        : mData(std::make_unique<TitlePropertyData>(data))
+    {
+        mView = new TitlePropertyView();
+        mView->setModel(this);
+    }
 
-void IntPropertyView::setModel(IntPropertyModel* model)
-{
-    mModel = model;
-    mSlider->setName(mModel->getData()->getName());
-    mSlider->setMinMaxStepValue(
-        mModel->getData()->getMin(),
-        mModel->getData()->getMax(),
-        mModel->getData()->getStep(),
-        mModel->getData()->getValue());
-}
+    TitlePropertyData* getData() override
+    {
+        return mData.get();
+    };
+
+    TitlePropertyView* getView() override
+    {
+        return mView;
+    };
+
+private:
+    std::unique_ptr<TitlePropertyData> mData;
+    TitlePropertyView* mView;
+};
 
 } // namespace Cascade::Properties
+
+#endif // TITLEPROPERTYMODEL_H

@@ -26,16 +26,17 @@
 
 #include <QLabel>
 
-#include "../nodedatamodel.h"
-#include "../nodedata.h"
-#include "../../properties/propertymodel.h"
+#include "../../properties/intpropertymodel.h"
 #include "../../properties/propertydata.h"
+#include "../../properties/titlepropertymodel.h"
+#include "../nodedata.h"
+#include "../nodedatamodel.h"
 
-using Cascade::Properties::IntPropertyModel;
-using Cascade::Properties::PropertyModel;
-using Cascade::Properties::PropertyData;
 using Cascade::Properties::IntPropertyData;
+using Cascade::Properties::IntPropertyModel;
+using Cascade::Properties::PropertyData;
 using Cascade::Properties::TitlePropertyData;
+using Cascade::Properties::TitlePropertyModel;
 
 namespace Cascade::NodeGraph
 {
@@ -45,23 +46,22 @@ class TestNodeData : public NodeData
 public:
     TestNodeData()
     {
-        mCaption =      "Test Node";
+        mCaption = "Test Node";
 
-        mName =         "TestNode";
+        mName = "TestNode";
 
-        mInPorts =      { "RGBA Back", "RGBA Front" };
+        mInPorts = {"RGBA Back", "RGBA Front"};
 
-        mOutPorts =     { "Result" };
+        mOutPorts = {"Result"};
 
         mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new TitlePropertyModel(
-                TitlePropertyData(mCaption.toUpper()))));
+            std::make_unique<TitlePropertyModel>(TitlePropertyData(mCaption.toUpper())));
+
         mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new IntPropertyModel(
-                IntPropertyData("Test int", 0, 100, 1, 40))));
+            std::make_unique<IntPropertyModel>(IntPropertyData("Test int", 0, 100, 1, 40)));
+
         mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new IntPropertyModel(
-                IntPropertyData("Test int", 0, 100, 1, 40))));
+            std::make_unique<IntPropertyModel>(IntPropertyData("Test int", 0, 100, 1, 40)));
     }
 };
 
@@ -78,7 +78,6 @@ public:
     }
 
     virtual ~TestNodeDataModel() {}
-
 };
 
 } // namespace Cascade::NodeGraph

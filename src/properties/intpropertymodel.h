@@ -17,39 +17,49 @@
  *  along with this program.  If not, see <https://www.gnu.org/licenses/>.
 */
 
-#include <QApplication>
-#include <QEvent>
-#include <QMouseEvent>
+#ifndef INTPROPERTYMODEL_H
+#define INTPROPERTYMODEL_H
 
-#include "intpropertymodel.h"
 #include "intpropertyview.h"
+#include "propertymodel.h"
 
-using Cascade::UiElements::SliderType;
+using Cascade::Properties::IntPropertyView;
 
 namespace Cascade::Properties
 {
 
-IntPropertyView::IntPropertyView(QWidget* parent)
-    : PropertyView(parent)
+class IntPropertyModel : public PropertyModel
 {
-    mLayout = new QGridLayout();
-    mLayout->setVerticalSpacing(0);
-    mLayout->setContentsMargins(0, 0, 0, 0);
-    setLayout(mLayout);
+    Q_OBJECT
 
-    mSlider = new Slider(SliderType::Int, this);
-    mLayout->addWidget(mSlider);
-}
+public:
+    IntPropertyModel(IntPropertyData data)
+        : mData(std::make_unique<IntPropertyData>(data))
+    {
+        mView = new IntPropertyView();
+        mView->setModel(this);
+    }
 
-void IntPropertyView::setModel(IntPropertyModel* model)
-{
-    mModel = model;
-    mSlider->setName(mModel->getData()->getName());
-    mSlider->setMinMaxStepValue(
-        mModel->getData()->getMin(),
-        mModel->getData()->getMax(),
-        mModel->getData()->getStep(),
-        mModel->getData()->getValue());
-}
+    IntPropertyData* getData() override
+    {
+        return mData.get();
+    };
+
+    IntPropertyView* getView() override
+    {
+        return mView;
+    };
+
+    void setValue(const int value)
+    {
+        mData->setValue(value);
+    }
+
+private:
+    std::unique_ptr<IntPropertyData> mData;
+    IntPropertyView* mView;
+};
 
 } // namespace Cascade::Properties
+
+#endif // INTPROPERTYMODEL_H

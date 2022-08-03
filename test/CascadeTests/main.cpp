@@ -1,3 +1,4 @@
+#include "tst_filespropertymodel.h".h "
 #include "tst_node.h"
 #include "tst_nodegraphdatamodel.h"
 #include "tst_nodegraphview.h"

@@ -24,8 +24,9 @@
 
 #include <QLabel>
 
+#include "../../properties/filespropertymodel.h"
 #include "../../properties/propertydata.h"
-#include "../../properties/propertymodel.h"
+#include "../../properties/titlepropertymodel.h"
 #include "../../renderer/rendertaskread.h"
 #include "../nodedata.h"
 #include "../nodedatamodel.h"
@@ -33,7 +34,6 @@
 using Cascade::Properties::FilesPropertyData;
 using Cascade::Properties::FilesPropertyModel;
 using Cascade::Properties::PropertyData;
-using Cascade::Properties::PropertyModel;
 using Cascade::Properties::TitlePropertyData;
 
 using Cascade::Renderer::RenderTaskRead;
@@ -54,10 +54,10 @@ public:
 
         mOutPorts = {"Result"};
 
-        mProperties.push_back(std::unique_ptr<PropertyModel>(
-            new TitlePropertyModel(TitlePropertyData(mCaption.toUpper()))));
         mProperties.push_back(
-            std::unique_ptr<PropertyModel>(new FilesPropertyModel(FilesPropertyData())));
+            std::make_unique<TitlePropertyModel>(TitlePropertyData(mCaption.toUpper())));
+
+        mProperties.push_back(std::make_unique<FilesPropertyModel>(FilesPropertyData()));
     }
 };
 

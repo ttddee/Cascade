@@ -54,6 +54,7 @@ private:
 
 private slots:
     void handleLoadButtonClicked();
+    void handleDeleteButtonClicked();
 };
 
 } // namespace Cascade::Properties
