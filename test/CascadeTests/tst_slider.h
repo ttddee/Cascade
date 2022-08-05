@@ -24,25 +24,13 @@ protected:
     Slider* mSliderInt;
 };
 
-TEST_F(SliderTest, createSliderAndCheckReturnType)
-{
-    mSliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
-    mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
-
-    auto resultDouble = mSliderDouble->getValue<double>();
-    auto resultInt    = mSliderInt->getValue<int>();
-
-    EXPECT_EQ(typeid(double), typeid(resultDouble));
-    EXPECT_EQ(typeid(int), typeid(resultInt));
-}
-
 TEST_F(SliderTest, createSliderAndCheckReturnValue)
 {
     mSliderDouble->setMinMaxStepValue(0.0, 1.0, 0.1, 0.5);
     mSliderInt->setMinMaxStepValue(0, 100, 1, 5);
 
-    auto resultDouble = mSliderDouble->getValue<double>();
-    auto resultInt    = mSliderInt->getValue<int>();
+    auto resultDouble = mSliderDouble->getValue();
+    auto resultInt    = mSliderInt->getValue();
 
     EXPECT_EQ(resultDouble, 0.5);
     EXPECT_EQ(resultInt, 5);

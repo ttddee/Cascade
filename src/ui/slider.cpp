@@ -24,19 +24,14 @@ Slider::Slider(
     mNameLabel->setObjectName("nameLabel");
     mLayout->addWidget(mNameLabel, 0, 0, Qt::AlignLeft | Qt::AlignVCenter);
 
-    if (sliderType == SliderType::Double)
+    mValueBox = new QDoubleSpinBox(this);
+    mValueBox->setButtonSymbols(QAbstractSpinBox::NoButtons);
+    mLayout->addWidget(mValueBox, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
+    mValueBox->installEventFilter(this);
+
+    if (sliderType == SliderType::Int)
     {
-        mValueBoxDouble = new QDoubleSpinBox(this);
-        mValueBoxDouble->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        mLayout->addWidget(mValueBoxDouble, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
-        mValueBoxDouble->installEventFilter(this);
-    }
-    else
-    {
-        mValueBoxInt = new QSpinBox(this);
-        mValueBoxInt->setButtonSymbols(QAbstractSpinBox::NoButtons);
-        mLayout->addWidget(mValueBoxInt, 0, 0, Qt::AlignHCenter | Qt::AlignVCenter);
-        mValueBoxInt->installEventFilter(this);
+        mValueBox->setDecimals(0);
     }
 
     mSlider->installEventFilter(this);
@@ -45,17 +40,72 @@ Slider::Slider(
     connect(mSlider, &QSlider::valueChanged,
             this, &Slider::handleSliderValueChanged);
 
-    if (mSliderType == SliderType::Double)
-        connect(mValueBoxDouble, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
-                this, &Slider::handleSpinBoxValueChanged);
-    else
-        connect(mValueBoxInt, QOverload<int>::of(&QSpinBox::valueChanged),
-                this, &Slider::handleSpinBoxValueChanged);
+    connect(mValueBox, QOverload<double>::of(&QDoubleSpinBox::valueChanged),
+            this, &Slider::handleSpinBoxValueChanged);
+}
+
+void Slider::setMinMaxStepValue(double min, double max, double step, double value)
+{
+    mBaseValue = value;
+
+    mValueBox->blockSignals(true);
+    mValueBox->setMinimum(min);
+    mValueBox->setMaximum(max);
+    mValueBox->setSingleStep(step);
+    mValueBox->setValue(value);
+    mValueBox->blockSignals(false);
+
+    if(mSliderType == SliderType::Double)
+    {
+        min *= doubleMult;
+        max *= doubleMult;
+        step *= doubleMult;
+        value *= doubleMult;
+    }
+
+    mSlider->blockSignals(true);
+    mSlider->setMinimum(min);
+    mSlider->setMaximum(max);
+    mSlider->setSingleStep(step);
+    mSlider->setValue(value);
+    mSlider->blockSignals(false);
 }
 
 void Slider::setName(const QString& name)
 {
     mNameLabel->setText(name);
+}
+
+void Slider::setSliderNoSignal(double val)
+{
+    if (mSliderType == SliderType::Double)
+    {
+        val *= doubleMult;
+    }
+    mSlider->blockSignals(true);
+    mSlider->setValue(val);
+    mSlider->blockSignals(false);
+
+    emit valueChanged();
+}
+
+void Slider::setSpinBoxNoSignal(double val)
+{
+    mValueBox->blockSignals(true);
+
+    if (mSliderType == SliderType::Double)
+    {
+        val /= doubleMult;
+    }
+    mValueBox->setValue(val);
+    mValueBox->blockSignals(false);
+
+    emit valueChanged();
+}
+
+double Slider::getValue() const
+{
+    return mValueBox->value();
 }
 
 void Slider::handleSliderValueChanged()
@@ -65,18 +115,12 @@ void Slider::handleSliderValueChanged()
 
 void Slider::handleSpinBoxValueChanged()
 {
-    if (mSliderType == SliderType::Double)
-        setSliderNoSignal(mValueBoxDouble->value());
-    else
-        setSliderNoSignal(mValueBoxInt->value());
+    setSliderNoSignal(mValueBox->value());
 }
 
 void Slider::reset()
 {
-    if (mSliderType == SliderType::Double)
-        mValueBoxDouble->setValue(mBaseValue);
-    else
-        mValueBoxInt->setValue(mBaseValue);
+    mValueBox->setValue(mBaseValue);
 }
 
 bool Slider::eventFilter(QObject *watched, QEvent *event)
