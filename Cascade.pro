@@ -289,7 +289,7 @@ FORMS += \
 linux-g++ {
 
     OS = $$system(uname -a)
-    isManjaro = $$find(OS,Manjaro)
+    isArch = $$find(OS,arch)
     isUbuntu1804LTS = $$find(OS, 18.04.1-Ubuntu)
     message(OS: $$OS)
 
@@ -299,7 +299,7 @@ linux-g++ {
         INCLUDEPATH += $$(VULKAN_SDK)/include
     }
     # Check if we are on Manjaro (Arch) to use glslang and OpenColorIO provided by pacman
-    !isEmpty(isManjaro){
+    !isEmpty(isArch){
         message("Bulding for Arch linux")
     }else{
         message("Custom path to 'external' folder was added")
