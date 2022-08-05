@@ -27,6 +27,7 @@
 #include "propertiesview.h"
 #include "viewerstatusbar.h"
 #include "rendermanager.h"
+#include "log.h"
 
 namespace Cascade {
 

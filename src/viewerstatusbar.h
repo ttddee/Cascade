@@ -22,8 +22,11 @@
 
 #include <QWidget>
 
-#include "uientities/cssliderboxentity.h"
+#include "ui/slider.h"
 #include "global.h"
+
+using Cascade::UiElements::Slider;
+using Cascade::UiElements::SliderType;
 
 namespace Ui {
 class ViewerStatusBar;
@@ -53,9 +56,9 @@ private:
     bool mBw = false;
     ViewerMode currentViewerMode = Config::sDefaultViewerMode;
 
-    CsSliderBoxEntity* mSplitSlider;
-    CsSliderBoxEntity* mGammaSlider;
-    CsSliderBoxEntity* mGainSlider;
+    Slider* mSplitSlider;
+    Slider* mGammaSlider;
+    Slider* mGainSlider;
 
 signals:
     void requestZoomReset();
