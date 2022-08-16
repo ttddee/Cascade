@@ -67,6 +67,9 @@ deps_arch()
     openxr
     glew
     freeglut        
+    opencolorio
+    glslang
+    spirv-tools
     "
     sudo pacman -S $packages
 }
@@ -96,16 +99,18 @@ echo "External directory path: ${EXTERNAL_DIR}"
 
 if test x$OS != x ; then
     OS=$OS
+elif [[ -n `uname -a | grep arch` ]]; then
+    OS=arch
 elif test -f /etc/os-release; then
     OS=`grep ^ID= /etc/os-release | cut -d= -f2`
 else
     OS='uname -s'
 fi
+echo "OS:$OS"
 
 case "$OS" in
     arch)
-        deps_arch 
-        external_and_glslang
+        deps_arch
         ;;
     fedora)
         deps_fedora
